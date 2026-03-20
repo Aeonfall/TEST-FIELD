@@ -188,6 +188,7 @@
 
             const activeCampaigns = campaigns.filter(c => !c.isDeleted);
             const deletedCampaigns = campaigns.filter(c => c.isDeleted);
+            const isGlobalDm = localStorage.getItem('aeonfall_role_pref') === 'dm';
 
             // 1. Render Active Campaigns
             if (activeCampaigns.length === 0) {
@@ -210,7 +211,7 @@
             // Only show deleted campaigns to the DM (or Creator if no DM yet)
             const myDeleted = deletedCampaigns.filter(c => (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username));
             
-            if (myDeleted.length > 0) {
+            if (isGlobalDm && myDeleted.length > 0) {
                 deletedContainer.classList.remove('hidden-view');
                 deletedList.innerHTML = myDeleted.map(c => `
                     <div class="relative bg-gray-900/80 p-6 rounded-xl border-l-4 border-red-900 opacity-75 hover:opacity-100 transition-all flex justify-between items-center group">
