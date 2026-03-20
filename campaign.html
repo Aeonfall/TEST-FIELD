@@ -170,8 +170,8 @@
             }
         };
 
-        // This checks cloud profile to see if they've already chosen a role
-        window.syncUserRoleFromCloud = async () => {
+        // This checks cloud profile and updates UI immediately
+        window.syncUserRoleAndUI = async () => {
             if (!currentUser) return;
             try {
                 const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id));
@@ -179,10 +179,22 @@
                     const data = userDoc.data();
                     if (data.rolePref) {
                         localStorage.setItem('aeonfall_role_pref', data.rolePref);
+                        window.applyRoleVisibility(data.rolePref);
                     }
                 }
             } catch (e) {
                 console.error("Role sync error:", e);
+            }
+        };
+
+        window.applyRoleVisibility = (role) => {
+            const btn = document.getElementById('btn-create-campaign');
+            if (btn) {
+                if (role === 'player') {
+                    btn.classList.add('hidden');
+                } else {
+                    btn.classList.remove('hidden');
+                }
             }
         };
 
@@ -244,7 +256,7 @@
             }
         };
 
-        // --- CAMPAIGN MANAGEMENT (DELETE & RESTORE) ---
+        // --- CAMPAIGN MANAGEMENT ---
         window.deleteCampaign = (id) => {
             campaignToDelete = id;
             document.getElementById('campaign-delete-modal').classList.remove('hidden');
@@ -277,7 +289,6 @@
             }
         };
 
-        // --- PERMANENT DELETE LOGIC ---
         window.permanentlyDeleteCampaign = (id) => {
             campaignToPermDelete = id;
             document.getElementById('campaign-perm-delete-modal').classList.remove('hidden');
@@ -300,10 +311,10 @@
             window.closeCampaignPermDeleteModal();
         };
 
-        // --- CAMPAIGN CREATION FLOW ---
+        // --- ROLE SELECTION FLOW ---
         window.startCampaignCreation = () => {
             const pref = localStorage.getItem('aeonfall_role_pref');
-            if (pref === null) {
+            if (!pref) {
                 window.dmSetupContext = 'new_campaign';
                 document.getElementById('dm-pref-step-1').classList.remove('hidden');
                 document.getElementById('dm-pref-step-2').classList.add('hidden');
@@ -317,12 +328,12 @@
 
         window.answerDmPreference = async (isDm) => {
             if (!isDm) {
-                // Save choice to Cloud & Local
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id), {
                     rolePref: 'player'
                 });
                 localStorage.setItem('aeonfall_role_pref', 'player');
                 document.getElementById('dm-preference-modal').classList.add('hidden');
+                window.applyRoleVisibility('player');
                 document.getElementById('player-wait-modal').classList.remove('hidden');
             } else {
                 window.showDmPasswordSetup();
@@ -346,13 +357,13 @@
             
             const hash = await hashPassword(pass);
             try {
-                // Save Master Password and Role Preference to Cloud
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id), {
                     dmPasswordHash: hash,
                     rolePref: 'dm'
                 });
                 localStorage.setItem('aeonfall_role_pref', 'dm');
                 document.getElementById('dm-preference-modal').classList.add('hidden');
+                window.applyRoleVisibility('dm');
                 window.showToast("Master DM Password Set!");
                 window.openNewCampaignModal();
             } catch(e) {
@@ -418,7 +429,7 @@
                 await signInAnonymously(auth);
                 
                 // Fetch Role Preference from Cloud before rendering
-                await window.syncUserRoleFromCloud();
+                await window.syncUserRoleAndUI();
 
                 onAuthStateChanged(auth, (u) => { 
                     if (u) window.setupCampaignListeners();
