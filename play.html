@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <!-- MOCK HP ADJUSTMENT MODAL (Needed by provided logic) -->
+    <!-- HP ADJUSTMENT MODAL (Needed by provided logic) -->
     <div id="hp-adjustment-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="text-xl font-bold mb-4">Mock Modal</h2>
@@ -183,10 +183,45 @@
         </div>
     </div>
 
+    <!-- PARTY MODAL -->
+    <div id="party-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <h2 class="text-2xl font-serif font-black text-indigo-700 mb-6 uppercase tracking-widest border-b pb-2 text-center">New Party</h2>
+            <div class="space-y-4 mb-8">
+                <label class="text-[10px] font-black uppercase text-gray-400">Party Name</label>
+                <input type="text" id="party-name-input" class="w-full bg-gray-100 p-4 rounded-xl text-center font-bold text-lg focus:ring-2 focus:ring-indigo-500" placeholder="e.g. The Drifters">
+            </div>
+            <div class="flex gap-4">
+                <button onclick="document.getElementById('party-modal').classList.add('hidden')" class="flex-1 py-3 text-gray-400 font-black uppercase text-xs">Cancel</button>
+                <button onclick="window.createParty()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-black uppercase text-xs shadow-lg">Form Party</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE/MANAGE MODAL -->
+    <div id="delete-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <h2 class="text-2xl font-serif font-black text-red-700 mb-6 uppercase tracking-widest text-center border-b pb-2">Manage Character</h2>
+            <div id="delete-stage-1" class="space-y-3">
+                <button id="restore-btn" onclick="window.restoreCharacter()" class="hidden w-full py-4 bg-green-100 text-green-700 rounded-xl font-black uppercase text-xs">Recover Hero</button>
+                <button id="archive-btn" onclick="window.archiveCharacter()" class="w-full py-4 bg-amber-100 text-amber-700 rounded-xl font-black uppercase text-xs">Send to Graveyard</button>
+                <button onclick="window.showPermDeleteConfirm()" class="w-full py-4 bg-red-100 text-red-700 rounded-xl font-black uppercase text-xs">Permanently Delete</button>
+            </div>
+            <div id="delete-stage-confirm" class="hidden space-y-6 text-center">
+                <p class="text-sm font-bold text-red-600 uppercase">Warning: This action is irreversible.</p>
+                <div class="flex gap-2">
+                    <button onclick="window.resetDeleteModal()" class="flex-grow py-3 bg-gray-100 rounded-xl text-xs font-black">Cancel</button>
+                    <button onclick="window.executePermDelete()" class="flex-grow py-3 bg-red-600 text-white rounded-xl text-xs font-black">YES, DELETE</button>
+                </div>
+            </div>
+            <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="w-full mt-6 py-2 text-gray-400 font-bold uppercase text-[9px]">Close</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, getDoc, onSnapshot, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, getDoc, onSnapshot, deleteDoc, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLN0KhcnZFKZEYyR0O-Q2mZhKr-iyh7BI",
@@ -231,7 +266,6 @@
                 window.updateRoleUI();
                 return;
             }
-            // Ensure campaign entry exists in campaigns list for role checking
             let camp = campaigns.find(c => c.id === activeCampaignId);
             if (!camp && activeCampaignId === "preview-campaign") {
                 camp = { id: "preview-campaign", name: "Preview Campaign", dmClaimedBy: null };
@@ -254,7 +288,6 @@
             const pass = document.getElementById('dm-claim-password').value;
             const hash = await hashPassword(pass);
             
-            // Bypass fetch for guest user in preview
             if (currentUser.id === "preview-id") {
                 activeRole = 'dm'; window.updateRoleUI(); window.showToast("Preview DM Enabled");
                 document.getElementById('dm-setup-modal').classList.add('hidden');
@@ -381,6 +414,103 @@
             document.getElementById('dashboard-screen').classList.remove('hidden-view');
         };
 
+        // --- RESTORED CORE FUNCTIONS ---
+        window.createChar = async (type) => { 
+            if (!currentUser || currentUser.id === "preview-id") {
+                window.showToast("Log in to create characters");
+                return;
+            }
+            try { 
+                const initialOwner = (type === 'NPC') ? 'DM' : (activeRole === 'dm' ? null : currentUser.username);
+                const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), { 
+                    campaignId: activeCampaignId,
+                    type, 
+                    name: `New ${type === 'NPC' ? 'Encounter' : 'Adventurer'}`, 
+                    class: type === 'NPC' ? 'Enemy' : '',
+                    owner: initialOwner, 
+                    isDeleted: false, 
+                    status: 'alive', 
+                    hpMax: 10, 
+                    hpCurrent: 10, 
+                    level: 1, 
+                    str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, 
+                    profBonus: 2, 
+                    languages: [], attacks: [], moves: [], dmWhispers: [], 
+                    dsSucc: 0, dsFail: 0, hdCurrent: 1, hd: "1d8"
+                }); 
+                window.openSheet(ref.id); 
+            } catch (e) { console.error(e); window.showToast("Create Failed"); } 
+        };
+
+        window.openPartyModal = () => { document.getElementById('party-modal').classList.remove('hidden'); };
+        window.createParty = async () => {
+            const n = document.getElementById('party-name-input');
+            if (!n || !n.value) return;
+            if (currentUser.id === "preview-id") return window.showToast("Preview Only");
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), { name: n.value, campaignId: activeCampaignId });
+            document.getElementById('party-modal').classList.add('hidden');
+            n.value = '';
+        };
+
+        window.openEncounterSpawner = () => {
+            // Simplified for logic restore
+            window.createChar('NPC');
+        };
+
+        window.triggerDeleteModal = () => {
+            const char = allCharacters.find(c => c.id === activeCharId);
+            if (!char) return;
+            window.resetDeleteModal();
+            document.getElementById('archive-btn').classList.toggle('hidden', !!char.isDeleted);
+            document.getElementById('restore-btn').classList.toggle('hidden', !char.isDeleted);
+            document.getElementById('delete-modal').classList.remove('hidden');
+        };
+
+        window.showPermDeleteConfirm = () => {
+            document.getElementById('delete-stage-1').classList.add('hidden');
+            document.getElementById('delete-stage-confirm').classList.remove('hidden');
+        };
+
+        window.resetDeleteModal = () => {
+            document.getElementById('delete-stage-1').classList.remove('hidden');
+            document.getElementById('delete-stage-confirm').classList.add('hidden');
+        };
+
+        window.archiveCharacter = async () => {
+            if(!activeCharId) return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { isDeleted: true });
+            document.getElementById('delete-modal').classList.add('hidden');
+            window.closeSheet();
+        };
+
+        window.restoreCharacter = async () => {
+            if(!activeCharId) return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { isDeleted: false });
+            document.getElementById('delete-modal').classList.add('hidden');
+            syncSheetData();
+        };
+
+        window.executePermDelete = async () => {
+            if(!activeCharId) return;
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId));
+            document.getElementById('delete-modal').classList.add('hidden');
+            window.closeSheet();
+        };
+
+        window.updateCharStatus = async (s) => {
+            if(!activeCharId) return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { status: s });
+        };
+
+        window.sendDmWhisper = async () => {
+            const i = document.getElementById('dm-whisper-input');
+            if(!i || !i.value.trim() || !activeCharId) return;
+            const char = allCharacters.find(c => c.id === activeCharId);
+            const w = [...(char.dmWhispers || []), { text: i.value.trim(), ts: Date.now() }];
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { dmWhispers: w });
+            i.value = ''; window.showToast("Whisper Sent");
+        };
+
         function syncSheetData() {
             const char = allCharacters.find(c => c.id === activeCharId);
             if (!char) return;
@@ -410,7 +540,6 @@
             const savedCamp = localStorage.getItem('aeonfall_active_campaign');
             const savedCampName = localStorage.getItem('aeonfall_active_campaign_name');
             
-            // Handle valid logins or default to Guest Preview Mode
             if (savedUser) {
                 try {
                     currentUser = JSON.parse(savedUser);
@@ -419,15 +548,8 @@
             activeCampaignId = savedCamp || "preview-campaign";
 
             document.getElementById('user-display-name').textContent = currentUser.username;
-            
-            // Update the main header to the Campaign Name
             const mainTitleEl = document.getElementById('main-campaign-title');
-            if(mainTitleEl && savedCampName) {
-                mainTitleEl.textContent = savedCampName;
-            }
-
-            const badge = document.getElementById('active-campaign-badge');
-            if(badge) badge.textContent = savedCampName || "Main Campaign";
+            if(mainTitleEl && savedCampName) mainTitleEl.textContent = savedCampName;
 
             await signInAnonymously(auth);
             
