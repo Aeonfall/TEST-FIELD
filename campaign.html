@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aeonfall - Campaign Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto+Slab:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto Slab', serif; background-color: #1a1a1a; color: #e2e8f0; overflow-x: hidden; }
+        .dashboard-bg { background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); background-color: #121212; }
+        .hidden-view { display: none !important; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
+        .modal-container { background: white; border-radius: 12px; width: 100%; max-width: 500px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; color: #333; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="toast" class="toast">Message</div>
+
+    <!-- CAMPAIGN SELECTION SCREEN -->
+    <div id="campaign-screen" class="min-h-screen dashboard-bg p-4 md:p-8">
+        <div class="max-w-4xl mx-auto mt-10">
+            <header class="text-center mb-12">
+                <h1 class="text-5xl md:text-7xl text-amber-500 font-bold mb-2 font-serif tracking-tight leading-none">Aeonfall</h1>
+                <p class="text-gray-500 text-[10px] md:text-sm uppercase tracking-[0.2em] font-black opacity-80">Select Your Campaign</p>
+            </header>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b border-gray-800 pb-4">
+                <h2 class="text-2xl font-serif text-gray-300 font-bold uppercase tracking-widest">Active Campaigns</h2>
+                <button onclick="window.startCampaignCreation()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest shadow-lg transition-colors w-full md:w-auto">+ New Campaign</button>
+            </div>
+            
+            <!-- ACTIVE CAMPAIGNS GRID -->
+            <div id="campaign-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="col-span-full text-center py-12 bg-black/40 rounded-xl border border-gray-800">
+                    <p class="text-gray-500 font-bold uppercase tracking-widest text-xs animate-pulse">Synchronizing Data...</p>
+                </div>
+            </div>
+
+            <!-- DELETED CAMPAIGNS SECTION -->
+            <div id="deleted-campaign-container" class="mt-12 hidden-view">
+                <h2 class="text-xl font-serif text-red-900/60 font-bold uppercase tracking-widest border-b border-red-900/30 pb-2 mb-6">Deleted Campaigns</h2>
+                <div id="deleted-campaign-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Deleted items loaded here -->
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <button onclick="window.logout()" class="text-[10px] text-red-500 hover:text-red-400 font-black uppercase tracking-widest border border-red-900/50 bg-red-900/20 px-6 py-2 rounded-lg transition-colors">Logout <span id="campaign-user-display" class="ml-1 text-gray-300"></span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DM PREFERENCE MODAL -->
+    <div id="dm-preference-modal" class="modal-overlay hidden z-[950]">
+        <div class="modal-container bg-[#1a1f29] border border-amber-600 shadow-2xl text-center">
+            <h2 class="font-serif text-2xl font-black text-amber-500 uppercase tracking-widest border-b border-amber-900/50 pb-4 mb-6">Your Role</h2>
+            
+            <div id="dm-pref-step-1">
+                <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">Will you be the <strong class="text-amber-400">Dungeon Master</strong> for your campaigns?</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="window.answerDmPreference(false)" class="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors shadow-lg border border-gray-700">No, I'm a Player</button>
+                    <button onclick="window.showDmPasswordSetup()" class="px-4 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, I am the DM</button>
+                </div>
+            </div>
+
+            <div id="dm-pref-step-2" class="hidden">
+                <p class="text-gray-300 text-sm mb-4 font-serif leading-relaxed">Set your <strong class="text-amber-400">Master DM Password</strong>. This will protect your campaigns.</p>
+                <input type="password" id="global-dm-pass-setup" class="w-full bg-black/50 border border-amber-900/50 rounded p-4 text-white font-serif focus:border-amber-500 mb-6 text-center" placeholder="Choose Password">
+                <div class="flex justify-between gap-4">
+                    <button onclick="window.cancelDmPasswordSetup()" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors border border-gray-700 w-1/3">Back</button>
+                    <button onclick="window.confirmDmPreference()" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg flex-grow">Set Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW CAMPAIGN MODAL -->
+    <div id="new-campaign-modal" class="modal-overlay hidden z-[900]">
+        <div class="modal-container bg-[#1a1f29] border border-indigo-600 shadow-2xl">
+            <h2 class="font-serif text-2xl font-black text-indigo-400 uppercase tracking-widest border-b border-indigo-900/50 pb-4 mb-6 text-center">Establish Campaign</h2>
+            <div class="space-y-4">
+                <label class="text-[10px] font-black uppercase text-gray-400">Campaign Chronicle Name</label>
+                <input type="text" id="new-campaign-name" class="w-full bg-black/50 border border-indigo-900/50 rounded p-4 text-white font-serif focus:border-indigo-500" placeholder="E.g., Shadows of the Spire">
+            </div>
+            <div class="flex justify-between mt-8">
+                <button onclick="document.getElementById('new-campaign-modal').classList.add('hidden')" class="px-6 py-2 text-gray-500 font-bold uppercase text-xs hover:text-white transition-colors">Cancel</button>
+                <button onclick="window.createNewCampaign()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Create Campaign</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE CAMPAIGN MODAL -->
+    <div id="campaign-delete-modal" class="modal-overlay hidden z-[950]">
+        <div class="modal-container bg-[#1a1f29] border border-red-600 shadow-2xl text-center">
+            <h2 class="font-serif text-2xl font-black text-red-500 uppercase tracking-widest border-b border-red-900/50 pb-4 mb-6">Delete Campaign?</h2>
+            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This will move the campaign to your graveyard. You will be able to restore it later.</p>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="window.closeCampaignDeleteModal()" class="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors shadow-lg border border-gray-700">Cancel</button>
+                <button onclick="window.confirmDeleteCampaign()" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLN0KhcnZFKZEYyR0O-Q2mZhKr-iyh7BI",
+            authDomain: "aeonfall-523c1.firebaseapp.com",
+            projectId: "aeonfall-523c1",
+            storageBucket: "aeonfall-523c1.firebasestorage.app",
+            messagingSenderId: "716207733913",
+            appId: "1:716207733913:web:7aac43906a70e2b5f50c08"
+        };
+
+        const appId = 'aeonfall-manager-v2';
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let campaigns = [];
+        let campaignToDelete = null;
+
+        window.showToast = (m) => { 
+            const t = document.getElementById('toast'); 
+            if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 4000); } 
+        };
+
+        async function hashPassword(str) {
+            const msgBuffer = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        window.safeRedirect = (url, message = "Navigating to portal...") => {
+            try {
+                if (window.location.protocol === 'blob:' || window.location.protocol === 'data:') {
+                    document.body.innerHTML = '<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4"><div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-indigo-600 shadow-2xl max-w-md"><h1 class="text-3xl text-indigo-500 font-serif font-black mb-4 uppercase tracking-widest">Portal Bridged</h1><p class="text-gray-300 text-sm mb-6">' + message + '</p><p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please manually open <span class="text-indigo-500 font-mono text-xs ml-1">' + url + '</span></p></div></div>';
+                } else {
+                    window.location.href = url;
+                }
+            } catch (e) {
+                console.error("Redirect failed:", e);
+            }
+        };
+
+        window.setupCampaignListeners = () => {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'campaigns'), (snap) => {
+                campaigns = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                window.renderCampaignList();
+            });
+        };
+
+        window.renderCampaignList = () => {
+            const list = document.getElementById('campaign-list');
+            const deletedContainer = document.getElementById('deleted-campaign-container');
+            const deletedList = document.getElementById('deleted-campaign-list');
+            
+            if (!list) return;
+
+            const activeCampaigns = campaigns.filter(c => !c.isDeleted);
+            const deletedCampaigns = campaigns.filter(c => c.isDeleted);
+
+            // 1. Render Active Campaigns
+            if (activeCampaigns.length === 0) {
+                list.innerHTML = `<div class="col-span-full text-center py-12 bg-black/40 rounded-xl border border-gray-800"><p class="text-gray-500 font-bold uppercase tracking-widest text-xs">No active campaigns found.</p></div>`;
+            } else {
+                list.innerHTML = activeCampaigns.map(c => {
+                    const canManage = (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username);
+                    const delBtn = canManage ? `<button onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors z-10 p-2 rounded-lg bg-black/40 hover:bg-red-900/40" title="Delete Campaign">🗑️</button>` : '';
+
+                    return `
+                    <div onclick="window.enterCampaign('${c.id}', '${c.name.replace(/'/g, "\\'")}')" class="relative bg-gray-800 p-6 rounded-xl border-l-4 border-indigo-500 hover:bg-gray-700 cursor-pointer shadow-lg transition-all group">
+                        ${delBtn}
+                        <h3 class="text-xl font-serif font-black text-indigo-400 group-hover:text-white transition-colors mb-2 pr-8">${c.name}</h3>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Created by: ${c.creator}</p>
+                    </div>
+                `}).join('');
+            }
+
+            // 2. Render Deleted Campaigns
+            // Only show deleted campaigns to the DM (or Creator if no DM yet)
+            const myDeleted = deletedCampaigns.filter(c => (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username));
+            
+            if (myDeleted.length > 0) {
+                deletedContainer.classList.remove('hidden-view');
+                deletedList.innerHTML = myDeleted.map(c => `
+                    <div class="relative bg-gray-900/80 p-6 rounded-xl border-l-4 border-red-900 opacity-75 hover:opacity-100 transition-all flex justify-between items-center group">
+                        <div>
+                            <h3 class="text-lg font-serif font-black text-red-500 mb-1">${c.name}</h3>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Created by: ${c.creator}</p>
+                        </div>
+                        <button onclick="window.restoreCampaign('${c.id}')" class="bg-red-900/40 hover:bg-green-700 text-red-400 hover:text-white px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-green-500 shadow-lg">Restore</button>
+                    </div>
+                `).join('');
+            } else {
+                deletedContainer.classList.add('hidden-view');
+            }
+        };
+
+        // --- CAMPAIGN MANAGEMENT (DELETE & RESTORE) ---
+        window.deleteCampaign = (id) => {
+            campaignToDelete = id;
+            document.getElementById('campaign-delete-modal').classList.remove('hidden');
+        };
+
+        window.closeCampaignDeleteModal = () => {
+            campaignToDelete = null;
+            document.getElementById('campaign-delete-modal').classList.add('hidden');
+        };
+
+        window.confirmDeleteCampaign = async () => {
+            if (!campaignToDelete) return;
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', campaignToDelete), { isDeleted: true });
+                window.showToast("Campaign moved to Graveyard.");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Error deleting campaign.");
+            }
+            window.closeCampaignDeleteModal();
+        };
+
+        window.restoreCampaign = async (id) => {
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', id), { isDeleted: false });
+                window.showToast("Campaign Restored.");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Error restoring campaign.");
+            }
+        };
+
+        // --- CAMPAIGN CREATION FLOW ---
+        window.startCampaignCreation = () => {
+            const pref = localStorage.getItem('aeonfall_role_pref');
+            if (pref === null) {
+                window.dmSetupContext = 'new_campaign';
+                document.getElementById('dm-pref-step-1').classList.remove('hidden');
+                document.getElementById('dm-pref-step-2').classList.add('hidden');
+                document.getElementById('dm-preference-modal').classList.remove('hidden');
+            } else {
+                window.openNewCampaignModal();
+            }
+        };
+
+        window.answerDmPreference = (isDm) => {
+            if (!isDm) {
+                localStorage.setItem('aeonfall_role_pref', 'player');
+                document.getElementById('dm-preference-modal').classList.add('hidden');
+                window.openNewCampaignModal();
+            }
+        };
+
+        window.showDmPasswordSetup = () => {
+            document.getElementById('dm-pref-step-1').classList.add('hidden');
+            document.getElementById('dm-pref-step-2').classList.remove('hidden');
+            document.getElementById('global-dm-pass-setup').focus();
+        };
+
+        window.cancelDmPasswordSetup = () => {
+            document.getElementById('dm-pref-step-1').classList.remove('hidden');
+            document.getElementById('dm-pref-step-2').classList.add('hidden');
+        };
+
+        window.confirmDmPreference = async () => {
+            const pass = document.getElementById('global-dm-pass-setup').value;
+            if (pass.length < 4) return window.showToast("Password must be at least 4 characters.");
+            
+            const hash = await hashPassword(pass);
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id), {
+                    dmPasswordHash: hash
+                });
+                localStorage.setItem('aeonfall_role_pref', 'dm');
+                document.getElementById('dm-preference-modal').classList.add('hidden');
+                window.showToast("Master DM Password Set!");
+                window.openNewCampaignModal();
+            } catch(e) {
+                console.error(e);
+                window.showToast("Error saving DM profile.");
+            }
+        };
+
+        window.openNewCampaignModal = () => {
+            document.getElementById('new-campaign-modal').classList.remove('hidden');
+            document.getElementById('new-campaign-name').focus();
+        };
+
+        window.createNewCampaign = async () => {
+            const nameInput = document.getElementById('new-campaign-name');
+            const name = nameInput.value.trim();
+            if (!name) return window.showToast("Campaign name required.");
+            
+            const isDm = localStorage.getItem('aeonfall_role_pref') === 'dm';
+            
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'campaigns'), {
+                    name: name,
+                    createdAt: Date.now(),
+                    creator: currentUser.username,
+                    dmClaimedBy: isDm ? currentUser.username : null,
+                    isDeleted: false
+                });
+                nameInput.value = '';
+                document.getElementById('new-campaign-modal').classList.add('hidden');
+                window.showToast("Campaign Established!");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Failed to create campaign.");
+            }
+        };
+
+        window.enterCampaign = (campId, campName) => {
+            localStorage.setItem('aeonfall_active_campaign', campId);
+            localStorage.setItem('aeonfall_active_campaign_name', campName);
+            window.safeRedirect('play.html', 'Campaign selected. You are ready to enter.');
+        };
+
+        window.logout = () => {
+            localStorage.removeItem('aeonfall_user');
+            localStorage.removeItem('aeonfall_role_pref');
+            localStorage.removeItem('aeonfall_active_campaign');
+            localStorage.removeItem('aeonfall_active_campaign_name');
+            window.safeRedirect('index.html', 'You have been successfully logged out.');
+        };
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedUser = localStorage.getItem('aeonfall_user');
+            if (!savedUser) {
+                window.safeRedirect('index.html', 'Please log in to view campaigns.');
+                return;
+            }
+            try {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('campaign-user-display').textContent = `(${currentUser.username})`;
+                await signInAnonymously(auth);
+                onAuthStateChanged(auth, (u) => { 
+                    if (u) window.setupCampaignListeners();
+                });
+            } catch(e) {
+                console.error(e);
+                localStorage.removeItem('aeonfall_user');
+                window.safeRedirect('index.html', 'Session error. Please log in again.');
+            }
+        });
+    </script>
+</body>
+</html>
