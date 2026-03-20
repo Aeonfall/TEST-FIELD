@@ -221,44 +221,6 @@
     </div>
     <canvas id="fireworks-canvas"></canvas>
 
-    <!-- 1.5. CAMPAIGN SELECTION SCREEN -->
-    <div id="campaign-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view">
-        <div class="max-w-4xl mx-auto mt-10">
-            <header class="text-center mb-12">
-                <h1 class="text-5xl md:text-7xl text-amber-500 font-bold mb-2 font-serif tracking-tight leading-none">Aeonfall</h1>
-                <p class="text-gray-500 text-[10px] md:text-sm uppercase tracking-[0.2em] font-black opacity-80">Select Your Campaign</p>
-            </header>
-            
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b border-gray-800 pb-4">
-                <h2 class="text-2xl font-serif text-gray-300 font-bold uppercase tracking-widest">Active Campaigns</h2>
-                <button onclick="document.getElementById('new-campaign-modal').classList.remove('hidden')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest shadow-lg transition-colors w-full md:w-auto">+ New Campaign</button>
-            </div>
-            
-            <div id="campaign-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Campaigns loaded here -->
-            </div>
-            
-            <div class="mt-12 text-center">
-                <button onclick="window.logout()" class="text-[10px] text-red-500 hover:text-red-400 font-black uppercase tracking-widest border border-red-900/50 bg-red-900/20 px-6 py-2 rounded-lg transition-colors">Logout <span id="campaign-user-display" class="ml-1 text-gray-300"></span></button>
-            </div>
-        </div>
-    </div>
-
-    <!-- NEW CAMPAIGN MODAL -->
-    <div id="new-campaign-modal" class="modal-overlay hidden z-[900]">
-        <div class="modal-container bg-[#1a1f29] border border-indigo-600 shadow-2xl">
-            <h2 class="font-serif text-2xl font-black text-indigo-400 uppercase tracking-widest border-b border-indigo-900/50 pb-4 mb-6 text-center">Establish Campaign</h2>
-            <div class="space-y-4">
-                <label class="text-[10px] font-black uppercase text-gray-400">Campaign Chronicle Name</label>
-                <input type="text" id="new-campaign-name" class="w-full bg-black/50 border border-indigo-900/50 rounded p-4 text-white font-serif focus:border-indigo-500" placeholder="E.g., Shadows of the Spire">
-            </div>
-            <div class="modal-footer flex justify-between mt-8">
-                <button onclick="document.getElementById('new-campaign-modal').classList.add('hidden')" class="px-6 py-2 text-gray-500 font-bold uppercase text-xs hover:text-white transition-colors">Cancel</button>
-                <button onclick="window.createNewCampaign()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Create Campaign</button>
-            </div>
-        </div>
-    </div>
-
     <!-- 2. MAIN DASHBOARD SCREEN (APP ENTRY) -->
     <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view">
         <div class="max-w-6xl mx-auto">
@@ -1496,10 +1458,10 @@
             } 
         };
 
-        window.safeRedirect = (url) => {
+        window.safeRedirect = (url, message = "You must be authenticated to view this page.") => {
             try {
                 if (window.location.protocol === 'blob:' || window.location.protocol === 'data:') {
-                    document.body.innerHTML = '<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4"><div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-amber-600 shadow-2xl max-w-md"><h1 class="text-3xl text-amber-500 font-serif font-black mb-4 uppercase tracking-widest">Access Denied</h1><p class="text-gray-300 text-sm mb-6">You must be authenticated to view this page.</p><p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please open <span class="text-amber-500 font-mono text-xs ml-1">' + url + '</span></p></div></div>';
+                    document.body.innerHTML = '<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4"><div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-amber-600 shadow-2xl max-w-md"><h1 class="text-3xl text-amber-500 font-serif font-black mb-4 uppercase tracking-widest">Navigation</h1><p class="text-gray-300 text-sm mb-6">' + message + '</p><p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please manually open <span class="text-amber-500 font-mono text-xs ml-1">' + url + '</span></p></div></div>';
                 } else {
                     window.location.href = url;
                 }
@@ -1508,42 +1470,28 @@
             }
         };
 
-        window.logout = () => { localStorage.removeItem('aeonfall_user'); window.safeRedirect('player.html'); };
+        window.logout = () => { 
+            localStorage.removeItem('aeonfall_user'); 
+            localStorage.removeItem('aeonfall_role_pref');
+            localStorage.removeItem('aeonfall_active_campaign');
+            localStorage.removeItem('aeonfall_active_campaign_name');
+            window.safeRedirect('index.html', "You have been successfully logged out."); 
+        };
 
         window.exitCampaign = () => {
             activeCampaignId = null;
             activeRole = 'player';
-            window.navigateTo('campaign-screen');
+            localStorage.removeItem('aeonfall_active_campaign');
+            localStorage.removeItem('aeonfall_active_campaign_name');
+            window.safeRedirect('index.html', "Returning to campaign selection.");
         };
 
-        window.createNewCampaign = async () => {
-            const nameInput = document.getElementById('new-campaign-name');
-            const name = nameInput.value.trim();
-            if (!name) return window.showToast("Campaign name required.");
-            
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'campaigns'), {
-                    name: name,
-                    createdAt: Date.now(),
-                    creator: currentUser.username
-                });
-                nameInput.value = '';
-                document.getElementById('new-campaign-modal').classList.add('hidden');
-                window.showToast("Campaign Established!");
-            } catch(e) {
-                console.error(e);
-                window.showToast("Failed to create campaign.");
-            }
-        };
-
-        window.enterCampaign = (campId, campName) => {
-            activeCampaignId = campId;
-            activeRole = 'player'; // Reset role on entry
-            document.getElementById('active-campaign-badge').textContent = campName;
-            document.getElementById('active-campaign-badge').classList.remove('hidden');
-            window.navigateTo('dashboard-screen');
-            filterDataAndRender();
-        };
+        async function hashPassword(str) {
+            const msgBuffer = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
 
         const filterDataAndRender = () => {
             if (!activeCampaignId) return;
@@ -3186,15 +3134,25 @@
 
         const initAuth = async () => {
             const savedUser = localStorage.getItem('aeonfall_user');
-            if (!savedUser) {
-                window.safeRedirect('player.html');
+            const savedCampaign = localStorage.getItem('aeonfall_active_campaign');
+            const savedCampaignName = localStorage.getItem('aeonfall_active_campaign_name');
+
+            if (!savedUser || !savedCampaign) {
+                window.safeRedirect('index.html', "Your session has expired or no campaign is selected. Please log in again.");
                 return;
             }
             try {
                 currentUser = JSON.parse(savedUser);
+                activeCampaignId = savedCampaign;
                 document.getElementById('user-display-name').textContent = currentUser.username;
-                document.getElementById('campaign-user-display').textContent = `(${currentUser.username})`;
-                window.navigateTo('campaign-screen');
+                
+                const badge = document.getElementById('active-campaign-badge');
+                if (badge) {
+                    badge.textContent = savedCampaignName;
+                    badge.classList.remove('hidden');
+                }
+                
+                window.navigateTo('dashboard-screen');
                 
                 await signInAnonymously(auth); 
                 onAuthStateChanged(auth, (u) => { 
@@ -3206,7 +3164,7 @@
             } catch (err) {
                 console.error(err);
                 localStorage.removeItem('aeonfall_user');
-                window.safeRedirect('player.html');
+                window.safeRedirect('index.html', "Your session has expired. Please log in again.");
             }
         };
 
