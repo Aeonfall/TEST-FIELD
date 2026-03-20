@@ -112,10 +112,22 @@
         </div>
     </div>
 
+    <!-- PERMANENT DELETE CAMPAIGN MODAL -->
+    <div id="campaign-perm-delete-modal" class="modal-overlay hidden z-[950]">
+        <div class="modal-container bg-[#1a1f29] border border-red-600 shadow-2xl text-center">
+            <h2 class="font-serif text-2xl font-black text-red-500 uppercase tracking-widest border-b border-red-900/50 pb-4 mb-6">Permanently Delete?</h2>
+            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This action is <strong class="text-red-500">irreversible</strong>. The campaign will be permanently destroyed.</p>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="window.closeCampaignPermDeleteModal()" class="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors shadow-lg border border-gray-700">Cancel</button>
+                <button onclick="window.confirmPermDeleteCampaign()" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, Obliterate</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDoc, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLN0KhcnZFKZEYyR0O-Q2mZhKr-iyh7BI",
@@ -134,6 +146,7 @@
         let currentUser = null;
         let campaigns = [];
         let campaignToDelete = null;
+        let campaignToPermDelete = null;
 
         window.showToast = (m) => { 
             const t = document.getElementById('toast'); 
@@ -205,7 +218,10 @@
                             <h3 class="text-lg font-serif font-black text-red-500 mb-1">${c.name}</h3>
                             <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Created by: ${c.creator}</p>
                         </div>
-                        <button onclick="window.restoreCampaign('${c.id}')" class="bg-red-900/40 hover:bg-green-700 text-red-400 hover:text-white px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-green-500 shadow-lg">Restore</button>
+                        <div class="flex gap-2 items-center">
+                            <button onclick="window.restoreCampaign('${c.id}')" class="bg-red-900/40 hover:bg-green-700 text-red-400 hover:text-white px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-green-500 shadow-lg">Restore</button>
+                            <button onclick="window.permanentlyDeleteCampaign('${c.id}')" class="bg-red-900/40 hover:bg-red-600 text-red-400 hover:text-white px-3 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-red-500 shadow-lg" title="Permanently Delete">✕</button>
+                        </div>
                     </div>
                 `).join('');
             } else {
@@ -244,6 +260,29 @@
                 console.error(e);
                 window.showToast("Error restoring campaign.");
             }
+        };
+
+        // --- PERMANENT DELETE LOGIC ---
+        window.permanentlyDeleteCampaign = (id) => {
+            campaignToPermDelete = id;
+            document.getElementById('campaign-perm-delete-modal').classList.remove('hidden');
+        };
+
+        window.closeCampaignPermDeleteModal = () => {
+            campaignToPermDelete = null;
+            document.getElementById('campaign-perm-delete-modal').classList.add('hidden');
+        };
+
+        window.confirmPermDeleteCampaign = async () => {
+            if (!campaignToPermDelete) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', campaignToPermDelete));
+                window.showToast("Campaign Permanently Deleted.");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Error permanently deleting campaign.");
+            }
+            window.closeCampaignPermDeleteModal();
         };
 
         // --- CAMPAIGN CREATION FLOW ---
@@ -341,7 +380,7 @@
             localStorage.removeItem('aeonfall_role_pref');
             localStorage.removeItem('aeonfall_active_campaign');
             localStorage.removeItem('aeonfall_active_campaign_name');
-            window.safeRedirect('index.html', 'You have been successfully logged out.');
+            window.location.reload();
         };
 
         // Initialization
