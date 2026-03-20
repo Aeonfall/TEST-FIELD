@@ -11,6 +11,7 @@
         body { font-family: 'Roboto Slab', serif; background-color: #1a1a1a; color: #e2e8f0; overflow-x: hidden; }
         .dashboard-bg { background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); background-color: #121212; }
         
+        /* Dashboard Card Styling */
         .card { transition: all 0.2s; cursor: pointer; border-left-width: 4px; position: relative; border-color: #d97706; background: #1e293b; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.7); }
         
@@ -20,48 +21,54 @@
 
         .nav-link { color: #94a3b8; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 4px; }
         .nav-link.active { color: #f59e0b; border-bottom-color: #f59e0b; }
-        .nav-link:hover { color: #f59e0b; }
         .nav-encounters { color: #a855f7 !important; }
 
         .user-pill { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 4px 16px; border-radius: 99px; display: flex; align-items: center; gap: 10px; }
         .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
 
-        /* SHEET STYLING - BEIGE THEME */
+        /* SHEET STYLING - BEIGE THEME (MATCHING IMAGE 2) */
         #sheet-container { background-color: #e8e0cd; min-height: 100vh; padding-bottom: 120px; color: #333; }
-        .sheet-card { background-color: #fff; border: 1px solid #dcd3c0; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden; }
+        .sheet-card { background-color: #fff; border: 1px solid #dcd3c0; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 16px; margin-bottom: 16px; position: relative; }
         .sheet-card h3 { font-family: 'Cinzel', serif; font-weight: 700; text-align: center; font-size: 0.85rem; color: #222; border-bottom: 2px solid #e8e0cd; padding-bottom: 4px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-        /* VITALS SYSTEM */
+        /* VITAL SHAPES */
         .vital-container { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; background-size: 100% 100%; position: relative; transition: transform 0.2s; margin-top: 15px; }
         .vital-shield { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z' fill='%23e0f2fe' stroke='%230369a1' stroke-width='4'/%3E%3C/svg%3E"); }
         .vital-square-init { border: 3px solid #b45309; border-radius: 12px; background-color: #fef3c7; }
         .vital-square-speed { border: 3px solid #15803d; border-radius: 12px; background-color: #dcfce7; }
-        .vital-label { font-size: 10px; font-weight: 900; text-transform: uppercase; position: absolute; top: -16px; left: 0; right: 0; text-align: center; color: #4b5563; pointer-events: none; }
-        .vital-input { width: 90%; text-align: center; font-size: 20px; font-weight: 900; background: transparent; border: none !important; color: #1a1a1a; z-index: 5; margin: 0 !important; padding: 0 !important; }
+        .vital-label { font-size: 9px; font-weight: 900; text-transform: uppercase; position: absolute; top: -16px; left: 0; right: 0; text-align: center; color: #4b5563; pointer-events: none; }
+        .vital-input { width: 90%; text-align: center; font-size: 18px; font-weight: 900; background: transparent; border: none !important; color: #1a1a1a; z-index: 5; }
+
+        /* LISTS */
+        .stat-row { display: flex; align-items: center; gap: 8px; padding: 4px 10px; border-bottom: 1px solid #eee; }
+        .stat-row:last-child { border-bottom: none; }
+        .prof-checkbox { appearance: none; width: 10px; height: 10px; border: 1.5px dashed #94a3b8; border-radius: 50%; cursor: pointer; }
+        .prof-checkbox:checked { background-color: #1e293b; border-style: solid; }
+        .mod-box { width: 40px; height: 24px; border: 1.5px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; background: #fff; cursor: pointer; }
 
         /* TABS */
-        .tab-btn { padding: 12px 16px; font-size: 11px; font-weight: 900; text-transform: uppercase; color: #666; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
+        .tab-btn { padding: 12px 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; color: #666; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
         .tab-btn.active { color: #8b0000; border-bottom-color: #8b0000; background: #fffcfc; }
-
-        .stat-row { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-bottom: 1px solid #eee; transition: background 0.1s; }
-        .stat-mod-box { width: 44px; height: 24px; border: 1.5px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #1e293b; background: #fff; cursor: pointer; transition: all 0.1s; }
+        .beyond-header { color: #8b0000; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 900; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 16px; margin-top: 24px; }
         
-        .hidden-view { display: none !important; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
-        .modal-container { background: white; border-radius: 12px; width: 100%; max-width: 500px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; color: #333; }
-        .dm-auth-container { background: #1e232b !important; border: 2px solid #c2782c !important; border-radius: 30px !important; }
-        .dm-auth-input { background: #13171c !important; border-radius: 12px !important; padding: 16px !important; color: #ffffff !important; text-align: center !important; }
-        .dm-auth-enter-btn { background: #c2782c !important; color: white !important; font-family: 'Cinzel', serif; font-weight: 900; padding: 16px !important; border-radius: 18px !important; width: 100% !important; text-transform: uppercase !important; }
-        
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
         .tiny-label { font-size: 9px; text-transform: uppercase; color: #888; font-weight: 900; display: block; border-top: 1px solid #ddd; margin-top: 2px; }
-        
         input { background: transparent; border: none; font-size: 13px; color: #333; }
         input:focus { outline: none; }
+        .hidden-view { display: none !important; }
 
-        .ds-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; transition: background 0.2s; display: inline-block; }
+        /* DEATH SAVES */
+        .ds-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; display: inline-block; transition: all 0.2s; }
         .ds-dot.checked-succ { background: #16a34a !important; border-color: #166534 !important; }
         .ds-dot.checked-fail { background: #dc2626 !important; border-color: #991b1b !important; }
+
+        /* MOVE SYSTEM */
+        .lvl-card { background: #fff; border: 1px solid #dcd3c0; border-radius: 8px; padding: 12px; min-height: 120px; display: flex; flex-direction: column; }
+        .lvl-header { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 900; border-bottom: 2px solid #e8e0cd; margin-bottom: 8px; padding-bottom: 4px; }
+        
+        .dm-auth-container { background: #1e232b !important; border: 2px solid #c2782c !important; border-radius: 30px !important; }
+        .dm-auth-input { background: #13171c !important; border-radius: 12px !important; padding: 16px !important; color: #ffffff !important; text-align: center !important; border: 1px solid #2d343e !important; }
+        .dm-auth-enter-btn { background: #c2782c !important; color: white !important; font-family: 'Cinzel', serif; font-weight: 900; padding: 16px !important; border-radius: 18px !important; text-transform: uppercase !important; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
     </style>
 </head>
 <body class="min-h-screen dashboard-bg">
@@ -129,139 +136,154 @@
             </nav>
 
             <div class="max-w-7xl mx-auto p-4 md:p-8">
-                <!-- DM WHISPER BOX -->
-                <div id="dm-oversight-panel" class="bg-purple-900/10 border-2 border-purple-500/30 p-4 rounded-xl mb-6 hidden-view text-center">
-                   <div class="flex gap-4 items-center">
-                        <input type="text" id="dm-whisper-input" class="flex-grow bg-black/20 p-2 rounded text-white" placeholder="Secret DM note...">
-                        <button onclick="window.sendDmWhisper()" class="bg-purple-600 text-white px-4 py-2 rounded font-black text-xs">SEND</button>
-                   </div>
-                </div>
-
-                <!-- NEW CHARACTER SHEET LAYOUT (MATCHING IMAGE 2) -->
-                <div id="pc-sheet-layout">
-                    <!-- HEADER -->
-                    <header class="sheet-card mb-6">
-                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-                            <div class="md:col-span-4">
-                                <input type="text" id="pc-name-field" data-key="name" class="text-4xl font-serif font-black w-full" placeholder="NAME">
-                                <label class="tiny-label">Character Name</label>
-                            </div>
-                            <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div><input type="text" data-key="class" class="w-full border-b border-gray-300" placeholder="Fighter"><label class="tiny-label">Class</label></div>
-                                <div><input type="number" data-key="level" class="w-full border-b border-gray-300" placeholder="1"><label class="tiny-label">Level</label></div>
-                                <div><select id="party-select" data-key="partyId" class="w-full border-b border-gray-300 bg-transparent"><option value="">Unassigned</option></select><label class="tiny-label">Party</label></div>
-                                <div><input type="text" data-key="race" class="w-full border-b border-gray-300" placeholder="Human"><label class="tiny-label">Race</label></div>
-                                <div><input type="text" data-key="archetype" class="w-full border-b border-gray-300" placeholder="Survivor"><label class="tiny-label">Archetype</label></div>
-                                <div><input type="text" data-key="belief" class="w-full border-b border-gray-300" placeholder="Belief"><label class="tiny-label">Belief</label></div>
-                            </div>
+                <!-- TOP HEADER -->
+                <header class="sheet-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                        <div class="md:col-span-4">
+                            <input type="text" data-key="name" class="text-4xl font-serif font-black w-full" placeholder="NAME">
+                            <label class="tiny-label">Character Name</label>
                         </div>
-                    </header>
+                        <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div><input type="text" data-key="class" class="w-full border-b border-gray-300" placeholder="Class"><label class="tiny-label">Class</label></div>
+                            <div><input type="number" data-key="level" class="w-full border-b border-gray-300" placeholder="1" onchange="window.updateLevelDeps(this.value)"><label class="tiny-label">Level</label></div>
+                            <div><select id="party-select" data-key="partyId" class="w-full border-b border-gray-300 bg-transparent cursor-pointer"><option value="">Unassigned</option></select><label class="tiny-label">Party</label></div>
+                            <div><input type="text" data-key="race" class="w-full border-b border-gray-300" placeholder="Race"><label class="tiny-label">Race</label></div>
+                            <div><input type="text" data-key="archetype" class="w-full border-b border-gray-300" placeholder="Survivor"><label class="tiny-label">Archetype</label></div>
+                            <div><input type="text" data-key="belief" class="w-full border-b border-gray-300" placeholder="Belief"><label class="tiny-label">Belief</label></div>
+                        </div>
+                    </div>
+                </header>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        <!-- LEFT COLUMN: STATS, SAVES, SKILLS -->
-                        <div class="lg:col-span-3 space-y-6">
-                            <div class="sheet-card">
-                                <h3 class="flex justify-between items-center px-2">Abilities <button class="text-[8px] bg-blue-100 px-1 rounded text-blue-700">GEN</button></h3>
-                                <div id="stats-container" class="space-y-4"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- COLUMN 1: ABILITIES / SAVES / SKILLS -->
+                    <div class="lg:col-span-3 space-y-6">
+                        <div class="sheet-card">
+                            <h3 class="flex justify-between items-center px-2">Abilities & Modifiers <button onclick="window.openScoreGenModal()" class="text-[8px] bg-blue-100 px-1 rounded text-blue-700 font-black">GEN</button></h3>
+                            <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                                <div><input type="number" data-key="profBonus" class="text-xl font-black text-center w-full" value="2" oninput="window.calcMods()"><label class="tiny-label">Proficiency</label></div>
+                                <div><input type="number" data-key="passivePerception" class="text-xl font-black text-center w-full" value="10" readonly><label class="tiny-label">Pass. Perception</label></div>
                             </div>
-                            <div class="sheet-card">
-                                <h3>Saves</h3>
-                                <div id="saves-container" class="space-y-1"></div>
-                            </div>
-                            <div class="sheet-card">
-                                <h3>Skills</h3>
-                                <div id="skills-container" class="space-y-1 max-h-[500px] overflow-y-auto"></div>
-                            </div>
+                            <div id="stats-container" class="space-y-3"></div>
+                        </div>
+                        <div class="sheet-card">
+                            <h3>Saves</h3>
+                            <div id="saves-container" class="space-y-0.5"></div>
+                        </div>
+                        <div class="sheet-card">
+                            <h3>Skills</h3>
+                            <div id="skills-container" class="space-y-0.5 max-h-[500px] overflow-y-auto"></div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 2: VITALS / HP / DEATH / STRESS -->
+                    <div class="lg:col-span-3 space-y-6">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="vital-container vital-square-init"><div class="vital-label">Inspiration</div><input type="text" data-key="heroicInspiration" class="vital-input" placeholder="0"></div>
+                            <div class="vital-container vital-shield"><div class="vital-label">AC</div><input type="text" data-key="ac" class="vital-input" placeholder="10"></div>
+                            <div class="vital-container vital-square-init"><div class="vital-label">Init</div><input type="text" data-key="init" class="vital-input" placeholder="0"></div>
                         </div>
 
-                        <!-- MIDDLE-LEFT COLUMN: VITALS, HP, DEATH -->
-                        <div class="lg:col-span-3 space-y-6">
-                            <div class="grid grid-cols-3 gap-2">
-                                <div class="vital-container vital-square-init"><div class="vital-label">Inspiration</div><input type="text" data-key="heroicInspiration" class="vital-input" placeholder="0"></div>
-                                <div class="vital-container vital-shield"><div class="vital-label">AC</div><input type="text" data-key="ac" class="vital-input" placeholder="10"></div>
-                                <div class="vital-container vital-square-init"><div class="vital-label">Init</div><input type="text" data-key="init" class="vital-input" placeholder="0"></div>
-                            </div>
-
-                            <div class="sheet-card text-center py-8">
-                                <div class="flex justify-between px-4 mb-2 text-[10px] font-black text-gray-400"><span>MAX: <input type="number" data-key="hpMax" class="w-8"></span><span>HD: <input type="text" data-key="hd" class="w-8"></span></div>
-                                <input type="number" data-key="hpCurrent" class="text-7xl font-black text-center w-full" placeholder="10">
-                                <label class="tiny-label mt-2">Health Points</label>
-                                <input type="number" data-key="tempHp" class="text-xl font-bold text-center w-full border-b mt-4" placeholder="0">
-                                <label class="tiny-label">Temp HP</label>
-                                <div class="flex gap-2 justify-center mt-6">
-                                    <button class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-[10px] font-black uppercase">Short Rest</button>
-                                    <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-[10px] font-black uppercase">Long Rest</button>
-                                </div>
-                            </div>
-
-                            <div class="sheet-card text-center">
-                                <h3>Death & Coma</h3>
-                                <button class="w-full bg-red-600 text-white py-3 rounded-xl font-black uppercase text-[10px] mb-4">Roll Death Save</button>
-                                <div class="text-[10px] font-black uppercase text-gray-400 mb-2">Death Saves</div>
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="flex gap-2">
-                                        <div class="ds-dot"></div><div class="ds-dot"></div><div class="ds-dot"></div>
-                                    </div>
-                                    <div class="flex gap-2 mt-1">
-                                        <div class="ds-dot border-red-200"></div><div class="ds-dot border-red-200"></div><div class="ds-dot border-red-200"></div>
-                                    </div>
-                                </div>
-                                <div class="mt-4 flex items-center justify-center gap-2">
-                                    <input type="checkbox" data-key="comaActive" class="w-4 h-4">
-                                    <span class="text-[10px] font-black uppercase">Active Coma</span>
-                                </div>
+                        <div class="sheet-card text-center py-8">
+                            <div class="flex justify-between px-4 mb-2 text-[10px] font-black text-gray-400"><span>MAX HP: <input type="number" data-key="hpMax" class="w-8"></span><span>HD: <input type="text" data-key="hd" class="w-10 text-right"></span></div>
+                            <input type="number" data-key="hpCurrent" class="text-7xl font-black text-center w-full" placeholder="10">
+                            <label class="tiny-label mt-4 text-[10px] font-black">Health Points</label>
+                            <input type="number" data-key="tempHp" class="text-xl font-bold text-center w-full border-b mt-4" placeholder="0">
+                            <label class="tiny-label">Temporary Hit Points</label>
+                            <div class="flex gap-2 justify-center mt-6">
+                                <button onclick="window.rest('short')" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-[10px] font-black uppercase">Short Rest</button>
+                                <button onclick="window.rest('long')" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-[10px] font-black uppercase">Long Rest</button>
                             </div>
                         </div>
 
-                        <!-- RIGHT COLUMN: MEDIA, HISTORY, TABS -->
-                        <div class="lg:col-span-6 space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="flex flex-col gap-2">
-                                    <div class="sheet-card h-48 flex items-center justify-center bg-gray-100 border-dashed border-2">
-                                        <div id="portrait-display" class="text-4xl opacity-30">👤</div>
-                                    </div>
-                                    <input type="text" data-key="imageSrc" class="text-[10px] w-full border-b py-1" placeholder="Image URL...">
+                        <div class="sheet-card text-center">
+                            <h3>Death & Coma</h3>
+                            <button onclick="window.rollDeathSave()" class="w-full bg-red-600 text-white py-3 rounded-xl font-black uppercase text-[10px] mb-4 shadow-lg active:scale-95 transition-transform">Roll Death Save</button>
+                            <div class="text-[10px] font-black uppercase text-gray-400 mb-2">Death Saves</div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="flex gap-2">
+                                    <div id="ds-succ-1" class="ds-dot" onclick="window.toggleDS('succ', 1)"></div><div id="ds-succ-2" class="ds-dot" onclick="window.toggleDS('succ', 2)"></div><div id="ds-succ-3" class="ds-dot" onclick="window.toggleDS('succ', 3)"></div>
                                 </div>
-                                <div class="sheet-card h-48">
-                                    <h3>Roll History</h3>
-                                    <div id="dice-log" class="text-[9px] font-mono space-y-1"></div>
+                                <div class="flex gap-2 mt-1">
+                                    <div id="ds-fail-1" class="ds-dot border-red-200" onclick="window.toggleDS('fail', 1)"></div><div id="ds-fail-2" class="ds-dot border-red-200" onclick="window.toggleDS('fail', 2)"></div><div id="ds-fail-3" class="ds-dot border-red-200" onclick="window.toggleDS('fail', 3)"></div>
                                 </div>
                             </div>
+                            <div class="mt-4 pt-4 border-t flex items-center justify-center gap-2">
+                                <input type="checkbox" data-key="comaActive" class="w-4 h-4 cursor-pointer">
+                                <span class="text-[10px] font-black uppercase text-amber-600">Active Coma</span>
+                            </div>
+                        </div>
 
-                            <div class="sheet-card !p-0">
-                                <div class="flex border-b">
-                                    <button onclick="window.switchTab('actions')" class="tab-btn active" id="t-actions">Actions</button>
-                                    <button onclick="window.switchTab('inventory')" class="tab-btn" id="t-inv">Inventory</button>
-                                    <button onclick="window.switchTab('features')" class="tab-btn" id="t-features">Features</button>
-                                    <button onclick="window.switchTab('background')" class="tab-btn" id="t-bg">Background</button>
+                        <div class="sheet-card">
+                            <h3>Stress & Trauma</h3>
+                            <div class="flex justify-around items-center mb-4">
+                                <div class="text-center"><input type="number" data-key="currentStress" class="text-2xl font-black text-center w-16" value="0"><label class="tiny-label">Current Stress</label></div>
+                                <div class="text-3xl text-gray-200 font-light">/</div>
+                                <div class="text-center"><input type="number" data-key="stressThreshold" class="text-2xl font-black text-center w-16" value="10"><label class="tiny-label">Threshold</label></div>
+                            </div>
+                            <textarea data-key="trauma" class="text-xs italic font-serif h-12 w-full border-none focus:ring-0 resize-none" placeholder="Scars and traumas..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 3: WHISPERS / MEDIA / TABS -->
+                    <div class="lg:col-span-6 space-y-6">
+                        <div id="whisper-display-box" class="bg-purple-50 border-2 border-purple-200 p-4 rounded-xl hidden-view">
+                            <h3 class="!text-purple-700 !border-none !mb-2 !text-left text-[10px]">DM Secret Whispers</h3>
+                            <div id="whispers-list" class="space-y-2 max-h-32 overflow-y-auto pr-2"></div>
+                            <div class="flex gap-2 mt-4 dm-panel-only">
+                                <input type="text" id="dm-whisper-input" class="flex-grow bg-white/50 p-2 rounded text-sm" placeholder="Whisper to player...">
+                                <button onclick="window.sendDmWhisper()" class="bg-purple-600 text-white px-4 py-2 rounded text-xs font-black">SEND</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-2">
+                                <div class="sheet-card h-48 flex items-center justify-center bg-gray-50 border-dashed border-2 overflow-hidden">
+                                    <div id="portrait-media-display" class="w-full h-full"></div>
                                 </div>
-                                <div class="p-6 min-h-[400px]">
-                                    <div id="pane-actions" class="tab-pane">
-                                        <h4 class="text-red-800 font-serif font-black uppercase text-sm mb-4">Attacks & Spellcasting</h4>
-                                        <div id="attacks-list" class="space-y-2"></div>
-                                        <button class="w-full border-dashed border-2 p-2 mt-4 text-[9px] font-black">+ ADD WEAPON</button>
-                                    </div>
-                                    <div id="pane-inventory" class="tab-pane hidden">Inventory content...</div>
-                                    <div id="pane-features" class="tab-pane hidden">Features content...</div>
-                                    <div id="pane-background" class="tab-pane hidden">Background content...</div>
+                                <input type="text" data-key="imageSrc" class="text-[10px] w-full border-b py-1" placeholder="Portrait Media URL (Img/Gif/Mp4)..." onchange="window.saveCurrentCharacter()">
+                            </div>
+                            <div class="sheet-card h-48 flex flex-col">
+                                <h3>Roll History</h3>
+                                <div id="dice-log" class="flex-grow overflow-y-auto text-[10px] font-mono p-2 space-y-1 bg-gray-50 rounded"></div>
+                            </div>
+                        </div>
+
+                        <div class="sheet-card !p-0">
+                            <div class="flex border-b overflow-x-auto scrollbar-hide">
+                                <button onclick="window.switchTab('actions')" class="tab-btn active" id="t-actions">Actions</button>
+                                <button onclick="window.switchTab('inventory')" class="tab-btn" id="t-inv">Inventory</button>
+                                <button onclick="window.switchTab('features')" class="tab-btn" id="t-features">Features</button>
+                                <button onclick="window.switchTab('background')" class="tab-btn" id="t-bg">Background</button>
+                            </div>
+                            <div class="p-6 min-h-[400px]">
+                                <div id="pane-actions" class="tab-pane">
+                                    <h4 class="text-red-800 font-serif font-black uppercase text-sm mb-4 border-b pb-1">Attacks & Spellcasting</h4>
+                                    <div id="attacks-list" class="space-y-2"></div>
+                                    <button onclick="window.addAttackItem()" class="w-full border-dashed border-2 p-2 mt-4 text-[9px] font-black text-gray-400 hover:border-amber-500 hover:text-amber-500 transition-colors">+ ADD WEAPON</button>
+                                </div>
+                                <div id="pane-inventory" class="tab-pane hidden">
+                                    <textarea data-key="inventory" class="w-full h-64 border-none focus:ring-0 text-sm" placeholder="List your gear..."></textarea>
+                                </div>
+                                <div id="pane-features" class="tab-pane hidden">
+                                    <textarea data-key="traits" class="w-full h-64 border-none focus:ring-0 text-sm" placeholder="Features and traits..."></textarea>
+                                </div>
+                                <div id="pane-background" class="tab-pane hidden">
+                                    <input type="text" data-key="backgroundTitle" class="text-lg font-bold w-full mb-2" placeholder="Background Title">
+                                    <textarea data-key="backgroundDesc" class="w-full h-48 border-none focus:ring-0 text-sm" placeholder="Background details..."></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- BOTTOM: CHARACTER MOVES GRID -->
-                    <div class="mt-8">
-                        <div class="sheet-card">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="font-serif font-black text-xl uppercase tracking-wider">Character Moves</h2>
-                                <select class="bg-blue-600 text-white text-[10px] p-2 rounded font-black"><option>FEATURE MOVES</option></select>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div class="border rounded p-4"><h5 class="text-[10px] font-black border-b mb-2">LEVEL 1</h5><button class="w-full text-blue-500 font-black text-[9px]">+ ADD</button></div>
-                                <div class="border rounded p-4"><h5 class="text-[10px] font-black border-b mb-2">LEVEL 2</h5><button class="w-full text-blue-500 font-black text-[9px]">+ ADD</button></div>
-                                <div class="border rounded p-4"><h5 class="text-[10px] font-black border-b mb-2">LEVEL 3</h5><button class="w-full text-blue-500 font-black text-[9px]">+ ADD</button></div>
-                            </div>
+                <!-- MOVES SECTION -->
+                <div class="mt-8">
+                    <div class="sheet-card">
+                        <div class="flex justify-between items-center mb-6 border-b pb-2">
+                            <h2 class="font-serif font-black text-xl uppercase tracking-wider">Character Moves</h2>
+                            <select id="moves-selector" class="bg-blue-600 text-white text-[10px] px-3 py-1.5 rounded font-black cursor-pointer border-none" onchange="window.renderMovesGrid()"><option value="features">FEATURE MOVES</option><option value="scriptcasting">SCRIPTCASTING</option></select>
                         </div>
+                        <div id="features-lvl-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
                     </div>
                 </div>
             </div>
@@ -272,7 +294,6 @@
     <div id="dm-setup-modal" class="modal-overlay hidden z-[900]">
         <div class="modal-container dm-auth-container max-w-sm">
             <h2 class="text-amber-500 font-serif font-black text-center text-2xl mb-4 tracking-widest uppercase">Claim DM</h2>
-            <p class="text-gray-400 text-[10px] text-center mb-6 uppercase tracking-widest font-bold">This campaign has no DM. Verify with your Master Password.</p>
             <div class="space-y-4">
                 <input type="password" id="dm-claim-password" class="w-full dm-auth-input" placeholder="••••••••">
                 <button onclick="window.claimDmRole()" class="dm-auth-enter-btn w-full">Verify & Claim</button>
@@ -284,7 +305,6 @@
     <div id="dm-login-modal" class="modal-overlay hidden z-[900]">
         <div class="modal-container dm-auth-container max-w-sm">
             <h2 class="text-amber-500 font-serif font-black text-center text-2xl mb-4 tracking-widest uppercase">DM Auth</h2>
-            <p class="text-gray-400 text-[10px] text-center mb-6 uppercase tracking-widest font-bold">Please verify your Master Identity.</p>
             <div class="space-y-4">
                 <input type="password" id="dm-login-password" class="w-full dm-auth-input" placeholder="••••••••">
                 <button onclick="window.verifyDmPassword()" class="dm-auth-enter-btn w-full">Enter Suite</button>
@@ -300,6 +320,22 @@
             <div class="flex gap-4 mt-6">
                 <button onclick="document.getElementById('party-modal').classList.add('hidden')" class="flex-1 py-3 text-gray-400 font-black uppercase text-xs">Cancel</button>
                 <button onclick="window.createParty()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-black uppercase text-xs shadow-lg">Form Party</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-modal" class="modal-overlay hidden">
+        <div class="modal-container text-center">
+            <h2 class="text-xl font-serif font-black mb-4">Manage Character</h2>
+            <div id="delete-stage-1" class="space-y-3">
+                <button id="restore-btn" onclick="window.restoreCharacter()" class="hidden w-full py-4 bg-green-100 text-green-700 rounded-xl font-black uppercase text-xs">Recover Hero</button>
+                <button id="archive-btn" onclick="window.archiveCharacter()" class="w-full py-4 bg-amber-100 text-amber-700 rounded-xl font-black uppercase text-xs">Archive Hero</button>
+                <button onclick="window.showPermDeleteConfirm()" class="w-full py-4 bg-red-100 text-red-700 rounded-xl font-black uppercase text-xs">Delete Forever</button>
+            </div>
+            <div id="delete-stage-confirm" class="hidden space-y-4">
+                <p class="text-red-600 font-bold">WARNING: IRREVERSIBLE ACTION</p>
+                <button onclick="window.executePermDelete()" class="w-full py-4 bg-red-600 text-white rounded-xl font-black uppercase">Yes, Delete</button>
+                <button onclick="window.resetDeleteModal()" class="w-full py-2 text-gray-400 font-bold uppercase">Cancel</button>
             </div>
         </div>
     </div>
@@ -323,8 +359,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentUser = { username: "Guest", id: "preview-id" }, activeCampaignId = "preview-campaign", activeRole = 'player';
-        let campaigns = [], allCharacters = [], allParties = [], activeCharId = null;
+        let currentUser = { username: "Guest", id: "preview-id" }, activeCampaignId = null, activeRole = 'player';
+        let allCharacters = [], allParties = [], campaigns = [], activeCharId = null;
         let autoSaveTimer = null;
 
         const STATS = ['str','dex','con','int','wis','cha'];
@@ -342,14 +378,12 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        window.safeRedirect = (url, message) => console.warn("Nav bypass:", url);
-        window.logout = () => { localStorage.clear(); window.location.reload(); };
-        window.exitCampaign = () => { localStorage.removeItem('aeonfall_active_campaign'); window.location.reload(); };
+        window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
 
+        // --- DM ROLE LOGIC ---
         window.setRole = async (r) => { 
             if (r === 'player') { activeRole = 'player'; window.updateRoleUI(); return; }
-            let camp = campaigns.find(c => c.id === activeCampaignId);
-            if (!camp && activeCampaignId === "preview-campaign") camp = { id: "preview-campaign", dmClaimedBy: null };
+            const camp = campaigns.find(c => c.id === activeCampaignId);
             if (!camp) return;
             if (!camp.dmClaimedBy) document.getElementById('dm-setup-modal').classList.remove('hidden'); 
             else {
@@ -361,7 +395,6 @@
         window.claimDmRole = async () => {
             const pass = document.getElementById('dm-claim-password').value;
             const hash = await hashPassword(pass);
-            if (currentUser.id === "preview-id") { activeRole = 'dm'; window.updateRoleUI(); document.getElementById('dm-setup-modal').classList.add('hidden'); return; }
             const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id));
             if (userDoc.exists() && userDoc.data().dmPasswordHash === hash) {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', activeCampaignId), { dmClaimedBy: currentUser.username });
@@ -373,7 +406,6 @@
         window.verifyDmPassword = async () => {
             const pass = document.getElementById('dm-login-password').value;
             const hash = await hashPassword(pass);
-            if (currentUser.id === "preview-id") { activeRole = 'dm'; window.updateRoleUI(); document.getElementById('dm-login-modal').classList.add('hidden'); return; }
             const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id));
             if (userDoc.exists() && userDoc.data().dmPasswordHash === hash) {
                 document.getElementById('dm-login-modal').classList.add('hidden');
@@ -387,30 +419,31 @@
             document.getElementById('role-dm-btn').classList.toggle('active', isDM);
             document.getElementById('nav-encounters').classList.toggle('hidden', !isDM);
             document.getElementById('btn-create-encounter').classList.toggle('hidden', !isDM);
-            if(document.getElementById('dm-oversight-panel')) document.getElementById('dm-oversight-panel').classList.toggle('hidden-view', !isDM);
+            document.querySelectorAll('.dm-panel-only').forEach(el => el.classList.toggle('hidden', !isDM));
             window.renderDashboard();
         };
 
+        // --- DASHBOARD LOGIC ---
         window.renderDashboard = () => {
             const cont = document.getElementById('party-view-container');
             if (!cont) return;
             cont.innerHTML = '';
-            const currentView = document.getElementById('nav-party').classList.contains('active') ? 'PC' : 'NPC';
-            const filteredChars = allCharacters.filter(c => c.campaignId === activeCampaignId && !c.isDeleted && c.type === currentView);
-            const partiesInUse = allParties.filter(p => p.campaignId === activeCampaignId);
-            partiesInUse.forEach(p => {
-                const partyChars = filteredChars.filter(c => c.partyId === p.id);
-                if (partyChars.length > 0) {
+            const type = document.getElementById('nav-encounters').classList.contains('active') ? 'NPC' : 'PC';
+            const filtered = allCharacters.filter(c => c.campaignId === activeCampaignId && !c.isDeleted && c.type === type);
+            
+            allParties.filter(p => p.campaignId === activeCampaignId).forEach(p => {
+                const pc = filtered.filter(c => c.partyId === p.id);
+                if (pc.length > 0) {
                     const section = document.createElement('div');
-                    section.innerHTML = `<h3 class="text-[10px] font-black uppercase text-gray-500 tracking-[0.2em] mb-4">${p.name}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
-                    partyChars.forEach(c => section.querySelector('div').appendChild(createCharacterCard(c)));
+                    section.innerHTML = `<h3 class="text-[10px] font-black uppercase text-gray-500 mb-4">${p.name}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
+                    pc.forEach(c => section.querySelector('div').appendChild(createCharacterCard(c)));
                     cont.appendChild(section);
                 }
             });
-            const unassigned = filteredChars.filter(c => !c.partyId);
+            const unassigned = filtered.filter(c => !c.partyId);
             if (unassigned.length > 0) {
                 const section = document.createElement('div');
-                section.innerHTML = `<h3 class="text-[10px] font-black uppercase text-gray-500 tracking-[0.2em] mb-4">Unassigned Adventurers</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
+                section.innerHTML = `<h3 class="text-[10px] font-black uppercase text-gray-500 mb-4">Unassigned Adventurers</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
                 unassigned.forEach(c => section.querySelector('div').appendChild(createCharacterCard(c)));
                 cont.appendChild(section);
             }
@@ -429,10 +462,12 @@
 
         window.setView = (v) => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const link = document.getElementById(`nav-${v}`); if(link) link.classList.add('active');
+            document.getElementById(`nav-${v}`).classList.add('active');
+            document.getElementById('view-title').textContent = v === 'party' ? 'The Party' : 'Encounters & Enemies';
             window.renderDashboard();
         };
 
+        // --- SHEET LOGIC ---
         window.openSheet = (id) => {
             activeCharId = id;
             document.getElementById('dashboard-screen').classList.add('hidden-view');
@@ -440,27 +475,37 @@
             initSheetUI(); syncSheetData();
         };
 
-        window.closeSheet = () => {
-            activeCharId = null;
-            document.getElementById('sheet-screen').classList.add('hidden-view');
-            document.getElementById('dashboard-screen').classList.remove('hidden-view');
-        };
-
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-            const btnMap = {'actions':'t-actions','inventory':'t-inv','features':'t-features','background':'t-bg'};
-            document.getElementById(btnMap[tab]).classList.add('active');
-            document.getElementById('pane-'+tab).classList.remove('hidden');
-        };
+        window.closeSheet = () => { activeCharId = null; document.getElementById('sheet-screen').classList.add('hidden-view'); document.getElementById('dashboard-screen').classList.remove('hidden-view'); };
 
         function initSheetUI() {
             const sC = document.getElementById('stats-container'), svC = document.getElementById('saves-container'), skC = document.getElementById('skills-container');
             if(!sC) return;
-            sC.innerHTML = STATS.map(s => `<div class="bg-gray-50 p-3 rounded-lg text-center border"><span class="block text-[8px] font-black uppercase text-gray-400">${s}</span><input type="number" data-key="${s}" class="text-xl font-black text-center w-full bg-transparent"></div>`).join('');
-            svC.innerHTML = STATS.map(s => `<div class="stat-row"><span class="w-8 font-black text-[9px] uppercase text-gray-400">${s}</span><span class="flex-grow text-[11px] font-bold">Save</span><div class="stat-mod-box" id="save-mod-${s}">+0</div></div>`).join('');
-            skC.innerHTML = SKILLS.map(s => `<div class="stat-row"><span class="flex-grow text-[11px] font-bold">${s}</span><div class="stat-mod-box">+0</div></div>`).join('');
+            sC.innerHTML = STATS.map(s => `<div class="bg-gray-50 p-3 rounded-lg text-center border"><span class="block text-[8px] font-black uppercase text-gray-400">${s}</span><input type="number" data-key="${s}" class="text-xl font-black text-center w-full bg-transparent" oninput="window.calcMods()"></div>`).join('');
+            svC.innerHTML = STATS.map(s => `<div class="stat-row"><input type="checkbox" data-key="save_prof_${s}" class="prof-checkbox" onchange="window.calcMods()"><span class="flex-grow text-[11px] font-bold uppercase text-gray-700">${s} Save</span><div class="mod-box" id="save-mod-${s}">+0</div></div>`).join('');
+            skC.innerHTML = SKILLS.map(s => {
+                const key = s.toLowerCase().replace(/ /g,'_');
+                return `<div class="stat-row"><input type="checkbox" data-key="prof_${key}" class="prof-checkbox" onchange="window.calcMods()"><span class="flex-grow text-[11px] font-bold text-gray-600">${s}</span><div class="mod-box" id="skill-mod-${key}">+0</div></div>`;
+            }).join('');
         }
+
+        window.calcMods = () => {
+            const prof = parseInt(document.querySelector('[data-key="profBonus"]')?.value) || 2;
+            STATS.forEach(s => {
+                const val = parseInt(document.querySelector(`[data-key="${s}"]`)?.value) || 10;
+                const mod = Math.floor((val - 10) / 2);
+                const sProf = document.querySelector(`[data-key="save_prof_${s}"]`)?.checked;
+                document.getElementById(`save-mod-${s}`).textContent = (mod + (sProf ? prof : 0) >= 0 ? '+' : '') + (mod + (sProf ? prof : 0));
+            });
+            SKILLS.forEach(s => {
+                const key = s.toLowerCase().replace(/ /g,'_');
+                const skillToStat = {'athletics':'str','acrobatics':'dex','sleight_of_hand':'dex','stealth':'dex','arcana':'int','history':'int','investigation':'int','nature':'int','belief':'int','animal_handling':'wis','insight':'wis','medicine':'wis','perception':'wis','survival':'wis','deception':'cha','intimidation':'cha','performance':'cha','persuasion':'cha'};
+                const stat = skillToStat[key] || 'wis';
+                const val = parseInt(document.querySelector(`[data-key="${stat}"]`)?.value) || 10;
+                const mod = Math.floor((val - 10) / 2);
+                const sProf = document.querySelector(`[data-key="prof_${key}"]`)?.checked;
+                document.getElementById(`skill-mod-${key}`).textContent = (mod + (sProf ? prof : 0) >= 0 ? '+' : '') + (mod + (sProf ? prof : 0));
+            });
+        };
 
         function syncSheetData() {
             const char = allCharacters.find(c => c.id === activeCharId);
@@ -469,14 +514,37 @@
             const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM';
             const canEdit = isOwner || activeRole === 'dm';
             document.querySelectorAll('#sheet-container [data-key]').forEach(el => {
-                if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.readOnly = !canEdit;
-                if(el.tagName === 'SELECT') el.disabled = !canEdit;
-                el.value = char[el.dataset.key] || "";
+                if(el.type === 'checkbox') el.checked = char[el.dataset.key] || false;
+                else el.value = char[el.dataset.key] || "";
             });
+            
+            // Sync Media
+            const pMed = document.getElementById('portrait-media-display');
+            if (pMed && char.imageSrc) {
+                const isVid = char.imageSrc.toLowerCase().includes('.mp4');
+                pMed.innerHTML = isVid ? `<video src="${char.imageSrc}" class="w-full h-full object-cover" autoplay loop muted></video>` : `<img src="${char.imageSrc}" class="w-full h-full object-cover">`;
+            } else if (pMed) {
+                pMed.innerHTML = `<div class="text-4xl opacity-10 flex items-center justify-center h-full">👤</div>`;
+            }
+
+            // Whispers
+            const whispers = char.dmWhispers || [];
+            const wl = document.getElementById('whispers-list');
+            const wBox = document.getElementById('whisper-display-box');
+            if(wl && wBox) {
+                if(whispers.length > 0 || activeRole === 'dm') {
+                    wBox.classList.remove('hidden-view');
+                    wl.innerHTML = whispers.map(w => `<div class="bg-white/50 p-2 rounded italic text-xs mb-1 border-l-2 border-purple-400">${w.text}</div>`).reverse().join('');
+                } else {
+                    wBox.classList.add('hidden-view');
+                }
+            }
+
+            window.calcMods();
+            window.renderMovesGrid();
         }
 
         window.createChar = async (type) => { 
-            if (currentUser.id === "preview-id") return window.showToast("Log in to create characters");
             try { 
                 const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), { 
                     campaignId: activeCampaignId, type, name: "New Hero", class: "", owner: currentUser.username, isDeleted: false, level: 1, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, profBonus: 2, moves: []
@@ -487,7 +555,7 @@
 
         window.createParty = async () => {
             const n = document.getElementById('party-name-input');
-            if (!n.value || currentUser.id === "preview-id") return window.showToast("Cannot Create");
+            if (!n.value) return;
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), { name: n.value, campaignId: activeCampaignId });
             document.getElementById('party-modal').classList.add('hidden');
             n.value = '';
@@ -496,11 +564,20 @@
         window.openPartyModal = () => document.getElementById('party-modal').classList.remove('hidden');
 
         window.saveCurrentCharacter = async (manual) => {
-            if(!activeCharId || currentUser.id === "preview-id") return;
+            if(!activeCharId) return;
             const data = {};
-            document.querySelectorAll('#sheet-container [data-key]').forEach(el => data[el.dataset.key] = el.value);
+            document.querySelectorAll('#sheet-container [data-key]').forEach(el => data[el.dataset.key] = (el.type === 'checkbox' ? el.checked : el.value));
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data);
             if(manual) window.showToast("Synced to Cloud");
+            const si = document.getElementById('sync-indicator');
+            if(si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); }
+        };
+
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById('t-'+(tab==='inventory'?'inv':tab==='background'?'bg':tab)).classList.add('active');
+            document.getElementById('pane-'+tab).classList.remove('hidden');
         };
 
         const initAuth = async () => {
@@ -508,8 +585,8 @@
             if (savedUser) try { currentUser = JSON.parse(savedUser); } catch(e){}
             activeCampaignId = savedCamp || "preview-campaign";
             document.getElementById('user-display-name').textContent = currentUser.username;
-            const mainTitleEl = document.getElementById('main-campaign-title'), savedName = localStorage.getItem('aeonfall_active_campaign_name');
-            if(mainTitleEl && savedName) mainTitleEl.textContent = savedName;
+            const savedName = localStorage.getItem('aeonfall_active_campaign_name');
+            if(savedName) document.getElementById('main-campaign-title').textContent = savedName;
             await signInAnonymously(auth);
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'campaigns'), snap => { campaigns = snap.docs.map(d => ({id: d.id, ...d.data()})); });
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), snap => { allParties = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); });
