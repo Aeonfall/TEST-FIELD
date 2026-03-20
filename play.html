@@ -1414,8 +1414,8 @@
                 if (!camp) return;
 
                 if (!camp.dmClaimedBy) {
-                    document.getElementById('dm-setup-password').value = '';
-                    document.getElementById('dm-setup-modal').classList.remove('hidden');
+                    document.getElementById('dm-claim-password').value = '';
+                    document.getElementById('dm-setup-modal').classList.remove('hidden'); 
                 } else {
                     if (camp.dmClaimedBy !== currentUser.username) {
                         window.showToast(`DM Role is strictly locked to: ${camp.dmClaimedBy}`);
@@ -1429,33 +1429,52 @@
         
         window.claimDmRole = async () => {
             if (!activeCampaignId) return;
-            const pass = document.getElementById('dm-setup-password').value;
-            if (pass.length < 4) return window.showToast("Password must be at least 4 characters.");
+            const pass = document.getElementById('dm-claim-password').value;
             const hash = await hashPassword(pass);
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', activeCampaignId), {
-                dmClaimedBy: currentUser.username,
-                dmPasswordHash: hash
-            });
-            document.getElementById('dm-setup-modal').classList.add('hidden');
-            activeRole = 'dm';
-            window.updateRoleUI();
-            window.showToast("DM Role Claimed for this Campaign!");
+            
+            try {
+                const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id));
+                const data = userDoc.data();
+                
+                // Check against the DM Password set in index.html, fallback to login password
+                if (data && (data.dmPasswordHash === hash || data.passwordHash === hash)) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', activeCampaignId), {
+                        dmClaimedBy: currentUser.username
+                    });
+                    document.getElementById('dm-setup-modal').classList.add('hidden');
+                    activeRole = 'dm';
+                    window.updateRoleUI();
+                    window.showToast("Campaign Claimed!");
+                } else {
+                    window.showToast("Incorrect Master DM Password");
+                }
+            } catch(e) {
+                console.error(e);
+                window.showToast("Error verifying role.");
+            }
         };
 
         window.verifyDmPassword = async () => { 
             if (!activeCampaignId) return;
             const pass = document.getElementById('dm-login-password').value;
             const hash = await hashPassword(pass);
-            const camp = campaigns.find(c => c.id === activeCampaignId);
-
-            if (camp && camp.dmPasswordHash === hash) { 
-                document.getElementById('dm-login-modal').classList.add('hidden'); 
-                activeRole = 'dm'; 
-                window.updateRoleUI(); 
-                window.showToast("DM Access Granted");
-            } else { 
-                window.showToast("Incorrect Password"); 
-            } 
+            
+            try {
+                const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id));
+                const data = userDoc.data();
+                
+                if (data && (data.dmPasswordHash === hash || data.passwordHash === hash)) { 
+                    document.getElementById('dm-login-modal').classList.add('hidden'); 
+                    activeRole = 'dm'; 
+                    window.updateRoleUI(); 
+                    window.showToast("DM Access Granted");
+                } else { 
+                    window.showToast("Incorrect Password"); 
+                } 
+            } catch (e) {
+                console.error(e);
+                window.showToast("Error verifying password.");
+            }
         };
 
         window.safeRedirect = (url, message = "You must be authenticated to view this page.") => {
@@ -3089,22 +3108,15 @@
         const setupListeners = () => {
             if (!user) return;
             
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'campaigns'), (snap) => {
-                campaigns = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                const list = document.getElementById('campaign-list');
-                if (list && !activeCampaignId) {
-                    if (campaigns.length === 0) {
-                        list.innerHTML = `<div class="col-span-full text-center py-12 bg-black/40 rounded-xl border border-gray-800"><p class="text-gray-500 font-bold uppercase tracking-widest text-xs">No active campaigns found.</p></div>`;
-                    } else {
-                        list.innerHTML = campaigns.map(c => `
-                            <div onclick="window.enterCampaign('${c.id}', '${c.name.replace(/'/g, "\\'")}')" class="bg-gray-800 p-6 rounded-xl border-l-4 border-indigo-500 hover:bg-gray-700 cursor-pointer shadow-lg transition-all group">
-                                <h3 class="text-xl font-serif font-black text-indigo-400 group-hover:text-white transition-colors mb-2">${c.name}</h3>
-                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Created by: ${c.creator}</p>
-                            </div>
-                        `).join('');
+            // Watch the active campaign to see if it gets deleted by the DM
+            if (activeCampaignId) {
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaigns', activeCampaignId), (snap) => {
+                    if (!snap.exists() || snap.data().isDeleted) {
+                        window.showToast("This campaign has been closed by the DM.");
+                        setTimeout(() => window.exitCampaign(), 1500);
                     }
-                }
-            });
+                });
+            }
 
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { 
                 allCharacters = snap.docs.map(d => ({id: d.id, ...d.data()})); 
