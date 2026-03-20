@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <!-- DELETED CAMPAIGNS SECTION (Only visible to DMs) -->
+        <!-- DELETED CAMPAIGNS SECTION -->
         <div id="deleted-campaign-container" class="mt-12 hidden-view">
             <h2 class="text-xl font-serif text-red-900/60 font-bold uppercase tracking-widest border-b border-red-900/30 pb-2 mb-6">Campaign Graveyard</h2>
             <div id="deleted-campaign-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -98,11 +98,11 @@
         </div>
     </div>
 
-    <!-- SOFT DELETE CAMPAIGN MODAL -->
+    <!-- ARCHIVE CAMPAIGN MODAL -->
     <div id="campaign-delete-modal" class="modal-overlay hidden z-[950]">
         <div class="modal-container bg-[#1a1f29] border border-red-600 shadow-2xl text-center">
             <h2 class="font-serif text-2xl font-black text-red-500 uppercase tracking-widest border-b border-red-900/50 pb-4 mb-6">Archive Campaign?</h2>
-            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This will move the campaign to your graveyard. You can restore it later if needed.</p>
+            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This will move the campaign to your graveyard. You will be able to restore it later.</p>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="window.closeCampaignDeleteModal()" class="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors shadow-lg border border-gray-700">Cancel</button>
                 <button onclick="window.confirmDeleteCampaign()" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, Archive</button>
@@ -163,13 +163,7 @@
         window.safeRedirect = (url, message = "Navigating to portal...") => {
             try {
                 if (window.location.protocol === 'blob:' || window.location.protocol === 'data:') {
-                    document.body.innerHTML = `<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4">
-                        <div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-indigo-600 shadow-2xl max-w-md">
-                            <h1 class="text-3xl text-indigo-500 font-serif font-black mb-4 uppercase tracking-widest">Portal Bridged</h1>
-                            <p class="text-gray-300 text-sm mb-6">${message}</p>
-                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please manually open <span class="text-indigo-500 font-mono text-xs ml-1">${url}</span></p>
-                        </div>
-                    </div>`;
+                    document.body.innerHTML = '<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4"><div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-indigo-600 shadow-2xl max-w-md"><h1 class="text-3xl text-indigo-500 font-serif font-black mb-4 uppercase tracking-widest">Portal Bridged</h1><p class="text-gray-300 text-sm mb-6">' + message + '</p><p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please manually open <span class="text-indigo-500 font-mono text-xs ml-1">' + url + '</span></p></div></div>';
                 } else {
                     window.location.href = url;
                 }
@@ -178,7 +172,6 @@
             }
         };
 
-        // Suppress UI if role is already chosen in the Cloud
         window.syncUserRoleAndUI = async () => {
             if (!currentUser) return;
             try {
@@ -242,7 +235,7 @@
                 `}).join('');
             }
 
-            // 2. Render Deleted Campaigns (Only for DMs)
+            // 2. Render Deleted Campaigns
             const myDeleted = deletedCampaigns.filter(c => (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username));
             
             if (isGlobalDm && myDeleted.length > 0) {
@@ -251,11 +244,11 @@
                     <div class="relative bg-gray-900/80 p-6 rounded-xl border-l-4 border-red-900 opacity-75 hover:opacity-100 transition-all flex justify-between items-center group">
                         <div>
                             <h3 class="text-lg font-serif font-black text-red-500 mb-1">${c.name}</h3>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Originally Created by: ${c.creator}</p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Created by: ${c.creator}</p>
                         </div>
                         <div class="flex gap-2 items-center">
                             <button onclick="window.restoreCampaign('${c.id}')" class="bg-red-900/40 hover:bg-green-700 text-red-400 hover:text-white px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-green-500 shadow-lg">Restore</button>
-                            <button onclick="window.permanentlyDeleteCampaign('${c.id}')" class="bg-red-900/40 hover:bg-red-600 text-red-400 hover:text-white px-3 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-red-500 shadow-lg" title="Permanently Delete">✕</button>
+                            <button onclick="window.permanentlyDeleteCampaign('${c.id}')" class="bg-red-900/40 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-red-500 shadow-lg">Perm Delete</button>
                         </div>
                     </div>
                 `).join('');
@@ -467,7 +460,6 @@
                 
                 await signInAnonymously(auth);
                 
-                // Fetch Role Preference from Cloud before anything else
                 await window.syncUserRoleAndUI();
 
                 onAuthStateChanged(auth, (u) => { 
