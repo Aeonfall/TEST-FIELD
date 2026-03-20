@@ -37,9 +37,9 @@
             </div>
         </div>
 
-        <!-- DELETED CAMPAIGNS SECTION -->
+        <!-- DELETED CAMPAIGNS SECTION (Only visible to DMs) -->
         <div id="deleted-campaign-container" class="mt-12 hidden-view">
-            <h2 class="text-xl font-serif text-red-900/60 font-bold uppercase tracking-widest border-b border-red-900/30 pb-2 mb-6">Deleted Campaigns</h2>
+            <h2 class="text-xl font-serif text-red-900/60 font-bold uppercase tracking-widest border-b border-red-900/30 pb-2 mb-6">Campaign Graveyard</h2>
             <div id="deleted-campaign-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Deleted items loaded here -->
             </div>
@@ -68,7 +68,7 @@
                 <input type="password" id="global-dm-pass-setup" class="w-full bg-black/50 border border-amber-900/50 rounded p-4 text-white font-serif focus:border-amber-500 mb-6 text-center" placeholder="Enter Master Password">
                 <div class="flex justify-between gap-4">
                     <button onclick="window.cancelDmPasswordSetup()" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors border border-gray-700 w-1/3">Back</button>
-                    <button id="dm-pass-submit-btn" onclick="window.confirmDmPreference()" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg flex-grow">Set Password</button>
+                    <button id="dm-pass-submit-btn" onclick="window.confirmDmPreference()" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg flex-grow">Submit</button>
                 </div>
             </div>
         </div>
@@ -98,14 +98,14 @@
         </div>
     </div>
 
-    <!-- DELETE CAMPAIGN MODAL -->
+    <!-- SOFT DELETE CAMPAIGN MODAL -->
     <div id="campaign-delete-modal" class="modal-overlay hidden z-[950]">
         <div class="modal-container bg-[#1a1f29] border border-red-600 shadow-2xl text-center">
-            <h2 class="font-serif text-2xl font-black text-red-500 uppercase tracking-widest border-b border-red-900/50 pb-4 mb-6">Delete Campaign?</h2>
-            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This will move the campaign to your graveyard. You will be able to restore it later.</p>
+            <h2 class="font-serif text-2xl font-black text-red-500 uppercase tracking-widest border-b border-red-900/50 pb-4 mb-6">Archive Campaign?</h2>
+            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This will move the campaign to your graveyard. You can restore it later if needed.</p>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="window.closeCampaignDeleteModal()" class="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors shadow-lg border border-gray-700">Cancel</button>
-                <button onclick="window.confirmDeleteCampaign()" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, Delete</button>
+                <button onclick="window.confirmDeleteCampaign()" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, Archive</button>
             </div>
         </div>
     </div>
@@ -114,7 +114,7 @@
     <div id="campaign-perm-delete-modal" class="modal-overlay hidden z-[950]">
         <div class="modal-container bg-[#1a1f29] border border-red-600 shadow-2xl text-center">
             <h2 class="font-serif text-2xl font-black text-red-500 uppercase tracking-widest border-b border-red-900/50 pb-4 mb-6">Permanently Delete?</h2>
-            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This action is <strong class="text-red-500">irreversible</strong>. The campaign will be permanently destroyed.</p>
+            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">This action is <strong class="text-red-500 uppercase">irreversible</strong>. The campaign and all its associations will be destroyed forever.</p>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="window.closeCampaignPermDeleteModal()" class="px-4 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black uppercase text-xs transition-colors shadow-lg border border-gray-700">Cancel</button>
                 <button onclick="window.confirmPermDeleteCampaign()" class="px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg">Yes, Obliterate</button>
@@ -163,7 +163,13 @@
         window.safeRedirect = (url, message = "Navigating to portal...") => {
             try {
                 if (window.location.protocol === 'blob:' || window.location.protocol === 'data:') {
-                    document.body.innerHTML = '<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4"><div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-indigo-600 shadow-2xl max-w-md"><h1 class="text-3xl text-indigo-500 font-serif font-black mb-4 uppercase tracking-widest">Portal Bridged</h1><p class="text-gray-300 text-sm mb-6">' + message + '</p><p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please manually open <span class="text-indigo-500 font-mono text-xs ml-1">' + url + '</span></p></div></div>';
+                    document.body.innerHTML = `<div class="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center p-4">
+                        <div class="bg-gray-800 p-8 rounded-xl text-center border-2 border-indigo-600 shadow-2xl max-w-md">
+                            <h1 class="text-3xl text-indigo-500 font-serif font-black mb-4 uppercase tracking-widest">Portal Bridged</h1>
+                            <p class="text-gray-300 text-sm mb-6">${message}</p>
+                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Please manually open <span class="text-indigo-500 font-mono text-xs ml-1">${url}</span></p>
+                        </div>
+                    </div>`;
                 } else {
                     window.location.href = url;
                 }
@@ -172,7 +178,7 @@
             }
         };
 
-        // Sync role directly from cloud to avoid repeating UI
+        // Suppress UI if role is already chosen in the Cloud
         window.syncUserRoleAndUI = async () => {
             if (!currentUser) return;
             try {
@@ -225,7 +231,7 @@
             } else {
                 list.innerHTML = activeCampaigns.map(c => {
                     const canManage = (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username);
-                    const delBtn = canManage ? `<button onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors z-10 p-2 rounded-lg bg-black/40 hover:bg-red-900/40" title="Delete Campaign">🗑️</button>` : '';
+                    const delBtn = (canManage && isGlobalDm) ? `<button onclick="event.stopPropagation(); window.deleteCampaign('${c.id}')" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors z-10 p-2 rounded-lg bg-black/40 hover:bg-red-900/40" title="Archive Campaign">🗑️</button>` : '';
 
                     return `
                     <div onclick="window.enterCampaign('${c.id}', '${c.name.replace(/'/g, "\\'")}')" class="relative bg-gray-800 p-6 rounded-xl border-l-4 border-indigo-500 hover:bg-gray-700 cursor-pointer shadow-lg transition-all group">
@@ -236,7 +242,7 @@
                 `}).join('');
             }
 
-            // 2. Render Deleted Campaigns
+            // 2. Render Deleted Campaigns (Only for DMs)
             const myDeleted = deletedCampaigns.filter(c => (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username));
             
             if (isGlobalDm && myDeleted.length > 0) {
@@ -245,7 +251,7 @@
                     <div class="relative bg-gray-900/80 p-6 rounded-xl border-l-4 border-red-900 opacity-75 hover:opacity-100 transition-all flex justify-between items-center group">
                         <div>
                             <h3 class="text-lg font-serif font-black text-red-500 mb-1">${c.name}</h3>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Created by: ${c.creator}</p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Originally Created by: ${c.creator}</p>
                         </div>
                         <div class="flex gap-2 items-center">
                             <button onclick="window.restoreCampaign('${c.id}')" class="bg-red-900/40 hover:bg-green-700 text-red-400 hover:text-white px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-red-900/50 hover:border-green-500 shadow-lg">Restore</button>
@@ -276,7 +282,7 @@
                 window.showToast("Campaign moved to Graveyard.");
             } catch(e) {
                 console.error(e);
-                window.showToast("Error deleting campaign.");
+                window.showToast("Error archiving campaign.");
             }
             window.closeCampaignDeleteModal();
         };
@@ -315,7 +321,6 @@
 
         // --- ROLE SELECTION FLOW ---
         window.startCampaignCreation = async () => {
-            // First, re-sync from cloud just to be absolutely sure
             await window.syncUserRoleAndUI();
             
             const pref = localStorage.getItem('aeonfall_role_pref');
@@ -348,7 +353,6 @@
             const inst = document.getElementById('dm-pass-instruction');
             const btn = document.getElementById('dm-pass-submit-btn');
             
-            // If user already has a hash in cloud, we are Verifying, not Setting
             if (userDocData && userDocData.dmPasswordHash) {
                 dmPassMode = 'verify';
                 inst.innerHTML = 'Enter your <strong class="text-amber-400">Master DM Password</strong> to verify your account.';
@@ -378,7 +382,6 @@
             if (dmPassMode === 'verify') {
                 if (hash === userDocData.dmPasswordHash) {
                     localStorage.setItem('aeonfall_role_pref', 'dm');
-                    // Sync cloud pref too just in case local storage was cleared
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id), {
                         rolePref: 'dm'
                     });
@@ -417,7 +420,8 @@
             const name = nameInput.value.trim();
             if (!name) return window.showToast("Campaign name required.");
             
-            const isDm = localStorage.getItem('aeonfall_role_pref') === 'dm';
+            const rolePref = localStorage.getItem('aeonfall_role_pref');
+            const isDm = rolePref === 'dm';
             
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'campaigns'), {
