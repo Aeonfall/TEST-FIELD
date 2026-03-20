@@ -125,7 +125,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLN0KhcnZFKZEYyR0O-Q2mZhKr-iyh7BI",
@@ -170,16 +170,19 @@
             }
         };
 
-        window.checkRolePreference = () => {
-            const pref = localStorage.getItem('aeonfall_role_pref');
-            const btn = document.getElementById('btn-create-campaign');
-            if (btn) {
-                // If they are a player, remove the button completely.
-                if (pref === 'player') {
-                    btn.classList.add('hidden');
-                } else {
-                    btn.classList.remove('hidden');
+        // This checks cloud profile to see if they've already chosen a role
+        window.syncUserRoleFromCloud = async () => {
+            if (!currentUser) return;
+            try {
+                const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.rolePref) {
+                        localStorage.setItem('aeonfall_role_pref', data.rolePref);
+                    }
                 }
+            } catch (e) {
+                console.error("Role sync error:", e);
             }
         };
 
@@ -199,7 +202,8 @@
 
             const activeCampaigns = campaigns.filter(c => !c.isDeleted);
             const deletedCampaigns = campaigns.filter(c => c.isDeleted);
-            const isGlobalDm = localStorage.getItem('aeonfall_role_pref') === 'dm';
+            const rolePref = localStorage.getItem('aeonfall_role_pref');
+            const isGlobalDm = rolePref === 'dm';
 
             // 1. Render Active Campaigns
             if (activeCampaigns.length === 0) {
@@ -219,7 +223,6 @@
             }
 
             // 2. Render Deleted Campaigns
-            // Only show deleted campaigns to the DM (or Creator if no DM yet)
             const myDeleted = deletedCampaigns.filter(c => (c.dmClaimedBy === currentUser.username) || (!c.dmClaimedBy && c.creator === currentUser.username));
             
             if (isGlobalDm && myDeleted.length > 0) {
@@ -306,19 +309,21 @@
                 document.getElementById('dm-pref-step-2').classList.add('hidden');
                 document.getElementById('dm-preference-modal').classList.remove('hidden');
             } else if (pref === 'player') {
-                // Fallback in case they somehow triggered it
                 document.getElementById('player-wait-modal').classList.remove('hidden');
             } else {
                 window.openNewCampaignModal();
             }
         };
 
-        window.answerDmPreference = (isDm) => {
+        window.answerDmPreference = async (isDm) => {
             if (!isDm) {
+                // Save choice to Cloud & Local
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id), {
+                    rolePref: 'player'
+                });
                 localStorage.setItem('aeonfall_role_pref', 'player');
                 document.getElementById('dm-preference-modal').classList.add('hidden');
                 document.getElementById('player-wait-modal').classList.remove('hidden');
-                window.checkRolePreference(); // Immediately hide the button
             } else {
                 window.showDmPasswordSetup();
             }
@@ -341,12 +346,13 @@
             
             const hash = await hashPassword(pass);
             try {
+                // Save Master Password and Role Preference to Cloud
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', currentUser.id), {
-                    dmPasswordHash: hash
+                    dmPasswordHash: hash,
+                    rolePref: 'dm'
                 });
                 localStorage.setItem('aeonfall_role_pref', 'dm');
                 document.getElementById('dm-preference-modal').classList.add('hidden');
-                window.checkRolePreference();
                 window.showToast("Master DM Password Set!");
                 window.openNewCampaignModal();
             } catch(e) {
@@ -409,9 +415,11 @@
                 currentUser = JSON.parse(savedUser);
                 document.getElementById('campaign-user-display').textContent = `(${currentUser.username})`;
                 
-                window.checkRolePreference();
-
                 await signInAnonymously(auth);
+                
+                // Fetch Role Preference from Cloud before rendering
+                await window.syncUserRoleFromCloud();
+
                 onAuthStateChanged(auth, (u) => { 
                     if (u) window.setupCampaignListeners();
                 });
