@@ -18,6 +18,7 @@
         .status-badge { position: absolute; top: -10px; left: 10px; font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .badge-yours { background: #15803d; color: #fff; }
         .badge-unclaimed { background: #64748b; color: #fff; }
+        .badge-dead { background: #1a1a1a; color: #fff; }
 
         .nav-link { color: #94a3b8; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 4px; }
         .nav-link.active { color: #f59e0b; border-bottom-color: #f59e0b; }
@@ -46,6 +47,8 @@
         .tab-btn.active { color: #8b0000; border-bottom-color: #8b0000; background: #fffcfc; }
         
         .tiny-label { font-size: 9px; text-transform: uppercase; color: #888; font-weight: 900; display: block; border-top: 1px solid #ddd; margin-top: 2px; }
+        .beyond-header { color: #8b0000; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 900; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 16px; margin-top: 24px; }
+        
         input { background: transparent; border: none; font-size: 13px; color: #333; }
         input:focus { outline: none; border-bottom: 1px solid #f59e0b; }
         .hidden-view { display: none !important; }
@@ -58,6 +61,18 @@
         .dm-auth-input { background: #13171c !important; border-radius: 12px !important; padding: 16px !important; color: #ffffff !important; text-align: center !important; border: 1px solid #2d343e !important; }
         .dm-auth-enter-btn { background: #c2782c !important; color: white !important; font-family: 'Cinzel', serif; font-weight: 900; padding: 16px !important; border-radius: 18px !important; text-transform: uppercase !important; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .floating-roller { position: fixed; bottom: 24px; right: 24px; z-index: 100; background: white; border-radius: 20px; border: 3px solid #1a1a1a; padding: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); width: 280px; }
+        .dice-grid-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 3px solid; border-radius: 10px; font-weight: 900; font-size: 12px; transition: all 0.1s; }
+        .dice-orange { background: #fffbeb; border-color: #d97706; color: #b45309; }
+        .dice-green { background: #f0fdf4; border-color: #16a34a; color: #166534; }
+        .dice-blue { background: #eff6ff; border-color: #2563eb; color: #1e40af; }
+        .dice-purple { background: #f5f3ff; border-color: #7c3aed; color: #5b21b6; }
+        .dice-red { background: #fef2f2; border-color: #dc2626; color: #991b1b; }
+        .dice-dark { background: #f9fafb; border-color: #374151; color: #111827; }
+        .mode-btn { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 900; border: 2px solid #cbd5e1; color: #64748b; background: #f1f5f9; transition: all 0.2s; }
+        .mode-btn.active-norm { background: #64748b !important; color: white !important; border-color: #64748b !important; }
+        .mode-btn.active-adv { background: #16a34a !important; color: white !important; border-color: #16a34a !important; }
+        .mode-btn.active-dis { background: #dc2626 !important; color: white !important; border-color: #dc2626 !important; }
     </style>
 </head>
 <body class="min-h-screen dashboard-bg">
@@ -93,7 +108,7 @@
                         <a href="#" class="nav-link">Bestiary</a>
                         <a href="#" class="nav-link">Backpack</a>
                         <a href="#" class="nav-link">Handbook</a>
-                        <a href="#" class="nav-link !text-red-900/60">Graveyard</a>
+                        <a href="#" onclick="window.setView('graveyard')" id="nav-graveyard" class="nav-link !text-red-900/60">Graveyard</a>
                     </nav>
                 </div>
             </header>
@@ -103,15 +118,37 @@
                 <div class="flex gap-3 w-full md:w-auto">
                     <button onclick="window.openPartyModal()" class="bg-[#4338ca] text-white px-6 py-3 rounded-lg text-xs font-black uppercase tracking-widest shadow-xl">New Party</button>
                     <button onclick="window.createChar('PC')" class="bg-[#15803d] text-white px-6 py-3 rounded-lg text-xs font-black uppercase tracking-widest shadow-xl">+ New PC</button>
-                    <button id="btn-create-encounter" onclick="window.createChar('NPC')" class="bg-[#7e22ce] text-white px-6 py-3 rounded-lg text-xs font-black uppercase tracking-widest shadow-xl hidden">New Encounter</button>
+                    <button id="btn-create-encounter" onclick="window.openEncounterSpawner()" class="bg-[#7e22ce] text-white px-6 py-3 rounded-lg text-xs font-black uppercase tracking-widest shadow-xl hidden">New Encounter</button>
+                </div>
+            </div>
+
+            <!-- INITIATIVE TRACKER -->
+            <div id="initiative-tracker-view" class="hidden-view mb-8">
+                <div class="bg-[#12151c] border border-gray-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-700 via-amber-500 to-purple-700"></div>
+                    <div class="flex justify-between items-end mb-6 border-b border-gray-800 pb-4">
+                        <div>
+                            <h3 class="font-serif text-3xl text-white font-black uppercase tracking-widest">Combat Tracker</h3>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Round <span id="current-round-display" class="text-amber-500">1</span></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="window.updateRound(-1)" class="bg-gray-800 text-white px-3 py-1 rounded">-</button>
+                            <button onclick="window.updateRound(1)" class="bg-gray-800 text-white px-3 py-1 rounded">+</button>
+                            <button onclick="window.openCombatSelectionModal()" class="bg-indigo-900 text-indigo-400 px-4 py-2 rounded font-black text-[10px] uppercase">Start Combat</button>
+                            <button onclick="window.advanceTurn()" class="bg-amber-600 text-white px-6 py-2 rounded font-black text-[10px] uppercase">Next Turn</button>
+                        </div>
+                    </div>
+                    <div id="init-list" class="space-y-3"></div>
                 </div>
             </div>
 
             <div id="party-view-container" class="space-y-12"></div>
+            <div id="encounters-view-container" class="space-y-12 hidden-view"></div>
+            <div id="graveyard-view-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden-view"></div>
         </div>
     </div>
 
-    <!-- 2. CHARACTER SHEET VIEW (BEIGE) -->
+    <!-- 2. CHARACTER SHEET VIEW -->
     <div id="sheet-screen" class="hidden-view">
         <div id="sheet-container">
             <nav class="sticky top-0 z-[60] bg-gray-900 p-3 shadow-2xl border-b border-gray-800">
@@ -125,18 +162,16 @@
             </nav>
 
             <div class="max-w-7xl mx-auto p-4 md:p-8">
-                <!-- DM SUITE -->
                 <div id="dm-oversight-panel" class="bg-purple-900/10 border-2 border-purple-500/30 p-4 rounded-xl mb-6 hidden-view">
                    <div class="flex gap-4 items-center">
                         <div class="flex-grow">
                             <h3 class="text-[10px] font-black uppercase text-purple-400 mb-1">DM Secret Whisper</h3>
-                            <input type="text" id="dm-whisper-input" class="w-full bg-black/20 p-2 rounded text-white text-sm" placeholder="Message only player can see...">
+                            <input type="text" id="dm-whisper-input" class="w-full bg-black/20 p-2 rounded text-white text-sm" placeholder="Whisper only player can see...">
                         </div>
-                        <button onclick="window.sendDmWhisper()" class="bg-purple-600 text-white px-6 py-2 rounded font-black text-xs h-10 mt-5">SEND</button>
+                        <button onclick="window.sendDmWhisper()" class="bg-purple-600 text-white px-6 py-2 rounded font-black text-xs h-10 mt-5 shadow-lg">SEND</button>
                    </div>
                 </div>
 
-                <!-- SHEET BODY -->
                 <div id="pc-sheet-layout">
                     <header class="sheet-card mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
@@ -147,7 +182,7 @@
                             <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4">
                                 <div><input type="text" data-key="class" class="w-full border-b border-gray-300" placeholder="Class"><label class="tiny-label">Class</label></div>
                                 <div><input type="number" data-key="level" class="w-full border-b border-gray-300" placeholder="1"><label class="tiny-label">Level</label></div>
-                                <div><select id="party-select" data-key="partyId" class="w-full border-b border-gray-300 bg-transparent"><option value="">Unassigned</option></select><label class="tiny-label">Party</label></div>
+                                <div><select id="party-select" data-key="partyId" class="w-full border-b border-gray-300 bg-transparent cursor-pointer"><option value="">Unassigned</option></select><label class="tiny-label">Party</label></div>
                                 <div><input type="text" data-key="race" class="w-full border-b border-gray-300" placeholder="Race"><label class="tiny-label">Race</label></div>
                                 <div><input type="text" data-key="archetype" class="w-full border-b border-gray-300" placeholder="Archetype"><label class="tiny-label">Archetype</label></div>
                                 <div><input type="text" data-key="belief" class="w-full border-b border-gray-300" placeholder="Belief"><label class="tiny-label">Belief</label></div>
@@ -159,15 +194,19 @@
                         <div class="lg:col-span-3 space-y-6">
                             <div class="sheet-card">
                                 <h3>Abilities</h3>
-                                <div id="stats-container" class="space-y-4"></div>
+                                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                                    <div><input type="number" data-key="profBonus" class="text-xl font-black text-center w-full" value="2" oninput="window.calcMods()"><label class="tiny-label">Proficiency</label></div>
+                                    <div><input type="number" data-key="passivePerception" class="text-xl font-black text-center w-full" value="10" readonly><label class="tiny-label">Pass. Perception</label></div>
+                                </div>
+                                <div id="stats-container" class="space-y-3 px-2"></div>
                             </div>
                             <div class="sheet-card">
                                 <h3>Saves</h3>
-                                <div id="saves-container" class="space-y-1"></div>
+                                <div id="saves-container" class="space-y-0.5 px-2"></div>
                             </div>
                             <div class="sheet-card">
                                 <h3>Skills</h3>
-                                <div id="skills-container" class="space-y-1 max-h-[500px] overflow-y-auto"></div>
+                                <div id="skills-container" class="space-y-0.5 max-h-[500px] overflow-y-auto px-2"></div>
                             </div>
                         </div>
 
@@ -237,7 +276,7 @@
         </div>
     </div>
 
-    <!-- DM AUTH MODALS -->
+    <!-- MODALS -->
     <div id="dm-setup-modal" class="modal-overlay hidden z-[900]">
         <div class="modal-container dm-auth-container max-w-sm">
             <h2 class="text-amber-500 font-serif font-black text-center text-2xl mb-4 tracking-widest uppercase">Claim DM</h2>
@@ -260,10 +299,43 @@
         </div>
     </div>
 
+    <div id="party-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <h2 class="text-2xl font-serif font-black text-indigo-700 mb-6 uppercase tracking-widest border-b pb-2 text-center">New Party</h2>
+            <input type="text" id="party-name-input" class="w-full bg-gray-100 p-4 rounded-xl text-center font-bold" placeholder="Party Name">
+            <div class="flex gap-4 mt-6">
+                <button onclick="document.getElementById('party-modal').classList.add('hidden')" class="flex-1 py-3 text-gray-400 font-black uppercase text-xs">Cancel</button>
+                <button onclick="window.createParty()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-black uppercase text-xs shadow-lg">Form Party</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROLLER BAR -->
+    <div id="quick-roll-bar" class="hidden-view floating-roller">
+        <div class="flex items-center justify-between mb-4 border-b pb-2 text-gray-800">
+            <div class="flex items-center gap-2">
+                <input type="number" id="roll-count" value="1" min="1" class="w-8 text-center font-black bg-gray-100 rounded">
+                <div class="h-4 w-px bg-gray-200 mx-1"></div>
+                <button onclick="window.setRollMode('normal')" class="mode-btn roll-mode active-norm" id="mode-norm">Norm</button>
+                <button onclick="window.setRollMode('adv')" class="mode-btn roll-mode" id="mode-adv">Adv</button>
+                <button onclick="window.setRollMode('dis')" class="mode-btn roll-mode" id="mode-dis">Dis</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+            <button onclick="window.rollDice(4)" class="dice-grid-btn dice-orange">d4</button>
+            <button onclick="window.rollDice(6)" class="dice-grid-btn dice-green">d6</button>
+            <button onclick="window.rollDice(8)" class="dice-grid-btn dice-blue">d8</button>
+            <button onclick="window.rollDice(10)" class="dice-grid-btn dice-purple">d10</button>
+            <button onclick="window.rollDice(12)" class="dice-grid-btn dice-purple">d12</button>
+            <button onclick="window.rollDice(20)" class="dice-grid-btn dice-red">d20</button>
+            <button onclick="window.rollDice(100)" class="dice-grid-btn dice-dark">d100</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, getDoc, onSnapshot, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, getDoc, onSnapshot, addDoc, query, where, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLN0KhcnZFKZEYyR0O-Q2mZhKr-iyh7BI",
@@ -281,6 +353,10 @@
 
         let currentUser = null, activeCampaignId = null, activeRole = 'player';
         let campaigns = [], allCharacters = [], allParties = [], activeCharId = null;
+        let autoSaveTimer = null, rollMode = 'normal';
+
+        const STATS = ['str','dex','con','int','wis','cha'];
+        const SKILLS = ['Acrobatics','Animal Handling','Arcana','Athletics','Deception','History','Insight','Intimidation','Investigation','Medicine','Nature','Perception','Performance','Persuasion','Belief','Sleight of Hand','Stealth','Survival'];
 
         window.showToast = (m) => { 
             const t = document.getElementById('toast'); 
@@ -353,8 +429,15 @@
             const cont = document.getElementById('party-view-container');
             if (!cont) return;
             cont.innerHTML = '';
-            const type = document.getElementById('nav-encounters').classList.contains('active') ? 'NPC' : 'PC';
-            const filtered = allCharacters.filter(c => c.campaignId === activeCampaignId && !c.isDeleted && c.type === type);
+            
+            const type = document.getElementById('nav-encounters').classList.contains('active') ? 'NPC' : (document.getElementById('nav-graveyard').classList.contains('active') ? 'GRAVEYARD' : 'PC');
+            
+            let filtered = [];
+            if (type === 'GRAVEYARD') {
+                filtered = allCharacters.filter(c => c.campaignId === activeCampaignId && c.isDeleted);
+            } else {
+                filtered = allCharacters.filter(c => c.campaignId === activeCampaignId && !c.isDeleted && c.type === type);
+            }
             
             allParties.filter(p => p.campaignId === activeCampaignId).forEach(p => {
                 const pc = filtered.filter(c => c.partyId === p.id);
@@ -377,23 +460,60 @@
         function createCharacterCard(c) {
             const isMine = currentUser && c.owner === currentUser.username;
             const div = document.createElement('div');
-            div.className = "card p-6 rounded-xl flex flex-col gap-4";
+            div.className = `card p-6 rounded-xl flex flex-col gap-4 ${c.status === 'dead' ? 'opacity-50 grayscale' : ''}`;
             div.onclick = () => window.openSheet(c.id);
-            div.innerHTML = `<div class="status-badge ${isMine?'badge-yours':'badge-unclaimed'}">${isMine?'YOURS':(c.owner?c.owner.toUpperCase():'UNCLAIMED')}</div>
+            div.innerHTML = `<div class="status-badge ${isMine?'badge-yours':(c.status==='dead'?'badge-dead':'badge-unclaimed')}">${isMine?'YOURS':(c.status==='dead'?'FALLEN':(c.owner?c.owner.toUpperCase():'UNCLAIMED'))}</div>
                 <div class="flex items-center gap-4"><div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center text-2xl text-white">👤</div>
-                <div class="flex-grow"><h4 class="text-amber-500 font-serif font-black text-lg leading-tight">${c.name}</h4><p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">${c.class||'Class'} Lvl ${c.level||1}</p></div></div>`;
+                <div class="flex-grow">
+                    <h4 class="text-amber-500 font-serif font-black text-lg leading-tight">${c.name}</h4>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">${c.class||'Hero'} Lvl ${c.level||1}</p>
+                </div></div>`;
             return div;
         }
 
         window.setView = (v) => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById(`nav-${v}`).classList.add('active');
+            document.getElementById('view-title').textContent = v === 'party' ? 'The Party' : (v==='encounters' ? 'Encounters' : 'Graveyard');
+            document.getElementById('initiative-tracker-view').classList.toggle('hidden-view', v !== 'encounters');
             window.renderDashboard();
         };
 
         // --- CHARACTER LOGIC ---
-        window.openSheet = (id) => { activeCharId = id; document.getElementById('dashboard-screen').classList.add('hidden-view'); document.getElementById('sheet-screen').classList.remove('hidden-view'); syncSheetData(); };
+        window.openSheet = (id) => { activeCharId = id; document.getElementById('dashboard-screen').classList.add('hidden-view'); document.getElementById('sheet-screen').classList.remove('hidden-view'); initSheetUI(); syncSheetData(); };
         window.closeSheet = () => { activeCharId = null; document.getElementById('sheet-screen').classList.add('hidden-view'); document.getElementById('dashboard-screen').classList.remove('hidden-view'); };
+
+        function initSheetUI() {
+            const sC = document.getElementById('stats-container'), svC = document.getElementById('saves-container'), skC = document.getElementById('skills-container');
+            if(!sC) return;
+            sC.innerHTML = STATS.map(s => `<div class="bg-gray-50 p-3 rounded-lg text-center border"><span class="block text-[8px] font-black uppercase text-gray-400">${s}</span><input type="number" data-key="${s}" class="text-xl font-black text-center w-full bg-transparent" oninput="window.calcMods()"></div>`).join('');
+            svC.innerHTML = STATS.map(s => `<div class="stat-row"><input type="checkbox" data-key="save_prof_${s}" class="prof-checkbox" onchange="window.calcMods()"><span class="flex-grow text-[11px] font-bold uppercase text-gray-700">${s} Save</span><div class="mod-box" id="save-mod-${s}">+0</div></div>`).join('');
+            skC.innerHTML = SKILLS.map(s => {
+                const key = s.toLowerCase().replace(/ /g,'_');
+                return `<div class="stat-row"><input type="checkbox" data-key="prof_${key}" class="prof-checkbox" onchange="window.calcMods()"><span class="flex-grow text-[11px] font-bold text-gray-600">${s}</span><div class="mod-box" id="skill-mod-${key}">+0</div></div>`;
+            }).join('');
+        }
+
+        window.calcMods = () => {
+            const prof = parseInt(document.querySelector('[data-key="profBonus"]')?.value) || 2;
+            STATS.forEach(s => {
+                const val = parseInt(document.querySelector(`[data-key="${s}"]`)?.value) || 10;
+                const mod = Math.floor((val - 10) / 2);
+                const sProf = document.querySelector(`[data-key="save_prof_${s}"]`)?.checked;
+                const el = document.getElementById(`save-mod-${s}`);
+                if (el) el.textContent = (mod + (sProf ? prof : 0) >= 0 ? '+' : '') + (mod + (sProf ? prof : 0));
+            });
+            SKILLS.forEach(s => {
+                const key = s.toLowerCase().replace(/ /g,'_');
+                const skillToStat = {'athletics':'str','acrobatics':'dex','sleight_of_hand':'dex','stealth':'dex','arcana':'int','history':'int','investigation':'int','nature':'int','belief':'int','animal_handling':'wis','insight':'wis','medicine':'wis','perception':'wis','survival':'wis','deception':'cha','intimidation':'cha','performance':'cha','persuasion':'cha'};
+                const stat = skillToStat[key] || 'wis';
+                const val = parseInt(document.querySelector(`[data-key="${stat}"]`)?.value) || 10;
+                const mod = Math.floor((val - 10) / 2);
+                const sProf = document.querySelector(`[data-key="prof_${key}"]`)?.checked;
+                const el = document.getElementById(`skill-mod-${key}`);
+                if (el) el.textContent = (mod + (sProf ? prof : 0) >= 0 ? '+' : '') + (mod + (sProf ? prof : 0));
+            });
+        };
 
         function syncSheetData() {
             const char = allCharacters.find(c => c.id === activeCharId);
@@ -405,14 +525,7 @@
                 else el.value = char[el.dataset.key] || "";
                 el.readOnly = !canEdit;
             });
-            // Stats
-            const sC = document.getElementById('stats-container');
-            const stats = ['str','dex','con','int','wis','cha'];
-            sC.innerHTML = stats.map(s => `<div class="bg-gray-50 p-3 rounded-lg text-center border"><span class="block text-[8px] font-black uppercase text-gray-400">${s}</span><input type="number" data-key="${s}" value="${char[s]||10}" class="text-xl font-black text-center w-full" ${!canEdit?'readonly':''}></div>`).join('');
-            
-            // Media
-            const pMed = document.getElementById('portrait-media-display');
-            if(pMed) pMed.innerHTML = char.imageSrc ? `<img src="${char.imageSrc}" class="w-full h-full object-cover">` : '';
+            window.calcMods();
         }
 
         window.saveCurrentCharacter = async (m) => {
@@ -421,6 +534,8 @@
             document.querySelectorAll('#sheet-container [data-key]').forEach(el => data[el.dataset.key] = (el.type === 'checkbox' ? el.checked : el.value));
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data);
             if(m) window.showToast("Synced");
+            const si = document.getElementById('sync-indicator');
+            if(si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); }
         };
 
         window.createChar = async (type) => { 
@@ -430,14 +545,16 @@
             window.openSheet(ref.id); 
         };
 
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-            document.getElementById('t-'+(tab==='inventory'?'inv':tab==='background'?'bg':tab)).classList.add('active');
-            document.getElementById('pane-'+tab).classList.remove('hidden');
+        window.createParty = async () => {
+            const n = document.getElementById('party-name-input');
+            if (!n.value) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), { name: n.value, campaignId: activeCampaignId });
+            document.getElementById('party-modal').classList.add('hidden');
+            n.value = '';
         };
 
-        // --- INITIALIZATION ---
+        window.openPartyModal = () => document.getElementById('party-modal').classList.remove('hidden');
+
         const initAuth = async () => {
             const savedUser = localStorage.getItem('aeonfall_user');
             const savedCamp = localStorage.getItem('aeonfall_active_campaign');
