@@ -76,6 +76,15 @@
         </div>
     </div>
 
+    <!-- PLAYER WAIT MODAL -->
+    <div id="player-wait-modal" class="modal-overlay hidden z-[950]">
+        <div class="modal-container bg-[#1a1f29] border border-blue-600 shadow-2xl text-center">
+            <h2 class="font-serif text-2xl font-black text-blue-400 uppercase tracking-widest border-b border-blue-900/50 pb-4 mb-6">Player Notice</h2>
+            <p class="text-gray-300 text-sm mb-8 font-serif leading-relaxed">Please wait for your <strong class="text-blue-400">Dungeon Master</strong> to create a campaign. Once they do, it will appear in your Active Campaigns list automatically.</p>
+            <button onclick="document.getElementById('player-wait-modal').classList.add('hidden')" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black uppercase text-xs transition-colors shadow-lg w-full md:w-auto">Understood</button>
+        </div>
+    </div>
+
     <!-- NEW CAMPAIGN MODAL -->
     <div id="new-campaign-modal" class="modal-overlay hidden z-[900]">
         <div class="modal-container bg-[#1a1f29] border border-indigo-600 shadow-2xl">
@@ -245,6 +254,8 @@
                 document.getElementById('dm-pref-step-1').classList.remove('hidden');
                 document.getElementById('dm-pref-step-2').classList.add('hidden');
                 document.getElementById('dm-preference-modal').classList.remove('hidden');
+            } else if (pref === 'player') {
+                document.getElementById('player-wait-modal').classList.remove('hidden');
             } else {
                 window.openNewCampaignModal();
             }
@@ -254,7 +265,9 @@
             if (!isDm) {
                 localStorage.setItem('aeonfall_role_pref', 'player');
                 document.getElementById('dm-preference-modal').classList.add('hidden');
-                window.openNewCampaignModal();
+                document.getElementById('player-wait-modal').classList.remove('hidden');
+            } else {
+                window.showDmPasswordSetup();
             }
         };
 
