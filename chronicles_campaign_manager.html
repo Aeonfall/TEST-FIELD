@@ -1,0 +1,50 @@
+<!-- ... existing code ... -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+        // --- CORE UI FUNCTIONS ---
+<!-- ... existing code ... -->
+        // --- FIREBASE SETUP ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e",
+            measurementId: "G-71DW54NTWV"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- CAMPAIGN SCOPING ---
+        // Grab the campaign ID from the URL (e.g., campaign_app.html?id=campaign123)
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id') || urlParams.get('campaignId');
+
+        // If no campaign is selected, kick them back to the campaigns dashboard
+        if (!appId) {
+            // Safeguard for Blob/Preview environments where relative redirects crash
+            if (window.location.protocol === 'blob:' || window.location.hostname.includes('usercontent')) {
+                console.warn("Preview environment detected. Using demo campaign ID.");
+                appId = "demo_campaign_id";
+            } else {
+                try {
+                    window.location.href = "campaigns.html";
+                } catch (error) {
+                    console.warn("Redirect failed. Falling back to demo.", error);
+                    appId = "demo_campaign_id";
+                }
+            }
+        }
+
+        // --- STATE VARIABLES ---
+        let characters = [], parties = [], user = null, activeCharId = null;
+<!-- ... existing code ... -->

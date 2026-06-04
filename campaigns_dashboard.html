@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronicles of the Realm - Campaigns</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'parchment': '#f1e5c5',
+                        'ink': '#2c1e16',
+                        'blood': '#7a1b1b',
+                        'gold': '#c5a059',
+                        'wood': '#1a110b'
+                    },
+                    fontFamily: {
+                        'serif': ['Lora', 'serif'],
+                        'heading': ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1a110b;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            color: #2c1e16;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .parchment-bg {
+            background-color: #f1e5c5;
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%);
+            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
+            border: 2px solid #c5a059;
+            border-radius: 4px;
+        }
+        .fantasy-btn {
+            background: linear-gradient(to bottom, #8a2b2b, #5a1111);
+            color: #f1e5c5;
+            border: 2px solid #c5a059;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+        .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); border-color: #e8cd87; }
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059; border: 1px solid #c5a059; font-family: 'Cinzel', serif; text-transform: uppercase; transition: all 0.2s ease; }
+        .fantasy-btn-alt:hover { border-color: #f1e5c5; color: #f1e5c5; }
+        .fantasy-input { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #8b5a2b; border-bottom: 2px solid #c5a059; color: #2c1e16; font-family: 'Lora', serif; transition: all 0.3s; }
+        .fantasy-input:focus { outline: none; background-color: rgba(255, 255, 255, 0.7); border-bottom-color: #8a2b2b; }
+        .ornamental-hr { border: 0; height: 2px; background-image: linear-gradient(to right, rgba(197, 160, 89, 0), rgba(197, 160, 89, 0.8), rgba(197, 160, 89, 0)); margin: 20px 0; position: relative; }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #2c1e16; } ::-webkit-scrollbar-thumb { background: #8b5a2b; }
+        .fade-in { animation: fadeIn 0.5s ease-in; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="font-serif antialiased h-screen flex flex-col fade-in">
+
+    <!-- Global Modal -->
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden backdrop-blur-sm">
+        <div class="parchment-bg p-8 max-w-md w-full mx-4 rounded-lg shadow-2xl text-center" id="modal-content">
+            <h3 id="modal-title" class="font-heading text-2xl font-bold text-blood mb-4">Notification</h3>
+            <p id="modal-message" class="text-ink mb-6 text-lg"></p>
+            <div id="modal-inputs" class="mb-6 hidden"></div>
+            <div class="flex justify-center gap-4">
+                <button id="modal-cancel-btn" class="fantasy-btn-alt px-4 py-2 rounded hidden">Cancel</button>
+                <button id="modal-confirm-btn" class="fantasy-btn px-6 py-2 rounded">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-view" class="flex-1 flex flex-col items-center justify-center">
+        <i class="fa-solid fa-hourglass-half fa-spin text-4xl text-gold mb-4"></i>
+        <h2 class="font-heading text-xl text-parchment">Consulting the Archives...</h2>
+    </div>
+
+    <!-- The Nexus of Realms (Campaign Browser) -->
+    <div id="hub-view" class="hidden flex-1 flex flex-col p-4 md:p-8 overflow-y-auto">
+        <div class="max-w-6xl mx-auto w-full">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gold pb-4 gap-4">
+                <div>
+                    <h2 class="font-heading text-4xl font-bold text-parchment">The Nexus of Realms</h2>
+                    <p class="text-gray-400 mt-2">Welcome, <span id="nexus-username" class="text-gold font-bold">Traveler</span>.</p>
+                </div>
+                <div class="flex gap-4">
+                    <button id="btn-create-campaign" onclick="showCreateCampaignModal()" class="fantasy-btn px-4 py-2 rounded hidden text-sm"><i class="fa-solid fa-plus mr-2"></i>Forge Campaign</button>
+                    <button onclick="logout()" class="fantasy-btn-alt px-4 py-2 rounded text-sm"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out</button>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h3 class="font-heading text-2xl font-bold text-gold mb-4"><i class="fa-solid fa-scroll mr-2"></i>My Campaigns</h3>
+                <div id="list-my-campaigns" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <hr class="border-gray-700 mb-10">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <h3 class="font-heading text-2xl font-bold text-parchment mb-4"><i class="fa-solid fa-globe mr-2"></i>Public Realms</h3>
+                    <div id="list-public-campaigns" class="space-y-4"></div>
+                </div>
+                <div>
+                    <h3 class="font-heading text-2xl font-bold text-blood mb-4"><i class="fa-solid fa-lock mr-2"></i>Private Realms</h3>
+                    <div id="list-private-campaigns" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Campaign App Area (Inside a specific campaign) -->
+    <div id="app-view" class="hidden flex-1 flex flex-col md:flex-row h-screen overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <nav class="w-full md:w-64 bg-ink border-r-2 border-gold flex flex-col shadow-2xl z-10 shrink-0">
+            <div class="p-6 text-center border-b border-gray-700 bg-wood relative">
+                <button onclick="leaveCampaign()" class="absolute top-2 left-2 text-gray-400 hover:text-white transition text-xs"><i class="fa-solid fa-arrow-left mr-1"></i> Nexus</button>
+                <h2 class="font-heading text-xl text-gold font-bold mt-4" id="nav-campaign-name">Campaign Name</h2>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-4 flex flex-col gap-2 px-4">
+                <button onclick="navigateApp('dashboard')" class="nav-btn w-full text-left p-3 rounded text-parchment hover:bg-gray-800 transition flex items-center gap-3"><i class="fa-solid fa-compass w-6 text-gold"></i> Dashboard</button>
+                <button onclick="navigateApp('lore')" class="nav-btn w-full text-left p-3 rounded text-parchment hover:bg-gray-800 transition flex items-center gap-3"><i class="fa-solid fa-book-journal-whills w-6 text-gold"></i> World Lore</button>
+                <button id="nav-character" onclick="navigateApp('character')" class="nav-btn w-full text-left p-3 rounded text-parchment hover:bg-gray-800 transition flex items-center gap-3"><i class="fa-solid fa-file-signature w-6 text-gold"></i> Character Sheet</button>
+                <button id="nav-dm-panel" onclick="checkDmAccess()" class="nav-btn w-full text-left p-3 rounded text-blood font-bold hover:bg-gray-800 hidden mt-4 border border-blood border-opacity-30 bg-blood bg-opacity-10"><i class="fa-solid fa-dungeon w-6"></i> DM Sanctum</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 relative overflow-y-auto p-4 md:p-8 bg-wood">
+            <div class="max-w-5xl mx-auto">
+                
+                <!-- Dashboard Section -->
+                <section id="sec-dashboard" class="parchment-bg p-8 hidden">
+                    <h2 class="font-heading text-3xl font-bold text-ink mb-2">Campaign Overview</h2>
+                    <hr class="ornamental-hr">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div class="border border-gold p-6 rounded bg-white bg-opacity-20 shadow-inner">
+                            <h3 class="font-heading text-xl font-bold mb-3"><i class="fa-solid fa-scroll text-blood mr-2"></i> Recent Lore</h3>
+                            <ul id="dashboard-lore-list" class="list-disc list-inside text-sm opacity-80 space-y-1"></ul>
+                        </div>
+                        <div class="border border-gold p-6 rounded bg-white bg-opacity-20 shadow-inner">
+                            <h3 class="font-heading text-xl font-bold mb-3"><i class="fa-solid fa-users text-blood mr-2"></i> Active Party</h3>
+                            <ul id="dashboard-party-list" class="space-y-3"></ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Lore Section -->
+                <section id="sec-lore" class="hidden">
+                    <div class="flex justify-between items-end mb-4 bg-wood p-4 border border-gold shadow-md">
+                        <h2 class="font-heading text-3xl text-parchment">Tomes of Knowledge</h2>
+                        <button id="btn-add-lore" onclick="openLoreEditor()" class="fantasy-btn px-4 py-2 text-sm rounded hidden">Scribe Lore</button>
+                    </div>
+                    
+                    <div id="lore-editor-container" class="parchment-bg p-6 mb-8 hidden shadow-xl border-2 border-blood">
+                        <input type="hidden" id="lore-edit-id">
+                        <input type="text" id="lore-title" placeholder="Title of the Entry" class="fantasy-input w-full p-3 mb-4 rounded font-heading font-bold text-xl">
+                        <textarea id="lore-content" placeholder="Chronicle the history here..." rows="6" class="fantasy-input w-full p-3 mb-4 rounded"></textarea>
+                        <div class="flex justify-end gap-3">
+                            <button onclick="document.getElementById('lore-editor-container').classList.add('hidden')" class="px-4 py-2 border border-gray-500 rounded text-gray-700">Cancel</button>
+                            <button onclick="saveLore()" class="fantasy-btn px-6 py-2 rounded">Seal Record</button>
+                        </div>
+                    </div>
+
+                    <div id="lore-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                </section>
+
+                <!-- Character Section -->
+                <section id="sec-character" class="parchment-bg p-8 hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="font-heading text-3xl font-bold text-ink">Character Sheet</h2>
+                        <button id="btn-save-character" onclick="saveCharacter()" class="fantasy-btn px-6 py-2 rounded text-sm">Save Sheet</button>
+                    </div>
+                    <hr class="ornamental-hr">
+                    <form class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2"><label class="block font-bold">Name</label><input type="text" id="char-name" class="fantasy-input w-full p-2"></div>
+                            <div><label class="block font-bold">Level</label><input type="number" id="char-level" class="fantasy-input w-full p-2 text-center" value="1"></div>
+                            <div><label class="block font-bold">Race</label><input type="text" id="char-race" class="fantasy-input w-full p-2"></div>
+                            <div><label class="block font-bold">Class</label><input type="text" id="char-class" class="fantasy-input w-full p-2"></div>
+                        </div>
+                        <div class="grid grid-cols-3 md:grid-cols-6 gap-2 bg-white bg-opacity-30 p-4 border border-gold rounded">
+                            <div class="text-center"><label class="block font-bold text-xs">STR</label><input type="number" id="stat-str" class="fantasy-input w-full p-1 text-center font-bold" value="10"></div>
+                            <div class="text-center"><label class="block font-bold text-xs">DEX</label><input type="number" id="stat-dex" class="fantasy-input w-full p-1 text-center font-bold" value="10"></div>
+                            <div class="text-center"><label class="block font-bold text-xs">CON</label><input type="number" id="stat-con" class="fantasy-input w-full p-1 text-center font-bold" value="10"></div>
+                            <div class="text-center"><label class="block font-bold text-xs">INT</label><input type="number" id="stat-int" class="fantasy-input w-full p-1 text-center font-bold" value="10"></div>
+                            <div class="text-center"><label class="block font-bold text-xs">WIS</label><input type="number" id="stat-wis" class="fantasy-input w-full p-1 text-center font-bold" value="10"></div>
+                            <div class="text-center"><label class="block font-bold text-xs">CHA</label><input type="number" id="stat-cha" class="fantasy-input w-full p-1 text-center font-bold" value="10"></div>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- DM Panel -->
+                <section id="sec-dm-panel" class="parchment-bg p-8 hidden border-blood border-4">
+                    <h2 class="font-heading text-4xl font-bold text-blood mb-2 text-center"><i class="fa-solid fa-eye mr-3"></i>Dungeon Master Sanctum</h2>
+                    <hr class="ornamental-hr">
+                    <div class="bg-black bg-opacity-10 p-4 border border-gray-400 mb-6">
+                        <p><strong>Campaign Name:</strong> <span id="dm-camp-name"></span></p>
+                        <p><strong>Privacy:</strong> <span id="dm-camp-type" class="uppercase"></span></p>
+                        <p id="dm-camp-code-row" class="hidden"><strong>Join Code:</strong> <span id="dm-camp-code" class="text-blood font-bold tracking-widest font-mono"></span></p>
+                    </div>
+                    <button onclick="deleteCampaign()" class="w-full py-2 border border-red-800 text-red-800 hover:bg-red-800 hover:text-white rounded font-bold transition">Delete Entire Campaign</button>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e",
+            measurementId: "G-71DW54NTWV"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // State variables
+        let currentUser = null; 
+        let globalCampaigns = [];
+        let activeCampaign = null;
+        let dmUnlocked = false; 
+        
+        // Observers
+        let unsubCampaigns = null;
+        let unsubLore = null;
+        let unsubChars = null;
+
+        // --- Helper functions ---
+        window.showModal = (title, message, config = null, onConfirm = null) => {
+            const inputsDiv = document.getElementById('modal-inputs');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            inputsDiv.innerHTML = '';
+            
+            if(config) {
+                inputsDiv.classList.remove('hidden');
+                const input = document.createElement('input');
+                input.type = config.type || 'text';
+                input.id = 'modal-input';
+                input.className = 'fantasy-input w-full p-2 text-center text-xl font-mono tracking-widest';
+                if(config.maxLength) input.maxLength = config.maxLength;
+                inputsDiv.appendChild(input);
+            } else {
+                inputsDiv.classList.add('hidden');
+            }
+
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
+            
+            const newConfirm = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+
+            if(onConfirm) {
+                cancelBtn.classList.remove('hidden');
+                cancelBtn.onclick = () => document.getElementById('modal-container').classList.add('hidden');
+                newConfirm.onclick = () => {
+                    const val = config ? document.getElementById('modal-input').value : null;
+                    document.getElementById('modal-container').classList.add('hidden');
+                    onConfirm(val);
+                };
+            } else {
+                cancelBtn.classList.add('hidden');
+                newConfirm.onclick = () => document.getElementById('modal-container').classList.add('hidden');
+            }
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            if(config) setTimeout(() => document.getElementById('modal-input').focus(), 100);
+        };
+
+        window.navigateApp = (sectionId) => {
+            document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
+        };
+
+        window.logout = async () => {
+            await signOut(auth);
+        };
+
+        // --- AUTHENTICATION GUARDIAN ---
+        // Redirects back to index.html if no one is logged in
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+            } else {
+                if (user.isAnonymous) {
+                    // Handle Guest User
+                    currentUser = { uid: user.uid, username: 'Wandering Guest', role: 'guest' };
+                    document.getElementById('nexus-username').innerText = currentUser.username;
+                    document.getElementById('nexus-username').classList.replace('text-gold', 'text-gray-400');
+                    document.getElementById('btn-create-campaign').classList.add('hidden');
+                    
+                    document.getElementById('loading-view').classList.add('hidden');
+                    document.getElementById('hub-view').classList.remove('hidden');
+                    
+                    loadCampaigns();
+                } else {
+                    // Fetch extra user details (Username, Role) from Firestore
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists()) {
+                        currentUser = { uid: user.uid, ...userDoc.data() };
+                        document.getElementById('nexus-username').innerText = currentUser.username;
+                        if(currentUser.role === 'dm') document.getElementById('btn-create-campaign').classList.remove('hidden');
+                        
+                        document.getElementById('loading-view').classList.add('hidden');
+                        document.getElementById('hub-view').classList.remove('hidden');
+                        
+                        loadCampaigns();
+                    } else {
+                        alert("Profile error. Please contact a tech-wizard.");
+                        signOut(auth);
+                    }
+                }
+            }
+        });
+
+        function loadCampaigns() {
+            if(unsubCampaigns) unsubCampaigns();
+            // Note: Sticking to standard root collections for simplicity on your personal database!
+            unsubCampaigns = onSnapshot(collection(db, 'campaigns'), (snap) => {
+                globalCampaigns = [];
+                snap.forEach(d => globalCampaigns.push({ id: d.id, ...d.data() }));
+                renderCampaigns();
+            });
+        }
+
+        function renderCampaigns() {
+            const listMy = document.getElementById('list-my-campaigns');
+            const listPub = document.getElementById('list-public-campaigns');
+            const listPriv = document.getElementById('list-private-campaigns');
+            listMy.innerHTML = ''; listPub.innerHTML = ''; listPriv.innerHTML = '';
+
+            globalCampaigns.forEach(camp => {
+                const isMine = camp.dmId === currentUser.uid || (camp.players && camp.players.includes(currentUser.uid));
+                const card = document.createElement('div');
+                card.className = 'parchment-bg p-5 rounded relative';
+                card.innerHTML = `
+                    <h4 class="font-heading font-bold text-xl text-ink">${camp.name}</h4>
+                    <p class="text-xs text-blood italic mb-3">DM: ${camp.dmName}</p>
+                `;
+
+                if (isMine) {
+                    card.innerHTML += `<button onclick="enterCampaign('${camp.id}')" class="fantasy-btn w-full py-2 text-sm font-bold mt-2">Enter Realm</button>`;
+                    listMy.appendChild(card);
+                } else if (camp.type === 'public') {
+                    card.innerHTML += `<button onclick="joinCampaign('${camp.id}', false)" class="fantasy-btn-alt w-full py-2 text-sm mt-2">Join Realm</button>`;
+                    listPub.appendChild(card);
+                } else if (camp.type === 'private') {
+                    card.innerHTML += `<button onclick="joinCampaign('${camp.id}', true)" class="w-full py-2 mt-2 text-sm bg-gray-800 text-gray-300 rounded border border-gray-600"><i class="fa-solid fa-key mr-2"></i>Secret Code</button>`;
+                    listPriv.appendChild(card);
+                }
+            });
+        }
+
+        window.showCreateCampaignModal = () => {
+            showModal("Forge Realm", "Name your campaign:", {type:'text'}, (name) => {
+                if(!name) return;
+                showModal("Privacy", "Type 'public' for open access, or a 4-digit code to restrict.", {type:'text'}, async (code) => {
+                    if(!code) return;
+                    const isPublic = code.toLowerCase() === 'public';
+                    await addDoc(collection(db, 'campaigns'), {
+                        name: name,
+                        type: isPublic ? 'public' : 'private',
+                        joinCode: isPublic ? null : code,
+                        dmId: currentUser.uid,
+                        dmName: currentUser.username,
+                        players: []
+                    });
+                });
+            });
+        };
+
+        window.joinCampaign = (campId, isPrivate) => {
+            const camp = globalCampaigns.find(c => c.id === campId);
+            if(isPrivate) {
+                showModal("Restricted", "Enter 4-digit code:", {type:'password', maxLength:4}, async (code) => {
+                    if(code === camp.joinCode) executeJoin(camp);
+                    else showModal("Denied", "Incorrect code.");
+                });
+            } else {
+                executeJoin(camp);
+            }
+        };
+
+        async function executeJoin(camp) {
+            // Guests can view but are not permanently added to the campaign's player roster
+            if (currentUser.role !== 'guest') {
+                const players = camp.players || [];
+                if(!players.includes(currentUser.uid)) {
+                    players.push(currentUser.uid);
+                    await updateDoc(doc(db, 'campaigns', camp.id), { players });
+                }
+            }
+            enterCampaign(camp.id);
+        }
+
+        window.enterCampaign = (campId) => {
+            activeCampaign = globalCampaigns.find(c => c.id === campId);
+            dmUnlocked = false;
+            
+            document.getElementById('hub-view').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            document.getElementById('nav-campaign-name').innerText = activeCampaign.name;
+            
+            const isDM = activeCampaign.dmId === currentUser.uid;
+            document.getElementById('nav-dm-panel').classList.toggle('hidden', !isDM);
+            document.getElementById('btn-add-lore').classList.toggle('hidden', !isDM);
+            
+            // Hide character saving for guests
+            document.getElementById('btn-save-character').classList.toggle('hidden', currentUser.role === 'guest');
+            
+            if (isDM) {
+                document.getElementById('dm-camp-name').innerText = activeCampaign.name;
+                document.getElementById('dm-camp-type').innerText = activeCampaign.type;
+                if(activeCampaign.type === 'private') {
+                    document.getElementById('dm-camp-code-row').classList.remove('hidden');
+                    document.getElementById('dm-camp-code').innerText = activeCampaign.joinCode;
+                }
+            }
+            
+            loadInnerApp();
+            navigateApp('dashboard');
+        };
+
+        window.leaveCampaign = () => {
+            activeCampaign = null;
+            if(unsubLore) unsubLore();
+            if(unsubChars) unsubChars();
+            document.getElementById('app-view').classList.add('hidden');
+            document.getElementById('hub-view').classList.remove('hidden');
+        };
+
+        window.checkDmAccess = () => {
+            if (dmUnlocked) return navigateApp('dm-panel');
+            showModal("Sanctum Sealed", "Speak DM password:", {type: 'password'}, (val) => {
+                if (val === currentUser.dmSecret) { dmUnlocked = true; navigateApp('dm-panel'); }
+                else showModal("Denied", "Incorrect.");
+            });
+        };
+
+        function loadInnerApp() {
+            if(unsubLore) unsubLore();
+            unsubLore = onSnapshot(collection(db, 'lore'), (snap) => {
+                const dashLore = document.getElementById('dashboard-lore-list');
+                const loreList = document.getElementById('lore-list');
+                dashLore.innerHTML = ''; loreList.innerHTML = '';
+                
+                snap.forEach(d => {
+                    const data = d.data();
+                    if(data.campaignId === activeCampaign.id) {
+                        dashLore.innerHTML += `<li><strong>${data.title}</strong></li>`;
+                        loreList.innerHTML += `<div class="parchment-bg p-4"><h4 class="font-bold font-heading text-xl">${data.title}</h4><p class="text-sm mt-2">${data.content}</p></div>`;
+                    }
+                });
+            });
+
+            if(unsubChars) unsubChars();
+            unsubChars = onSnapshot(collection(db, 'characters'), (snap) => {
+                const dashParty = document.getElementById('dashboard-party-list');
+                dashParty.innerHTML = '';
+                snap.forEach(d => {
+                    const data = d.data();
+                    if(data.campaignId === activeCampaign.id) {
+                        dashParty.innerHTML += `<li class="border-b border-gray-400 py-1 font-bold text-blood">${data.name || 'Unknown'} (Lvl ${data.level || 1}) - ${data.playerName}</li>`;
+                        if(data.userId === currentUser.uid) fillCharacterForm(data);
+                    }
+                });
+            });
+        }
+
+        // Simplistic implementations for Lore & Characters to maintain single-file scale
+        window.openLoreEditor = () => document.getElementById('lore-editor-container').classList.remove('hidden');
+        
+        window.saveLore = async () => {
+            await addDoc(collection(db, 'lore'), {
+                campaignId: activeCampaign.id,
+                title: document.getElementById('lore-title').value,
+                content: document.getElementById('lore-content').value,
+                createdAt: new Date().toISOString()
+            });
+            document.getElementById('lore-editor-container').classList.add('hidden');
+        };
+
+        window.saveCharacter = async () => {
+            // Check if char already exists for user in campaign (would normally query this securely)
+            const payload = {
+                campaignId: activeCampaign.id,
+                userId: currentUser.uid,
+                playerName: currentUser.username,
+                name: document.getElementById('char-name').value,
+                level: document.getElementById('char-level').value,
+                race: document.getElementById('char-race').value,
+                charClass: document.getElementById('char-class').value,
+            };
+            await addDoc(collection(db, 'characters'), payload);
+            showModal("Success", "Character Saved");
+        };
+
+        function fillCharacterForm(data) {
+            document.getElementById('char-name').value = data.name || '';
+            document.getElementById('char-level').value = data.level || 1;
+            document.getElementById('char-race').value = data.race || '';
+            document.getElementById('char-class').value = data.charClass || '';
+        }
+
+        window.deleteCampaign = async () => {
+            showModal("Danger", "Type DELETE to confirm.", {type:'text'}, async (val) => {
+                if(val === 'DELETE') {
+                    await deleteDoc(doc(db, 'campaigns', activeCampaign.id));
+                    leaveCampaign();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
