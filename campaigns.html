@@ -17,8 +17,6 @@
         .parchment-bg { background-color: #f1e5c5; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7); border: 2px solid #c5a059; color: #2c1e16; }
         .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
-        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
-        .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
         .card { transition: all 0.2s; position: relative; border: 1px solid #555; background-color: rgba(0,0,0,0.7); cursor: pointer; }
         .card:hover { transform: translateY(-4px); border-color: #c5a059; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(197, 160, 89, 0.2); }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
@@ -69,20 +67,16 @@
             </header>
 
             <!-- MY ADVENTURES -->
-            <div class="mb-12">
-                <h2 class="text-2xl font-heading text-gold mb-4 border-b border-gray-800 pb-2 flex items-center gap-3">
-                    <i class="fa-solid fa-book-journal-whills text-lg"></i> My Adventures
-                </h2>
+            <div class="mb-10">
+                <h2 class="text-xl font-heading text-gold mb-4 border-b border-gray-800 pb-2">My Adventures</h2>
                 <div id="my-adventures-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Joined campaigns populate here -->
                 </div>
             </div>
 
             <!-- PUBLIC REALMS -->
-            <div class="mb-12">
-                <h2 class="text-2xl font-heading text-gray-500 mb-4 border-b border-gray-800 pb-2 flex items-center gap-3">
-                    <i class="fa-solid fa-globe text-lg"></i> Public Realms
-                </h2>
+            <div class="mb-10">
+                <h2 class="text-xl font-heading text-gray-500 mb-4 border-b border-gray-800 pb-2">Public Realms</h2>
                 <div id="public-realms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-90">
                     <!-- Public campaigns populate here -->
                 </div>
@@ -120,8 +114,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        // IMPORT arrayUnion for joining campaigns!
-        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs, arrayUnion } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        // IMPORT deleteDoc to allow DMs to delete campaigns!
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs, arrayUnion, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
         window.showToast = (m) => { 
@@ -171,11 +165,17 @@
 
             if (camp.visibility === 'private') badges += `<span class="bg-gray-800 text-gray-400 border border-gray-600 px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading shadow-md ml-1"><i class="fa-solid fa-lock text-[7px] mr-1"></i>Private</span>`;
 
+            // DELETE BUTTON (DM ONLY)
+            const deleteBtn = isDM ? `<button onclick="event.stopPropagation(); window.deleteCampaign('${camp.id}', '${camp.name.replace(/'/g, "\\'")}')" class="text-blood hover:text-red-400 transition-colors ml-3" title="Delete Realm"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
             d.innerHTML = `
                 <div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xl font-heading font-bold text-gold drop-shadow">${camp.name}</h3>
-                        <div class="flex gap-1">${badges}</div>
+                        <div class="flex items-center">
+                            <div class="flex gap-1">${badges}</div>
+                            ${deleteBtn}
+                        </div>
                     </div>
                     <p class="text-xs text-gray-500 font-serif italic mb-4">Run by ${camp.dmName || 'Unknown DM'}</p>
                 </div>
@@ -210,10 +210,10 @@
             });
 
             if (myGrid.children.length === 0) {
-                myGrid.innerHTML = `<div class="col-span-full py-8 text-center border border-dashed border-gray-800 rounded bg-black bg-opacity-30"><p class="text-gray-500 text-xs italic font-serif">You have not joined any adventures yet. Enter a code or join a public realm.</p></div>`;
+                myGrid.innerHTML = `<div class="col-span-full py-4 text-center border border-dashed border-gray-800 rounded bg-black bg-opacity-30"><p class="text-gray-500 text-xs italic font-serif">You have not joined any adventures yet.</p></div>`;
             }
             if (pubGrid.children.length === 0) {
-                pubGrid.innerHTML = `<div class="col-span-full py-8 text-center border border-dashed border-gray-800 rounded bg-black bg-opacity-30"><p class="text-gray-500 text-xs italic font-serif">No public realms are currently available.</p></div>`;
+                pubGrid.innerHTML = `<div class="col-span-full py-4 text-center border border-dashed border-gray-800 rounded bg-black bg-opacity-30"><p class="text-gray-500 text-xs italic font-serif">No public realms are currently available.</p></div>`;
             }
         }
 
@@ -235,7 +235,6 @@
 
                 const camp = snap.docs[0];
 
-                // Auto-save this campaign to the user's "My Adventures" list
                 if (currentUser && currentUser.uid) {
                     await updateDoc(doc(db, 'users', currentUser.uid), {
                         joinedCampaigns: arrayUnion(camp.id)
@@ -276,7 +275,6 @@
                     createdAt: Date.now()
                 });
 
-                // Auto-save the newly created campaign to the DM's profile
                 await updateDoc(doc(db, 'users', currentUser.uid), {
                     joinedCampaigns: arrayUnion(newRef.id)
                 });
@@ -288,6 +286,19 @@
             } catch (err) {
                 console.error(err);
                 window.showToast("Failed to forge realm.");
+            }
+        };
+
+        // Delete Campaign (DM Only)
+        window.deleteCampaign = async (id, name) => {
+            if (!confirm(`Are you sure you want to permanently destroy the realm of "${name}"? This cannot be undone.`)) return;
+            
+            try {
+                await deleteDoc(doc(db, 'campaigns', id));
+                window.showToast("Realm destroyed.");
+            } catch (err) {
+                console.error(err);
+                window.showToast("Failed to destroy realm.");
             }
         };
 
@@ -313,7 +324,6 @@
                 if (userDocSnap.exists()) {
                     currentUser = { uid: u.uid, ...userDocSnap.data() };
                 } else {
-                    // Make sure new users get a default joinedCampaigns array
                     currentUser = { 
                         uid: u.uid, 
                         username: u.displayName || 'Traveler', 
@@ -323,7 +333,6 @@
                     await setDoc(userDocRef, currentUser);
                 }
 
-                // Make sure legacy users have the array to prevent crashes
                 if (!currentUser.joinedCampaigns) {
                     currentUser.joinedCampaigns = [];
                 }
@@ -342,7 +351,7 @@
                     renderCampaigns();
                 });
 
-                // Listen for User Profile updates (in case they join a campaign in another tab)
+                // Listen for User Profile updates
                 onSnapshot(userDocRef, (userSnap) => {
                     if (userSnap.exists()) {
                         currentUser = { uid: u.uid, ...userSnap.data() };
