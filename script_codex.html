@@ -1,24 +1,54 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chronicles - Script Codex</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { 'parchment': '#f1e5c5', 'ink': '#2c1e16', 'blood': '#7a1b1b', 'gold': '#c5a059', 'wood': '#1a110b' }, fontFamily: { 'serif': ['Lora', 'serif'], 'heading': ['Cinzel', 'serif'] } } }
+            theme: {
+                extend: {
+                    colors: {
+                        'parchment': '#f1e5c5',
+                        'ink': '#2c1e16',
+                        'blood': '#7a1b1b',
+                        'gold': '#c5a059',
+                        'wood': '#1a110b',
+                        'stone': '#e8e0cd'
+                    },
+                    fontFamily: {
+                        'serif': ['Lora', 'serif'],
+                        'heading': ['Cinzel', 'serif'],
+                    }
+                }
+            }
         }
     </script>
+
     <style>
-        body { font-family: 'Lora', serif; background-color: #1a110b; background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E"); color: #f1e5c5; overflow-x: hidden; }
+        body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
         
-        .parchment-card { background-color: #f1e5c5; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #e8cd87; border-radius: 8px; color: #2c1e16; position: relative; display: flex; flex-direction: column; }
+        .dashboard-bg { background-color: transparent; }
         
-        .fantasy-btn { background: linear-gradient(to bottom, #c5a059, #8b5a2b); color: #1a110b !important; border: 2px solid #e8cd87 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.4) !important; font-weight: 900; }
-        .fantasy-btn:hover { background: linear-gradient(to bottom, #e8cd87, #a67232); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #fff !important; }
+        .parchment-paper {
+            background-color: #f1e5c5;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
+            border: 2px solid #c5a059;
+            color: #2c1e16;
+            border-radius: 4px;
+        }
+
+        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
         
         .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
         .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
@@ -27,35 +57,44 @@
         .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
         .nav-link:hover { color: #f1e5c5; }
 
-        /* Vocation & Level Tab Styles matching screenshot */
-        .vocation-tab { background: rgba(0,0,0,0.4); border: 1px solid #444; color: #888; font-family: 'Cinzel', serif; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 12px; transition: all 0.2s; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
-        .vocation-tab:hover { border-color: #c5a059; color: #c5a059; background: rgba(0,0,0,0.6); }
-        .vocation-tab.active { background: #c5a059; color: #1a110b; border-color: #e8cd87; box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); }
+        /* TAB SYSTEM STYLES */
+        .vocation-tab { background: rgba(0,0,0,0.5); border: 1px solid #444; color: #888; font-family: 'Cinzel', serif; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 12px; border-radius: 4px; transition: all 0.2s; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
+        .vocation-tab:hover { border-color: #c5a059; color: #c5a059; background: rgba(0,0,0,0.7); }
+        .vocation-tab.active { background: #c5a059; color: #1a110b; border-color: #e8cd87; box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); transform: scale(1.05); z-index: 10;}
 
-        .level-tab { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #e8cd87; color: #1a110b; font-weight: 900; font-family: 'Cinzel', serif; cursor: pointer; transition: all 0.2s; font-size: 12px; border: 2px solid transparent; }
-        .level-tab:hover { transform: scale(1.1); }
-        .level-tab.active { background: #7a1b1b; color: #f1e5c5; border-color: #e8cd87; box-shadow: 0 0 10px rgba(122, 27, 27, 0.8); }
+        .level-tab { width: 28px; height: 28px; border-radius: 50%; background: #2c1e16; color: #888; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 900; font-size: 11px; cursor: pointer; transition: all 0.2s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);}
+        .level-tab:hover { background: #3d2a1f; color: #f1e5c5; border-color: #c5a059; }
+        .level-tab.active { background: #7a1b1b; color: #f1e5c5; border-color: #c5a059; box-shadow: 0 0 10px rgba(122, 27, 27, 0.8), inset 0 0 5px rgba(255,255,255,0.2); transform: scale(1.1);}
 
-        /* Editable Fields */
-        .dm-active-edit .dm-editable { background: rgba(255, 255, 255, 0.3); outline: 1px dashed rgba(139, 90, 43, 0.4); border-radius: 4px; padding: 2px 4px; transition: background 0.2s, outline 0.2s; min-height: 1.2em; display: inline-block; width: 100%; }
-        .dm-active-edit .dm-editable:focus { background: rgba(255, 255, 255, 0.8); outline: 2px solid #7a1b1b; }
-        .dm-active-edit [contenteditable="true"]:empty::before { content: "Add text..."; color: #a38c75; font-style: italic; pointer-events: none; display: block; }
-        
-        .dm-active-edit input.dm-input { background: rgba(255, 255, 255, 0.3); border-bottom: 1px dashed rgba(139, 90, 43, 0.4); border-radius: 2px; padding: 2px 4px; color: inherit; font: inherit; width: 100%; outline: none; transition: background 0.2s; }
-        .dm-active-edit input.dm-input:focus { background: rgba(255, 255, 255, 0.8); border-bottom: 2px solid #7a1b1b; }
-        input:not(.dm-input):disabled { background: transparent; border: none; color: inherit; -webkit-text-fill-color: inherit; opacity: 1; }
-        textarea:not(.dm-input):disabled { background: transparent; border: none; color: inherit; -webkit-text-fill-color: inherit; opacity: 1; resize: none; }
+        /* SCRIPT CARD */
+        .script-card { background: rgba(255,255,255,0.4); border: 1px solid rgba(139, 90, 43, 0.4); box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 0 4px 6px rgba(0,0,0,0.1); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; position: relative; transition: all 0.2s; }
+        .script-card:hover { border-color: #c5a059; box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 0 8px 15px rgba(0,0,0,0.2); transform: translateY(-2px);}
+        .script-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 900; color: #7a1b1b; text-transform: uppercase; border-bottom: 2px solid rgba(139, 90, 43, 0.3); padding-bottom: 4px; margin-bottom: 8px; letter-spacing: 1px;}
+        .script-meta { font-family: 'Lora', serif; font-style: italic; font-size: 12px; color: #555; margin-bottom: 12px; }
+        .script-props { font-family: 'Lora', serif; font-size: 12px; color: #2c1e16; margin-bottom: 16px; background: rgba(139, 90, 43, 0.05); padding: 10px; border-radius: 4px; border: 1px solid rgba(139, 90, 43, 0.1);}
+        .script-props li { margin-bottom: 4px; }
+        .script-props b { font-weight: 700; color: #1a1a1a; border-bottom: 1px dotted rgba(139, 90, 43, 0.4); }
+        .script-desc { font-family: 'Lora', serif; font-size: 13px; color: #2c1e16; line-height: 1.6; margin-bottom: 16px; white-space: pre-wrap; flex-grow: 1;}
+        .script-desc b { color: #1a1a1a; font-weight: 700; }
+        .script-higher { border-top: 1px dashed rgba(139, 90, 43, 0.3); padding-top: 12px; margin-top: auto; font-family: 'Lora', serif; font-size: 12px; color: #2c1e16; line-height: 1.5; margin-bottom: 12px;}
+        .script-higher b { font-weight: 700; border-bottom: 1px dotted rgba(139, 90, 43, 0.4); color: #1a1a1a; }
+        .script-lists { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 900; color: #555; border-top: 1px solid rgba(139, 90, 43, 0.2); padding-top: 8px; margin-bottom: 16px;}
 
-        .script-desc-area { width: 100%; min-height: 150px; background: rgba(255,255,255,0.4); border: 1px solid rgba(139, 90, 43, 0.3); border-radius: 4px; padding: 12px; font-family: 'Lora', serif; font-size: 13px; color: #2c1e16; line-height: 1.6; resize: vertical; }
-
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 100000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(4px); }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 600px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); }
         
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        input, textarea, select { background: transparent; border: none; font-size: 13px; color: #2c1e16; width: 100%; font-family: 'Lora', serif; }
+        input:focus, textarea:focus { outline: none; background-color: rgba(255,255,255,0.6); }
+        .form-input { background: rgba(255,255,255,0.5); border: 1px solid rgba(139, 90, 43, 0.4); padding: 8px 12px; border-radius: 4px; transition: border-color 0.2s;}
+        .form-input:focus { border-color: #7a1b1b; }
+        .tiny-label { font-size: 9px; text-transform: uppercase; color: #555; font-weight: 900; display: block; margin-bottom: 2px; font-family: 'Cinzel', serif;}
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body class="min-h-screen">
 
     <div id="toast" class="toast">Message</div>
 
@@ -66,18 +105,18 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div id="dashboard-screen" class="min-h-screen p-4 md:p-8 hidden w-full">
+    <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden w-full">
         <div class="max-w-7xl mx-auto">
             <!-- HEADER & NAVIGATION -->
             <header class="flex flex-col items-center md:items-start md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative">
                 <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
                 
                 <div class="text-center md:text-left w-full md:w-auto">
-                    <h1 id="main-campaign-title" class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
+                    <h1 id="main-campaign-title-label" class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Script Codex</h1>
                     <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
-                        <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Script Codex</p>
+                        <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Campaign Management Suite</p>
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
                         </div>
                     </div>
@@ -89,73 +128,111 @@
                     </div>
 
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
-                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
-                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
-                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
-                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
-                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
-                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
+                        <a href="#" onclick="window.routeTo('characters.html'); return false;" id="nav-party" class="nav-link">Party</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" id="nav-npcs" class="nav-link">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" id="nav-beasts" class="nav-link">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" id="nav-backpack" class="nav-link">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" id="nav-handbook" class="nav-link">Handbook</a>
+                        <a href="#" onclick="window.routeTo('scriptcodex.html'); return false;" class="nav-link active">Script Codex</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" id="nav-graveyard" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
             </header>
 
-            <!-- FILTERS & HEADER -->
-            <div class="flex flex-col gap-6 mb-8">
-                <!-- Vocation Tabs (Generated Dynamically) -->
-                <div class="flex overflow-x-auto scrollbar-hide gap-1 w-full" id="vocation-tabs-container">
-                    <button onclick="window.setVocationFilter('All')" class="vocation-tab active" id="tab-voc-All">All Vocations</button>
-                    <!-- More generated here -->
+            <!-- FILTERS & ACTIONS -->
+            <div class="mb-8 space-y-6">
+                <!-- Vocation Tabs -->
+                <div class="flex flex-wrap gap-2 justify-center md:justify-start" id="vocation-tabs-container">
+                    <!-- Populated by JS -->
                 </div>
-
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                    <div>
-                        <h2 id="view-title" class="font-heading text-3xl font-black text-gold uppercase tracking-widest drop-shadow mb-2">All Scripts</h2>
-                        <!-- Level Tabs -->
-                        <div class="flex gap-2 items-center" id="level-tabs-container">
-                            <!-- Level tabs dynamically generated by JS -->
+                
+                <!-- Title & Levels -->
+                <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-700 pb-4 gap-4">
+                    <div class="flex items-center gap-4">
+                        <h2 id="view-title" class="text-2xl font-heading text-gold font-bold uppercase tracking-widest drop-shadow">All Scripts — Tricks</h2>
+                        <div class="flex items-center gap-2 ml-4" id="level-tabs-container">
+                            <!-- Populated by JS based on Vocation -->
                         </div>
                     </div>
-
-                    <button id="add-script-btn" onclick="window.addScript()" class="hidden fantasy-btn px-6 py-3 rounded text-[11px]">+ New Script</button>
+                    
+                    <button id="btn-create-script" onclick="window.openScriptModal()" class="hidden fantasy-btn px-6 py-2.5 rounded text-xs shadow-lg"><i class="fa-solid fa-plus mr-2"></i>Inscribe Script</button>
                 </div>
             </div>
 
-            <!-- SCRIPT MASONRY GRID -->
-            <div id="scripts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                <!-- Script Cards populate here -->
+            <!-- SCRIPTS GRID -->
+            <div id="scripts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards populate here -->
             </div>
         </div>
     </div>
 
-    <!-- COPY TO CHARACTER MODAL -->
-    <div id="copy-modal" class="modal-overlay hidden">
-        <div class="parchment-card p-8 w-full max-w-sm text-center">
-            <h3 class="font-heading text-xl font-bold text-blood uppercase mb-2 border-b border-blood/30 pb-2">Inscribe Script</h3>
-            <p class="text-xs text-ink font-serif mb-6 italic">Select a target to copy <span id="copy-target-name" class="font-bold text-blood"></span> into their personal spellbook.</p>
+    <!-- SCRIPT EDIT/CREATE MODAL (DM ONLY) -->
+    <div id="script-modal" class="modal-overlay hidden">
+        <div class="modal-container max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide">
+            <h2 id="script-modal-title" class="font-heading text-2xl font-black text-blood uppercase tracking-widest mb-6 border-b-2 border-gold pb-2 text-center">Inscribe Script</h2>
+            <input type="hidden" id="script-id">
             
-            <div class="text-left mb-6">
-                <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Target Entity</label>
-                <select id="copy-target-select" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood">
-                    <option value="">Select Target...</option>
-                    <!-- Populated by JS -->
-                </select>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="tiny-label">Script Name</label><input type="text" id="script-name" class="form-input font-heading font-bold text-blood uppercase" placeholder="E.g. Aegis of Light"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="tiny-label">Level (0 = Trick)</label><input type="number" id="script-level" class="form-input text-center" placeholder="1" min="0" max="9"></div>
+                        <div><label class="tiny-label">School</label><input type="text" id="script-school" class="form-input" placeholder="Evocation"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div><label class="tiny-label">Type (Optional)</label><input type="text" id="script-type" class="form-input" placeholder="Ritual"></div>
+                    <div><label class="tiny-label">Activation</label><input type="text" id="script-activation" class="form-input" placeholder="1 Action"></div>
+                    <div><label class="tiny-label">Range</label><input type="text" id="script-range" class="form-input" placeholder="60 feet"></div>
+                    <div><label class="tiny-label">Duration</label><input type="text" id="script-duration" class="form-input" placeholder="Instantaneous"></div>
+                </div>
+
+                <div>
+                    <label class="tiny-label">Components</label>
+                    <input type="text" id="script-comp" class="form-input" placeholder="V, S, M (a pinch of ash)">
+                </div>
+
+                <div>
+                    <label class="tiny-label">Description (Use **bold** for emphasis)</label>
+                    <textarea id="script-desc" class="form-input h-48 leading-relaxed font-serif" placeholder="Describe the effects here..."></textarea>
+                </div>
+
+                <div>
+                    <label class="tiny-label">At Higher Levels (Optional)</label>
+                    <textarea id="script-scaling" class="form-input h-20 leading-relaxed font-serif" placeholder="When you cast this at 2nd level or higher..."></textarea>
+                </div>
+
+                <div>
+                    <label class="tiny-label">Authorized Vocations / Lists</label>
+                    <input type="text" id="script-lists" class="form-input italic text-gray-600" placeholder="Heartbound, Chronicler...">
+                </div>
             </div>
 
-            <div class="flex gap-3 font-heading">
-                <button onclick="document.getElementById('copy-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-2.5 hover:bg-gray-200 transition-colors">Cancel</button>
-                <button onclick="window.executeCopyScript()" class="flex-1 bg-blood text-parchment font-bold uppercase text-[10px] rounded py-2.5 hover:bg-red-800 shadow-md transition-colors border border-gold">Inscribe</button>
+            <div class="flex justify-between items-center mt-8 pt-4 border-t border-gold font-heading">
+                <button id="script-delete-btn" onclick="window.deleteScript()" class="hidden text-[10px] font-black uppercase text-blood hover:text-red-700 underline tracking-widest">Erase Script</button>
+                <div class="flex gap-4 ml-auto">
+                    <button onclick="window.closeScriptModal()" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink">Cancel</button>
+                    <button onclick="window.saveScript()" class="fantasy-btn px-8 py-2 rounded text-xs shadow-lg">Save Record</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- PURGE MODAL -->
-    <div id="del-modal" class="modal-overlay hidden">
-        <div class="parchment-card p-8 max-w-sm w-full text-center border-2 !border-blood shadow-2xl">
-            <h3 class="font-heading font-black text-2xl text-blood uppercase tracking-widest mb-2">Expunge Script</h3>
-            <p class="font-serif italic text-ink mb-6 text-sm">This script will be permanently erased from the codex.</p>
-            <div class="flex flex-col gap-3 font-heading">
-                <button id="confirm-del-btn" onclick="window.executeDelete()" class="w-full bg-blood text-parchment py-3 rounded border border-gold font-bold uppercase text-xs shadow transition-colors hover:bg-red-800">Confirm Erasure</button>
-                <button onclick="document.getElementById('del-modal').classList.add('hidden')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
+    <!-- TRANSFER SCRIPT MODAL -->
+    <div id="transfer-modal" class="modal-overlay hidden z-[900]">
+        <div class="modal-container !max-w-md text-center">
+            <h2 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-2 border-b-2 border-gold pb-2">Transfer Knowledge</h2>
+            <p class="text-xs font-serif text-ink italic mb-6">Select a character to inject this script directly into their abilities ledger.</p>
+            
+            <select id="transfer-char-select" class="form-input mb-8 text-center text-sm font-bold uppercase font-heading cursor-pointer">
+                <option value="">Select Target...</option>
+                <!-- Populated by JS -->
+            </select>
+
+            <div class="flex justify-center gap-4 font-heading">
+                <button onclick="document.getElementById('transfer-modal').classList.add('hidden')" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink px-4">Cancel</button>
+                <button onclick="window.executeTransfer()" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg">Inject Script</button>
             </div>
         </div>
     </div>
@@ -164,7 +241,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
         window.showToast = (m) => { 
@@ -209,79 +286,46 @@
             else { try { window.location.href = "campaigns.html"; } catch(e) {} }
         }
 
-        const DB_COLLECTION = `scriptCodex`; // Shared codex for the campaign
+        const DB_COLLECTION = `scriptCodex_${appId}`;
 
+        // --- STATE ---
+        let scripts = [];
+        let characters = []; // For transfer feature
         let currentUser = null;
         let activeRole = 'player';
-        let scripts = [];
-        let charactersList = []; // For copy dropdown
         
         let currentLevelFilter = '0';
-        let currentVocationFilter = 'All';
+        let currentVocationFilter = 'All'; // Uses the ID like 'class_heartbound'
         
-        let targetDelId = null;
-        let targetCopyScript = null;
-        let isUserTyping = false;
+        let activeScriptId = null;
+        let targetTransferScript = null;
+        let campaignSettings = { terms: {} };
 
         // --- VOCATION CONFIGURATION ---
-        const VOCATION_CONFIG = {
-            'Heartbound': { min: 1, max: 5 },
-            'Nomad': { min: 1, max: 5 },
-            'Wilderness Warden': { min: 0, max: 9 },
-            'Chronicler': { min: 0, max: 9 },
-            'Orator': { min: 0, max: 9 },
-            'Scriptweaver': { min: 0, max: 9 },
-            'War-Touched': { min: 0, max: 9 },
-            'Archivist': { min: 0, max: 9 },
-            'Fabricator': { min: 0, max: 5 }
-        };
+        const VOC_KEYS = [
+            { id: 'class_heartbound', default: 'Heartbound', min: 1, max: 5 },
+            { id: 'class_nomad', default: 'Nomad', min: 1, max: 5 },
+            { id: 'class_warden', default: 'Wilderness Warden', min: 0, max: 9 },
+            { id: 'class_chronicler', default: 'Chronicler', min: 0, max: 9 },
+            { id: 'class_orator', default: 'Orator', min: 0, max: 9 },
+            { id: 'class_scriptweaver', default: 'Scriptweaver', min: 0, max: 9 },
+            { id: 'class_wartouched', default: 'War-Touched', min: 0, max: 9 },
+            { id: 'class_archivist', default: 'Archivist', min: 0, max: 9 },
+            { id: 'class_fabricator', default: 'Fabricator', min: 0, max: 5 }
+        ];
 
-        document.addEventListener('focusin', (e) => {
-            if(e.target && (e.target.classList.contains('dm-editable') || e.target.classList.contains('dm-input') || e.target.classList.contains('script-desc-area'))) {
-                isUserTyping = true;
-            }
-        });
-        document.addEventListener('focusout', (e) => {
-            if(e.target && (e.target.classList.contains('dm-editable') || e.target.classList.contains('dm-input') || e.target.classList.contains('script-desc-area'))) {
-                isUserTyping = false;
-                window.renderScripts();
-            }
-        });
-
-        // --- DATABASE UPDATERS ---
-        const debounce = (func, wait) => {
-            let timeout;
-            return (...args) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func(...args), wait);
-            };
-        };
-
-        const performUpdate = async (id, payload) => {
-            if (!currentUser || activeRole !== 'dm') return;
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, id), payload);
-            } catch (e) {
-                console.error("Save failed:", e);
-                window.showToast("Network Sync Failed");
-            }
-        };
-        const debouncedUpdate = debounce(performUpdate, 800);
-
-        window.dbUp = (id, field, val) => {
-            if(activeRole !== 'dm' || !currentUser) return;
-            debouncedUpdate(id, { [field]: val });
-        };
-
-        // --- FILTERING & RENDERING ---
+        // --- RENDER LOGIC ---
         window.renderLevelTabs = () => {
             const container = document.getElementById('level-tabs-container');
             if (!container) return;
 
             let min = 0; let max = 9;
-            if (currentVocationFilter !== 'All' && VOCATION_CONFIG[currentVocationFilter]) {
-                min = VOCATION_CONFIG[currentVocationFilter].min;
-                max = VOCATION_CONFIG[currentVocationFilter].max;
+            if (currentVocationFilter !== 'All') {
+                const voc = VOC_KEYS.find(v => v.id === currentVocationFilter);
+                if (voc) {
+                    min = voc.min;
+                    max = voc.max;
+                }
             }
 
             // Ensure currentLevel is within the bounds of the newly selected vocation
@@ -306,7 +350,12 @@
             
             const vt = document.getElementById('view-title');
             if (vt) {
-                let vocTxt = currentVocationFilter === 'All' ? 'All Scripts' : currentVocationFilter;
+                let vocTxt = 'All Scripts';
+                if (currentVocationFilter !== 'All') {
+                    const voc = VOC_KEYS.find(v => v.id === currentVocationFilter);
+                    if (voc) vocTxt = campaignSettings?.terms?.[voc.id] || voc.default;
+                }
+                
                 let lvlTxt = lvl === '0' ? 'Tricks' : `Lv. ${lvl}`;
                 vt.textContent = `${vocTxt} — ${lvlTxt}`;
             }
@@ -314,11 +363,11 @@
             window.renderScripts();
         };
 
-        window.setVocationFilter = (voc) => {
-            currentVocationFilter = voc;
+        window.setVocationFilter = (vocId) => {
+            currentVocationFilter = vocId;
             window.renderVocationTabs();
             window.renderLevelTabs();
-            window.setLevelFilter(currentLevelFilter); // Applies filter, updates title & renders scripts
+            window.setLevelFilter(currentLevelFilter); 
         };
 
         window.renderVocationTabs = () => {
@@ -327,19 +376,19 @@
             
             let html = `<button onclick="window.setVocationFilter('All')" class="vocation-tab ${currentVocationFilter === 'All' ? 'active' : ''}" id="tab-voc-All">ALL</button>`;
             
-            Object.keys(VOCATION_CONFIG).forEach(v => {
-                const safeId = v.replace(/\s+/g, '-');
-                html += `<button onclick="window.setVocationFilter('${v}')" class="vocation-tab ${currentVocationFilter === v ? 'active' : ''}" id="tab-voc-${safeId}">${v.toUpperCase()}</button>`;
+            VOC_KEYS.forEach(v => {
+                const displayName = campaignSettings?.terms?.[v.id] || v.default;
+                html += `<button onclick="window.setVocationFilter('${v.id}')" class="vocation-tab ${currentVocationFilter === v.id ? 'active' : ''}" id="tab-voc-${v.id}">${displayName.toUpperCase()}</button>`;
             });
 
             container.innerHTML = html;
         };
 
-        window.parseAeonfallContent = (text, isDM) => {
+        window.parseAeonfallContent = (text) => {
             if (!text) return '';
-            let html = text.replace(/\*\*(.*?)\*\*/g, '<b class="text-ink">$1</b>');
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
-            html = html.replace(/__(.*?)__/g, '<u>$1</u>');
+            html = html.replace(/\n/g, '<br>');
             return html;
         };
 
@@ -348,231 +397,215 @@
             const grid = document.getElementById('scripts-grid');
             if (!grid) return;
 
-            window.renderVocationTabs();
-
-            // Filter scripts
+            // Filter scripts by Level and Vocation search string
             let visibleScripts = scripts.filter(s => (s.level || '0') === currentLevelFilter);
             
             if (currentVocationFilter !== 'All') {
-                visibleScripts = visibleScripts.filter(s => {
-                    const lists = (s.lists || '').toLowerCase();
-                    return lists.includes(currentVocationFilter.toLowerCase());
-                });
+                const targetVoc = VOC_KEYS.find(v => v.id === currentVocationFilter);
+                if (targetVoc) {
+                    const searchName = (campaignSettings?.terms?.[targetVoc.id] || targetVoc.default).toLowerCase();
+                    visibleScripts = visibleScripts.filter(s => {
+                        const lists = (s.lists || '').toLowerCase();
+                        return lists.includes(searchName);
+                    });
+                }
             }
 
             if (visibleScripts.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-16 text-center border-2 border-dashed border-gray-800 rounded-lg bg-black bg-opacity-30"><i class="fa-solid fa-scroll text-4xl text-gray-600 mb-4"></i><p class="text-gray-500 text-xs italic font-serif">No scripts documented for this level/vocation.</p></div>`;
+                grid.innerHTML = `<div class="col-span-full py-16 text-center border-2 border-dashed border-gray-700 rounded-lg bg-black/40"><i class="fa-solid fa-scroll text-4xl text-gray-600 mb-4"></i><p class="text-gray-500 text-sm italic font-serif">No scripts found for this criteria.</p></div>`;
                 return;
             }
 
             grid.innerHTML = visibleScripts.map(s => {
-                
-                let dmControlsHtml = '';
-                if (isDM) {
-                    dmControlsHtml = `
-                        <div class="absolute top-4 right-4 flex items-center gap-3 z-50 text-gray-400">
-                            <button onclick="window.triggerDel('${s.id}')" class="hover:text-blood transition-colors"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    `;
-                }
+                let lvlTxt = s.level === '0' ? 'Trick' : `Level ${s.level}`;
+                let typeTxt = s.sType ? `[${s.sType}]` : '';
+                let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
-                // Data mapping matching the screenshot layout
-                const name = s.name || '';
-                const lvlTxt = s.level === '0' ? 'Trick' : `Level ${s.level}`;
-                const school = s.school || 'Uncategorized';
-                const sType = s.sType ? `[${s.sType}]` : '';
-                
+                let dmControls = isDM ? `<button onclick="window.openScriptModal('${s.id}')" class="absolute top-4 right-4 text-gold hover:text-white transition-colors"><i class="fa-solid fa-pen"></i></button>` : '';
+
                 return `
-                    <div class="parchment-card p-6 pb-4">
-                        ${dmControlsHtml}
+                    <div class="script-card">
+                        ${dmControls}
+                        <h3 class="script-title pr-8">${s.name || 'Unnamed Script'}</h3>
+                        <p class="script-meta">${metaTxt}</p>
                         
-                        <!-- Header Area -->
-                        <div class="border-b-2 border-blood pb-2 mb-4">
-                            ${isDM 
-                                ? `<input type="text" class="dm-input text-blood font-heading font-black text-2xl tracking-wide uppercase mb-1" value="${name}" placeholder="SCRIPT NAME" oninput="window.dbUp('${s.id}', 'name', this.value)">`
-                                : `<h3 class="text-blood font-heading font-black text-2xl tracking-wide uppercase mb-1">${name}</h3>`
-                            }
-                            <div class="flex items-center gap-1 font-serif text-ink italic text-sm">
-                                <span>${lvlTxt} —</span>
-                                ${isDM ? `<input type="text" class="dm-input w-24" value="${school}" placeholder="School" oninput="window.dbUp('${s.id}', 'school', this.value)">` : `<span>${school}</span>`}
-                                ${isDM ? `<input type="text" class="dm-input w-24 text-blood font-bold" value="${s.sType || ''}" placeholder="Type (e.g. Ritual)" oninput="window.dbUp('${s.id}', 'sType', this.value)">` : `<span class="text-blood font-bold">${sType}</span>`}
-                            </div>
-                        </div>
-
-                        <!-- Stats List -->
-                        <ul class="list-disc pl-5 space-y-1 mb-4 text-sm font-serif text-ink">
-                            <li>
-                                <strong class="underline decoration-dotted decoration-gray-400">Activation Time</strong>: 
-                                ${isDM ? `<input type="text" class="dm-input w-32 inline-block" value="${s.activation || ''}" placeholder="1 Action" oninput="window.dbUp('${s.id}', 'activation', this.value)">` : (s.activation || '')}
-                            </li>
-                            <li>
-                                <strong class="underline decoration-dotted decoration-gray-400">Range/Area</strong>: 
-                                ${isDM ? `<input type="text" class="dm-input w-32 inline-block" value="${s.range || ''}" placeholder="30 feet" oninput="window.dbUp('${s.id}', 'range', this.value)">` : (s.range || '')}
-                            </li>
-                            <li>
-                                <strong class="underline decoration-dotted decoration-gray-400">Components</strong>: 
-                                ${isDM ? `<input type="text" class="dm-input w-48 inline-block" value="${s.comp || ''}" placeholder="V, S, M" oninput="window.dbUp('${s.id}', 'comp', this.value)">` : (s.comp || '')}
-                            </li>
-                            <li>
-                                <strong class="underline decoration-dotted decoration-gray-400">Duration</strong>: 
-                                ${isDM ? `<input type="text" class="dm-input w-48 inline-block" value="${s.duration || ''}" placeholder="Instantaneous" oninput="window.dbUp('${s.id}', 'duration', this.value)">` : (s.duration || '')}
-                            </li>
+                        <ul class="script-props">
+                            <li><b>Activation Time:</b> ${s.activation || '--'}</li>
+                            <li><b>Range/Area:</b> ${s.range || '--'}</li>
+                            <li><b>Components:</b> ${s.comp || '--'}</li>
+                            <li><b>Duration:</b> ${s.duration || '--'}</li>
                         </ul>
 
-                        <!-- Description Block -->
-                        <div class="mb-5 flex-grow">
-                            ${isDM
-                                ? `<textarea class="script-desc-area" placeholder="Script effects..." oninput="window.dbUp('${s.id}', 'desc', this.value)">${s.desc || ''}</textarea>`
-                                : `<div class="font-serif text-sm text-ink leading-relaxed whitespace-pre-wrap">${window.parseAeonfallContent(s.desc, false)}</div>`
-                            }
-                        </div>
-
-                        <!-- Higher Levels -->
-                        <div class="border-t border-dashed border-gray-400 pt-3 mb-4 font-serif text-sm text-ink">
-                            <strong class="underline decoration-dotted decoration-gray-400">At Higher Levels</strong>. 
-                            ${isDM
-                                ? `<input type="text" class="dm-input inline-block w-3/4" value="${s.scaling || ''}" placeholder="Effects when cast higher..." oninput="window.dbUp('${s.id}', 'scaling', this.value)">`
-                                : (s.scaling || 'None.')
-                            }
-                        </div>
+                        <div class="script-desc">${window.parseAeonfallContent(s.desc)}</div>
                         
-                        <!-- Lists/Vocations -->
-                        <div class="font-serif text-sm text-ink font-bold italic mb-4">
-                            Lists: 
-                            ${isDM
-                                ? `<input type="text" class="dm-input inline-block w-3/4 not-italic font-normal" value="${s.lists || ''}" placeholder="Vocation 1, Vocation 2" oninput="window.dbUp('${s.id}', 'lists', this.value)">`
-                                : (s.lists || 'None')
-                            }
-                        </div>
+                        ${s.scaling ? `<div class="script-higher"><b>At Higher Levels.</b> ${window.parseAeonfallContent(s.scaling)}</div>` : ''}
+                        
+                        <div class="script-lists">Lists: ${s.lists || 'Universal'}</div>
 
-                        <!-- Copy Button -->
-                        <div class="mt-auto pt-4 border-t border-gold flex justify-center">
-                            <button onclick="window.openCopyModal('${s.id}')" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 text-blood font-heading font-bold uppercase text-[10px] tracking-widest px-8 py-2 rounded flex items-center justify-center gap-2 transition-colors w-full">
-                                <i class="fa-solid fa-copy"></i> Copy Script Data
-                            </button>
-                        </div>
+                        <button onclick="window.openTransferModal('${s.id}')" class="bg-[rgba(255,255,255,0.6)] hover:bg-white text-[#7a1b1b] border border-[rgba(139,90,43,0.3)] py-2 rounded text-[10px] font-black uppercase tracking-widest font-heading flex items-center justify-center gap-2 transition-colors mt-2 shadow-sm">
+                            <i class="fa-solid fa-download"></i> Transfer Knowledge
+                        </button>
                     </div>
                 `;
             }).join('');
         };
 
         // --- DM ACTIONS ---
-        window.addScript = async () => {
+        window.openScriptModal = (id = null) => {
             if (activeRole !== 'dm') return;
+            activeScriptId = id;
+            const titleEl = document.getElementById('script-modal-title');
             
-            try {
-                window.showToast("Inscribing blank script...");
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
-                    name: "New Script",
-                    level: currentLevelFilter,
-                    school: "Evocation",
-                    sType: "",
-                    activation: "1 Action",
-                    range: "60 feet",
-                    comp: "V, S",
-                    duration: "Instantaneous",
-                    desc: "Describe the effects here...",
-                    scaling: "",
-                    lists: currentVocationFilter !== 'All' ? currentVocationFilter : "",
-                    createdAt: Date.now()
-                });
-            } catch (err) {
-                console.error(err);
-                window.showToast("Failed to ink codex.");
-            }
-        };
-
-        window.triggerDel = (id) => {
-            targetDelId = id;
-            document.getElementById('del-modal').classList.remove('hidden');
-        };
-
-        window.executeDelete = async () => {
-            if (!targetDelId || activeRole !== 'dm') return;
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, targetDelId));
-                document.getElementById('del-modal').classList.add('hidden');
-                window.showToast("Script obliterated.");
-                targetDelId = null;
-            } catch(e) {
-                window.showToast("Failed to delete.");
-            }
-        };
-
-        // --- COPY TO CHARACTER LOGIC ---
-        window.openCopyModal = async (scriptId) => {
-            targetCopyScript = scripts.find(s => s.id === scriptId);
-            if (!targetCopyScript) return;
-
-            document.getElementById('copy-target-name').textContent = targetCopyScript.name;
-            const selectEl = document.getElementById('copy-target-select');
-            
-            // Populate select box with valid characters
-            selectEl.innerHTML = '<option value="">Select Target...</option>';
-            
-            let validTargets = charactersList.filter(c => !c.isDeleted);
-            
-            // If player, only show characters they own
-            if (activeRole !== 'dm') {
-                validTargets = validTargets.filter(c => c.owner === currentUser.username);
-            }
-
-            if (validTargets.length === 0) {
-                selectEl.innerHTML = '<option value="">No characters available</option>';
-                selectEl.disabled = true;
+            if (id) {
+                const s = scripts.find(x => x.id === id);
+                titleEl.textContent = "Edit Script";
+                document.getElementById('script-name').value = s.name || '';
+                document.getElementById('script-level').value = s.level || '0';
+                document.getElementById('script-school').value = s.school || '';
+                document.getElementById('script-type').value = s.sType || '';
+                document.getElementById('script-activation').value = s.activation || '';
+                document.getElementById('script-range').value = s.range || '';
+                document.getElementById('script-comp').value = s.comp || '';
+                document.getElementById('script-duration').value = s.duration || '';
+                document.getElementById('script-desc').value = s.desc || '';
+                document.getElementById('script-scaling').value = s.scaling || '';
+                document.getElementById('script-lists').value = s.lists || '';
+                document.getElementById('script-delete-btn').classList.remove('hidden');
             } else {
-                selectEl.disabled = false;
-                validTargets.forEach(c => {
-                    selectEl.innerHTML += `<option value="${c.id}">${c.name} (${c.class || 'NPC'})</option>`;
-                });
+                titleEl.textContent = "Inscribe New Script";
+                document.getElementById('script-name').value = '';
+                document.getElementById('script-level').value = currentLevelFilter;
+                document.getElementById('script-school').value = '';
+                document.getElementById('script-type').value = '';
+                document.getElementById('script-activation').value = '';
+                document.getElementById('script-range').value = '';
+                document.getElementById('script-comp').value = '';
+                document.getElementById('script-duration').value = '';
+                document.getElementById('script-desc').value = '';
+                document.getElementById('script-scaling').value = '';
+                
+                // Pre-fill lists field if a specific vocation is selected
+                let listDefault = "";
+                if (currentVocationFilter !== 'All') {
+                    const voc = VOC_KEYS.find(v => v.id === currentVocationFilter);
+                    if (voc) listDefault = campaignSettings?.terms?.[voc.id] || voc.default;
+                }
+                document.getElementById('script-lists').value = listDefault;
+                document.getElementById('script-delete-btn').classList.add('hidden');
             }
-
-            document.getElementById('copy-modal').classList.remove('hidden');
+            
+            document.getElementById('script-modal').classList.remove('hidden');
         };
 
-        window.executeCopyScript = async () => {
-            if (!targetCopyScript) return;
-            
-            const targetId = document.getElementById('copy-target-select').value;
-            if (!targetId) return window.showToast("Select a target first.");
+        window.closeScriptModal = () => document.getElementById('script-modal').classList.add('hidden');
 
-            const char = charactersList.find(c => c.id === targetId);
-            if (!char) return window.showToast("Target not found.");
+        window.saveScript = async () => {
+            if (activeRole !== 'dm') return;
+            const payload = {
+                name: document.getElementById('script-name').value.trim() || 'Unnamed Script',
+                level: document.getElementById('script-level').value.toString(),
+                school: document.getElementById('script-school').value.trim(),
+                sType: document.getElementById('script-type').value.trim(),
+                activation: document.getElementById('script-activation').value.trim(),
+                range: document.getElementById('script-range').value.trim(),
+                comp: document.getElementById('script-comp').value.trim(),
+                duration: document.getElementById('script-duration').value.trim(),
+                desc: document.getElementById('script-desc').value.trim(),
+                scaling: document.getElementById('script-scaling').value.trim(),
+                lists: document.getElementById('script-lists').value.trim(),
+                updatedAt: Date.now()
+            };
 
             try {
-                // Build the move object to match what characters.html expects
-                const newMove = {
-                    name: targetCopyScript.name,
-                    roll: "", // Scripts usually don't have a single defined roll formula in the header
-                    desc: targetCopyScript.desc,
-                    lvl: targetCopyScript.level === '0' ? 'Tricks (0)' : `Level ${targetCopyScript.level}`,
-                    type: 'scriptcasting',
-                    school: targetCopyScript.school,
-                    sType: targetCopyScript.sType,
-                    activation: targetCopyScript.activation,
-                    range: targetCopyScript.range,
-                    comp: targetCopyScript.comp,
-                    duration: targetCopyScript.duration,
-                    scaling: targetCopyScript.scaling
-                };
-
-                const currentMoves = char.moves || [];
-                currentMoves.push(newMove);
-
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', targetId), {
-                    moves: currentMoves
-                });
-
-                document.getElementById('copy-modal').classList.add('hidden');
-                window.showToast("Script Inscribed to Character!");
-                targetCopyScript = null;
-
+                if (activeScriptId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeScriptId), payload);
+                    window.showToast("Script updated.");
+                } else {
+                    payload.createdAt = Date.now();
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), payload);
+                    window.showToast("New Script Inscribed.");
+                }
+                window.closeScriptModal();
             } catch (err) {
                 console.error(err);
-                window.showToast("Failed to copy script.");
+                window.showToast("Error saving script.");
             }
         };
 
+        window.deleteScript = async () => {
+            if (activeRole !== 'dm' || !activeScriptId) return;
+            if (!confirm("Permanently erase this script from the codex?")) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeScriptId));
+                window.closeScriptModal();
+                window.showToast("Script erased.");
+            } catch (e) {
+                window.showToast("Error deleting script.");
+            }
+        };
+
+        // --- TRANSFER SYSTEM ---
+        window.openTransferModal = (scriptId) => {
+            targetTransferScript = scripts.find(s => s.id === scriptId);
+            if (!targetTransferScript) return;
+            
+            const select = document.getElementById('transfer-char-select');
+            select.innerHTML = '<option value="">Select Target...</option>';
+            
+            // Filter characters: DMs see all PCs, Players see only their own PCs
+            const isDM = activeRole === 'dm';
+            const validTargets = characters.filter(c => c.type === 'PC' && !c.isDeleted && (isDM || c.owner === currentUser.username));
+            
+            if (validTargets.length === 0) {
+                select.innerHTML = '<option value="">No valid characters found</option>';
+            } else {
+                validTargets.forEach(c => {
+                    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                });
+            }
+            
+            document.getElementById('transfer-modal').classList.remove('hidden');
+        };
+
+        window.executeTransfer = async () => {
+            const charId = document.getElementById('transfer-char-select').value;
+            if (!charId || !targetTransferScript) return window.showToast("Select a character first.");
+            
+            const char = characters.find(c => c.id === charId);
+            if (!char) return window.showToast("Character not found.");
+
+            // Format description and compile the move object
+            let fullDesc = `**Cast Time:** ${targetTransferScript.activation || '--'}\n**Range:** ${targetTransferScript.range || '--'}\n**Duration:** ${targetTransferScript.duration || '--'}\n**Components:** ${targetTransferScript.comp || '--'}\n\n${targetTransferScript.desc}`;
+            
+            const newMove = {
+                name: targetTransferScript.name,
+                roll: "", // Scripts usually don't have a single hardcoded roll
+                desc: fullDesc,
+                lvl: targetTransferScript.level === '0' ? 'Tricks (0)' : `Level ${targetTransferScript.level}`,
+                type: "scriptcasting",
+                school: targetTransferScript.school || '',
+                sType: targetTransferScript.sType || '',
+                activation: targetTransferScript.activation || '',
+                range: targetTransferScript.range || '',
+                comp: targetTransferScript.comp || '',
+                duration: targetTransferScript.duration || '',
+                scaling: targetTransferScript.scaling || ''
+            };
+
+            const updatedMoves = [...(char.moves || []), newMove];
+
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), {
+                    moves: updatedMoves
+                });
+                document.getElementById('transfer-modal').classList.add('hidden');
+                window.showToast(`Script injected into ${char.name}'s ledger!`);
+                targetTransferScript = null;
+            } catch (err) {
+                console.error(err);
+                window.showToast("Transfer failed.");
+            }
+        };
 
         // --- AUTH & INITIALIZATION ---
         onAuthStateChanged(auth, async (u) => {
@@ -597,55 +630,72 @@
 
                 activeRole = currentUser.role || 'player';
 
+                // Fetch campaign name
                 if (appId !== "demo_campaign") {
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists() && campDoc.data().name) {
-                        const titleEl = document.getElementById('main-campaign-title');
-                        if (titleEl) titleEl.innerText = campDoc.data().name;
-                        document.title = `${campDoc.data().name} - Script Codex`;
+                        const titleEl = document.getElementById('main-campaign-title-label');
+                        if (titleEl) {
+                            // If they haven't renamed it, default to Campaign Name - Script Codex
+                            if (titleEl.innerText === 'Script Codex') titleEl.innerText = `${campDoc.data().name} Codex`;
+                        }
+                        document.title = `${campDoc.data().name} - Scripts`;
                     }
                 }
 
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 
                 // Toggle DM Features
-                if (activeRole === 'dm') {
-                    document.body.classList.add('dm-active-edit');
-                    document.getElementById('add-script-btn').classList.remove('hidden');
-                }
+                const isDM = activeRole === 'dm';
+                document.getElementById('btn-create-script')?.classList.toggle('hidden', !isDM);
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
-                
+
                 // Initialize Tabs
                 window.renderVocationTabs();
                 window.renderLevelTabs();
                 window.setLevelFilter(currentLevelFilter);
                 
-                // Setup Database Listeners
+                // --- DATABASE LISTENERS ---
                 
-                // 1. Listen for Scripts
+                // 1. Listen for Terminology Config
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => {
+                    if (docSnap.exists()) {
+                        campaignSettings = docSnap.data();
+                        
+                        // Apply Nav Terminology
+                        const safeSet = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerText = val; };
+                        safeSet('nav-party', campaignSettings.terms?.nav_party);
+                        safeSet('nav-npcs', campaignSettings.terms?.nav_npcs);
+                        safeSet('nav-beasts', campaignSettings.terms?.nav_beasts);
+                        safeSet('nav-backpack', campaignSettings.terms?.nav_backpack);
+                        safeSet('nav-handbook', campaignSettings.terms?.nav_handbook);
+                        safeSet('nav-graveyard', campaignSettings.terms?.nav_graveyard);
+                        
+                        const titleEl = document.getElementById('main-campaign-title-label');
+                        if (titleEl) titleEl.innerText = campaignSettings.terms?.book_scriptcodex || 'Script Codex';
+                        
+                        // Re-render tabs and titles with new names
+                        window.renderVocationTabs();
+                        window.setLevelFilter(currentLevelFilter);
+                    }
+                }, (err) => console.error("Terminology Sync Error:", err));
+
+                // 2. Listen for Scripts
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
                     scripts = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.name > b.name ? 1 : -1));
-                    if (!isUserTyping) {
-                        window.renderScripts();
-                    }
-                }, (err) => {
-                    console.error("Archive failure:", err);
-                    window.showToast("Archival Stream Error");
-                });
+                    window.renderScripts();
+                }, (err) => console.error("Script Sync Error:", err));
 
-                // 2. Listen for Characters (for copying)
+                // 3. Listen for Characters (For Transfer Feature)
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => {
-                    charactersList = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    characters = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 });
 
             } catch (error) {
-                console.error("Initialization Error:", error);
-                const initLoad = document.getElementById('initial-loading');
-                if (initLoad) {
-                    initLoad.innerHTML = `<h2 class="font-heading text-2xl text-blood">Connection Failed</h2><p class="text-xs text-gray-400 mt-2">${error.message}</p>`;
-                }
+                console.error(error);
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Connection Failed</h2>`;
             }
         });
     </script>
