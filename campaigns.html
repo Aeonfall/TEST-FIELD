@@ -200,10 +200,15 @@
                 </div>
                 <div>
                     <label class="block font-heading font-bold text-ink mb-1">Your Path</label>
-                    <select id="edit-profile-role" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded">
+                    <select id="edit-profile-role" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" onchange="document.getElementById('edit-dm-secret-container').classList.toggle('hidden', this.value !== 'dm')">
                         <option value="player">Player</option>
                         <option value="dm">Dungeon Master</option>
                     </select>
+                </div>
+                <div id="edit-dm-secret-container" class="hidden">
+                    <label class="block font-heading font-bold text-blood mb-1">DM Sanctum Password</label>
+                    <p class="text-xs italic mb-2 text-gray-700">Required to claim the mantle of Dungeon Master.</p>
+                    <input type="password" id="edit-profile-dm-secret" class="w-full p-2 bg-white bg-opacity-50 border border-blood rounded" placeholder="Sanctum passphrase...">
                 </div>
                 <div class="flex gap-4 mt-6">
                     <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="flex-1 border-2 border-blood text-blood px-4 py-2 rounded font-heading font-bold">Cancel</button>
@@ -249,21 +254,43 @@
         window.openProfileModal = () => {
             document.getElementById('edit-profile-name').value = currentUser.username;
             document.getElementById('edit-profile-role').value = currentUser.role;
+            document.getElementById('edit-profile-dm-secret').value = ''; // Clear password field
+            document.getElementById('edit-dm-secret-container').classList.toggle('hidden', currentUser.role !== 'dm');
             document.getElementById('profile-modal').classList.remove('hidden');
         };
 
         window.saveProfile = async () => {
             const newName = document.getElementById('edit-profile-name').value.trim();
             const newRole = document.getElementById('edit-profile-role').value;
+            const secretInput = document.getElementById('edit-profile-dm-secret').value.trim();
             
             if (!newName) return showModal("Hold!", "You must have a display name.");
 
+            // Verify DM Sanctum Password
+            if (newRole === 'dm') {
+                if (!secretInput) {
+                    return showModal("Hold!", "You must enter a Sanctum Password to be a Dungeon Master.");
+                }
+                // If they already have a secret stored, verify it matches
+                if (currentUser.dmSecret && currentUser.dmSecret !== secretInput) {
+                    return showModal("Access Denied", "Incorrect Sanctum Password.");
+                }
+            }
+
             try {
                 // Update Firestore
-                await updateDoc(doc(db, 'users', currentUser.uid), {
+                const updates = {
                     username: newName,
                     role: newRole
-                });
+                };
+
+                // If upgrading to DM for the first time, save the new password
+                if (newRole === 'dm' && !currentUser.dmSecret) {
+                    updates.dmSecret = secretInput;
+                    currentUser.dmSecret = secretInput;
+                }
+
+                await updateDoc(doc(db, 'users', currentUser.uid), updates);
 
                 // Update Local State & UI
                 currentUser.username = newName;
