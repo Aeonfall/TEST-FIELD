@@ -106,6 +106,16 @@
         input:disabled, textarea:disabled, select:disabled { background-color: transparent !important; color: #777 !important; border-bottom: 1px dashed rgba(139, 90, 43, 0.2) !important; cursor: not-allowed; opacity: 0.8; }
         input[readonly], textarea[readonly], select[readonly] { background-color: transparent !important; color: #2c1e16 !important; cursor: default; }
 
+        /* Remove default number arrows for cleaner look */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         /* SKILL / SAVE ROW LAYOUT */
         .stat-row { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-bottom: 1px dashed rgba(139, 90, 43, 0.2); transition: background 0.1s; }
         .stat-row:hover { background: rgba(255,255,255,0.4); }
@@ -137,8 +147,8 @@
         .lvl-header { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 900; border-bottom: 1px solid rgba(139, 90, 43, 0.3); margin-bottom: 8px; padding-bottom: 4px; color: #7a1b1b; text-transform: uppercase;}
         
         .dm-panel { background: #2c1e16; color: #f1e5c5; padding: 20px; border-radius: 8px; margin-bottom: 24px; border: 2px solid #c5a059; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .dm-whisper-box { background: rgba(241, 229, 197, 0.1); border-left: 4px solid #7c3aed; padding: 10px; border-radius: 4px; margin-bottom: 12px; color: #f1e5c5; }
-        .whisper-tag { font-size: 9px; font-weight: 900; color: #b48ead; text-transform: uppercase; margin-bottom: 4px; display: block; font-family: 'Cinzel', serif;}
+        .dm-whisper-box { background: rgba(124, 58, 237, 0.08); border-left: 4px solid #7c3aed; padding: 10px; border-radius: 4px; margin-bottom: 12px; color: #1a1a1a; }
+        .whisper-tag { font-size: 9px; font-weight: 900; color: #7c3aed; text-transform: uppercase; margin-bottom: 4px; display: block; font-family: 'Cinzel', serif;}
 
         .equip-header { background: rgba(255,255,255,0.3); font-size: 10px; font-weight: 900; color: #7a1b1b; text-transform: uppercase; padding: 8px 12px; border-radius: 4px; display: grid; grid-template-columns: 1fr 60px 80px 30px; gap: 12px; margin-bottom: 4px; font-family: 'Cinzel', serif;}
         .equip-row { display: grid; grid-template-columns: 1fr 60px 80px 30px; gap: 12px; align-items: center; padding: 4px 12px; border-bottom: 1px dashed rgba(139, 90, 43, 0.2); }
@@ -401,7 +411,7 @@
                         <div class="flex-grow w-full md:w-auto">
                             <h4 class="text-xs font-black uppercase text-[#f59e0b] mb-2 font-heading tracking-wider">DM Whisper</h4>
                             <div class="flex gap-3 w-full">
-                                <input type="text" id="dm-whisper-input" class="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-parchment text-sm font-serif flex-grow focus:outline-none focus:border-[#f59e0b] transition-colors" placeholder="Secret note...">
+                                <input type="text" id="dm-whisper-input" class="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-white font-bold text-sm font-serif flex-grow focus:outline-none focus:border-[#f59e0b] transition-colors placeholder-gray-600" placeholder="Secret note...">
                                 <button onclick="window.sendDmWhisper()" class="bg-[#a855f7] hover:bg-[#9333ea] text-white px-6 py-2.5 rounded-lg text-xs font-black uppercase shadow transition-colors font-heading tracking-wider">Send</button>
                             </div>
                         </div>
@@ -507,15 +517,15 @@
                                     <!-- DMG ADJUST BUTTON -->
                                     <button onclick="window.openHpAdjustmentModal()" class="absolute top-2 left-2 text-xs bg-transparent hover:bg-blood text-blood hover:text-parchment border border-blood p-1.5 rounded transition-colors" title="Apply Damage/Healing">⚔️</button>
                                     
-                                    <div class="flex justify-between px-2 mb-2 text-[10px] font-bold uppercase text-ink font-heading">
-                                        <span>MAX HP: <input type="number" class="w-8 text-blood bg-transparent" data-key="hpMax"></span>
-                                        <span>HD: <input type="number" class="w-8 text-center bg-transparent" data-key="hdCurrent"> / <input type="text" class="w-10 text-right bg-transparent" data-key="hd" placeholder="1d10"></span>
+                                    <div class="flex justify-between px-2 mb-2 text-[10px] font-bold uppercase text-ink font-heading items-center">
+                                        <span class="flex items-center gap-1">MAX HP: <input type="number" class="w-10 text-blood bg-transparent border-b border-dashed border-gray-400 text-center" data-key="hpMax"></span>
+                                        <span class="flex items-center gap-1">HD: <input type="number" class="w-8 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hdCurrent"> / <input type="text" class="w-10 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hd" placeholder="1d10"></span>
                                     </div>
                                     
-                                    <input type="number" class="text-7xl font-black text-center w-full mb-1 text-blood font-heading drop-shadow-sm bg-transparent" data-key="hpCurrent" placeholder="10">
+                                    <input type="number" class="text-7xl font-black text-center w-full mb-1 text-blood font-heading drop-shadow-sm bg-transparent border-none mt-4" data-key="hpCurrent" placeholder="10">
                                     <div class="text-[10px] font-bold uppercase mt-2 font-heading text-555 border-b border-dashed border-gray-400 pb-2 mx-8">Health Points</div>
                                     
-                                    <input type="number" class="text-xl font-bold text-center w-full mt-4 text-ink bg-transparent" data-key="tempHp" placeholder="Temp HP">
+                                    <input type="number" class="text-xl font-bold text-center w-full mt-6 text-ink bg-transparent border-none" data-key="tempHp" placeholder="Temp HP">
                                     <div class="text-[10px] font-bold uppercase mt-1 text-555 font-heading">Temporary Hit Points</div>
                                     
                                     <div class="flex gap-2 justify-center mt-6 font-heading">
@@ -552,12 +562,12 @@
                                 </div>
                                 <div class="sheet-card">
                                     <h3>Stress & Trauma</h3>
-                                    <div class="flex justify-around items-center mb-4">
-                                        <div class="text-center"><input type="number" data-key="currentStress" class="text-2xl font-bold text-center w-16 text-blood font-heading" value="0"><label class="tiny-label">Current</label></div>
+                                    <div class="flex justify-around items-center mb-4 mt-2">
+                                        <div class="text-center"><input type="number" data-key="currentStress" class="text-3xl font-bold text-center w-20 text-blood font-heading border-b border-dashed border-gray-400" value="0"><label class="tiny-label mt-1">Current</label></div>
                                         <div class="text-3xl text-gray-400 font-light">/</div>
-                                        <div class="text-center"><input type="number" data-key="stressThreshold" class="text-2xl font-bold text-center w-16 text-ink font-heading" value="10"><label class="tiny-label">Threshold</label></div>
+                                        <div class="text-center"><input type="number" data-key="stressThreshold" class="text-3xl font-bold text-center w-20 text-ink font-heading border-b border-dashed border-gray-400" value="10"><label class="tiny-label mt-1">Threshold</label></div>
                                     </div>
-                                    <textarea data-key="trauma" class="text-xs italic font-serif h-12 w-full bg-transparent border-t border-dashed border-gray-400 pt-2" placeholder="Scars and traumas..."></textarea>
+                                    <textarea data-key="trauma" class="text-xs italic font-serif h-12 w-full bg-transparent border-t border-dashed border-gray-400 pt-3" placeholder="Scars and traumas..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -2311,12 +2321,12 @@
                 if (whispers.length > 0 || isDM) {
                     wdb.classList.remove('hidden-view');
                     wl.innerHTML = whispers.map((w, i) => `
-                        <div class="dm-whisper-box relative group">
+                        <div class="dm-whisper-box relative group shadow-sm">
                             <div class="flex justify-between items-start">
                                 <span class="whisper-tag">DM SECRET</span>
-                                ${isDM ? `<button onclick="window.deleteWhisper(${i})" class="text-blood hover:text-red-600 font-bold text-[10px] leading-none p-1">✕</button>` : ''}
+                                ${isDM ? `<button onclick="window.deleteWhisper(${i})" class="text-blood hover:text-red-600 font-bold text-[12px] leading-none p-1">✕</button>` : ''}
                             </div>
-                            <p class="text-xs italic font-serif">${w.text}</p>
+                            <p class="text-sm italic font-serif text-black font-bold mt-1">${w.text}</p>
                         </div>
                     `).reverse().join('');
                 } else { wdb.classList.add('hidden-view'); }
