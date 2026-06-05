@@ -118,6 +118,7 @@
                 <p class="italic text-gray-700">Welcome back, <span id="nexus-username" class="font-bold text-blood">Traveler</span></p>
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4 md:mt-0">
+                <button onclick="window.openProfileModal()" class="fantasy-btn px-4 py-2 rounded text-sm"><i class="fa-solid fa-user-pen mr-2"></i>Edit Profile</button>
                 <button id="btn-forge-campaign" onclick="window.openForgeModal()" class="fantasy-btn px-4 py-2 rounded hidden"><i class="fa-solid fa-hammer mr-2"></i>Forge Campaign</button>
                 <button onclick="window.signOutUser()" class="border-2 border-blood text-blood hover:bg-blood hover:text-parchment px-4 py-2 rounded font-heading font-bold transition">Depart (Sign Out)</button>
             </div>
@@ -188,11 +189,35 @@
         </div>
     </div>
 
+    <!-- Profile Settings Modal -->
+    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden backdrop-blur-sm">
+        <div class="parchment-bg p-8 max-w-md w-full mx-4 rounded-lg shadow-2xl">
+            <h3 class="font-heading text-2xl font-bold text-blood mb-4 text-center">Update Identity</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block font-heading font-bold text-ink mb-1">Display Name</label>
+                    <input type="text" id="edit-profile-name" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" placeholder="Your true name...">
+                </div>
+                <div>
+                    <label class="block font-heading font-bold text-ink mb-1">Your Path</label>
+                    <select id="edit-profile-role" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded">
+                        <option value="player">Player</option>
+                        <option value="dm">Dungeon Master</option>
+                    </select>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="flex-1 border-2 border-blood text-blood px-4 py-2 rounded font-heading font-bold">Cancel</button>
+                    <button onclick="window.saveProfile()" class="flex-1 fantasy-btn px-4 py-2 rounded">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
@@ -219,6 +244,46 @@
         window.signOutUser = () => signOut(auth);
         window.emergencyLogout = () => signOut(auth);
         window.openForgeModal = () => document.getElementById('forge-modal').classList.remove('hidden');
+
+        // Logic for Profile Editing
+        window.openProfileModal = () => {
+            document.getElementById('edit-profile-name').value = currentUser.username;
+            document.getElementById('edit-profile-role').value = currentUser.role;
+            document.getElementById('profile-modal').classList.remove('hidden');
+        };
+
+        window.saveProfile = async () => {
+            const newName = document.getElementById('edit-profile-name').value.trim();
+            const newRole = document.getElementById('edit-profile-role').value;
+            
+            if (!newName) return showModal("Hold!", "You must have a display name.");
+
+            try {
+                // Update Firestore
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    username: newName,
+                    role: newRole
+                });
+
+                // Update Local State & UI
+                currentUser.username = newName;
+                currentUser.role = newRole;
+                
+                document.getElementById('nexus-username').innerText = newName;
+                if (newRole === 'dm') {
+                    document.getElementById('btn-forge-campaign').classList.remove('hidden');
+                } else {
+                    document.getElementById('btn-forge-campaign').classList.add('hidden');
+                }
+
+                document.getElementById('profile-modal').classList.add('hidden');
+                loadCampaigns(); // Refresh lists
+                showModal("Success", "Your identity has been updated!");
+            } catch (e) {
+                console.error(e);
+                showModal("Error", "Failed to update profile in the archives.");
+            }
+        };
 
         // Check authentication status
         onAuthStateChanged(auth, async (user) => {
