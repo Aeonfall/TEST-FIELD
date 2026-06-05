@@ -159,7 +159,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs, arrayUnion, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        // IMPORT arrayRemove to allow players to safely leave a campaign!
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
         window.showToast = (m) => { 
@@ -209,9 +210,10 @@
 
             if (camp.visibility === 'private') badges += `<span class="bg-gray-800 text-gray-400 border border-gray-600 px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading shadow-md ml-1"><i class="fa-solid fa-lock text-[7px] mr-1"></i>Private</span>`;
 
-            // EDIT & DELETE BUTTONS (DM ONLY)
+            // DM TOOLS (Edit & Delete) AND PLAYER TOOLS (Leave)
             const editBtn = isDM ? `<button onclick="event.stopPropagation(); window.openEditCampaign('${camp.id}')" class="text-gold hover:text-yellow-400 transition-colors ml-3" title="Edit Realm"><i class="fa-solid fa-pen"></i></button>` : '';
             const deleteBtn = isDM ? `<button onclick="event.stopPropagation(); window.deleteCampaign('${camp.id}', '${camp.name.replace(/'/g, "\\'")}')" class="text-blood hover:text-red-400 transition-colors ml-3" title="Delete Realm"><i class="fa-solid fa-trash-can"></i></button>` : '';
+            const leaveBtn = (!isDM && isMine) ? `<button onclick="event.stopPropagation(); window.leaveCampaign('${camp.id}', '${camp.name.replace(/'/g, "\\'")}')" class="text-gray-400 hover:text-parchment transition-colors ml-3" title="Leave Realm"><i class="fa-solid fa-right-from-bracket"></i></button>` : '';
 
             // Optional description display
             const descText = camp.description ? `<p class="text-xs text-gray-400 font-serif mb-4 line-clamp-2">${camp.description}</p>` : '';
@@ -224,6 +226,7 @@
                             <div class="flex gap-1">${badges}</div>
                             ${editBtn}
                             ${deleteBtn}
+                            ${leaveBtn}
                         </div>
                     </div>
                     <p class="text-xs text-gray-500 font-serif italic mb-2">Run by ${camp.dmName || 'Unknown DM'}</p>
@@ -387,6 +390,21 @@
             } catch (err) {
                 console.error(err);
                 window.showToast("Failed to destroy realm.");
+            }
+        };
+
+        // Leave Campaign (Players Only)
+        window.leaveCampaign = async (id, name) => {
+            if (!confirm(`Are you sure you want to leave the realm of "${name}"? You will need the invite code to return.`)) return;
+            
+            try {
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    joinedCampaigns: arrayRemove(id)
+                });
+                window.showToast("You have left the realm.");
+            } catch (err) {
+                console.error(err);
+                window.showToast("Failed to leave realm.");
             }
         };
 
