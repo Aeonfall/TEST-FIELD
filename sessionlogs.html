@@ -81,6 +81,9 @@
         .hidden-view { display: none !important; }
         
         .drop-cap { float: left; font-family: 'Cinzel', serif; font-size: 65px; line-height: 50px; padding-top: 4px; padding-right: 8px; color: #7a1b1b; }
+        
+        .chronicle-wrapper { background-color: #fdfaf3; border: 3px solid #3e2723; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .chronicle-wrapper::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 1px solid #3e2723; pointer-events: none; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -152,82 +155,98 @@
                     <span id="sheet-visibility-badge" class="bg-gray-800 text-gray-400 px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest border border-gray-600">Visibility</span>
                     <div class="flex items-center gap-2" id="sheet-controls-dm">
                         <button onclick="window.saveLog(true)" class="fantasy-btn-alt px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">SYNC</button>
-                        <button onclick="window.triggerDeleteModal()" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-parchment px-3 py-1 rounded text-[10px] font-black uppercase transition-colors">Manage</button>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <div id="sheet-container" class="parchment-paper max-w-4xl mx-auto mt-8 mb-24">
-            <div class="p-6 md:p-12">
-                
-                <div id="dm-oversight-panel" class="dm-panel hidden-view mb-8">
-                    <div class="flex justify-between items-center font-heading">
-                        <div class="space-y-3">
-                            <h4 class="text-[10px] font-black uppercase text-gold">Visibility Control</h4>
-                            <div class="flex flex-wrap gap-2">
-                                <button onclick="window.updateLogVisibility('public')" class="bg-transparent border border-gold text-gold hover:bg-gold hover:text-ink px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">PUBLIC (Players can read)</button>
-                                <button onclick="window.updateLogVisibility('unpublished')" class="bg-gray-800 border border-gray-600 text-gray-300 hover:bg-gray-700 px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">DRAFT (DM Only)</button>
-                            </div>
+        <div id="sheet-container" class="max-w-4xl mx-auto mt-8 mb-24 chronicle-wrapper p-8 md:p-14">
+            
+            <div id="dm-oversight-panel" class="dm-panel hidden-view mb-10 !bg-[#1c1c1c] !border-gold !shadow-none !rounded-none !border-2">
+                <div class="flex justify-between items-center font-heading">
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black uppercase text-gold">Visibility Control</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="window.updateLogVisibility('public')" class="bg-transparent border border-gold text-gold hover:bg-gold hover:text-ink px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">PUBLIC (Players can read)</button>
+                            <button onclick="window.updateLogVisibility('unpublished')" class="bg-gray-800 border border-gray-600 text-gray-300 hover:bg-gray-700 px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">DRAFT (DM Only)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end border-b-2 border-[#3e2723] pb-4 mb-6 gap-4 relative z-10">
+                    <h1 class="font-heading text-3xl md:text-4xl font-black text-[#7a1b1b] uppercase tracking-wider">Campaign Chronicles</h1>
+                    <button onclick="window.openNewLogModal()" class="dm-only-view bg-[#8b4513] hover:bg-[#70380f] text-white px-6 py-2.5 rounded-full font-bold uppercase text-[10px] tracking-widest shadow-md transition-colors whitespace-nowrap hidden">+ New Session</button>
+                </div>
+
+                <!-- Session # -->
+                <div class="flex justify-between items-center border-b border-[#e0d7c6] pb-2 mb-8 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <h2 class="font-heading text-4xl md:text-5xl font-black text-[#7a1b1b] uppercase">Session #</h2>
+                        <input type="number" data-key="sessionNum" class="text-4xl md:text-5xl font-black text-[#7a1b1b] font-heading w-24 bg-transparent outline-none border-b-2 border-transparent focus:border-[#c5a059] transition-colors pb-1" placeholder="0">
+                    </div>
+                    <button onclick="window.triggerDeleteModal()" class="dm-only-view border border-[#7a1b1b] text-[#7a1b1b] hover:bg-[#7a1b1b] hover:text-white px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors hidden">Delete</button>
+                </div>
+
+                <!-- Meta Fields -->
+                <div class="space-y-2 mb-10 font-serif text-[15px] text-[#2c1e16] relative z-10">
+                    <div class="flex items-center gap-2"><strong class="text-black w-24">Date:</strong> <input type="text" data-key="date" class="bg-transparent border-b border-transparent focus:border-[#c5a059] outline-none flex-grow" placeholder="MM/DD/YYYY"></div>
+                    <div class="flex items-center gap-2"><strong class="text-black w-24">Location:</strong> <input type="text" data-key="location" class="bg-transparent border-b border-transparent focus:border-[#c5a059] outline-none flex-grow" placeholder="..."></div>
+                    <div class="flex items-start gap-2"><strong class="text-black w-24 mt-1">Summary:</strong> 
+                        <textarea data-key="summary" id="log-summary-input" class="bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none flex-grow resize-y min-h-[40px] pt-1 leading-relaxed" placeholder="..."></textarea>
+                        <div id="log-summary-display" class="flex-grow pt-1 hidden-view leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- Scenes & Beats -->
+                <h3 class="font-heading text-xl font-black text-[#7a1b1b] mb-6 uppercase tracking-widest relative z-10">Scenes & Beats</h3>
+
+                <div class="space-y-6 font-serif text-[15px] text-[#2c1e16] relative z-10">
+                    <div>
+                        <strong class="text-black block mb-2">1. Opening:</strong>
+                        <textarea data-key="sceneOpening" id="log-sceneOpening-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
+                        <div id="log-sceneOpening-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                    </div>
+                    <div>
+                        <strong class="text-black block mb-2">2. Key Goals:</strong>
+                        <textarea data-key="sceneGoals" id="log-sceneGoals-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
+                        <div id="log-sceneGoals-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                    </div>
+                    <div>
+                        <strong class="text-black block mb-2">3. Challenges:</strong>
+                        <textarea data-key="sceneChallenges" id="log-sceneChallenges-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
+                        <div id="log-sceneChallenges-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                    </div>
+                    <div>
+                        <strong class="text-black block mb-2">4. Secrets:</strong>
+                        <textarea data-key="sceneSecrets" id="log-sceneSecrets-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
+                        <div id="log-sceneSecrets-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                    </div>
+                    <div>
+                        <strong class="text-black block mb-2">5. Closing:</strong>
+                        <textarea data-key="sceneClosing" id="log-sceneClosing-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
+                        <div id="log-sceneClosing-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                    </div>
+                </div>
+
+                <!-- DM Intel Overlay -->
+                <div id="dm-intel-overlay" class="mt-14 bg-[#f8f5ee] border border-[#e8e0cd] rounded-xl p-6 md:p-8 hidden-view relative z-10">
+                    <h4 class="font-heading text-[10px] font-black text-[#b8860b] opacity-80 tracking-widest uppercase mb-6">DM Intel Overlay</h4>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h5 class="font-heading text-[10px] font-black text-[#7a1b1b] uppercase mb-2 tracking-wider">Goals</h5>
+                            <textarea data-key="dmGoals" class="w-full bg-white border border-[#e8e0cd] rounded-lg p-4 text-[15px] font-serif outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] min-h-[60px] resize-y" placeholder="..."></textarea>
+                        </div>
+                        <div>
+                            <h5 class="font-heading text-[10px] font-black text-[#7a1b1b] uppercase mb-2 tracking-wider">Notes</h5>
+                            <textarea data-key="dmNotes" class="w-full bg-white border border-[#e8e0cd] rounded-lg p-4 text-[15px] font-serif outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] min-h-[100px] resize-y" placeholder="..."></textarea>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <!-- Header -->
-                    <div class="text-center mb-10">
-                        <input type="text" data-key="title" class="log-name-main text-center" placeholder="SESSION TITLE">
-                        <div class="flex justify-center items-center gap-4 log-meta-line border-none mt-2">
-                            <span>Session #<input type="number" data-key="sessionNum" class="w-12 text-center bg-transparent border-b border-dashed border-gray-400 ml-1 inline" placeholder="1"></span>
-                            <span>•</span>
-                            <span>Date: <input type="text" data-key="date" class="w-32 text-center bg-transparent border-b border-dashed border-gray-400 inline" placeholder="MM/DD/YYYY"></span>
-                        </div>
-                    </div>
-
-                    <!-- The Story -->
-                    <div class="mb-10">
-                        <div class="section-header">The Story</div>
-                        <textarea data-key="summary" id="log-summary-input" class="log-textarea" placeholder="Record the events of the session..."></textarea>
-                        <div id="log-summary-display" class="log-text-display"></div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Locations & NPCs -->
-                        <div class="space-y-8">
-                            <div>
-                                <div class="section-header"><i class="fa-solid fa-map-location-dot mr-2"></i>Locations Visited</div>
-                                <textarea data-key="locations" id="log-locations-input" class="log-textarea min-h-[100px]" placeholder="Towns, dungeons, regions..."></textarea>
-                                <div id="log-locations-display" class="log-text-display min-h-[50px] mb-4"></div>
-                            </div>
-                            <div>
-                                <div class="section-header"><i class="fa-solid fa-users mr-2"></i>NPCs Met</div>
-                                <textarea data-key="npcs" id="log-npcs-input" class="log-textarea min-h-[100px]" placeholder="Allies, merchants, contacts..."></textarea>
-                                <div id="log-npcs-display" class="log-text-display min-h-[50px] mb-4"></div>
-                            </div>
-                        </div>
-
-                        <!-- Encounters & Loot -->
-                        <div class="space-y-8">
-                            <div>
-                                <div class="section-header"><i class="fa-solid fa-khanda mr-2"></i>Encounters & Beasts</div>
-                                <textarea data-key="encounters" id="log-encounters-input" class="log-textarea min-h-[100px]" placeholder="Battles fought, beasts slain..."></textarea>
-                                <div id="log-encounters-display" class="log-text-display min-h-[50px] mb-4"></div>
-                            </div>
-                            <div>
-                                <div class="section-header"><i class="fa-solid fa-gem mr-2"></i>Loot & Rewards</div>
-                                <textarea data-key="loot" id="log-loot-input" class="log-textarea min-h-[100px]" placeholder="Gold, artifacts, items found..."></textarea>
-                                <div id="log-loot-display" class="log-text-display min-h-[50px] mb-4"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DM Secrets -->
-                    <div id="sec-dm-notes" class="hidden-view mt-12 border-t-2 border-blood pt-8">
-                        <div class="section-header !text-blood !border-blood">DM SECRET NOTES</div>
-                        <textarea data-key="dmNotes" class="log-textarea !bg-[rgba(122,27,27,0.05)] !border-blood" placeholder="Hidden plots, things the players missed... (Players cannot see this)"></textarea>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
@@ -241,10 +260,6 @@
                 <div>
                     <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Session Number</label>
                     <input type="number" id="new-log-num" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="1">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Session Title</label>
-                    <input type="text" id="new-log-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="The Adventure Begins...">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Date</label>
@@ -345,8 +360,8 @@
                 d.innerHTML = `
                     ${badge}
                     <div>
-                        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-heading mb-1">Session ${l.sessionNum || '?'} • ${l.date || 'Unknown Date'}</p>
-                        <h5 class="text-gold font-heading font-bold uppercase text-lg line-clamp-1 drop-shadow-sm mb-2">${l.title || 'Untitled Session'}</h5>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-heading mb-1">${l.date || 'Unknown Date'} • ${l.location || 'Unknown Location'}</p>
+                        <h5 class="text-gold font-heading font-bold uppercase text-lg line-clamp-1 drop-shadow-sm mb-2">Session ${l.sessionNum || '?'}</h5>
                         <p class="text-xs text-gray-300 font-serif italic line-clamp-2 leading-relaxed opacity-80">${l.summary || 'No details recorded...'}</p>
                     </div>
                     <div class="mt-auto border-t border-gray-700 pt-3">
@@ -373,11 +388,6 @@
             window.scrollTo(0,0); 
         };
 
-        function formatDropCap(text) {
-            if (!text || text.length === 0) return '';
-            return `<span class="drop-cap">${text.charAt(0)}</span>${text.slice(1)}`;
-        }
-
         function syncSheetData() {
             const log = logs.find(c => c.id === activeLogId); if (!log) return;
             const isDM = activeRole === 'dm';
@@ -385,16 +395,14 @@
             // Toggles
             document.querySelectorAll('#sheet-screen input, #sheet-screen textarea').forEach(el => {
                 if (isDM) {
-                    el.classList.remove('hidden-view');
                     el.disabled = false;
                 } else {
-                    el.classList.add('hidden-view');
                     el.disabled = true;
                 }
             });
 
             // Handle display divs for players vs inputs for DMs
-            const fields = ['summary', 'locations', 'npcs', 'encounters', 'loot'];
+            const fields = ['summary', 'sceneOpening', 'sceneGoals', 'sceneChallenges', 'sceneSecrets', 'sceneClosing'];
             fields.forEach(f => {
                 const inputEl = document.getElementById(`log-${f}-input`);
                 const displayEl = document.getElementById(`log-${f}-display`);
@@ -405,19 +413,21 @@
                     } else {
                         inputEl.classList.add('hidden-view');
                         displayEl.classList.remove('hidden-view');
-                        // Format summary with drop cap
-                        if (f === 'summary') {
-                            displayEl.innerHTML = formatDropCap(log[f] || 'No events recorded.');
-                        } else {
-                            displayEl.textContent = log[f] || 'None.';
-                        }
+                        displayEl.innerHTML = log[f] ? log[f].replace(/\n/g, '<br>') : '...';
                     }
                 }
             });
 
             document.getElementById('sheet-controls-dm').classList.toggle('hidden', !isDM);
             document.getElementById('dm-oversight-panel').classList.toggle('hidden-view', !isDM);
-            document.getElementById('sec-dm-notes').classList.toggle('hidden-view', !isDM);
+            
+            const dmIntelOverlay = document.getElementById('dm-intel-overlay');
+            if (dmIntelOverlay) dmIntelOverlay.classList.toggle('hidden-view', !isDM);
+
+            // Hide the "+ New Session" and "Delete" buttons from players
+            document.querySelectorAll('.dm-only-view').forEach(el => {
+                el.classList.toggle('hidden', !isDM);
+            });
             
             const badge = document.getElementById('sheet-visibility-badge');
             const vis = log.visibility || 'public';
@@ -430,18 +440,6 @@
                     el.value = log[el.dataset.key] || (el.type === 'number' ? '' : ''); 
                 }
             });
-            
-            // For players, input title/meta are hidden, so we need to inject them if not DM
-            if (!isDM) {
-                document.querySelector('.log-name-main').classList.remove('hidden-view');
-                document.querySelector('.log-meta-line').classList.remove('hidden-view');
-                document.querySelector('.log-name-main').value = log.title || 'Untitled Session';
-                document.querySelector('[data-key="sessionNum"]').value = log.sessionNum || '?';
-                document.querySelector('[data-key="date"]').value = log.date || 'Unknown Date';
-                document.querySelector('.log-name-main').readOnly = true;
-                document.querySelector('[data-key="sessionNum"]').readOnly = true;
-                document.querySelector('[data-key="date"]').readOnly = true;
-            }
         }
 
         window.saveLog = (m) => {
@@ -458,7 +456,6 @@
         // --- DM ACTIONS ---
         window.openNewLogModal = () => {
             document.getElementById('new-log-num').value = logs.length + 1;
-            document.getElementById('new-log-title').value = '';
             document.getElementById('new-log-date').value = new Date().toLocaleDateString();
             document.getElementById('create-modal').classList.remove('hidden');
         };
@@ -466,20 +463,21 @@
         window.executeCreateLog = async () => {
             if (activeRole !== 'dm') return;
             const num = parseInt(document.getElementById('new-log-num').value) || 1;
-            const title = document.getElementById('new-log-title').value || "New Session";
             const date = document.getElementById('new-log-date').value || "";
 
             try {
                 const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
-                    visibility: 'unpublished', // default to draft so players don't see it until ready
+                    visibility: 'unpublished', 
                     sessionNum: num,
-                    title: title,
                     date: date,
+                    location: "",
                     summary: "",
-                    locations: "",
-                    npcs: "",
-                    encounters: "",
-                    loot: "",
+                    sceneOpening: "",
+                    sceneGoals: "",
+                    sceneChallenges: "",
+                    sceneSecrets: "",
+                    sceneClosing: "",
+                    dmGoals: "",
                     dmNotes: "",
                     createdAt: Date.now()
                 });
