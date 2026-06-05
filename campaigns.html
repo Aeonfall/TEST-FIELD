@@ -493,7 +493,7 @@
         // Route to the campaign tracker
         window.enterCampaign = (campId) => {
             try {
-                window.location.href = `character.html?id=${campId}`;
+                window.location.href = `characters.html?id=${campId}`;
             } catch(e) {
                 showModal("Preview Blocked", "Redirects are disabled in this preview window. On your live site, this will open character.html?id=" + campId);
             }
