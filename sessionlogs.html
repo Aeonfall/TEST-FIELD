@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chronicles - Session Logs & Calendar</title>
+    <title>Chronicles - Session Logs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
@@ -18,12 +18,16 @@
                         'blood': '#7a1b1b',
                         'gold': '#c5a059',
                         'wood': '#1a110b',
-                        'silver-moon': '#e2e8f0',
-                        'red-moon': '#ef4444'
+                        'aeon-bg': '#1a1c23',
+                        'aeon-red': '#dc2626',
+                        'aeon-blue': '#38bdf8',
+                        'aeon-gray': '#475569',
+                        'aeon-border': '#334155'
                     },
                     fontFamily: {
                         'serif': ['Lora', 'serif'],
                         'heading': ['Cinzel', 'serif'],
+                        'sans': ['ui-sans-serif', 'system-ui', 'sans-serif']
                     }
                 }
             }
@@ -38,17 +42,16 @@
         .dashboard-bg { background-color: transparent; }
         
         .parchment-paper {
-            background-color: #f1e5c5;
-            background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
-            border: 2px solid #c5a059;
+            background-color: #fcfaf5;
+            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.1), 0 20px 50px rgba(0,0,0,0.8);
+            border: 2px solid #8b5a2b;
+            border-radius: 2px;
             color: #2c1e16;
             min-height: calc(100vh - 100px);
             margin: 20px auto;
-            border-radius: 4px;
+            position: relative;
         }
+        .parchment-paper::after { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 1px solid #8b5a2b; pointer-events: none; }
 
         .card { transition: all 0.2s; cursor: pointer; border-left-width: 4px; position: relative; border: 1px solid #555; background-color: rgba(0,0,0,0.7); color: #f1e5c5; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.7); border-color: #c5a059; }
@@ -62,31 +65,6 @@
         .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
         .nav-link:hover { color: #f1e5c5; }
 
-        .section-header { font-family: 'Cinzel', serif; font-weight: 900; font-size: 18px; color: #7a1b1b; border-bottom: 2px solid rgba(139, 90, 43, 0.5); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px;}
-        
-        .log-name-main { font-family: 'Cinzel', serif; font-weight: 900; font-size: 36px; line-height: 1.1; color: #7a1b1b; text-transform: uppercase; margin-bottom: 4px; width: 100%; border-bottom: 2px solid #c5a059 !important; background: transparent;}
-        .log-meta-line { font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; color: #2c1e16; border-bottom: 1px dashed rgba(139, 90, 43, 0.3) !important; padding-bottom: 8px; margin-bottom: 24px; text-transform: uppercase; width: 100%; background: transparent;}
-
-        /* CALENDAR STYLES */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 20px; }
-        .cal-header { font-family: 'Cinzel', serif; font-weight: 900; font-size: 10px; text-transform: uppercase; color: #c5a059; text-align: center; padding: 8px 4px; background: rgba(0,0,0,0.6); border-radius: 4px; border: 1px solid #444; }
-        .cal-cell { background: rgba(0,0,0,0.4); border: 1px solid #555; aspect-ratio: 1; border-radius: 4px; display: flex; flex-direction: column; padding: 4px; cursor: pointer; transition: all 0.2s; position: relative; }
-        .cal-cell:hover:not(.empty) { background: rgba(197, 160, 89, 0.2); border-color: #c5a059; transform: scale(1.05); z-index: 10; }
-        .cal-cell.empty { background: transparent; border-color: transparent; cursor: default; }
-        .cal-cell.active-day { border-color: #c5a059; background: rgba(197, 160, 89, 0.15); box-shadow: inset 0 0 10px rgba(197, 160, 89, 0.4); }
-        .cal-cell.current-day { border: 2px solid #c5a059; box-shadow: 0 0 15px rgba(197, 160, 89, 0.5); background: rgba(197, 160, 89, 0.2); }
-        .cal-day-num { font-family: 'Cinzel', serif; font-weight: 900; font-size: 12px; color: #f1e5c5; }
-        .cal-moon { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 4px currentColor; }
-        .cal-event-dot { width: 6px; height: 6px; border-radius: 50%; background: #7a1b1b; margin-top: auto; align-self: center; box-shadow: 0 0 4px #7a1b1b; }
-        
-        .view-tab-btn { background: transparent; border: 1px solid #555; color: #888; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 900; padding: 6px 16px; border-radius: 4px; text-transform: uppercase; transition: 0.2s; cursor: pointer; }
-        .view-tab-btn.active { background: #c5a059; border-color: #e8cd87; color: #1a110b; box-shadow: 0 0 15px rgba(197, 160, 89, 0.3); }
-
-        .log-textarea { width: 100%; min-height: 120px; leading-relaxed text-sm bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] p-4 rounded text-ink shadow-inner font-serif resize-y focus:outline-none focus:bg-[rgba(255,255,255,0.7)] transition-colors; margin-bottom: 24px; }
-        .log-text-display { width: 100%; min-height: 120px; font-serif text-sm leading-relaxed text-ink whitespace-pre-wrap mb-24; }
-
-        input:disabled, textarea:disabled { background-color: transparent !important; color: #2c1e16 !important; border: none !important; resize: none; opacity: 1; box-shadow: none !important;}
-        
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 10000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
         .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); text-align: center;}
@@ -96,20 +74,51 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .hidden-view { display: none !important; }
-        
-        .drop-cap { float: left; font-family: 'Cinzel', serif; font-size: 65px; line-height: 50px; padding-top: 4px; padding-right: 8px; color: #7a1b1b; }
-        
-        .chronicle-wrapper { background-color: #fdfaf3; border: 3px solid #3e2723; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .chronicle-wrapper::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 1px solid #3e2723; pointer-events: none; }
 
-        .calendar-wrapper { background-color: #1a110b; border: 2px solid #c5a059; border-radius: 8px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.6); }
+        /* SHEET TYPOGRAPHY & LAYOUT */
+        .chronicle-header { font-family: 'Cinzel', serif; font-weight: 900; color: #7a1b1b; text-transform: uppercase; letter-spacing: 2px; }
+        .chronicle-input { background: transparent; border: none; outline: none; border-bottom: 1px dashed rgba(139, 90, 43, 0.4); font-family: 'Lora', serif; color: #2c1e16; width: 100%; padding: 2px 0; transition: border-color 0.2s; }
+        .chronicle-input:focus { border-bottom-color: #7a1b1b; }
+        .chronicle-input:disabled { border-bottom-color: transparent !important; color: #1a110b !important; }
         
-        @media (max-width: 768px) {
-            .cal-cell { padding: 2px; }
-            .cal-day-num { font-size: 10px; }
-            .calendar-wrapper { padding: 10px; }
-            .cal-header { font-size: 8px; padding: 4px 2px; }
-        }
+        .chronicle-textarea { width: 100%; background: transparent; border: none; outline: none; border-bottom: 1px dashed rgba(139, 90, 43, 0.4); font-family: 'Lora', serif; color: #2c1e16; resize: vertical; min-height: 40px; line-height: 1.6; padding-top: 4px; transition: border-color 0.2s; }
+        .chronicle-textarea:focus { border-bottom-color: #7a1b1b; }
+        .chronicle-textarea:disabled { border-bottom-color: transparent !important; color: #1a110b !important; resize: none; }
+
+        .beat-number { font-family: 'Cinzel', serif; font-weight: 900; color: #7a1b1b; font-size: 1.1rem; margin-right: 8px; }
+        
+        .dm-overlay-box { background-color: #f4eee1; border: 1px solid #d4c4a8; border-radius: 8px; padding: 24px; margin-top: 40px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02); }
+        .dm-overlay-title { font-family: 'Cinzel', serif; font-weight: 900; font-size: 10px; color: #a3886b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+        .dm-overlay-label { font-family: 'Cinzel', serif; font-weight: 900; font-size: 12px; color: #7a1b1b; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .dm-overlay-input { background: white; border: 1px solid #e5dccb; border-radius: 4px; padding: 12px; width: 100%; font-family: 'Lora', serif; font-size: 14px; outline: none; resize: vertical; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: border-color 0.2s; }
+        .dm-overlay-input:focus { border-color: #c5a059; }
+
+        /* AEONFALL CALENDAR MODAL STYLES */
+        .aeon-cal-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 20px; backdrop-filter: blur(8px); }
+        .aeon-cal-container { background: var(--aeon-bg); border: 1px solid var(--aeon-border); border-radius: 12px; width: 100%; max-width: 600px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: white; }
+        .aeon-cal-title { font-family: 'sans-serif'; font-size: 28px; color: var(--aeon-red); font-weight: 400; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 24px; }
+        .aeon-cal-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60%; height: 2px; background: linear-gradient(90deg, var(--aeon-red), transparent); }
+        
+        .aeon-tab-container { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; }
+        .aeon-tab { flex: 1; padding: 6px 0; text-align: center; font-family: 'sans-serif'; font-size: 14px; color: var(--aeon-gray); border-radius: 4px; transition: 0.2s; cursor: pointer; }
+        .aeon-tab.active { background: rgba(220, 38, 38, 0.2); color: var(--aeon-red); }
+        
+        .aeon-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 16px; }
+        .aeon-day-header { font-family: 'sans-serif'; font-size: 11px; text-transform: uppercase; color: var(--aeon-gray); text-align: center; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; }
+        .aeon-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'sans-serif'; font-size: 16px; color: white; border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative; border: 1px solid transparent; }
+        .aeon-cell:hover:not(.empty) { background: rgba(255,255,255,0.05); }
+        .aeon-cell.empty { color: var(--aeon-gray); opacity: 0.5; cursor: default; }
+        .aeon-cell.active-day { border-color: var(--aeon-border); background: rgba(255,255,255,0.03); }
+        .aeon-cell.today-glow { color: var(--aeon-red); font-weight: bold; }
+        
+        .aeon-dot-container { display: flex; gap: 3px; position: absolute; bottom: 6px; }
+        .aeon-dot { width: 4px; height: 4px; border-radius: 50%; }
+        .aeon-dot-moon1 { background-color: white; }
+        .aeon-dot-moon2 { background-color: #a855f7; }
+        .aeon-dot-event { background-color: var(--aeon-red); }
+
+        .aeon-btn-icon { color: var(--aeon-gray); transition: 0.2s; cursor: pointer; background: transparent; border: none; font-size: 16px; padding: 4px 8px; }
+        .aeon-btn-icon:hover { color: white; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -152,111 +161,26 @@
                         <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
                         <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
                         <a href="#" onclick="window.routeTo('sessionlogs.html'); return false;" class="nav-link active">Logs</a>
+                        <a href="#" onclick="window.openCalendarModal(false); return false;" class="nav-link !text-blue-400 hover:!text-blue-300">Calendar</a>
                         <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
             </header>
 
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6 border-b border-gray-800 pb-6">
-                <div class="flex gap-3 bg-black/40 p-1.5 rounded-lg border border-gray-700 w-full md:w-auto overflow-x-auto scrollbar-hide z-10">
-                    <button onclick="window.switchMainView('logs')" id="btn-view-logs" class="view-tab-btn active w-full md:w-auto"><i class="fa-solid fa-book-journal-whills mr-2"></i> Chronicles</button>
-                    <button onclick="window.switchMainView('calendar')" id="btn-view-cal" class="view-tab-btn w-full md:w-auto"><i class="fa-solid fa-calendar-days mr-2"></i> Calendar</button>
-                </div>
-                
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+                <h2 class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Campaign Chronicles</h2>
                 <div id="create-actions-dm" class="flex flex-wrap gap-2 hidden w-full md:w-auto">
                     <button onclick="window.openNewLogModal()" class="w-full md:w-auto fantasy-btn-alt px-4 py-2.5 rounded text-[10px] font-bold uppercase shadow text-center"><i class="fa-solid fa-pen-nib mr-1"></i> Scribe New Log</button>
                 </div>
             </div>
 
-            <!-- VIEW 1: LOGS GRID -->
+            <!-- LOGS GRID -->
             <div id="logs-sections">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-logs">
                     <!-- Logs populated here -->
                 </div>
             </div>
 
-            <!-- VIEW 2: CALENDAR -->
-            <div id="calendar-sections" class="hidden-view">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    
-                    <!-- CALENDAR GRID -->
-                    <div class="lg:col-span-8">
-                        <div class="calendar-wrapper relative">
-                            
-                            <!-- Calendar Controls -->
-                            <div class="flex justify-between items-center mb-6">
-                                <div class="flex gap-2">
-                                    <button onclick="window.changeCalMonth(-1)" class="w-8 h-8 flex items-center justify-center bg-black/40 border border-gray-600 text-gold rounded hover:bg-black transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                                </div>
-                                <div class="text-center">
-                                    <h3 id="cal-month-display" class="font-heading font-black text-2xl md:text-3xl text-parchment uppercase tracking-widest drop-shadow">Luminar</h3>
-                                    <div class="flex items-center justify-center gap-2 mt-1">
-                                        <button onclick="window.changeCalYear(-1)" class="text-gray-500 hover:text-gold text-xs transition-colors"><i class="fa-solid fa-minus"></i></button>
-                                        <span id="cal-year-display" class="font-serif italic text-gold font-bold text-sm">327 SD</span>
-                                        <button onclick="window.changeCalYear(1)" class="text-gray-500 hover:text-gold text-xs transition-colors"><i class="fa-solid fa-plus"></i></button>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="window.changeCalMonth(1)" class="w-8 h-8 flex items-center justify-center bg-black/40 border border-gray-600 text-gold rounded hover:bg-black transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
-                                </div>
-                            </div>
-                            
-                            <!-- Grid -->
-                            <div class="calendar-grid">
-                                <div class="cal-header">Miresen</div>
-                                <div class="cal-header">Veysen</div>
-                                <div class="cal-header">Thalsen</div>
-                                <div class="cal-header">Kaelsen</div>
-                                <div class="cal-header">Dravesen</div>
-                                <div class="cal-header">Lursen</div>
-                                <div class="cal-header">Sorvsen</div>
-                            </div>
-                            <div id="cal-days-grid" class="calendar-grid">
-                                <!-- Days rendered here -->
-                            </div>
-                            
-                            <div class="mt-6 flex flex-col md:flex-row justify-between items-center border-t border-gray-800 pt-4 gap-4">
-                                <div class="flex items-center gap-4 text-[10px] font-heading font-black uppercase text-gray-500 tracking-widest">
-                                    <span class="flex items-center gap-1"><div class="cal-moon text-silver-moon shadow-[0_0_8px_#e2e8f0] bg-silver-moon"></div> Selura (Silver)</span>
-                                    <span class="flex items-center gap-1"><div class="cal-moon text-red-moon shadow-[0_0_8px_#ef4444] bg-red-moon"></div> Veythar (Red)</span>
-                                </div>
-                                <button onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="fantasy-btn-alt px-4 py-1.5 rounded text-[9px]">Calendar Guide</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DAY DETAILS PANEL -->
-                    <div class="lg:col-span-4">
-                        <div class="bg-black/60 border border-gray-700 rounded-lg p-6 sticky top-6 shadow-xl">
-                            <div class="border-b border-gold/50 pb-4 mb-4">
-                                <h4 id="side-day-name" class="font-heading font-black text-xs text-gray-400 uppercase tracking-widest mb-1">Miresen</h4>
-                                <h3 id="side-date-full" class="font-serif italic font-bold text-xl text-gold">1st of Luminar, 327 SD</h3>
-                            </div>
-                            
-                            <div id="side-moon-data" class="flex gap-4 mb-6 border-b border-gray-800 pb-4">
-                                <!-- Moons -->
-                            </div>
-
-                            <div id="side-holiday-data" class="mb-6 border-b border-gray-800 pb-4">
-                                <!-- Holiday -->
-                            </div>
-
-                            <div class="mb-6">
-                                <h4 class="font-heading font-black text-[10px] text-gray-500 uppercase tracking-widest mb-3">Recorded Events</h4>
-                                <div id="side-events-list" class="space-y-2">
-                                    <!-- Events -->
-                                </div>
-                            </div>
-
-                            <!-- DM Controls -->
-                            <div id="cal-dm-controls" class="hidden mt-auto pt-6 border-t border-gold/30 space-y-3">
-                                <button onclick="window.setAsCurrentDate()" class="w-full fantasy-btn py-2.5 rounded text-[10px] shadow">Set as Current In-Game Date</button>
-                                <button onclick="window.openEventModal()" class="w-full fantasy-btn-alt py-2.5 rounded text-[10px] shadow">+ Log Calendar Event</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -274,9 +198,9 @@
             </div>
         </nav>
 
-        <div id="sheet-container" class="max-w-4xl mx-auto mt-8 mb-24 chronicle-wrapper p-8 md:p-14">
+        <div id="sheet-container" class="parchment-paper p-10 md:p-16 max-w-4xl">
             
-            <div id="dm-oversight-panel" class="dm-panel hidden-view mb-10 !bg-[#1c1c1c] !border-gold !shadow-none !rounded-none !border-2">
+            <div id="dm-oversight-panel" class="dm-panel hidden-view mb-10 !bg-[#1c1c1c] !border-gold !shadow-none !rounded-none !border-2 relative z-20">
                 <div class="flex justify-between items-center font-heading">
                     <div class="space-y-3">
                         <h4 class="text-[10px] font-black uppercase text-gold">Visibility Control</h4>
@@ -290,7 +214,7 @@
 
             <div>
                 <!-- Header -->
-                <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end border-b-2 border-[#3e2723] pb-4 mb-6 gap-4 relative z-10">
+                <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end border-b-[3px] border-[#7a1b1b] pb-4 mb-6 gap-4 relative z-10">
                     <h1 class="font-heading text-3xl md:text-4xl font-black text-[#7a1b1b] uppercase tracking-wider">Campaign Chronicles</h1>
                     <button onclick="window.openNewLogModal()" class="dm-only-view bg-[#8b4513] hover:bg-[#70380f] text-white px-6 py-2.5 rounded-full font-bold uppercase text-[10px] tracking-widest shadow-md transition-colors whitespace-nowrap hidden">+ New Session</button>
                 </div>
@@ -305,58 +229,56 @@
                 </div>
 
                 <!-- Meta Fields -->
-                <div class="space-y-2 mb-10 font-serif text-[15px] text-[#2c1e16] relative z-10">
-                    <div class="flex items-center gap-2"><strong class="text-black w-24">Date:</strong> <input type="text" data-key="date" class="bg-transparent border-b border-transparent focus:border-[#c5a059] outline-none flex-grow" placeholder="MM/DD/YYYY"></div>
-                    <div class="flex items-center gap-2"><strong class="text-black w-24">Location:</strong> <input type="text" data-key="location" class="bg-transparent border-b border-transparent focus:border-[#c5a059] outline-none flex-grow" placeholder="..."></div>
+                <div class="space-y-3 mb-12 font-serif text-[15px] text-[#2c1e16] relative z-10 font-bold">
+                    <div class="flex items-center gap-2">
+                        <strong class="text-black w-24">Date:</strong> 
+                        <input type="text" data-key="date" id="log-date-input" class="bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none flex-grow font-normal" placeholder="1st of Luminar, 327 SD">
+                        <button onclick="window.openCalendarModal(true)" class="dm-only-view text-gold hover:text-blood transition-colors"><i class="fa-solid fa-calendar"></i></button>
+                    </div>
+                    <div class="flex items-center gap-2"><strong class="text-black w-24">Location:</strong> <input type="text" data-key="location" class="bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none flex-grow font-normal" placeholder="..."></div>
                     <div class="flex items-start gap-2"><strong class="text-black w-24 mt-1">Summary:</strong> 
-                        <textarea data-key="summary" id="log-summary-input" class="bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none flex-grow resize-y min-h-[40px] pt-1 leading-relaxed" placeholder="..."></textarea>
-                        <div id="log-summary-display" class="flex-grow pt-1 hidden-view leading-relaxed"></div>
+                        <textarea data-key="summary" class="bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none flex-grow resize-y min-h-[40px] pt-1 leading-relaxed font-normal" placeholder="..."></textarea>
                     </div>
                 </div>
 
                 <!-- Scenes & Beats -->
                 <h3 class="font-heading text-xl font-black text-[#7a1b1b] mb-6 uppercase tracking-widest relative z-10">Scenes & Beats</h3>
 
-                <div class="space-y-6 font-serif text-[15px] text-[#2c1e16] relative z-10">
+                <div class="space-y-8 font-serif text-[15px] text-[#2c1e16] relative z-10">
                     <div>
-                        <strong class="text-black block mb-2">1. Opening:</strong>
-                        <textarea data-key="sceneOpening" id="log-sceneOpening-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
-                        <div id="log-sceneOpening-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                        <strong class="text-black block mb-2"><span class="beat-number">1.</span> Opening:</strong>
+                        <textarea data-key="sceneOpening" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none resize-y min-h-[60px] leading-relaxed text-[15px]" placeholder="..."></textarea>
                     </div>
                     <div>
-                        <strong class="text-black block mb-2">2. Key Goals:</strong>
-                        <textarea data-key="sceneGoals" id="log-sceneGoals-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
-                        <div id="log-sceneGoals-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                        <strong class="text-black block mb-2"><span class="beat-number">2.</span> Key Goals:</strong>
+                        <textarea data-key="sceneGoals" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none resize-y min-h-[60px] leading-relaxed text-[15px]" placeholder="..."></textarea>
                     </div>
                     <div>
-                        <strong class="text-black block mb-2">3. Challenges:</strong>
-                        <textarea data-key="sceneChallenges" id="log-sceneChallenges-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
-                        <div id="log-sceneChallenges-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                        <strong class="text-black block mb-2"><span class="beat-number">3.</span> Challenges:</strong>
+                        <textarea data-key="sceneChallenges" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none resize-y min-h-[60px] leading-relaxed text-[15px]" placeholder="..."></textarea>
                     </div>
                     <div>
-                        <strong class="text-black block mb-2">4. Secrets:</strong>
-                        <textarea data-key="sceneSecrets" id="log-sceneSecrets-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
-                        <div id="log-sceneSecrets-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                        <strong class="text-black block mb-2"><span class="beat-number">4.</span> Secrets:</strong>
+                        <textarea data-key="sceneSecrets" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none resize-y min-h-[60px] leading-relaxed text-[15px]" placeholder="..."></textarea>
                     </div>
                     <div>
-                        <strong class="text-black block mb-2">5. Closing:</strong>
-                        <textarea data-key="sceneClosing" id="log-sceneClosing-input" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/30 focus:border-[#c5a059] outline-none resize-y min-h-[40px] leading-relaxed text-[15px]" placeholder="..."></textarea>
-                        <div id="log-sceneClosing-display" class="w-full hidden-view leading-relaxed text-[15px] whitespace-pre-wrap"></div>
+                        <strong class="text-black block mb-2"><span class="beat-number">5.</span> Closing:</strong>
+                        <textarea data-key="sceneClosing" class="w-full bg-transparent border-b border-dashed border-[#c5a059]/50 focus:border-[#c5a059] outline-none resize-y min-h-[60px] leading-relaxed text-[15px]" placeholder="..."></textarea>
                     </div>
                 </div>
 
                 <!-- DM Intel Overlay -->
-                <div id="dm-intel-overlay" class="mt-14 bg-[#f8f5ee] border border-[#e8e0cd] rounded-xl p-6 md:p-8 hidden-view relative z-10">
-                    <h4 class="font-heading text-[10px] font-black text-[#b8860b] opacity-80 tracking-widest uppercase mb-6">DM Intel Overlay</h4>
+                <div id="dm-intel-overlay" class="dm-overlay-box hidden-view relative z-10">
+                    <h4 class="dm-overlay-title">DM Intel Overlay</h4>
                     
                     <div class="space-y-6">
                         <div>
-                            <h5 class="font-heading text-[10px] font-black text-[#7a1b1b] uppercase mb-2 tracking-wider">Goals</h5>
-                            <textarea data-key="dmGoals" class="w-full bg-white border border-[#e8e0cd] rounded-lg p-4 text-[15px] font-serif outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] min-h-[60px] resize-y" placeholder="..."></textarea>
+                            <span class="dm-overlay-label">Goals</span>
+                            <textarea data-key="dmGoals" class="dm-overlay-input min-h-[60px]" placeholder="..."></textarea>
                         </div>
                         <div>
-                            <h5 class="font-heading text-[10px] font-black text-[#7a1b1b] uppercase mb-2 tracking-wider">Notes</h5>
-                            <textarea data-key="dmNotes" class="w-full bg-white border border-[#e8e0cd] rounded-lg p-4 text-[15px] font-serif outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] min-h-[100px] resize-y" placeholder="..."></textarea>
+                            <span class="dm-overlay-label">Notes</span>
+                            <textarea data-key="dmNotes" class="dm-overlay-input min-h-[100px]" placeholder="..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -376,10 +298,6 @@
                     <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Session Number</label>
                     <input type="number" id="new-log-num" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="1">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Date</label>
-                    <input type="text" id="new-log-date" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="MM/DD/YYYY">
-                </div>
             </div>
             <div class="flex gap-2 font-heading">
                 <button onclick="document.getElementById('create-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200">Cancel</button>
@@ -388,48 +306,121 @@
         </div>
     </div>
 
-    <!-- ADD EVENT MODAL (DM) -->
-    <div id="event-modal" class="modal-overlay hidden z-[1000]">
-        <div class="modal-container">
-            <h3 class="font-heading text-xl font-bold text-blood uppercase mb-6 border-b border-gold pb-2">Log Calendar Event</h3>
-            <div class="space-y-4 text-left font-serif mb-8">
+    <!-- AEONFALL CALENDAR MODAL -->
+    <div id="aeon-cal-modal" class="aeon-cal-modal hidden">
+        <div class="aeon-cal-container shadow-[0_0_80px_rgba(0,0,0,0.9)]">
+            
+            <div class="border-b border-red-900/40 pb-2 mb-6 flex justify-between items-end">
+                <h2 class="text-2xl md:text-3xl font-sans font-normal text-red-600 tracking-wide inline-block border-b-2 border-red-600/50 pb-1 relative top-[11px]">Aeonfall Calendar</h2>
+                <button onclick="window.closeCalendarModal()" class="text-gray-500 hover:text-white text-2xl font-black mb-2 transition-colors">✕</button>
+            </div>
+
+            <div class="aeon-tab-container">
+                <div class="aeon-tab opacity-50 cursor-not-allowed">Week</div>
+                <div class="aeon-tab active font-bold">Month</div>
+                <div class="aeon-tab opacity-50 cursor-not-allowed">Year</div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-gray-800 pb-6">
                 <div>
-                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Event Title</label>
-                    <input type="text" id="new-event-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="Festival, Battle, Arrival...">
+                    <div class="text-3xl md:text-4xl font-sans mb-1"><span id="cal-month-display" class="text-red-600 tracking-wide font-normal">Virell</span> <span id="cal-year-display" class="text-blue-400 font-bold">836</span></div>
+                    <div class="text-blue-400 text-sm md:text-base font-medium opacity-90">Year <span id="cal-sub-year">836</span> P.D.</div>
+                </div>
+                <div class="flex items-center gap-3 md:gap-5 text-gray-400 text-sm tracking-widest uppercase font-bold bg-black/30 p-2 rounded-lg border border-gray-800">
+                    <button onclick="window.changeCalMonth(-1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="window.goToCurrentDate()" class="hover:text-white transition-colors">TODAY</button>
+                    <button onclick="window.changeCalMonth(1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button onclick="window.openCalSettings()" class="aeon-btn-icon" id="cal-dm-gear"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </div>
+
+            <div class="aeon-grid">
+                <div class="aeon-day-header">MIR</div>
+                <div class="aeon-day-header">VEY</div>
+                <div class="aeon-day-header">THA</div>
+                <div class="aeon-day-header">KAE</div>
+                <div class="aeon-day-header">DRA</div>
+                <div class="aeon-day-header">LUR</div>
+                <div class="aeon-day-header">SOR</div>
+            </div>
+            
+            <div id="cal-days-grid" class="aeon-grid mb-6">
+                <!-- Days populated by JS -->
+            </div>
+
+            <div class="flex justify-between items-center text-[10px] text-gray-500 uppercase tracking-widest font-sans font-bold pt-4 border-t border-gray-800">
+                <div class="flex gap-4">
+                    <span class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-white"></div> Selura</span>
+                    <span class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-[#a855f7]"></div> Veythar</span>
+                </div>
+                <button onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="hover:text-white transition-colors"><i class="fa-solid fa-book mr-1"></i> Lore</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CALENDAR DM CONTROLS MODAL -->
+    <div id="cal-settings-modal" class="modal-overlay hidden z-[4000]">
+        <div class="bg-[#1a1c23] border border-gray-700 rounded-lg max-w-sm w-full p-6 text-gray-200">
+            <h3 class="font-sans text-xl text-red-500 mb-4 border-b border-gray-700 pb-2">Calendar Settings</h3>
+            <div class="space-y-4">
+                <button onclick="window.setAsCurrentDate()" class="w-full bg-blue-900/30 hover:bg-blue-900/50 text-blue-400 border border-blue-800 py-3 rounded font-sans font-bold uppercase text-xs tracking-wider transition-colors">Set Visible Month as "Today"</button>
+                <div class="border-t border-gray-700 pt-4">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Adjust Year</label>
+                    <div class="flex gap-2">
+                        <button onclick="window.changeCalYear(-1)" class="bg-gray-800 px-4 py-2 rounded text-white">-</button>
+                        <input type="number" id="manual-year-input" class="bg-black/50 border border-gray-700 text-white text-center w-full rounded" readonly>
+                        <button onclick="window.changeCalYear(1)" class="bg-gray-800 px-4 py-2 rounded text-white">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-white">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EVENT MANAGER MODAL -->
+    <div id="event-modal" class="modal-overlay hidden z-[4000]">
+        <div class="bg-[#1a1c23] border border-gray-700 rounded-lg max-w-sm w-full p-6 text-gray-200">
+            <h3 class="font-sans text-xl text-red-500 mb-4 border-b border-gray-700 pb-2">Log Calendar Event</h3>
+            <p id="event-date-display" class="text-xs text-blue-400 font-bold uppercase tracking-widest mb-4"></p>
+            <div class="space-y-4 text-left font-sans mb-6">
+                <div>
+                    <input type="text" id="new-event-title" class="w-full bg-black/50 border border-gray-600 rounded p-2 text-white outline-none focus:border-red-500 text-sm" placeholder="Event Title (e.g. Festival, Battle)">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Description</label>
-                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] resize-y" placeholder="What happened today?"></textarea>
+                    <textarea id="new-event-desc" class="w-full bg-black/50 border border-gray-600 rounded p-2 text-white outline-none focus:border-red-500 min-h-[60px] resize-y text-sm" placeholder="Description..."></textarea>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Visibility</label>
-                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood font-heading text-xs font-bold uppercase">
+                    <select id="new-event-vis" class="w-full bg-black/50 border border-gray-600 rounded p-2 text-white outline-none focus:border-red-500 text-xs font-bold uppercase">
                         <option value="public">Public Knowledge</option>
                         <option value="secret">DM Secret</option>
                     </select>
                 </div>
             </div>
-            <div class="flex gap-2 font-heading">
-                <button onclick="document.getElementById('event-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200">Cancel</button>
-                <button onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 shadow">Save Event</button>
+            <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto"></div>
+            <div class="flex justify-between gap-3">
+                <button onclick="document.getElementById('event-modal').classList.add('hidden')" class="flex-1 text-gray-500 font-bold uppercase text-xs border border-gray-700 rounded py-2 hover:bg-gray-800 transition-colors">Cancel</button>
+                <button onclick="window.saveCalendarEvent()" class="flex-1 bg-red-900/60 hover:bg-red-800 text-white font-bold uppercase text-xs rounded py-2 transition-colors border border-red-900">Save Event</button>
             </div>
         </div>
     </div>
 
     <!-- CALENDAR LORE MODAL -->
-    <div id="cal-lore-modal" class="modal-overlay hidden z-[1000]">
-        <div class="modal-container !max-w-2xl !text-left h-[80vh] flex flex-col p-6 md:p-8">
-            <div class="flex justify-between items-center border-b-2 border-gold pb-4 mb-6 shrink-0">
-                <h3 class="font-heading text-2xl font-bold text-blood uppercase tracking-widest">Calendar of Aeonfall</h3>
-                <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="text-ink text-2xl font-black hover:text-blood">✕</button>
+    <div id="cal-lore-modal" class="modal-overlay hidden z-[5000]">
+        <div class="bg-[#1a1c23] border border-gray-700 rounded-lg max-w-2xl w-full text-gray-200 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center border-b border-red-900/50 p-6 pb-4 shrink-0">
+                <h3 class="font-sans text-2xl text-red-500 tracking-wide font-normal">Calendar of Aeonfall</h3>
+                <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="text-gray-500 hover:text-white text-2xl font-black transition-colors">✕</button>
             </div>
             
-            <div class="flex-grow overflow-y-auto pr-4 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-ink">
-                <p class="italic text-gray-600">How Time Endures After the World Broke.</p>
+            <div class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-gray-300">
+                <p class="italic text-gray-400">How Time Endures After the World Broke.</p>
                 <p>Time did not stop when the world fractured. It adapted. The Aeonfall Calendar is a reconstructed system derived from pre-collapse records, Custodian archives, and long-standing cultural consensus.</p>
                 
                 <div>
-                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/30 pb-1 mb-2">Time Structure</h4>
+                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Time Structure</h4>
                     <ul class="list-disc pl-5 space-y-1">
                         <li><b>Year:</b> 360 days</li>
                         <li><b>Months:</b> 12 months, 30 days each</li>
@@ -440,27 +431,27 @@
                 </div>
 
                 <div>
-                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/30 pb-1 mb-2">The Four Eras</h4>
-                    <ul class="space-y-2">
-                        <li><b>The Age of Concord:</b> The height of Aeon. An era of unified knowledge.</li>
-                        <li><b>The Sundering:</b> The Calamity of Aeon. Widespread system failure. Dates from this era are unreliable.</li>
-                        <li><b>The Interregnum:</b> Early Aeonfall. An age of survival and fragmentation.</li>
-                        <li><b>The Shattered Dawn (Current Era):</b> Civilization returns in altered form. Most modern dating uses this era (SD) as its reference.</li>
+                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">The Four Eras</h4>
+                    <ul class="space-y-3">
+                        <li><strong class="text-white">The Age of Concord:</strong> The height of Aeon. An era of unified knowledge. Most surviving records originate here, though many are incomplete.</li>
+                        <li><strong class="text-white">The Sundering:</strong> The Calamity of Aeon. Marked by the destabilization of the Eternal Heart and widespread system failure. Dates are unreliable.</li>
+                        <li><strong class="text-white">The Interregnum:</strong> Early Aeonfall. An age of survival and fragmentation. Written history fades, replaced by localized oral accounts.</li>
+                        <li><strong class="text-white">The Shattered Dawn (Current Era):</strong> Civilization returns in altered form. Most modern dating uses this era (P.D. - Post Dawn / SD - Shattered Dawn) as its reference.</li>
                     </ul>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/30 pb-1 mb-2">Months (30 Days)</h4>
-                        <ol class="list-decimal pl-5 text-xs space-y-0.5 font-bold">
+                        <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Months (30 Days)</h4>
+                        <ol class="list-decimal pl-5 text-xs space-y-0.5 font-bold text-blue-300">
                             <li>Luminar</li><li>Terralis</li><li>Hydrath</li><li>Ignivar</li>
                             <li>Metallon</li><li>Virell</li><li>Nocthyr</li><li>Cognalis</li>
                             <li>Cragthorn</li><li>Ashveil</li><li>Fallowen</li><li>Heartveil</li>
                         </ol>
                     </div>
                     <div>
-                        <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/30 pb-1 mb-2">Days of the Week</h4>
-                        <ol class="list-decimal pl-5 text-xs space-y-0.5 font-bold">
+                        <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Days of the Week</h4>
+                        <ol class="list-decimal pl-5 text-xs space-y-0.5 font-bold text-blue-300">
                             <li>Miresen</li><li>Veysen</li><li>Thalsen</li><li>Kaelsen</li>
                             <li>Dravesen</li><li>Lursen</li><li>Sorvsen</li>
                         </ol>
@@ -468,30 +459,26 @@
                 </div>
 
                 <div>
-                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/30 pb-1 mb-2">The Two Moons</h4>
+                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">The Two Moons</h4>
                     <ul class="space-y-3">
-                        <li class="bg-[rgba(255,255,255,0.4)] p-3 rounded border border-gold/40"><b><div class="inline-block w-2 h-2 rounded-full bg-silver-moon shadow-[0_0_4px_#e2e8f0] mr-1"></div> Selura (The Silver Moon):</b> Cycle: 30 days. Associations: Memory, history, reflection. Selura’s full cycle aligns with the monthly calendar. Many record-keepers prefer to finalize archives during its full phase.</li>
-                        <li class="bg-[rgba(255,255,255,0.4)] p-3 rounded border border-gold/40"><b><div class="inline-block w-2 h-2 rounded-full bg-red-moon shadow-[0_0_4px_#ef4444] mr-1"></div> Veythar (The Red Moon):</b> Cycle: 15 days. Associations: Change, danger, the Eternal Heart. Veythar completes two cycles per month. Its rise is often linked to instability and phenomena.</li>
+                        <li class="bg-black/30 p-3 rounded border border-gray-800"><b><div class="inline-block w-2 h-2 rounded-full bg-white mr-1 shadow-[0_0_5px_white]"></div> Selura (The Silver Moon):</b> Cycle: 30 days. Associations: Memory, history, reflection. Selura’s full cycle aligns with the monthly calendar.</li>
+                        <li class="bg-black/30 p-3 rounded border border-gray-800"><b><div class="inline-block w-2 h-2 rounded-full bg-[#a855f7] mr-1 shadow-[0_0_5px_#a855f7]"></div> Veythar (The Red/Purple Moon):</b> Cycle: 15 days. Associations: Change, danger, the Eternal Heart. Completes two cycles per month.</li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/30 pb-1 mb-2">Seasonal Markers & Observances</h4>
+                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Seasonal Markers & Observances</h4>
                     <ul class="space-y-2 text-xs">
-                        <li><b>Dawnsreach:</b> Balance of light and dark. Days begin to grow longer.</li>
-                        <li><b>Solflare:</b> Longest day. Peak heat, labor, and travel.</li>
-                        <li><b>Duskfall:</b> Balance returns. Nights begin to lengthen.</li>
-                        <li><b>Nightvein:</b> Longest night. A time of endurance and reflection.</li>
-                        <li class="mt-2 text-blood"><b>Prime Day:</b> Trade, family gathering. (1st of Luminar)</li>
-                        <li class="text-blood"><b>Forge Day:</b> Industry, craftsmanship. (10th of Metallon)</li>
-                        <li class="text-blood"><b>Ashlight Commemoration:</b> Remembrance of the Sundering. (30th of Ashveil)</li>
-                        <li class="text-blood"><b>Veilwake:</b> Reflection on loss and survival. (30th of Heartveil)</li>
+                        <li><strong class="text-white">Dawnsreach:</strong> Balance of light and dark. Days begin to grow longer.</li>
+                        <li><strong class="text-white">Solflare:</strong> Longest day. Peak heat, labor, and travel.</li>
+                        <li><strong class="text-white">Duskfall:</strong> Balance returns. Nights begin to lengthen.</li>
+                        <li><strong class="text-white">Nightvein:</strong> Longest night. A time of endurance and reflection.</li>
+                        <li class="mt-2 text-red-400"><b>Prime Day:</b> Trade, family gathering. (1st of Luminar)</li>
+                        <li class="text-red-400"><b>Forge Day:</b> Industry, craftsmanship. (10th of Metallon)</li>
+                        <li class="text-red-400"><b>Ashlight Commemoration:</b> Remembrance of the Sundering. (30th of Ashveil)</li>
+                        <li class="text-red-400"><b>Veilwake:</b> Reflection on loss and survival. (30th of Heartveil)</li>
                     </ul>
                 </div>
-            </div>
-            
-            <div class="mt-6 pt-4 border-t border-gold shrink-0">
-                <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="w-full fantasy-btn py-3 rounded text-xs font-bold shadow">Close Guide</button>
             </div>
         </div>
     </div>
@@ -510,9 +497,9 @@
 
     <!-- FIREBASE & LOGIC -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, collection, doc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
         window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
@@ -532,65 +519,31 @@
 
         // --- FIREBASE SETUP ---
         const firebaseConfig = {
-            apiKey: "AIzaSyBLN0KhcnZFKZEYyR0O-Q2mZhKr-iyh7BI",
-            authDomain: "aeonfall-523c1.firebaseapp.com",
-            projectId: "aeonfall-523c1",
-            storageBucket: "aeonfall-523c1.firebasestorage.app",
-            messagingSenderId: "716207733913",
-            appId: "1:716207733913:web:7aac43906a70e2b5f50c08"
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e"
         };
-        const appId = 'aeonfall-manager-v2';
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const DB_COLLECTION = `sessionLogs_${appId}`;
+        // --- CAMPAIGN & PAGE SCOPING ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id') || urlParams.get('campaignId');
+        const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        if (!appId) {
+            if (isPreviewEnv) { appId = "demo_campaign"; } 
+            else { try { window.location.href = "campaigns.html"; } catch(e) {} }
+        }
+
+        const DB_COLLECTION = `sessionLogs`;
 
         let logs = [], activeLogId = null, activeRole = 'player', currentUser = null; 
         let autoSaveTimer = null;
-
-        // CALENDAR STATE
-        const CALENDAR_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
-        const CALENDAR_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
-        const CALENDAR_HOLIDAYS = {
-            '0-1': 'Prime Day',
-            '2-15': 'Dawnsreach',
-            '4-10': 'Forge Day',
-            '5-15': 'Solflare',
-            '8-15': 'Duskfall',
-            '9-30': 'Ashlight Commemoration',
-            '11-15': 'Nightvein',
-            '11-30': 'Veilwake'
-        };
-
-        let currentDNDYear = 327; // Official Current In-Game Year
-        let currentDNDMonth = 0;
-        let currentDNDDay = 1;
-
-        let viewYear = 327; // What the user is looking at
-        let viewMonth = 0;
-        let viewDay = 1;
-        window.hasBootedCal = false;
-
-        let calendarEvents = [];
-
-        // --- UI TOGGLE ---
-        window.switchMainView = (v) => {
-            document.querySelectorAll('.view-tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-view-${v}`).classList.add('active');
-            
-            document.getElementById('logs-sections').classList.add('hidden-view');
-            document.getElementById('calendar-sections').classList.add('hidden-view');
-            document.getElementById('create-actions-dm').classList.add('hidden');
-            
-            if (v === 'logs') {
-                document.getElementById('logs-sections').classList.remove('hidden-view');
-                if (activeRole === 'dm') document.getElementById('create-actions-dm').classList.remove('hidden');
-            } else {
-                document.getElementById('calendar-sections').classList.remove('hidden-view');
-                window.renderCalendar();
-            }
-        };
 
         // --- DASHBOARD (LOGS) ---
         window.renderDashboard = () => {
@@ -650,42 +603,13 @@
             const log = logs.find(c => c.id === activeLogId); if (!log) return;
             const isDM = activeRole === 'dm';
             
-            // Toggles
-            document.querySelectorAll('#sheet-screen input, #sheet-screen textarea').forEach(el => {
-                if (isDM) {
-                    el.disabled = false;
-                } else {
-                    el.disabled = true;
-                }
-            });
-
-            // Handle display divs for players vs inputs for DMs
-            const fields = ['summary', 'sceneOpening', 'sceneGoals', 'sceneChallenges', 'sceneSecrets', 'sceneClosing'];
-            fields.forEach(f => {
-                const inputEl = document.getElementById(`log-${f}-input`);
-                const displayEl = document.getElementById(`log-${f}-display`);
-                if (inputEl && displayEl) {
-                    if (isDM) {
-                        inputEl.classList.remove('hidden-view');
-                        displayEl.classList.add('hidden-view');
-                    } else {
-                        inputEl.classList.add('hidden-view');
-                        displayEl.classList.remove('hidden-view');
-                        displayEl.innerHTML = log[f] ? log[f].replace(/\n/g, '<br>') : '...';
-                    }
-                }
-            });
+            document.querySelectorAll('#sheet-screen input, #sheet-screen textarea').forEach(el => el.disabled = !isDM);
 
             document.getElementById('sheet-controls-dm').classList.toggle('hidden', !isDM);
             document.getElementById('dm-oversight-panel').classList.toggle('hidden-view', !isDM);
-            
-            const dmIntelOverlay = document.getElementById('dm-intel-overlay');
-            if (dmIntelOverlay) dmIntelOverlay.classList.toggle('hidden-view', !isDM);
+            document.getElementById('dm-intel-overlay')?.classList.toggle('hidden-view', !isDM);
 
-            // Hide the "+ New Session" and "Delete" buttons from players
-            document.querySelectorAll('.dm-only-view').forEach(el => {
-                el.classList.toggle('hidden', !isDM);
-            });
+            document.querySelectorAll('.dm-only-view').forEach(el => el.classList.toggle('hidden', !isDM));
             
             const badge = document.getElementById('sheet-visibility-badge');
             const vis = log.visibility || 'public';
@@ -694,9 +618,7 @@
             else badge.className = 'bg-green-900 border border-green-700 text-parchment px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest';
 
             document.querySelectorAll('#sheet-screen [data-key]').forEach(el => { 
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.value = log[el.dataset.key] || (el.type === 'number' ? '' : ''); 
-                }
+                el.value = log[el.dataset.key] || (el.type === 'number' ? '' : ''); 
             });
         }
 
@@ -704,7 +626,6 @@
             if (!activeLogId || activeRole !== 'dm') return;
             const data = {}; 
             document.querySelectorAll('#sheet-screen [data-key]').forEach(el => data[el.dataset.key] = el.value);
-            // Ensure sessionNum is saved as a number for sorting
             if (data.sessionNum) data.sessionNum = parseInt(data.sessionNum);
             
             updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeLogId), data);
@@ -714,20 +635,18 @@
         // --- DM ACTIONS (LOGS) ---
         window.openNewLogModal = () => {
             document.getElementById('new-log-num').value = logs.length + 1;
-            document.getElementById('new-log-date').value = new Date().toLocaleDateString();
             document.getElementById('create-modal').classList.remove('hidden');
         };
 
         window.executeCreateLog = async () => {
             if (activeRole !== 'dm') return;
             const num = parseInt(document.getElementById('new-log-num').value) || 1;
-            const date = document.getElementById('new-log-date').value || "";
 
             try {
                 const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
                     visibility: 'unpublished', 
                     sessionNum: num,
-                    date: date,
+                    date: "",
                     location: "",
                     summary: "",
                     sceneOpening: "",
@@ -761,7 +680,36 @@
             window.showToast("Log Erased from History.");
         };
 
-        // --- CALENDAR SYSTEM ---
+        // --- AEONFALL CALENDAR SYSTEM ---
+        const CALENDAR_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
+        const CALENDAR_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
+        const CALENDAR_HOLIDAYS = {
+            '0-1': 'Prime Day', '2-15': 'Dawnsreach', '4-10': 'Forge Day', '5-15': 'Solflare',
+            '8-15': 'Duskfall', '9-30': 'Ashlight', '11-15': 'Nightvein', '11-30': 'Veilwake'
+        };
+
+        let currentDNDYear = 836; 
+        let currentDNDMonth = 0;
+        let currentDNDDay = 1;
+        let viewYear = 836; 
+        let viewMonth = 0;
+        let calendarEvents = [];
+        let isPickerMode = false;
+
+        window.openCalendarModal = (pickerMode = false) => {
+            isPickerMode = pickerMode;
+            viewYear = currentDNDYear;
+            viewMonth = currentDNDMonth;
+            
+            document.getElementById('cal-dm-gear').classList.toggle('hidden', activeRole !== 'dm');
+            document.getElementById('aeon-cal-modal').classList.remove('hidden');
+            window.renderCalendar();
+        };
+
+        window.closeCalendarModal = () => {
+            document.getElementById('aeon-cal-modal').classList.add('hidden');
+        };
+
         window.changeCalMonth = (dir) => {
             viewMonth += dir;
             if (viewMonth > 11) { viewMonth = 0; viewYear++; }
@@ -772,151 +720,134 @@
         window.changeCalYear = (dir) => {
             viewYear += dir;
             if(viewYear < 1) viewYear = 1;
+            document.getElementById('manual-year-input').value = viewYear;
+            window.renderCalendar();
+        };
+
+        window.goToCurrentDate = () => {
+            viewYear = currentDNDYear;
+            viewMonth = currentDNDMonth;
             window.renderCalendar();
         };
 
         window.selectCalDay = (d) => {
-            viewDay = d;
-            window.renderCalendar(); // Re-render to highlight active day
-            updateSidePanel();
+            const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
+            
+            if (isPickerMode) {
+                const dateInput = document.getElementById('log-date-input');
+                if (dateInput && !dateInput.disabled) {
+                    dateInput.value = dateStr;
+                    window.saveLog(false); // Auto-save
+                }
+                window.closeCalendarModal();
+            } else if (activeRole === 'dm') {
+                // Open event manager for that day
+                document.getElementById('event-date-display').textContent = dateStr;
+                document.getElementById('new-event-title').value = '';
+                document.getElementById('new-event-desc').value = '';
+                
+                const eventsList = document.getElementById('existing-events-list');
+                const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
+                
+                eventsList.innerHTML = dayEvents.map(e => `
+                    <div class="bg-black/40 p-2 rounded border-l-2 ${e.vis === 'secret' ? 'border-purple-500' : 'border-red-500'} relative">
+                        <div class="text-[10px] font-bold text-white uppercase">${e.title}</div>
+                        <div class="text-[9px] text-gray-400 truncate">${e.desc}</div>
+                        <button onclick="window.deleteCalendarEvent('${e.id}')" class="absolute top-2 right-2 text-red-500 hover:text-white text-xs">✕</button>
+                    </div>
+                `).join('');
+                
+                // Store selected day temporarily on the save button
+                document.getElementById('event-modal').dataset.day = d;
+                document.getElementById('event-modal').classList.remove('hidden');
+            }
         };
+
+        function getOrdinal(n) {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return s[(v - 20) % 10] || s[v] || s[0];
+        }
 
         window.renderCalendar = () => {
             document.getElementById('cal-month-display').textContent = CALENDAR_MONTHS[viewMonth];
-            document.getElementById('cal-year-display').textContent = `${viewYear} SD`;
+            document.getElementById('cal-year-display').textContent = viewYear;
+            document.getElementById('cal-sub-year').textContent = viewYear;
+            document.getElementById('manual-year-input').value = viewYear;
 
             const grid = document.getElementById('cal-days-grid');
             if(!grid) return;
             grid.innerHTML = '';
 
-            // Calculate start day padding (0 to 6)
-            // Day 1 Year 1 was index 0
+            // Calculate start padding (0 to 6)
             const totalDaysBeforeMonth = (viewYear - 1) * 360 + (viewMonth * 30);
             const startPad = totalDaysBeforeMonth % 7;
 
-            // Render empty cells
-            for(let i = 0; i < startPad; i++) {
-                grid.innerHTML += `<div class="cal-cell empty"></div>`;
+            // Render Previous Month's empty cells
+            const prevMonthDays = 30;
+            for(let i = startPad - 1; i >= 0; i--) {
+                grid.innerHTML += `<div class="aeon-cell empty">${prevMonthDays - i}</div>`;
             }
 
-            // Render Days
+            // Render Current Month Days
             for(let d = 1; d <= 30; d++) {
                 const isCurrent = (viewYear === currentDNDYear && viewMonth === currentDNDMonth && d === currentDNDDay);
-                const isActive = (d === viewDay);
                 
-                let classes = "cal-cell";
-                if (isCurrent) classes += " current-day";
-                if (isActive) classes += " active-day";
+                let classes = "aeon-cell";
+                if (isCurrent) classes += " active-day today-glow";
 
                 // Moons logic
-                // Selura is full on day 15
                 const hasSelura = d === 15;
-                // Veythar is full on 7 and 22
                 const hasVeythar = (d === 7 || d === 22);
 
-                let moonsHtml = `<div class="flex gap-1 absolute top-1 right-1">`;
-                if(hasSelura) moonsHtml += `<div class="cal-moon bg-silver-moon shadow-[0_0_4px_#e2e8f0]" title="Full Selura"></div>`;
-                if(hasVeythar) moonsHtml += `<div class="cal-moon bg-red-moon shadow-[0_0_4px_#ef4444]" title="Full Veythar"></div>`;
-                moonsHtml += `</div>`;
+                let dotsHtml = `<div class="aeon-dot-container">`;
+                if(hasSelura) dotsHtml += `<div class="aeon-dot aeon-dot-moon1" title="Full Selura"></div>`;
+                if(hasVeythar) dotsHtml += `<div class="aeon-dot aeon-dot-moon2" title="Full Veythar"></div>`;
 
                 // Events & Holidays
                 const isHoliday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
                 const hasCustomEvents = calendarEvents.some(e => e.y === viewYear && e.m === viewMonth && e.d === d && (e.vis === 'public' || activeRole === 'dm'));
 
-                let eventHtml = '';
-                if (isHoliday) eventHtml += `<div class="cal-event-dot bg-gold shadow-[0_0_4px_#c5a059]"></div>`;
-                if (hasCustomEvents) eventHtml += `<div class="cal-event-dot bg-blood shadow-[0_0_4px_#7a1b1b]"></div>`;
+                if (isHoliday || hasCustomEvents) {
+                    dotsHtml += `<div class="aeon-dot aeon-dot-event"></div>`;
+                    if (isCurrent) classes += " !border-red-900"; // Red outline if today has an event
+                }
+                dotsHtml += `</div>`;
 
                 grid.innerHTML += `
                     <div class="${classes}" onclick="window.selectCalDay(${d})">
-                        ${moonsHtml}
-                        <span class="cal-day-num">${d}</span>
-                        <div class="flex gap-1 justify-center mt-auto w-full">${eventHtml}</div>
+                        ${d}
+                        ${dotsHtml}
                     </div>
                 `;
             }
 
-            // Add end padding to complete the grid visually
+            // End padding
             const totalCells = startPad + 30;
             const endPad = (7 - (totalCells % 7)) % 7;
-            for(let i = 0; i < endPad; i++) {
-                grid.innerHTML += `<div class="cal-cell empty"></div>`;
+            for(let i = 1; i <= endPad; i++) {
+                grid.innerHTML += `<div class="aeon-cell empty">${i}</div>`;
             }
-
-            // Show DM controls based on role
-            document.getElementById('cal-dm-controls').classList.toggle('hidden', activeRole !== 'dm');
-
-            updateSidePanel();
         };
 
-        function updateSidePanel() {
-            // Day Name calculation
-            const totalDaysElapsed = (viewYear - 1) * 360 + (viewMonth * 30) + (viewDay - 1);
-            const dayName = CALENDAR_DAYS[totalDaysElapsed % 7];
-            
-            document.getElementById('side-day-name').textContent = dayName;
-            document.getElementById('side-date-full').textContent = `${viewDay} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} SD`;
+        // --- DM CALENDAR SETTINGS & EVENTS ---
+        window.openCalSettings = () => {
+            if (activeRole !== 'dm') return;
+            document.getElementById('cal-settings-modal').classList.remove('hidden');
+        };
 
-            // Moons
-            let moonText = [];
-            if(viewDay === 15) moonText.push(`<span class="flex items-center gap-1 font-heading text-xs font-bold uppercase text-silver-moon"><div class="cal-moon bg-silver-moon shadow-[0_0_4px_#e2e8f0]"></div> Full Selura</span>`);
-            if(viewDay === 7 || viewDay === 22) moonText.push(`<span class="flex items-center gap-1 font-heading text-xs font-bold uppercase text-red-moon"><div class="cal-moon bg-red-moon shadow-[0_0_4px_#ef4444]"></div> Full Veythar</span>`);
-            
-            const moonCont = document.getElementById('side-moon-data');
-            if(moonText.length > 0) {
-                moonCont.innerHTML = moonText.join('');
-                moonCont.classList.remove('hidden');
-            } else {
-                moonCont.classList.add('hidden');
-            }
-
-            // Holidays
-            const holCont = document.getElementById('side-holiday-data');
-            const holidayName = CALENDAR_HOLIDAYS[`${viewMonth}-${viewDay}`];
-            if(holidayName) {
-                holCont.innerHTML = `<span class="bg-gold/20 text-gold border border-gold px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest font-heading">${holidayName}</span>`;
-                holCont.classList.remove('hidden');
-            } else {
-                holCont.classList.add('hidden');
-            }
-
-            // Events
-            const eventsCont = document.getElementById('side-events-list');
-            const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === viewDay && (e.vis === 'public' || activeRole === 'dm'));
-
-            if (dayEvents.length === 0) {
-                eventsCont.innerHTML = `<p class="italic text-xs text-gray-600 font-serif">No historical events recorded for this date.</p>`;
-            } else {
-                eventsCont.innerHTML = dayEvents.map(e => `
-                    <div class="bg-black/40 p-3 rounded border-l-2 border-blood relative group">
-                        ${e.vis === 'secret' ? '<span class="absolute top-2 right-2 text-[8px] bg-gray-800 text-gray-400 px-1 rounded font-black font-heading uppercase">DM Secret</span>' : ''}
-                        <h5 class="font-heading font-bold text-sm text-parchment">${e.title}</h5>
-                        <p class="font-serif italic text-xs text-gray-400 mt-1 leading-relaxed">${e.desc.replace(/\n/g, '<br>')}</p>
-                        ${activeRole === 'dm' ? `<button onclick="window.deleteCalendarEvent('${e.id}')" class="text-[9px] text-blood hover:text-red-500 font-black uppercase mt-2 hidden group-hover:block transition-colors">Delete</button>` : ''}
-                    </div>
-                `).join('');
-            }
-        }
-
-        // --- DM CALENDAR ACTIONS ---
         window.setAsCurrentDate = async () => {
             if (activeRole !== 'dm') return;
             try {
+                // Default to day 1 of the visible month for simplicity if they just click the button
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
                     currentYear: viewYear,
                     currentMonth: viewMonth,
-                    currentDay: viewDay
+                    currentDay: 1 
                 }, {merge: true});
-                window.showToast("Current Date Set");
+                document.getElementById('cal-settings-modal').classList.add('hidden');
+                window.showToast("Current Month Set");
             } catch(e) { window.showToast("Failed to set date."); }
-        };
-
-        window.openEventModal = () => {
-            if (activeRole !== 'dm') return;
-            document.getElementById('new-event-title').value = '';
-            document.getElementById('new-event-desc').value = '';
-            document.getElementById('new-event-vis').value = 'public';
-            document.getElementById('event-modal').classList.remove('hidden');
         };
 
         window.saveCalendarEvent = async () => {
@@ -924,6 +855,7 @@
             const title = document.getElementById('new-event-title').value.trim();
             const desc = document.getElementById('new-event-desc').value.trim();
             const vis = document.getElementById('new-event-vis').value;
+            const day = parseInt(document.getElementById('event-modal').dataset.day);
 
             if (!title) return window.showToast("Event needs a title.");
 
@@ -931,7 +863,7 @@
                 id: crypto.randomUUID(),
                 y: viewYear,
                 m: viewMonth,
-                d: viewDay,
+                d: day,
                 title: title,
                 desc: desc,
                 vis: vis
@@ -958,105 +890,88 @@
                     events: updatedEvents
                 }, {merge: true});
                 window.showToast("Event Erased");
+                document.getElementById('event-modal').classList.add('hidden');
             } catch(e) { window.showToast("Failed to delete event."); }
         };
 
         // --- AUTH & INIT ---
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) {
+                try { window.location.href = "index.html"; } catch(e) {
+                    document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 }
-            } catch (e) {
-                await signInAnonymously(auth);
+                return;
             }
-
-            onAuthStateChanged(auth, async (u) => {
-                if (!u) {
-                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
-                    return;
-                }
-                
-                try {
+            
+            try {
+                if (u.isAnonymous) {
                     currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
-                    // We only use anonymous auth in this refactored app context to prevent broken links
-                    // We extract true user from localStorage if it exists
-                    const savedUser = localStorage.getItem('aeonfall_user');
-                    const savedRole = localStorage.getItem('aeonfall_role');
-                    if (savedUser) {
-                        try {
-                            currentUser = JSON.parse(savedUser);
-                            activeRole = savedRole || 'player';
-                        } catch(e) {}
-                    }
-
-                    // Fetch campaign name
-                    if (appId !== "demo_campaign") {
-                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                        if (campDoc.exists() && campDoc.data().name) {
-                            const titleEl = document.getElementById('main-campaign-title');
-                            if (titleEl) titleEl.innerText = campDoc.data().name;
-                            document.title = `${campDoc.data().name} - Session Logs`;
-                        }
-                    }
-
-                    const userDisplay = document.getElementById('user-display-name');
-                    if (userDisplay) userDisplay.innerText = currentUser.username;
-                    
-                    // Toggle DM Features
-                    const isDM = activeRole === 'dm';
-                    if (isDM && document.getElementById('logs-sections').classList.contains('hidden-view') === false) {
-                        document.getElementById('create-actions-dm')?.classList.remove('hidden');
+                } else {
+                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    if (userDoc.exists()) {
+                        currentUser = { uid: u.uid, ...userDoc.data() };
                     } else {
-                        document.getElementById('create-actions-dm')?.classList.add('hidden');
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
                     }
-
-                    document.getElementById('initial-loading').classList.add('hidden');
-                    document.getElementById('dashboard-screen').classList.remove('hidden-view');
-
-                    // Initialize Date to today for rendering before sync
-                    viewDay = 1; viewMonth = 0; viewYear = 327;
-
-                    // Listeners
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
-                        logs = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                        window.renderDashboard();
-                        if (activeLogId) syncSheetData();
-                    });
-
-                    // Listen for Calendar State
-                    onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), (docSnap) => {
-                        if (docSnap.exists()) {
-                            const data = docSnap.data();
-                            currentDNDYear = data.currentYear || 327;
-                            currentDNDMonth = data.currentMonth || 0;
-                            currentDNDDay = data.currentDay || 1;
-                            calendarEvents = data.events || [];
-                            
-                            // Initial boot sync
-                            if (!window.hasBootedCal) {
-                                viewYear = currentDNDYear;
-                                viewMonth = currentDNDMonth;
-                                viewDay = currentDNDDay;
-                                window.hasBootedCal = true;
-                            }
-                        }
-                        if(!document.getElementById('calendar-sections').classList.contains('hidden-view')) {
-                            window.renderCalendar();
-                        }
-                    });
-
-                    // Initial Render Default
-                    window.switchMainView('logs');
-
-                } catch (error) {
-                    console.error(error);
-                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
                 }
-            });
-        };
+
+                activeRole = currentUser.role || 'player';
+
+                // Fetch campaign name
+                if (appId !== "demo_campaign") {
+                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                    if (campDoc.exists() && campDoc.data().name) {
+                        const titleEl = document.getElementById('main-campaign-title');
+                        if (titleEl) titleEl.innerText = campDoc.data().name;
+                        document.title = `${campDoc.data().name} - Logs`;
+                    }
+                }
+
+                const userDisplay = document.getElementById('user-display-name');
+                if (userDisplay) userDisplay.innerText = currentUser.username;
+                
+                const isDM = activeRole === 'dm';
+                if (isDM && document.getElementById('logs-sections').classList.contains('hidden-view') === false) {
+                    document.getElementById('create-actions-dm')?.classList.remove('hidden');
+                } else {
+                    document.getElementById('create-actions-dm')?.classList.add('hidden');
+                }
+
+                document.getElementById('initial-loading').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden-view');
+
+                // Listeners
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
+                    logs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    window.renderDashboard();
+                    if (activeLogId) syncSheetData();
+                });
+
+                // Listen for Calendar State
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        currentDNDYear = data.currentYear || 836;
+                        currentDNDMonth = data.currentMonth || 0;
+                        currentDNDDay = data.currentDay || 1;
+                        calendarEvents = data.events || [];
+                        
+                        if (!window.hasBootedCal) {
+                            viewYear = currentDNDYear;
+                            viewMonth = currentDNDMonth;
+                            window.hasBootedCal = true;
+                        }
+                    }
+                    if(!document.getElementById('aeon-cal-modal').classList.contains('hidden')) {
+                        window.renderCalendar();
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+            }
+        });
 
         // Auto-save when DM types
         document.addEventListener('input', (e) => { 
@@ -1066,7 +981,6 @@
             } 
         });
 
-        initAuth();
     </script>
 </body>
 </html>
