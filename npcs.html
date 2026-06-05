@@ -252,7 +252,10 @@
                         </div>
 
                         <div>
-                            <div class="section-header">Abilities</div>
+                            <div class="section-header flex justify-between items-center">
+                                Abilities
+                                <button id="main-gen-btn" onclick="window.openScoreGenModal()" class="bg-transparent border border-blood text-blood px-2 py-0.5 rounded text-[8px] font-bold hover:bg-blood hover:text-parchment transition-colors font-heading hidden-view">Roll</button>
+                            </div>
                             <div class="grid grid-cols-3 sm:grid-cols-6 gap-3" id="stats-grid"></div>
                         </div>
 
@@ -272,6 +275,48 @@
     </div>
 
     <!-- MODALS -->
+    <!-- SCORE GENERATOR MODAL -->
+    <div id="score-gen-modal" class="modal-overlay hidden">
+        <div class="modal-container !max-w-xl py-12 px-10">
+            <h2 class="text-4xl font-heading font-black text-blood text-center uppercase tracking-tighter mb-10 border-b border-gold pb-4">Score Generator</h2>
+            
+            <div id="gen-controls" class="space-y-12">
+                <div class="grid grid-cols-2 gap-6 font-heading">
+                    <button onclick="window.generateScores('standard')" class="py-6 bg-transparent border-2 border-ink text-ink hover:bg-ink hover:text-parchment rounded transition-all shadow font-bold uppercase tracking-widest">
+                        Standard Array
+                    </button>
+                    <button onclick="window.generateScores('heroic')" class="py-6 fantasy-btn rounded transition-all shadow font-bold uppercase tracking-widest">
+                        Heroic Roll
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results display (Appears after choosing method) -->
+            <div id="gen-results-area" class="hidden space-y-8 mt-6">
+                <div id="gen-numbers-display" class="flex justify-center flex-wrap gap-4 py-6 bg-[rgba(255,255,255,0.4)] rounded border border-dashed border-gold"></div>
+                
+                <div id="heroic-reroll-area" class="hidden text-center">
+                    <button onclick="window.generateScores('heroic', true)" class="text-[10px] font-bold text-blood uppercase underline tracking-widest font-heading">Reroll (One Use Only)</button>
+                </div>
+
+                <div id="assign-grid" class="grid grid-cols-2 gap-4"></div>
+                
+                <div class="flex justify-between items-center px-2 font-heading">
+                    <button onclick="window.randomizeAssignment()" class="text-[10px] font-bold text-ink uppercase tracking-widest hover:underline">Auto Assign</button>
+                    <button onclick="window.openScoreGenModal()" class="text-[10px] font-bold text-blood uppercase tracking-widest hover:underline">Reset</button>
+                </div>
+
+                <div class="flex justify-center pt-4 font-heading">
+                    <button id="gen-apply-area" onclick="window.applyScores()" class="hidden fantasy-btn px-12 py-3 rounded font-bold uppercase text-sm shadow">Apply Attributes</button>
+                </div>
+            </div>
+
+            <div class="flex justify-center mt-12 font-heading">
+                <button onclick="document.getElementById('score-gen-modal').classList.add('hidden')" class="text-xs font-bold text-555 uppercase tracking-[0.2em] hover:text-ink transition-colors underline">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="private-link-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h3 class="font-heading text-xl font-bold text-purple-700 uppercase mb-4 border-b border-purple-300 pb-2">Link Player</h3>
@@ -350,7 +395,13 @@
 
         let characters = [], currentUser = null, activeCharId = null, activeRole = 'player'; 
         let autoSaveTimer = null;
+        let lastGeneratedScores = [], sessionRerollUsed = false;
         const STATS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+        // --- UNBIASED RANDOMNESS SYSTEM ---
+        const getRoll = (sides) => {
+            return Math.floor(Math.random() * sides) + 1;
+        };
 
         function renderMedia(src, className, style = "") {
             if (!src) return ''; 
@@ -430,6 +481,7 @@
             document.getElementById('dm-media-controls')?.classList.toggle('hidden', !isDM);
             document.getElementById('sec-dm-notes').classList.toggle('hidden-view', !isDM);
             document.getElementById('dm-oversight-panel').classList.toggle('hidden-view', !isDM);
+            document.getElementById('main-gen-btn').classList.toggle('hidden-view', !isDM);
             
             const badge = document.getElementById('sheet-visibility-badge');
             const vis = char.visibility || 'public';
@@ -466,6 +518,63 @@
         }
 
         window.calcMods = () => { STATS.forEach(s => { const el = document.querySelector(`#sheet-screen [data-key="${s}"]`); if (el) { const v = parseInt(el.value) || 10; const m = Math.floor((v - 10) / 2); const modEl = document.getElementById(`mod-${s}`); if (modEl) modEl.textContent = (m >= 0 ? '+' : '') + m; } }); };
+
+        window.openScoreGenModal = () => { 
+            sessionRerollUsed = false; 
+            document.getElementById('score-gen-modal').classList.remove('hidden'); 
+            document.getElementById('gen-results-area').classList.add('hidden'); 
+            document.getElementById('gen-apply-area').classList.add('hidden'); 
+            document.getElementById('gen-controls').classList.remove('hidden'); 
+        };
+
+        window.generateScores = (method, isReroll = false) => { 
+            if (method === 'standard') {
+                lastGeneratedScores = [15, 14, 13, 12, 10, 8]; 
+            } else { 
+                if (isReroll) sessionRerollUsed = true; 
+                lastGeneratedScores = Array.from({length: 6}, () => { 
+                    const r = [getRoll(6), getRoll(6), getRoll(6), getRoll(6)]; 
+                    r.sort((a,b)=>b-a); 
+                    return r[0]+r[1]+r[2]; 
+                }).sort((a,b)=>b-a); 
+            } 
+            
+            document.getElementById('gen-numbers-display').innerHTML = lastGeneratedScores.map(n => `<span class="score-line-val font-black mx-2 text-2xl text-ink font-serif">${n}</span>`).join(''); 
+            
+            document.getElementById('assign-grid').innerHTML = STATS.map(s => `
+                <div class="bg-[rgba(255,255,255,0.4)] p-2 px-3 rounded flex justify-between items-center border border-gold">
+                    <span class="font-bold text-[10px] uppercase text-555 font-heading">${s}</span>
+                    <select data-assign-stat="${s}" class="text-xs font-bold border-none bg-transparent focus:outline-none text-ink">
+                        <option value="">-</option>
+                        ${lastGeneratedScores.map((n, i) => `<option value="${i}">${n}</option>`).join('')}
+                    </select>
+                </div>
+            `).join(''); 
+            
+            document.getElementById('gen-results-area').classList.remove('hidden'); 
+            document.getElementById('gen-apply-area').classList.remove('hidden'); 
+            document.getElementById('gen-controls').classList.add('hidden'); 
+            document.getElementById('heroic-reroll-area').classList.toggle('hidden', method !== 'heroic' || sessionRerollUsed); 
+        };
+
+        window.randomizeAssignment = () => { 
+            const p = [0,1,2,3,4,5].sort(()=>Math.random()-0.5); 
+            Array.from(document.querySelectorAll('[data-assign-stat]')).forEach((s,i) => s.value = p[i]); 
+        };
+
+        window.applyScores = async () => { 
+            const selects = Array.from(document.querySelectorAll('[data-assign-stat]')); 
+            const chosen = selects.map(s => s.value).filter(v => v !== ""); 
+            
+            if (chosen.length < 6 || new Set(chosen).size < 6) return window.showToast("Assign unique values to all stats"); 
+            
+            const updates = { scoresGenerated: true }; 
+            selects.forEach(s => updates[s.dataset.assignStat] = lastGeneratedScores[parseInt(s.value)]); 
+            
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates); 
+            document.getElementById('score-gen-modal').classList.add('hidden'); 
+            window.calcMods(); 
+        };
 
         window.addSkillItem = async () => {
             const name = document.getElementById('skill-name-in').value, val = document.getElementById('skill-val-in').value;
