@@ -612,13 +612,14 @@
                 if (appId !== "demo_campaign") {
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists() && campDoc.data().name) {
-                        const titleEl = document.getElementById('campaign-title-display');
+                        const titleEl = document.getElementById('main-campaign-title');
                         if (titleEl) titleEl.innerText = campDoc.data().name;
                         document.title = `${campDoc.data().name} - Tome`;
                     }
                 }
 
-                document.getElementById('user-display-name').innerText = currentUser.username;
+                const userDisplay = document.getElementById('user-display-name');
+                if (userDisplay) userDisplay.innerText = currentUser.username;
                 
                 // Toggle DM Features & UI
                 window.updateRoleUI();
