@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chronicles - Gear & Artifacts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { 'parchment': '#f1e5c5', 'ink': '#2c1e16', 'blood': '#7a1b1b', 'gold': '#c5a059', 'wood': '#1a110b' }, fontFamily: { 'serif': ['Lora', 'serif'], 'heading': ['Cinzel', 'serif'] } } }
+        }
+    </script>
+    <style>
+        body { font-family: 'Lora', serif; background-color: #1a110b; background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E"); color: #f1e5c5; overflow-x: hidden; }
+        
+        .parchment-card { background-color: #f1e5c5; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #e8cd87; border-radius: 8px; color: #2c1e16; position: relative; display: flex; flex-direction: column; }
+        
+        .fantasy-btn { background: linear-gradient(to bottom, #c5a059, #8b5a2b); color: #1a110b !important; border: 2px solid #e8cd87 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.4) !important; font-weight: 900; }
+        .fantasy-btn:hover:not(:disabled) { background: linear-gradient(to bottom, #e8cd87, #a67232); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #fff !important; }
+        .fantasy-btn:disabled { filter: grayscale(1); opacity: 0.5; cursor: not-allowed; }
+        
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
+        .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
+
+        .nav-link { color: #888; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; white-space: nowrap; font-family: 'Cinzel', serif; }
+        .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
+        .nav-link:hover { color: #f1e5c5; }
+
+        .filter-tab { background: rgba(0,0,0,0.4); border: 1px solid #444; color: #888; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; transition: all 0.2s; cursor: pointer; letter-spacing: 1px; white-space: nowrap; }
+        .filter-tab:hover { border-color: #c5a059; color: #c5a059; background: rgba(0,0,0,0.6); }
+        .filter-tab.active { background: #c5a059; color: #1a110b; border-color: #e8cd87; box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); }
+
+        .rarity-common { color: #4b5563; }
+        .rarity-uncommon { color: #16a34a; }
+        .rarity-rare { color: #2563eb; }
+        .rarity-epic { color: #9333ea; }
+        .rarity-legendary { color: #d97706; }
+        .rarity-mythic { color: #dc2626; text-shadow: 0 0 5px rgba(220,38,38,0.5); }
+
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 100000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(4px); }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .hidden-view { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+
+    <div id="toast" class="toast">Message</div>
+
+    <!-- Initial Loading State -->
+    <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
+        <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
+        <h2 class="font-heading text-2xl text-parchment animate-pulse">Unlocking the Vaults...</h2>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard-screen" class="min-h-screen p-4 md:p-8 hidden w-full">
+        <div class="max-w-7xl mx-auto">
+            <!-- HEADER & NAVIGATION -->
+            <header class="flex flex-col items-center md:items-start md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative">
+                <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
+                
+                <div class="text-center md:text-left w-full md:w-auto">
+                    <h1 id="main-campaign-title" class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
+                    <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
+                        <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Gear & Artifacts</p>
+                        <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
+                            <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
+                    <div class="flex items-center gap-4">
+                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded !border-gray-600 !text-gray-400 hover:!text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                    </div>
+
+                    <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
+                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
+                        <a href="#" onclick="window.routeTo('gear_artifacts.html'); return false;" class="nav-link active">Artifacts</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- TABS & ACTIONS ROW -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">
+                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <button onclick="window.setFilter('store')" class="filter-tab active" id="tab-store"><i class="fa-solid fa-shop mr-1"></i> The Bazaar (Store)</button>
+                    <button onclick="window.setFilter('public')" class="filter-tab" id="tab-public"><i class="fa-solid fa-book-open mr-1"></i> Public Codex</button>
+                    <button onclick="window.setFilter('private')" class="filter-tab" id="tab-private"><i class="fa-solid fa-lock mr-1"></i> Personal Cache</button>
+                </div>
+
+                <div class="flex items-center gap-4 w-full lg:w-auto">
+                    <h2 id="view-title" class="font-heading text-2xl font-black text-gold uppercase tracking-widest drop-shadow hidden lg:block">The Bazaar</h2>
+                    <button id="add-item-btn" onclick="window.openItemModal()" class="hidden fantasy-btn px-5 py-2.5 rounded text-[10px] ml-auto lg:ml-0">+ Forge Artifact</button>
+                </div>
+            </div>
+
+            <!-- MASONRY GRID -->
+            <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+                <!-- Cards populate here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGE / EDIT ITEM MODAL -->
+    <div id="item-modal" class="modal-overlay hidden">
+        <div class="parchment-card p-6 md:p-8 w-full max-w-2xl overflow-y-auto max-h-[90vh] scrollbar-hide">
+            <h3 id="item-modal-title" class="font-heading text-2xl font-black text-blood uppercase mb-4 border-b border-blood/30 pb-2 text-center">Forge Artifact</h3>
+            
+            <input type="hidden" id="item-id">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Name</label>
+                    <input type="text" id="item-name" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood font-bold" placeholder="E.g. Blade of Aeons">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Type</label>
+                    <input type="text" id="item-type" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood" placeholder="Weapon, Armor, Relic...">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Rarity</label>
+                    <select id="item-rarity" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood">
+                        <option value="Common">Common</option>
+                        <option value="Uncommon">Uncommon</option>
+                        <option value="Rare">Rare</option>
+                        <option value="Epic">Epic</option>
+                        <option value="Legendary">Legendary</option>
+                        <option value="Mythic">Mythic</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Weight</label>
+                    <input type="text" id="item-weight" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood" placeholder="E.g. 3 lbs">
+                </div>
+            </div>
+
+            <div class="bg-[rgba(139,90,43,0.1)] p-4 rounded border border-gold/50 mb-4">
+                <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-2">Base Value (Pricing)</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="text-center"><input type="number" id="price-vt" class="w-full text-center bg-white/60 border border-gold rounded p-1 font-bold text-ink" placeholder="0"><label class="text-[9px] font-bold font-heading text-blood uppercase">Volt</label></div>
+                    <div class="text-center"><input type="number" id="price-byt" class="w-full text-center bg-white/60 border border-gold rounded p-1 font-bold text-ink" placeholder="0"><label class="text-[9px] font-bold font-heading text-blood uppercase">Byte</label></div>
+                    <div class="text-center"><input type="number" id="price-cr" class="w-full text-center bg-white/60 border border-gold rounded p-1 font-bold text-ink" placeholder="0"><label class="text-[9px] font-bold font-heading text-blood uppercase">Circuit</label></div>
+                    <div class="text-center"><input type="number" id="price-sc" class="w-full text-center bg-white/60 border border-gold rounded p-1 font-bold text-ink" placeholder="0"><label class="text-[9px] font-bold font-heading text-blood uppercase">Scrap</label></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-[rgba(139,90,43,0.1)] p-4 rounded border border-gold/50">
+                <div>
+                    <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Visibility</label>
+                    <select id="item-visibility" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood">
+                        <option value="public">Public Codex</option>
+                        <option value="private">Private (Linked to Player)</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2 mt-4 md:mt-0 pt-2 md:pt-4">
+                    <input type="checkbox" id="item-forsale" class="w-5 h-5 accent-blood">
+                    <label class="text-xs font-bold text-ink uppercase tracking-widest font-heading">List in Bazaar (Store)</label>
+                </div>
+            </div>
+            
+            <div id="private-link-container" class="mb-4 hidden">
+                <label class="block text-[10px] font-bold text-purple-800 uppercase tracking-widest font-heading mb-1">Link to Player Username</label>
+                <input type="text" id="item-linked-user" class="w-full bg-purple-50 border border-purple-300 rounded p-2 text-ink text-sm outline-none focus:border-purple-600" placeholder="Exact username...">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Properties (Mechanics)</label>
+                <textarea id="item-properties" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood min-h-[60px] font-serif italic" placeholder="Finesse, Light, Requires Attunement..."></textarea>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Lore / Description</label>
+                <textarea id="item-desc" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood min-h-[100px] font-serif leading-relaxed" placeholder="History and physical description..."></textarea>
+            </div>
+
+            <div class="flex gap-3 font-heading">
+                <button onclick="document.getElementById('item-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.saveItem()" class="flex-1 bg-blood text-parchment font-bold uppercase text-[10px] rounded py-3 hover:bg-red-800 shadow-md transition-colors border border-gold">Forge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUY MODAL -->
+    <div id="buy-modal" class="modal-overlay hidden z-[900]">
+        <div class="parchment-card p-6 md:p-8 w-full max-w-sm text-center">
+            <h3 class="font-heading text-xl font-bold text-blood uppercase mb-2 border-b border-blood/30 pb-2">Acquire Artifact</h3>
+            
+            <div id="buy-item-details" class="mb-6">
+                <h4 id="buy-item-name" class="font-heading text-lg font-black text-ink">Item Name</h4>
+                <p id="buy-item-cost" class="text-sm font-bold text-blood font-serif mt-1">Cost: 0 SC</p>
+            </div>
+            
+            <div class="text-left mb-6">
+                <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Purchasing Character</label>
+                <select id="buy-char-select" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood" onchange="window.updateBuyFundsDisplay()">
+                    <option value="">Select Character...</option>
+                    <!-- Populated by JS -->
+                </select>
+                <div id="buy-funds-display" class="text-[10px] font-bold text-gray-600 uppercase tracking-widest font-heading mt-2 text-center">Available Funds: --</div>
+            </div>
+
+            <div class="flex gap-3 font-heading">
+                <button onclick="document.getElementById('buy-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-2.5 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button id="confirm-buy-btn" onclick="window.executePurchase()" class="flex-1 bg-blood text-parchment font-bold uppercase text-[10px] rounded py-2.5 hover:bg-red-800 shadow-md transition-colors border border-gold">Purchase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PURGE MODAL -->
+    <div id="del-modal" class="modal-overlay hidden z-[1000]">
+        <div class="parchment-card p-8 max-w-sm w-full text-center border-2 !border-blood shadow-2xl">
+            <h3 class="font-heading font-black text-2xl text-blood uppercase tracking-widest mb-2">Disenchant Item</h3>
+            <p class="font-serif italic text-ink mb-6 text-sm">This artifact will be permanently destroyed and removed from all records.</p>
+            <div class="flex flex-col gap-3 font-heading">
+                <button id="confirm-del-btn" onclick="window.executeDelete()" class="w-full bg-blood text-parchment py-3 rounded border border-gold font-bold uppercase text-xs shadow transition-colors hover:bg-red-800">Confirm Erasure</button>
+                <button onclick="document.getElementById('del-modal').classList.add('hidden')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+        // --- CORE UI FUNCTIONS ---
+        window.showToast = (m) => { 
+            const t = document.getElementById('toast'); 
+            if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 4000); } 
+        };
+
+        window.routeTo = (page) => {
+            const currentId = new URLSearchParams(window.location.search).get('id') || new URLSearchParams(window.location.search).get('campaignId');
+            try {
+                if (currentId && currentId !== "demo_campaign") {
+                    window.location.href = `${page}?id=${currentId}`;
+                } else {
+                    window.location.href = page;
+                }
+            } catch(e) {
+                window.showToast("Redirects disabled in preview window.");
+            }
+        };
+
+        // --- FIREBASE SETUP ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- CAMPAIGN SCOPING ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id') || urlParams.get('campaignId');
+        const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        if (!appId) {
+            if (isPreviewEnv) { appId = "demo_campaign"; } 
+            else { try { window.location.href = "campaigns.html"; } catch(e) {} }
+        }
+
+        const DB_COLLECTION = `gearArtifacts`;
+
+        let currentUser = null;
+        let activeRole = 'player';
+        let allItems = [];
+        let myCharacters = [];
+        let currentFilter = 'store'; // store, public, private
+        
+        let targetDelId = null;
+        let activeItemId = null; // For editing
+        let targetBuyItem = null;
+
+        // --- CURRENCY MATH ---
+        // 1 VT = 1000 SC, 1 BYT = 100 SC, 1 CR = 10 SC
+        window.scrapToFormat = (totalScrap) => {
+            if (!totalScrap || totalScrap <= 0) return '0 SC';
+            let vt = Math.floor(totalScrap / 1000);
+            let rem = totalScrap % 1000;
+            let byt = Math.floor(rem / 100);
+            rem %= 100;
+            let cr = Math.floor(rem / 10);
+            let sc = rem % 10;
+            
+            let parts = [];
+            if (vt > 0) parts.push(`${vt} VT`);
+            if (byt > 0) parts.push(`${byt} BYT`);
+            if (cr > 0) parts.push(`${cr} CR`);
+            if (sc > 0) parts.push(`${sc} SC`);
+            return parts.join(' ');
+        };
+
+        window.formatToScrap = (vt, byt, cr, sc) => {
+            return (parseInt(vt||0) * 1000) + (parseInt(byt||0) * 100) + (parseInt(cr||0) * 10) + parseInt(sc||0);
+        };
+
+        // UI Event Listener for Private Link Toggle
+        document.getElementById('item-visibility').addEventListener('change', (e) => {
+            document.getElementById('private-link-container').classList.toggle('hidden', e.target.value !== 'private');
+        });
+
+        // --- FILTERING & RENDERING ---
+        window.setFilter = (filter) => {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${filter}`).classList.add('active');
+            
+            const titles = {
+                'store': 'The Bazaar',
+                'public': 'Public Codex',
+                'private': 'Personal Cache'
+            };
+            document.getElementById('view-title').textContent = titles[filter];
+            
+            window.renderItems();
+        };
+
+        const getRarityColor = (rarity) => {
+            switch((rarity || '').toLowerCase()) {
+                case 'common': return 'rarity-common';
+                case 'uncommon': return 'rarity-uncommon';
+                case 'rare': return 'rarity-rare';
+                case 'epic': return 'rarity-epic';
+                case 'legendary': return 'rarity-legendary';
+                case 'mythic': return 'rarity-mythic';
+                default: return 'text-ink';
+            }
+        };
+
+        window.renderItems = () => {
+            const isDM = activeRole === 'dm';
+            const grid = document.getElementById('items-grid');
+            if (!grid) return;
+
+            let visibleItems = allItems.filter(item => {
+                if (currentFilter === 'store') return item.forSale === true;
+                if (currentFilter === 'public') return item.visibility === 'public';
+                if (currentFilter === 'private') {
+                    if (isDM) return item.visibility === 'private';
+                    return item.visibility === 'private' && currentUser && item.linkedUsername === currentUser.username;
+                }
+                return false;
+            });
+
+            if (visibleItems.length === 0) {
+                let emptyMsg = currentFilter === 'store' ? 'The merchants have packed up. The bazaar is empty.' : 'No artifacts documented in this cache.';
+                grid.innerHTML = `<div class="col-span-full py-16 text-center border-2 border-dashed border-gray-800 rounded-lg bg-black bg-opacity-30"><i class="fa-solid fa-box-open text-4xl text-gray-600 mb-4"></i><p class="text-gray-500 text-xs italic font-serif">${emptyMsg}</p></div>`;
+                return;
+            }
+
+            grid.innerHTML = visibleItems.map(item => {
+                let dmControlsHtml = '';
+                if (isDM) {
+                    dmControlsHtml = `
+                        <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
+                            <button onclick="window.openItemModal('${item.id}')" class="text-gold hover:text-yellow-600 bg-white/80 rounded px-2 py-1 shadow-sm transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="window.triggerDel('${item.id}')" class="text-blood hover:text-red-500 bg-white/80 rounded px-2 py-1 shadow-sm transition-colors" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                }
+
+                let costFormatted = window.scrapToFormat(item.baseValueScrap);
+                
+                let buyBtnHtml = '';
+                if (currentFilter === 'store' && !isDM) {
+                    buyBtnHtml = `<div class="mt-auto pt-4 border-t border-gold flex justify-center"><button onclick="window.openBuyModal('${item.id}')" class="fantasy-btn px-8 py-2.5 rounded text-[10px] w-full"><i class="fa-solid fa-coins mr-2"></i>Acquire</button></div>`;
+                } else if (currentFilter === 'store' && isDM) {
+                    buyBtnHtml = `<div class="mt-auto pt-4 border-t border-gold text-center text-[9px] font-bold text-gray-500 uppercase tracking-widest font-heading">Players can purchase this</div>`;
+                }
+
+                const rColor = getRarityColor(item.rarity);
+
+                return `
+                    <div class="parchment-card p-6 h-full flex flex-col hover:border-blood transition-colors shadow-lg">
+                        ${dmControlsHtml}
+                        
+                        <div class="mb-4 pr-16">
+                            <h3 class="font-heading font-black text-xl text-ink leading-tight mb-1">${item.name}</h3>
+                            <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest font-heading border-b border-gold/50 pb-2">
+                                <span class="text-gray-600">${item.type || 'Item'}</span>
+                                <span class="text-gray-400">•</span>
+                                <span class="${rColor}">${item.rarity || 'Unknown'}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-[rgba(139,90,43,0.1)] border border-gold/40 p-2 rounded mb-4 font-heading text-xs font-bold">
+                            <span class="text-ink"><i class="fa-solid fa-weight-hanging text-gray-500 mr-1"></i> ${item.weight || '--'}</span>
+                            <span class="text-blood tracking-wider"><i class="fa-solid fa-gem text-gold mr-1"></i> ${costFormatted}</span>
+                        </div>
+
+                        <div class="mb-4 flex-grow text-sm font-serif text-ink leading-relaxed">
+                            ${item.desc ? `<p class="mb-3 whitespace-pre-wrap">${item.desc}</p>` : ''}
+                            ${item.properties ? `<p class="italic text-blood bg-[rgba(255,255,255,0.4)] p-2 rounded border-l-2 border-blood">${item.properties}</p>` : ''}
+                        </div>
+                        
+                        ${buyBtnHtml}
+                    </div>
+                `;
+            }).join('');
+        };
+
+        // --- DM ACTIONS: FORGE & EDIT ---
+        window.openItemModal = (id = null) => {
+            if (activeRole !== 'dm') return;
+            
+            activeItemId = id;
+            const titleEl = document.getElementById('item-modal-title');
+            
+            if (id) {
+                const item = allItems.find(i => i.id === id);
+                titleEl.textContent = "Reforge Artifact";
+                document.getElementById('item-name').value = item.name || '';
+                document.getElementById('item-type').value = item.type || '';
+                document.getElementById('item-rarity').value = item.rarity || 'Common';
+                document.getElementById('item-weight').value = item.weight || '';
+                
+                // Reverse math for inputs
+                let scrap = item.baseValueScrap || 0;
+                document.getElementById('price-vt').value = Math.floor(scrap / 1000) || '';
+                scrap %= 1000;
+                document.getElementById('price-byt').value = Math.floor(scrap / 100) || '';
+                scrap %= 100;
+                document.getElementById('price-cr').value = Math.floor(scrap / 10) || '';
+                document.getElementById('price-sc').value = scrap % 10 || '';
+
+                document.getElementById('item-visibility').value = item.visibility || 'public';
+                document.getElementById('item-forsale').checked = !!item.forSale;
+                document.getElementById('item-linked-user').value = item.linkedUsername || '';
+                document.getElementById('item-properties').value = item.properties || '';
+                document.getElementById('item-desc').value = item.desc || '';
+                
+                document.getElementById('private-link-container').classList.toggle('hidden', item.visibility !== 'private');
+            } else {
+                titleEl.textContent = "Forge Artifact";
+                document.querySelectorAll('#item-modal input[type="text"], #item-modal input[type="number"], #item-modal textarea').forEach(el => el.value = '');
+                document.getElementById('item-rarity').value = 'Common';
+                document.getElementById('item-visibility').value = 'public';
+                document.getElementById('item-forsale').checked = false;
+                document.getElementById('private-link-container').classList.add('hidden');
+            }
+
+            document.getElementById('item-modal').classList.remove('hidden');
+        };
+
+        window.saveItem = async () => {
+            if (activeRole !== 'dm') return;
+
+            const name = document.getElementById('item-name').value.trim();
+            if (!name) return window.showToast("Artifact must have a name.");
+
+            const vt = document.getElementById('price-vt').value;
+            const byt = document.getElementById('price-byt').value;
+            const cr = document.getElementById('price-cr').value;
+            const sc = document.getElementById('price-sc').value;
+            const totalScrap = window.formatToScrap(vt, byt, cr, sc);
+
+            const payload = {
+                name,
+                type: document.getElementById('item-type').value.trim(),
+                rarity: document.getElementById('item-rarity').value,
+                weight: document.getElementById('item-weight').value.trim(),
+                baseValueScrap: totalScrap,
+                visibility: document.getElementById('item-visibility').value,
+                forSale: document.getElementById('item-forsale').checked,
+                linkedUsername: document.getElementById('item-linked-user').value.trim().toLowerCase(),
+                properties: document.getElementById('item-properties').value.trim(),
+                desc: document.getElementById('item-desc').value.trim(),
+                updatedAt: Date.now()
+            };
+
+            try {
+                if (activeItemId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeItemId), payload);
+                    window.showToast("Artifact Reforged.");
+                } else {
+                    payload.createdAt = Date.now();
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), payload);
+                    window.showToast("New Artifact Forged.");
+                }
+                document.getElementById('item-modal').classList.add('hidden');
+            } catch (err) {
+                console.error(err);
+                window.showToast("Forge process failed.");
+            }
+        };
+
+        window.triggerDel = (id) => {
+            if (activeRole !== 'dm') return;
+            targetDelId = id;
+            document.getElementById('del-modal').classList.remove('hidden');
+        };
+
+        window.executeDelete = async () => {
+            if (!targetDelId || activeRole !== 'dm') return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, targetDelId));
+                document.getElementById('del-modal').classList.add('hidden');
+                window.showToast("Artifact Disenchanted.");
+                targetDelId = null;
+            } catch(e) {
+                window.showToast("Failed to delete.");
+            }
+        };
+
+        // --- PLAYER ACTIONS: STORE FRONT ---
+        window.openBuyModal = (itemId) => {
+            if (activeRole === 'dm') return;
+            
+            targetBuyItem = allItems.find(i => i.id === itemId);
+            if (!targetBuyItem) return;
+
+            document.getElementById('buy-item-name').textContent = targetBuyItem.name;
+            document.getElementById('buy-item-cost').textContent = `Cost: ${window.scrapToFormat(targetBuyItem.baseValueScrap)}`;
+            
+            const selectEl = document.getElementById('buy-char-select');
+            selectEl.innerHTML = '<option value="">Select Character...</option>';
+            
+            const validChars = myCharacters.filter(c => !c.isDeleted && c.owner === currentUser.username);
+            
+            if (validChars.length === 0) {
+                selectEl.innerHTML = '<option value="">No characters available</option>';
+                selectEl.disabled = true;
+                document.getElementById('confirm-buy-btn').disabled = true;
+            } else {
+                selectEl.disabled = false;
+                validChars.forEach(c => {
+                    selectEl.innerHTML += `<option value="${c.id}">${c.name} (${c.class || 'No Class'})</option>`;
+                });
+                document.getElementById('confirm-buy-btn').disabled = false;
+            }
+
+            document.getElementById('buy-funds-display').textContent = 'Available Funds: --';
+            document.getElementById('buy-modal').classList.remove('hidden');
+        };
+
+        window.updateBuyFundsDisplay = () => {
+            const charId = document.getElementById('buy-char-select').value;
+            if (!charId) {
+                document.getElementById('buy-funds-display').textContent = 'Available Funds: --';
+                document.getElementById('buy-funds-display').className = 'text-[10px] font-bold text-gray-600 uppercase tracking-widest font-heading mt-2 text-center';
+                return;
+            }
+
+            const char = myCharacters.find(c => c.id === charId);
+            if (!char) return;
+
+            const charScrap = window.formatToScrap(char.currencyVT, char.currencyBYT, char.currencyCR, char.currencySC);
+            const costScrap = targetBuyItem.baseValueScrap || 0;
+            
+            const displayEl = document.getElementById('buy-funds-display');
+            displayEl.textContent = `Available Funds: ${window.scrapToFormat(charScrap)}`;
+            
+            if (charScrap >= costScrap) {
+                displayEl.className = 'text-[10px] font-bold text-green-700 uppercase tracking-widest font-heading mt-2 text-center';
+                document.getElementById('confirm-buy-btn').disabled = false;
+            } else {
+                displayEl.className = 'text-[10px] font-bold text-blood uppercase tracking-widest font-heading mt-2 text-center';
+                document.getElementById('confirm-buy-btn').disabled = true;
+            }
+        };
+
+        window.executePurchase = async () => {
+            if (!targetBuyItem) return;
+            
+            const charId = document.getElementById('buy-char-select').value;
+            if (!charId) return window.showToast("Select a character first.");
+
+            const char = myCharacters.find(c => c.id === charId);
+            if (!char) return window.showToast("Character data lost.");
+
+            const charScrap = window.formatToScrap(char.currencyVT, char.currencyBYT, char.currencyCR, char.currencySC);
+            const costScrap = targetBuyItem.baseValueScrap || 0;
+
+            if (charScrap < costScrap) {
+                return window.showToast("Insufficient funds!");
+            }
+
+            try {
+                // Deduct cost
+                let newScrap = charScrap - costScrap;
+                
+                // Recalculate discrete currencies
+                let nVt = Math.floor(newScrap / 1000);
+                newScrap %= 1000;
+                let nByt = Math.floor(newScrap / 100);
+                newScrap %= 100;
+                let nCr = Math.floor(newScrap / 10);
+                let nSc = newScrap % 10;
+
+                // Add to inventory text
+                const currentInv = char.inventory || '';
+                const itemString = `${targetBuyItem.name} [${targetBuyItem.type}] ${targetBuyItem.properties ? `(${targetBuyItem.properties})` : ''}`;
+                const newInv = currentInv ? `${currentInv}\n- ${itemString}` : `- ${itemString}`;
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), {
+                    currencyVT: nVt.toString(),
+                    currencyBYT: nByt.toString(),
+                    currencyCR: nCr.toString(),
+                    currencySC: nSc.toString(),
+                    inventory: newInv
+                });
+
+                document.getElementById('buy-modal').classList.add('hidden');
+                window.showToast("Artifact Acquired!");
+                targetBuyItem = null;
+
+            } catch (err) {
+                console.error(err);
+                window.showToast("Transaction failed.");
+            }
+        };
+
+        // --- AUTH & INITIALIZATION ---
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) {
+                try { window.location.href = "index.html"; } catch(e) {
+                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                }
+                return;
+            }
+            
+            try {
+                if (u.isAnonymous) {
+                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+                } else {
+                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    if (userDoc.exists()) {
+                        currentUser = { uid: u.uid, ...userDoc.data() };
+                    } else {
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                    }
+                }
+
+                activeRole = currentUser.role || 'player';
+
+                if (appId !== "demo_campaign") {
+                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                    if (campDoc.exists() && campDoc.data().name) {
+                        const titleEl = document.getElementById('main-campaign-title');
+                        if (titleEl) titleEl.innerText = campDoc.data().name;
+                        document.title = `${campDoc.data().name} - Artifacts`;
+                    }
+                }
+
+                document.getElementById('user-display-name').innerText = currentUser.username;
+                
+                // Toggle DM Features
+                if (activeRole === 'dm') {
+                    document.getElementById('add-item-btn').classList.remove('hidden');
+                }
+
+                document.getElementById('initial-loading').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+                
+                // Initialize Tabs
+                window.setFilter('store');
+                
+                // Setup Database Listeners
+                
+                // 1. Listen for Items
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
+                    allItems = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.name > b.name ? 1 : -1));
+                    window.renderItems();
+                }, (err) => {
+                    console.error("Archive failure:", err);
+                    window.showToast("Archival Stream Error");
+                });
+
+                // 2. Listen for Characters (for purchasing logic)
+                if (activeRole !== 'dm') {
+                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => {
+                        myCharacters = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    });
+                }
+
+            } catch (error) {
+                console.error("Initialization Error:", error);
+                const initLoad = document.getElementById('initial-loading');
+                if (initLoad) {
+                    initLoad.innerHTML = `<h2 class="font-heading text-2xl text-blood">Connection Failed</h2><p class="text-xs text-gray-400 mt-2">${error.message}</p>`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
