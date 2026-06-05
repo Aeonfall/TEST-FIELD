@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chronicles - Session Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'parchment': '#f1e5c5',
+                        'ink': '#2c1e16',
+                        'blood': '#7a1b1b',
+                        'gold': '#c5a059',
+                        'wood': '#1a110b'
+                    },
+                    fontFamily: {
+                        'serif': ['Lora', 'serif'],
+                        'heading': ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .dashboard-bg { background-color: transparent; }
+        
+        .parchment-paper {
+            background-color: #f1e5c5;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
+            border: 2px solid #c5a059;
+            color: #2c1e16;
+            min-height: calc(100vh - 100px);
+            margin: 20px auto;
+            border-radius: 4px;
+        }
+
+        .card { transition: all 0.2s; cursor: pointer; border-left-width: 4px; position: relative; border: 1px solid #555; background-color: rgba(0,0,0,0.7); color: #f1e5c5; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.7); border-color: #c5a059; }
+
+        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
+        .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
+
+        .nav-link { color: #888; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; white-space: nowrap; font-family: 'Cinzel', serif; }
+        .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
+        .nav-link:hover { color: #f1e5c5; }
+
+        .section-header { font-family: 'Cinzel', serif; font-weight: 900; font-size: 18px; color: #7a1b1b; border-bottom: 2px solid rgba(139, 90, 43, 0.5); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px;}
+        
+        .log-name-main { font-family: 'Cinzel', serif; font-weight: 900; font-size: 36px; line-height: 1.1; color: #7a1b1b; text-transform: uppercase; margin-bottom: 4px; width: 100%; border-bottom: 2px solid #c5a059 !important; background: transparent;}
+        .log-meta-line { font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; color: #2c1e16; border-bottom: 1px dashed rgba(139, 90, 43, 0.3) !important; padding-bottom: 8px; margin-bottom: 24px; text-transform: uppercase; width: 100%; background: transparent;}
+
+        .log-textarea { width: 100%; min-height: 120px; leading-relaxed text-sm bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] p-4 rounded text-ink shadow-inner font-serif resize-y focus:outline-none focus:bg-[rgba(255,255,255,0.7)] transition-colors; margin-bottom: 24px; }
+        .log-text-display { width: 100%; min-height: 120px; font-serif text-sm leading-relaxed text-ink whitespace-pre-wrap mb-24; }
+
+        input:disabled, textarea:disabled { background-color: transparent !important; color: #2c1e16 !important; border: none !important; resize: none; opacity: 1; box-shadow: none !important;}
+        
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); text-align: center;}
+        
+        .dm-panel { background: #2c1e16; color: #f1e5c5; padding: 20px; border-radius: 8px; margin-bottom: 24px; border: 2px solid #c5a059; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .hidden-view { display: none !important; }
+        
+        .drop-cap { float: left; font-family: 'Cinzel', serif; font-size: 65px; line-height: 50px; padding-top: 4px; padding-right: 8px; color: #7a1b1b; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="toast" class="toast">Message</div>
+
+    <!-- Initial Loading State -->
+    <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
+        <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
+        <h2 class="font-heading text-2xl text-parchment animate-pulse">Reading the Journals...</h2>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view">
+        <div class="max-w-6xl mx-auto">
+            <!-- HEADER & NAVIGATION -->
+            <header class="flex flex-col items-center md:items-start md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative">
+                <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
+                
+                <div class="text-center md:text-left w-full md:w-auto">
+                    <h1 id="main-campaign-title" class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
+                    <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
+                        <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Session Logs</p>
+                        <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
+                    <div class="flex items-center gap-4">
+                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded !border-gray-600 !text-gray-400 hover:!text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                    </div>
+
+                    <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
+                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
+                        <a href="#" onclick="window.routeTo('sessionlogs.html'); return false;" class="nav-link active">Logs</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
+                    </nav>
+                </div>
+            </header>
+
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <h2 class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Journal of Past Events</h2>
+                <div id="create-actions-dm" class="flex flex-wrap gap-2 hidden">
+                    <button onclick="window.openNewLogModal()" class="fantasy-btn-alt px-4 py-2 rounded text-[10px] font-bold uppercase shadow"><i class="fa-solid fa-pen-nib mr-1"></i> Scribe New Log</button>
+                </div>
+            </div>
+
+            <div id="logs-sections">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-logs">
+                    <!-- Logs populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHEET SCREEN (Reading the Log) -->
+    <div id="sheet-screen" class="hidden-view">
+        <nav class="sticky top-0 z-[60] bg-[#1a110b] p-2 shadow-2xl border-b border-gray-800 font-heading">
+            <div class="max-w-4xl mx-auto flex justify-between items-center text-gray-300 px-4">
+                <button onclick="window.closeSheet()" class="text-gold hover:text-white font-bold flex items-center gap-2 text-xs uppercase tracking-widest"><span>←</span> Return to Journals</button>
+                <div class="flex items-center gap-4">
+                    <span id="sheet-visibility-badge" class="bg-gray-800 text-gray-400 px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest border border-gray-600">Visibility</span>
+                    <div class="flex items-center gap-2" id="sheet-controls-dm">
+                        <button onclick="window.saveLog(true)" class="fantasy-btn-alt px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">SYNC</button>
+                        <button onclick="window.triggerDeleteModal()" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-parchment px-3 py-1 rounded text-[10px] font-black uppercase transition-colors">Manage</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div id="sheet-container" class="parchment-paper max-w-4xl mx-auto mt-8 mb-24">
+            <div class="p-6 md:p-12">
+                
+                <div id="dm-oversight-panel" class="dm-panel hidden-view mb-8">
+                    <div class="flex justify-between items-center font-heading">
+                        <div class="space-y-3">
+                            <h4 class="text-[10px] font-black uppercase text-gold">Visibility Control</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="window.updateLogVisibility('public')" class="bg-transparent border border-gold text-gold hover:bg-gold hover:text-ink px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">PUBLIC (Players can read)</button>
+                                <button onclick="window.updateLogVisibility('unpublished')" class="bg-gray-800 border border-gray-600 text-gray-300 hover:bg-gray-700 px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">DRAFT (DM Only)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Header -->
+                    <div class="text-center mb-10">
+                        <input type="text" data-key="title" class="log-name-main text-center" placeholder="SESSION TITLE">
+                        <div class="flex justify-center items-center gap-4 log-meta-line border-none mt-2">
+                            <span>Session #<input type="number" data-key="sessionNum" class="w-12 text-center bg-transparent border-b border-dashed border-gray-400 ml-1 inline" placeholder="1"></span>
+                            <span>•</span>
+                            <span>Date: <input type="text" data-key="date" class="w-32 text-center bg-transparent border-b border-dashed border-gray-400 inline" placeholder="MM/DD/YYYY"></span>
+                        </div>
+                    </div>
+
+                    <!-- The Story -->
+                    <div class="mb-10">
+                        <div class="section-header">The Story</div>
+                        <textarea data-key="summary" id="log-summary-input" class="log-textarea" placeholder="Record the events of the session..."></textarea>
+                        <div id="log-summary-display" class="log-text-display"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Locations & NPCs -->
+                        <div class="space-y-8">
+                            <div>
+                                <div class="section-header"><i class="fa-solid fa-map-location-dot mr-2"></i>Locations Visited</div>
+                                <textarea data-key="locations" id="log-locations-input" class="log-textarea min-h-[100px]" placeholder="Towns, dungeons, regions..."></textarea>
+                                <div id="log-locations-display" class="log-text-display min-h-[50px] mb-4"></div>
+                            </div>
+                            <div>
+                                <div class="section-header"><i class="fa-solid fa-users mr-2"></i>NPCs Met</div>
+                                <textarea data-key="npcs" id="log-npcs-input" class="log-textarea min-h-[100px]" placeholder="Allies, merchants, contacts..."></textarea>
+                                <div id="log-npcs-display" class="log-text-display min-h-[50px] mb-4"></div>
+                            </div>
+                        </div>
+
+                        <!-- Encounters & Loot -->
+                        <div class="space-y-8">
+                            <div>
+                                <div class="section-header"><i class="fa-solid fa-khanda mr-2"></i>Encounters & Beasts</div>
+                                <textarea data-key="encounters" id="log-encounters-input" class="log-textarea min-h-[100px]" placeholder="Battles fought, beasts slain..."></textarea>
+                                <div id="log-encounters-display" class="log-text-display min-h-[50px] mb-4"></div>
+                            </div>
+                            <div>
+                                <div class="section-header"><i class="fa-solid fa-gem mr-2"></i>Loot & Rewards</div>
+                                <textarea data-key="loot" id="log-loot-input" class="log-textarea min-h-[100px]" placeholder="Gold, artifacts, items found..."></textarea>
+                                <div id="log-loot-display" class="log-text-display min-h-[50px] mb-4"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DM Secrets -->
+                    <div id="sec-dm-notes" class="hidden-view mt-12 border-t-2 border-blood pt-8">
+                        <div class="section-header !text-blood !border-blood">DM SECRET NOTES</div>
+                        <textarea data-key="dmNotes" class="log-textarea !bg-[rgba(122,27,27,0.05)] !border-blood" placeholder="Hidden plots, things the players missed... (Players cannot see this)"></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- CREATE LOG MODAL -->
+    <div id="create-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <h3 class="font-heading text-xl font-bold text-blood uppercase mb-6 border-b border-gold pb-2">Scribe New Session</h3>
+            <div class="space-y-4 text-left font-serif mb-8">
+                <div>
+                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Session Number</label>
+                    <input type="number" id="new-log-num" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="1">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Session Title</label>
+                    <input type="text" id="new-log-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="The Adventure Begins...">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase text-ink tracking-widest font-heading mb-1 block">Date</label>
+                    <input type="text" id="new-log-date" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood" placeholder="MM/DD/YYYY">
+                </div>
+            </div>
+            <div class="flex gap-2 font-heading">
+                <button onclick="document.getElementById('create-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200">Cancel</button>
+                <button onclick="window.executeCreateLog()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 shadow">Create Log</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div id="delete-modal" class="modal-overlay hidden z-[160]">
+        <div class="modal-container border-2 !border-blood !shadow-[0_0_60px_rgba(127,29,29,0.3)]">
+            <h3 class="text-xl font-heading text-blood font-bold mb-4 uppercase">Erase Session Log</h3>
+            <p class="text-[12px] text-ink mb-8 font-serif leading-relaxed">This action will burn these pages from the archives permanently.</p>
+            <div class="flex flex-col gap-3 font-heading">
+                <button onclick="window.executePermDelete()" class="w-full bg-blood hover:bg-red-800 text-parchment py-3 rounded font-black uppercase text-xs shadow-lg transition-colors">Confirm Erasure</button>
+                <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="w-full bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment py-2.5 rounded font-black uppercase text-xs transition-colors">Abort Procedure</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, collection, doc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+        // --- CORE UI FUNCTIONS ---
+        window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
+
+        window.routeTo = (page) => {
+            const currentId = new URLSearchParams(window.location.search).get('id') || new URLSearchParams(window.location.search).get('campaignId');
+            try {
+                if (currentId && currentId !== "demo_campaign") {
+                    window.location.href = `${page}?id=${currentId}`;
+                } else {
+                    window.location.href = page;
+                }
+            } catch(e) {
+                window.showToast("Redirects disabled in preview window.");
+            }
+        };
+
+        // --- FIREBASE SETUP ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- CAMPAIGN SCOPING ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id') || urlParams.get('campaignId');
+        const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        if (!appId) {
+            if (isPreviewEnv) { appId = "demo_campaign"; } 
+            else { try { window.location.href = "campaigns.html"; } catch(e) {} }
+        }
+
+        const DB_COLLECTION = `sessionLogs`;
+
+        let logs = [], activeLogId = null, activeRole = 'player', currentUser = null; 
+        let autoSaveTimer = null;
+
+        // --- DASHBOARD ---
+        window.renderDashboard = () => {
+            const grid = document.getElementById('grid-logs');
+            grid.innerHTML = '';
+            const isDM = activeRole === 'dm';
+            
+            let visibleLogs = logs.filter(l => l.visibility === 'public' || isDM).sort((a,b) => (b.sessionNum || 0) - (a.sessionNum || 0));
+
+            if (visibleLogs.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center text-ink italic font-serif text-sm opacity-60">No sessions recorded yet.</div>`;
+                return;
+            }
+
+            visibleLogs.forEach(l => {
+                const d = document.createElement('div');
+                let vis = l.visibility || 'public';
+                let borderCol = vis === 'unpublished' ? 'border-gray-500 opacity-70' : 'border-gold';
+                let badge = vis === 'unpublished' ? `<span class="absolute top-3 right-3 bg-gray-800 text-gray-300 px-2 py-0.5 rounded text-[8px] uppercase font-black font-heading">DRAFT</span>` : '';
+                
+                d.className = `bg-black bg-opacity-70 p-6 rounded card border-l-4 shadow-xl flex flex-col justify-between h-48 ${borderCol}`;
+                d.onclick = () => window.openSheet(l.id);
+                
+                d.innerHTML = `
+                    ${badge}
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-heading mb-1">Session ${l.sessionNum || '?'} • ${l.date || 'Unknown Date'}</p>
+                        <h5 class="text-gold font-heading font-bold uppercase text-lg line-clamp-1 drop-shadow-sm mb-2">${l.title || 'Untitled Session'}</h5>
+                        <p class="text-xs text-gray-300 font-serif italic line-clamp-2 leading-relaxed opacity-80">${l.summary || 'No details recorded...'}</p>
+                    </div>
+                    <div class="mt-auto border-t border-gray-700 pt-3">
+                        <span class="text-[9px] font-bold text-blood uppercase tracking-widest font-heading hover:text-red-400 transition-colors flex items-center gap-1">Read Log <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                `;
+                grid.appendChild(d);
+            });
+        };
+
+        // --- SHEET (LOG DETAILS) ---
+        window.openSheet = (id) => { 
+            activeLogId = id; 
+            document.getElementById('dashboard-screen').classList.add('hidden-view'); 
+            document.getElementById('sheet-screen').classList.remove('hidden-view'); 
+            syncSheetData(); 
+            window.scrollTo(0,0); 
+        };
+        
+        window.closeSheet = () => { 
+            activeLogId = null; 
+            document.getElementById('sheet-screen').classList.add('hidden-view'); 
+            document.getElementById('dashboard-screen').classList.remove('hidden-view'); 
+            window.scrollTo(0,0); 
+        };
+
+        function formatDropCap(text) {
+            if (!text || text.length === 0) return '';
+            return `<span class="drop-cap">${text.charAt(0)}</span>${text.slice(1)}`;
+        }
+
+        function syncSheetData() {
+            const log = logs.find(c => c.id === activeLogId); if (!log) return;
+            const isDM = activeRole === 'dm';
+            
+            // Toggles
+            document.querySelectorAll('#sheet-screen input, #sheet-screen textarea').forEach(el => {
+                if (isDM) {
+                    el.classList.remove('hidden-view');
+                    el.disabled = false;
+                } else {
+                    el.classList.add('hidden-view');
+                    el.disabled = true;
+                }
+            });
+
+            // Handle display divs for players vs inputs for DMs
+            const fields = ['summary', 'locations', 'npcs', 'encounters', 'loot'];
+            fields.forEach(f => {
+                const inputEl = document.getElementById(`log-${f}-input`);
+                const displayEl = document.getElementById(`log-${f}-display`);
+                if (inputEl && displayEl) {
+                    if (isDM) {
+                        inputEl.classList.remove('hidden-view');
+                        displayEl.classList.add('hidden-view');
+                    } else {
+                        inputEl.classList.add('hidden-view');
+                        displayEl.classList.remove('hidden-view');
+                        // Format summary with drop cap
+                        if (f === 'summary') {
+                            displayEl.innerHTML = formatDropCap(log[f] || 'No events recorded.');
+                        } else {
+                            displayEl.textContent = log[f] || 'None.';
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('sheet-controls-dm').classList.toggle('hidden', !isDM);
+            document.getElementById('dm-oversight-panel').classList.toggle('hidden-view', !isDM);
+            document.getElementById('sec-dm-notes').classList.toggle('hidden-view', !isDM);
+            
+            const badge = document.getElementById('sheet-visibility-badge');
+            const vis = log.visibility || 'public';
+            badge.textContent = vis.toUpperCase();
+            if(vis === 'unpublished') badge.className = 'bg-gray-800 border border-gray-600 text-gray-300 px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest';
+            else badge.className = 'bg-green-900 border border-green-700 text-parchment px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest';
+
+            document.querySelectorAll('#sheet-screen [data-key]').forEach(el => { 
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.value = log[el.dataset.key] || (el.type === 'number' ? '' : ''); 
+                }
+            });
+            
+            // For players, input title/meta are hidden, so we need to inject them if not DM
+            if (!isDM) {
+                document.querySelector('.log-name-main').classList.remove('hidden-view');
+                document.querySelector('.log-meta-line').classList.remove('hidden-view');
+                document.querySelector('.log-name-main').value = log.title || 'Untitled Session';
+                document.querySelector('[data-key="sessionNum"]').value = log.sessionNum || '?';
+                document.querySelector('[data-key="date"]').value = log.date || 'Unknown Date';
+                document.querySelector('.log-name-main').readOnly = true;
+                document.querySelector('[data-key="sessionNum"]').readOnly = true;
+                document.querySelector('[data-key="date"]').readOnly = true;
+            }
+        }
+
+        window.saveLog = (m) => {
+            if (!activeLogId || activeRole !== 'dm') return;
+            const data = {}; 
+            document.querySelectorAll('#sheet-screen [data-key]').forEach(el => data[el.dataset.key] = el.value);
+            // Ensure sessionNum is saved as a number for sorting
+            if (data.sessionNum) data.sessionNum = parseInt(data.sessionNum);
+            
+            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeLogId), data);
+            if (m) window.showToast("Log Synced to Archives");
+        };
+
+        // --- DM ACTIONS ---
+        window.openNewLogModal = () => {
+            document.getElementById('new-log-num').value = logs.length + 1;
+            document.getElementById('new-log-title').value = '';
+            document.getElementById('new-log-date').value = new Date().toLocaleDateString();
+            document.getElementById('create-modal').classList.remove('hidden');
+        };
+
+        window.executeCreateLog = async () => {
+            if (activeRole !== 'dm') return;
+            const num = parseInt(document.getElementById('new-log-num').value) || 1;
+            const title = document.getElementById('new-log-title').value || "New Session";
+            const date = document.getElementById('new-log-date').value || "";
+
+            try {
+                const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
+                    visibility: 'unpublished', // default to draft so players don't see it until ready
+                    sessionNum: num,
+                    title: title,
+                    date: date,
+                    summary: "",
+                    locations: "",
+                    npcs: "",
+                    encounters: "",
+                    loot: "",
+                    dmNotes: "",
+                    createdAt: Date.now()
+                });
+                document.getElementById('create-modal').classList.add('hidden');
+                window.openSheet(ref.id);
+                window.showToast("New Log Forged");
+            } catch (e) { console.error(e); window.showToast("Failed to create log."); }
+        };
+
+        window.updateLogVisibility = async (v) => { 
+            if (activeLogId && activeRole === 'dm') { 
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeLogId), { visibility: v }); 
+                window.showToast(`Visibility set to ${v.toUpperCase()}`); 
+            } 
+        };
+
+        window.triggerDeleteModal = () => { document.getElementById('delete-modal').classList.remove('hidden'); };
+        window.executePermDelete = async () => { 
+            if (activeRole !== 'dm') return;
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, activeLogId)); 
+            document.getElementById('delete-modal').classList.add('hidden'); 
+            window.closeSheet(); 
+            window.showToast("Log Erased from History.");
+        };
+
+        // --- AUTH & INIT ---
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) {
+                try { window.location.href = "index.html"; } catch(e) {
+                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                }
+                return;
+            }
+            
+            try {
+                if (u.isAnonymous) {
+                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+                } else {
+                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    if (userDoc.exists()) {
+                        currentUser = { uid: u.uid, ...userDoc.data() };
+                    } else {
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                    }
+                }
+
+                activeRole = currentUser.role || 'player';
+
+                // Fetch campaign name
+                if (appId !== "demo_campaign") {
+                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                    if (campDoc.exists() && campDoc.data().name) {
+                        const titleEl = document.getElementById('main-campaign-title');
+                        if (titleEl) titleEl.innerText = campDoc.data().name;
+                        document.title = `${campDoc.data().name} - Session Logs`;
+                    }
+                }
+
+                document.getElementById('user-display-name').innerText = currentUser.username;
+                
+                // Toggle DM Features
+                const isDM = activeRole === 'dm';
+                document.getElementById('create-actions-dm')?.classList.toggle('hidden', !isDM);
+
+                document.getElementById('initial-loading').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden-view');
+
+                // Listeners
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
+                    logs = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                    window.renderDashboard();
+                    if (activeLogId) syncSheetData();
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+            }
+        });
+
+        // Auto-save when DM types
+        document.addEventListener('input', (e) => { 
+            if (e.target.dataset.key && activeRole === 'dm') { 
+                if (autoSaveTimer) clearTimeout(autoSaveTimer); 
+                autoSaveTimer = setTimeout(() => window.saveLog(), 1000); 
+            } 
+        });
+
+    </script>
+</body>
+</html>
