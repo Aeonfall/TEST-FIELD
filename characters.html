@@ -243,6 +243,17 @@
             border-bottom-color: #c5a059;
             background-color: rgba(255,255,255,0.05);
         }
+
+        /* MISSING MODAL & CRITICAL OVERLAY STYLES */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
+        
+        #critical-fail-overlay, #critical-success-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; 
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; text-align: center; backdrop-filter: blur(4px); 
+        }
+        #fireworks-canvas { position: fixed; inset: 0; z-index: 9998; pointer-events: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -303,7 +314,7 @@
                 <!-- CONTROLS & NAV SECTION -->
                 <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
                     <div class="flex items-center gap-4">
-                        <button onclick="window.location.href='campaigns.html'" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
                     </div>
 
                     <!-- NAVIGATION -->
@@ -312,9 +323,9 @@
                         <a href="#" onclick="window.setView('encounters'); return false;" id="nav-encounters" class="nav-link hidden !text-blood">Encounters</a>
                         <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
                         <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
-                        <a href="#" onclick="window.routeTo('partybag.html'); return false;" class="nav-link">Backpack</a>
-                        <a href="#" onclick="window.routeTo('playershandbook.html'); return false;" class="nav-link">Handbook</a>
-                        <!-- Graveyard removed from nav -->
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
             </header>
@@ -1222,10 +1233,14 @@
 
         window.routeTo = (page) => {
             const currentId = new URLSearchParams(window.location.search).get('id');
-            if (currentId && currentId !== "demo_campaign") {
-                window.location.href = `${page}?id=${currentId}`;
-            } else {
-                window.location.href = page;
+            try {
+                if (currentId && currentId !== "demo_campaign") {
+                    window.location.href = `${page}?id=${currentId}`;
+                } else {
+                    window.location.href = page;
+                }
+            } catch(e) {
+                window.showToast("Redirects disabled in preview window.");
             }
         };
 
@@ -1258,7 +1273,7 @@
                 console.warn("No campaign ID found. Defaulting to 'demo_campaign' for preview mode.");
             } else {
                 // If it's a live site and they have no ID, kick them back to the nexus
-                window.location.href = "campaigns.html";
+                try { window.location.href = "campaigns.html"; } catch(e) {}
             }
         }
 
@@ -2950,7 +2965,12 @@
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
                 // If not logged in at the global level, boot them to the gate
-                window.location.href = "index.html";
+                try {
+                    window.location.href = "index.html";
+                } catch(e) {
+                    console.warn("Preview environment blocked redirect.");
+                    document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2><p class="mt-4 text-gray-500 font-serif italic text-sm text-center px-4">Redirects are disabled in this preview window.<br>Please open <b>index.html</b> to log in.</p>`;
+                }
                 return;
             }
             user = u;
