@@ -612,7 +612,8 @@
                 if (appId !== "demo_campaign") {
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists() && campDoc.data().name) {
-                        document.getElementById('main-campaign-title').innerText = campDoc.data().name;
+                        const titleEl = document.getElementById('campaign-title-display');
+                        if (titleEl) titleEl.innerText = campDoc.data().name;
                         document.title = `${campDoc.data().name} - Tome`;
                     }
                 }
@@ -622,12 +623,9 @@
                 // Toggle DM Features & UI
                 window.updateRoleUI();
 
-                document.getElementById('initial-loading').classList.add('hidden');
-                document.getElementById('dashboard-screen').classList.remove('hidden');
+                const initLoad = document.getElementById('initial-loading');
+                if (initLoad) initLoad.classList.add('hidden');
                 
-                // Render the sidebar based on filename
-                renderSidebar();
-
                 // Listen for manual configuration (Title/Subtitle)
                 onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'manualConfig', `header_${pageId}`), d => {
                     if (d.exists()) { window.aeonState.header = d.data(); window.renderManual(); }
@@ -644,8 +642,11 @@
                 }, err => console.error("Sections Sync Error:", err));
 
             } catch (error) {
-                console.error(error);
-                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Connection Failed</h2>`;
+                console.error("Initialization Error:", error);
+                const initLoad = document.getElementById('initial-loading');
+                if (initLoad) {
+                    initLoad.innerHTML = `<h2 class="font-heading text-2xl text-blood">Connection Failed</h2><p class="text-xs text-gray-400 mt-2">${error.message}</p>`;
+                }
             }
         });
     </script>
