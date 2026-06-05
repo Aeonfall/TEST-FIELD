@@ -72,35 +72,51 @@
         input:focus, textarea:focus { outline: none; background-color: rgba(255,255,255,0.6); }
 
         /* MULTI-STYLE BACKPACK THEMES */
-        /* 1. Default Satchel */
-        .bag-theme-satchel {
-            background-color: #2c1e16;
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%231a110b' fill-opacity='0.6' fill-rule='evenodd'/%3E%3C/svg%3E");
-            border: 2px solid #8b5a2b;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.9);
-        }
-        .bag-theme-satchel .item-card { background: rgba(255,255,255,0.05); border-color: rgba(139, 90, 43, 0.4); }
-        .bag-theme-satchel .item-card:hover { border-color: #c5a059; background: rgba(255,255,255,0.1); }
         
-        /* 2. Handy Haversack */
+        /* 1. Default Satchel (Worn Leather & Stitching) */
+        .bag-theme-satchel {
+            background-color: #3e2723;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            border: 4px solid #27140f;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
+            border-radius: 12px;
+        }
+        .bag-theme-satchel::before {
+            content: ''; position: absolute; inset: 4px; border: 1.5px dashed rgba(0,0,0,0.4); pointer-events: none; border-radius: 8px;
+        }
+        .bag-theme-satchel .item-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(0,0,0,0.5); border-left-width: 4px; border-left-color: #8b5a2b; border-radius: 4px; }
+        .bag-theme-satchel .item-card:hover { border-left-color: #c5a059; background: rgba(0,0,0,0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        
+        /* 2. Handy Haversack (Rugged Canvas & Brass) */
         .bag-theme-haversack {
-            background-color: #1a2a1a;
-            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0z' fill='%23111b11'/%3E%3Cpath d='M0 10l10-10 10 10-10 10z' fill='%231f311f'/%3E%3C/svg%3E");
-            border: 2px solid #c5a059;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.8);
+            background-color: #2e3b19; 
+            background-image: 
+                linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0.15)),
+                linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0.15));
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            border: 3px solid #a38851;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
+            border-radius: 8px;
         }
-        .bag-theme-haversack .item-card { background: rgba(0,0,0,0.4); border-color: rgba(197, 160, 89, 0.4); }
-        .bag-theme-haversack .item-card:hover { border-color: #c5a059; background: rgba(197, 160, 89, 0.1); }
+        .bag-theme-haversack .item-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(163, 136, 81, 0.2); border-top: 3px solid #6b5c3e; border-radius: 4px; }
+        .bag-theme-haversack .item-card:hover { border-top-color: #c5a059; background: rgba(0,0,0,0.6); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
-        /* 3. Bag of Holding */
+        /* 3. Bag of Holding (Astral Void) */
         .bag-theme-holding {
-            background-color: #0f0a20;
-            background-image: radial-gradient(circle at center, rgba(124, 58, 237, 0.2) 0%, transparent 70%), url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='1' fill='%23fff' opacity='0.3'/%3E%3Ccircle cx='40' cy='30' r='2' fill='%23fff' opacity='0.5'/%3E%3Ccircle cx='80' cy='15' r='1.5' fill='%23c5a059' opacity='0.4'/%3E%3Ccircle cx='25' cy='80' r='1' fill='%23fff' opacity='0.3'/%3E%3Ccircle cx='70' cy='70' r='2' fill='%237c3aed' opacity='0.6'/%3E%3Ccircle cx='90' cy='90' r='1' fill='%23fff' opacity='0.2'/%3E%3C/svg%3E");
-            border: 2px solid #7c3aed;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 80px rgba(124, 58, 237, 0.3);
+            background-color: #090514;
+            background-image: 
+                radial-gradient(circle at 50% 120%, rgba(139, 92, 246, 0.4) 0%, transparent 70%),
+                radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.25) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg width='150' height='150' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='15' cy='15' r='1.5' fill='%23fff' opacity='0.6'/%3E%3Ccircle cx='80' cy='40' r='2.5' fill='%23a855f7' opacity='0.7'/%3E%3Ccircle cx='120' cy='110' r='1' fill='%23fff' opacity='0.4'/%3E%3Ccircle cx='40' cy='130' r='2' fill='%233b82f6' opacity='0.6'/%3E%3Ccircle cx='60' cy='80' r='1.5' fill='%23fff' opacity='0.3'/%3E%3Ccircle cx='140' cy='20' r='1' fill='%23fff' opacity='0.5'/%3E%3C/svg%3E");
+            border: 2px solid #a855f7;
+            box-shadow: inset 0 0 80px rgba(107, 33, 168, 0.7), 0 0 30px rgba(107, 33, 168, 0.3);
+            border-radius: 20px;
         }
-        .bag-theme-holding .item-card { background: rgba(124, 58, 237, 0.05); border-color: rgba(124, 58, 237, 0.4); }
-        .bag-theme-holding .item-card:hover { border-color: #c5a059; background: rgba(124, 58, 237, 0.2); box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
+        .bag-theme-holding .item-card { background: rgba(107, 33, 168, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); backdrop-filter: blur(4px); border-radius: 8px; }
+        .bag-theme-holding .item-card:hover { border-color: #d8b4fe; background: rgba(107, 33, 168, 0.3); box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
 
 
         .backpack-container { border-radius: 8px; overflow: hidden; position: relative; transition: all 0.5s ease; }
