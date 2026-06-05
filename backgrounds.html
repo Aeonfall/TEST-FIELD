@@ -82,7 +82,7 @@
         .background-card:hover .card-art { filter: sepia(0) contrast(1.1) brightness(1); width: 55%; }
         .card-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, #f1e5c5 10%, transparent 90%); z-index: 2; pointer-events: none; }
 
-        .card-info-panel { position: relative; z-index: 3; width: 65%; height: 100%; padding: 24px; display: flex; flex-direction: column; background: linear-gradient(to right, #f1e5c5 80%, transparent); pointer-events: none; }
+        .card-info-panel { position: relative; z-index: 3; width: 80%; height: 100%; padding: 20px; display: flex; flex-direction: column; background: linear-gradient(to right, #f1e5c5 60%, rgba(241, 229, 197, 0.95) 75%, transparent); pointer-events: none; }
         .card-info-panel > * { pointer-events: auto; }
 
         .view-btn {
@@ -92,7 +92,7 @@
         }
         .background-card:hover .view-btn { background: #7a1b1b; color: #f1e5c5; border-color: #f1e5c5; }
 
-        .reorder-controls { position: absolute; left: 0; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; z-index: 20; background: #2c1e16; padding: 8px 4px; border-radius: 0 4px 4px 0; border: 1px solid #c5a059; border-left: none; }
+        .reorder-controls { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; z-index: 20; background: #2c1e16; padding: 8px 4px; border-radius: 4px 0 0 4px; border: 1px solid #c5a059; border-right: none; pointer-events: auto; }
         .reorder-btn { width: 24px; height: 24px; color: #c5a059; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .reorder-btn:hover:not(:disabled) { color: #f1e5c5; transform: scale(1.1); }
 
@@ -562,22 +562,21 @@
                     <div class="card-art cursor-zoom-in" onclick="event.stopPropagation(); window.zoomMedia('${bg.artUrl}')">
                         ${bg.artUrl ? (bg.artUrl.includes('.mp4') ? `<video src="${bg.artUrl}" autoplay loop muted class="w-full h-full object-cover"></video>` : `<img src="${bg.artUrl}" class="w-full h-full object-cover">`) : '<div class="w-full h-full bg-[rgba(139,90,43,0.2)] flex items-center justify-center italic text-xs text-ink opacity-50">Awaiting Visuals</div>'}
                     </div>
-                    <div class="card-info-panel">
-                        <h3 class="font-heading font-black text-2xl text-ink leading-none mb-1 break-words">${bg.name}</h3>
-                        <p class="font-serif italic text-[10px] text-blood mb-4 break-words">${bg.tagline}</p>
-                        <p class="font-serif text-xs text-ink line-clamp-3 mb-4">${isDM ? (bg.desc || '') : (bg.desc || '')}</p>
+                    <div class="card-info-panel pr-10">
+                        <h3 class="font-heading font-black text-xl text-ink leading-tight mb-1 line-clamp-2">${bg.name}</h3>
+                        <p class="font-serif italic text-[10px] text-blood mb-3 line-clamp-1">${bg.tagline}</p>
+                        <p class="font-serif text-[11px] text-ink line-clamp-3 mb-3 leading-snug">${isDM ? (bg.desc || '') : (bg.desc || '')}</p>
                         
-                        <div class="space-y-1 mb-4 border-t border-gold/30 pt-3">
-                            <div class="stat-line"><b>Skill Prof:</b> <span class="line-clamp-1">${bg.skillProf || 'None'}</span></div>
-                            <div class="stat-line"><b>Feature:</b> <span class="line-clamp-1">${(bg.featureName || '').replace('Feature: ', '') || 'None'}</span></div>
+                        <div class="space-y-1.5 mb-4 border-t border-gold/30 pt-3">
+                            <div class="text-[10px] leading-tight"><b class="font-heading text-blood tracking-wide uppercase mr-1">Skill Prof:</b><span class="text-ink line-clamp-1 inline">${bg.skillProf || 'None'}</span></div>
+                            <div class="text-[10px] leading-tight"><b class="font-heading text-blood tracking-wide uppercase mr-1">Feature:</b><span class="text-ink line-clamp-1 inline">${(bg.featureName || '').replace('Feature: ', '') || 'None'}</span></div>
                         </div>
                         
                         ${window.isPurgeMode 
                                 ? `<button onclick="event.stopPropagation(); window.triggerDel('${bg.id}')" class="bg-blood hover:bg-red-800 text-parchment w-full py-2.5 text-[10px] font-black tracking-widest uppercase rounded transition-colors shadow-md mt-auto">Purge Entry</button>` 
-                                : `<button class="view-btn flex items-center justify-center gap-2">Inspect Log <i class="fa-solid fa-arrow-right"></i></button>`}
-                        
-                        ${isDM && !window.isPurgeMode ? `<div class="reorder-controls"><button onclick="event.stopPropagation(); window.moveRecord('${bg.id}', -1)" class="reorder-btn" title="Move Up"><i class="fa-solid fa-caret-up"></i></button><button onclick="event.stopPropagation(); window.moveRecord('${bg.id}', 1)" class="reorder-btn" title="Move Down"><i class="fa-solid fa-caret-down"></i></button></div>` : ''}
+                                : `<button class="view-btn flex items-center justify-center gap-2 mt-auto">Inspect Log <i class="fa-solid fa-arrow-right"></i></button>`}
                     </div>
+                    ${isDM && !window.isPurgeMode ? `<div class="reorder-controls"><button onclick="event.stopPropagation(); window.moveRecord('${bg.id}', -1)" class="reorder-btn" title="Move Up"><i class="fa-solid fa-caret-up"></i></button><button onclick="event.stopPropagation(); window.moveRecord('${bg.id}', 1)" class="reorder-btn" title="Move Down"><i class="fa-solid fa-caret-down"></i></button></div>` : ''}
                 </div>
             `).join('');
         };
