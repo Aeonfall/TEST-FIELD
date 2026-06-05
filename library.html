@@ -61,8 +61,11 @@
         
         .shelf-item:hover { transform: translateX(8px); filter: brightness(1.1); box-shadow: -4px 6px 15px rgba(0,0,0,0.3); }
 
+        .new-badge { position: absolute; top: -6px; right: -6px; background: var(--blood-ink); color: white; font-size: 8px; padding: 3px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); pointer-events: none; animation: pulse 2s infinite; font-family: 'Cinzel', serif;}
         .personal-badge { position: absolute; bottom: -6px; right: -6px; background: #1e3a8a; color: white; font-size: 8px; padding: 3px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); pointer-events: none; font-family: 'Cinzel', serif;}
         
+        @keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
+
         .manual-body { flex-grow: 1; padding: 60px 80px 150px 80px; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; }
         #manual-sections-container { display: flex; flex-wrap: wrap; align-items: flex-start; width: 100%; gap: 0; }
 
@@ -98,6 +101,14 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(4px); }
         .modal-container { background: var(--parchment); border: 2px solid var(--gold); border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: var(--ink); background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); text-align: center;}
 
+        /* GUESTBOOK RECEPTION TERMINAL */
+        #access-terminal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 100000;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #access-terminal.unlocked { opacity: 0; pointer-events: none; transform: scale(1.05) translateY(-20px); }
+
         .mobile-nav-toggle { display: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
 
@@ -130,6 +141,25 @@
 
     <div id="toast" class="toast">Notification</div>
 
+    <!-- GUESTBOOK ACCESS TERMINAL -->
+    <div id="access-terminal" class="hidden">
+        <div class="w-full max-w-2xl bg-[#f1e5c5] rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] border-2 border-[#c5a059] flex overflow-hidden min-h-[400px]">
+            <div class="w-12 bg-[#1a110b] border-r-2 border-[#c5a059] shadow-inner flex-shrink-0"></div> <!-- Book Spine -->
+            <div class="flex-1 p-8 md:p-12 flex flex-col relative bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]">
+                <h2 class="text-3xl font-heading font-black text-[#7a1b1b] text-center mb-1 uppercase tracking-widest">Library Guestbook</h2>
+                <p class="text-[10px] font-heading font-bold uppercase tracking-widest text-[#2c1e16] text-center mb-8 opacity-70">Sign the ledger to enter</p>
+                
+                <div id="terminal-results" class="flex-grow overflow-y-auto pr-4 space-y-2 mb-6">
+                    <!-- Populated via JS -->
+                </div>
+
+                <div class="mt-auto pt-6 border-t border-[#c5a059]/30 text-center">
+                    <button onclick="window.bypassTerminal()" class="text-[10px] font-black uppercase text-[#7a1b1b] hover:text-[#c5a059] transition-colors tracking-widest">Enter as Guest (Public Archives Only)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MAIN PARCHMENT CONTAINER -->
     <div class="parchment-container">
         <!-- MOBILE HEADER -->
@@ -147,7 +177,8 @@
                 <p id="sidebar-subtitle" class="text-[10px] uppercase font-bold tracking-[3px] opacity-60 mt-2 text-ink font-heading">Custodian's Athenaeum</p>
                 
                 <div id="user-display-container" class="mt-8 border-y border-black/10 py-5 bg-black/5 rounded-lg shadow-inner">
-                    <div id="user-identity" class="font-heading text-xs font-black uppercase text-[#1a110b]">Authenticating...</div>
+                    <div id="user-identity" class="font-heading text-xs font-black uppercase text-[#1a110b] mb-1">Authenticating...</div>
+                    <div id="user-identity-sub" class="font-serif italic text-[10px] text-black/60 hidden"></div>
                 </div>
             </div>
             
@@ -227,7 +258,7 @@
     <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
         import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, writeBatch, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
@@ -296,12 +327,14 @@
 
         // State variables
         let manualSections = [];
-        let allUsers = [];
+        let allUsers = []; // Stores characters (PCs)
+        let seenDocs = [];
         let manualHeader = { title: "Custodian's Athenaeum", subtitle: "Restricted Historical Records" };
         let campaignSettings = { terms: {} };
         
-        let currentUser = null;
+        let currentUser = null; // Represents the logged in Player/DM account
         let activeRole = 'player'; 
+        let activeAnchorUID = null; // Represents the specific character signed in
         
         let activeEditId = null;
         let deleteCallback = null;
@@ -328,6 +361,94 @@
             'manuscript': standardTools,
             'parchment': standardTools,
             'song': standardTools
+        };
+
+        // --- GUESTBOOK LOGIC ---
+        window.populateTerminal = () => {
+            const container = document.getElementById('terminal-results');
+            if (!container) return;
+            
+            // Show PCs owned by the current user, or all PCs if DM
+            let displayUsers = allUsers;
+            if (activeRole !== 'dm' && currentUser) {
+                displayUsers = allUsers.filter(u => u.owner === currentUser.username);
+            }
+            
+            if (displayUsers.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-[#7a1b1b] font-bold uppercase text-[10px] font-heading">No characters found for your identity.</div>';
+                return;
+            }
+
+            container.innerHTML = displayUsers.map(u => `
+                <div class="w-full border-b border-dashed border-[#c5a059]/50 p-4 flex justify-between items-center cursor-pointer hover:bg-[#c5a059]/10 transition-colors" onclick="window.anchorIdentity('${u.uid}')">
+                    <span class="font-serif italic text-xl text-[#2c1e16] font-bold">${u.name || 'Unidentified'}</span>
+                    <span class="text-[9px] uppercase font-black text-[#7a1b1b] font-heading tracking-widest">Sign Ledger</span>
+                </div>
+            `).join('');
+        };
+
+        window.anchorIdentity = (uid) => {
+            activeAnchorUID = uid;
+            sessionStorage.setItem('chronicles_lib_anchored', 'true');
+            localStorage.setItem('chronicles_lib_uid', uid);
+            
+            window.showToast("Signature Anchored");
+            document.getElementById('access-terminal')?.classList.add('unlocked');
+            
+            const identText = document.getElementById('user-identity');
+            const subText = document.getElementById('user-identity-sub');
+            const char = allUsers.find(u => u.uid === uid);
+            if (identText) identText.innerText = char ? char.name : (currentUser ? currentUser.username : 'Guest');
+            if (subText && char) {
+                subText.innerText = `Played by ${currentUser.username}`;
+                subText.classList.remove('hidden');
+            }
+            
+            window.fetchSeenDocuments(uid);
+            window.renderManual();
+        };
+
+        window.bypassTerminal = () => {
+            activeAnchorUID = null;
+            sessionStorage.setItem('chronicles_lib_anchored', 'true'); // mark as interacted
+            document.getElementById('access-terminal')?.classList.add('unlocked');
+            window.showToast("Entering as Guest");
+            
+            const identText = document.getElementById('user-identity');
+            const subText = document.getElementById('user-identity-sub');
+            if (identText) identText.innerText = currentUser ? currentUser.username : 'Guest';
+            if (subText) subText.classList.add('hidden');
+            
+            window.renderManual();
+        };
+
+        window.fetchSeenDocuments = (uid) => {
+            if (!uid || !currentUser) return;
+            onSnapshot(
+                collection(db, 'artifacts', appId, 'users', uid, 'seenLibDocs'),
+                (snap) => {
+                    seenDocs = snap.docs.map(d => d.id);
+                    window.renderManual();
+                },
+                (error) => console.error("Seen docs error:", error)
+            );
+        };
+
+        window.markAsSeen = async (id) => {
+            if (!seenDocs.includes(id)) {
+                seenDocs.push(id);
+                window.renderManual(); // Optimistic update
+            }
+            
+            if (activeAnchorUID && currentUser) {
+                try {
+                    await setDoc(doc(db, 'artifacts', appId, 'users', activeAnchorUID, 'seenLibDocs', id), {
+                        seenAt: Date.now()
+                    });
+                } catch(err) {
+                    console.error("Error saving seen state:", err);
+                }
+            }
         };
 
         // --- DATABASE LISTENERS ---
@@ -358,11 +479,35 @@
             );
 
             // Users (For Binding/Linking and Visibility Checking)
-            // Available to all users so they can match their characters to personal entries
             onSnapshot(
                 collection(db, 'artifacts', appId, 'public', 'data', 'characters'),
                 (snap) => {
                     allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).filter(c => c.type === 'PC' && !c.isDeleted);
+                    
+                    // Once characters are loaded, check terminal status
+                    const isAnchored = sessionStorage.getItem('chronicles_lib_anchored') === 'true';
+                    const savedUID = localStorage.getItem('chronicles_lib_uid');
+                    
+                    if (isAnchored) {
+                        if (savedUID) {
+                            activeAnchorUID = savedUID;
+                            const char = allUsers.find(u => u.uid === savedUID);
+                            const identText = document.getElementById('user-identity');
+                            const subText = document.getElementById('user-identity-sub');
+                            if (identText) identText.innerText = char ? char.name : currentUser.username;
+                            if (subText && char) {
+                                subText.innerText = `Played by ${currentUser.username}`;
+                                subText.classList.remove('hidden');
+                            }
+                            window.fetchSeenDocuments(savedUID);
+                        } else {
+                            document.getElementById('user-identity').innerText = currentUser.username;
+                        }
+                    } else {
+                        document.getElementById('access-terminal')?.classList.remove('hidden');
+                        window.populateTerminal();
+                    }
+
                     window.renderManual();
                 }
             );
@@ -664,7 +809,6 @@
 
         window.renderManual = () => {
             const isDM = activeRole === 'dm';
-            const myCharacters = allUsers.filter(u => u.owner === currentUser?.username).map(c => c.uid);
             
             const navList = document.getElementById('nav-list');
             const container = document.getElementById('manual-sections-container');
@@ -694,10 +838,13 @@
                 };
             });
 
+            // Filter sections based on visibility and active Anchor
             const visibleSections = processedSections.filter(s => {
                 if (isDM) return true;
                 if (s.effectiveVisibility === 'public') return true;
-                if (s.effectiveVisibility === 'personal' && s.effectiveSharedWith?.some(uid => myCharacters.includes(uid))) return true;
+                if (s.effectiveVisibility === 'personal') {
+                    if (activeAnchorUID && s.effectiveSharedWith?.includes(activeAnchorUID)) return true;
+                }
                 return false;
             });
 
@@ -724,9 +871,14 @@
             navList.innerHTML = visibleSections
                 .filter(s => s.type === 'subheading')
                 .map(s => {
+                    const isNew = (Date.now() - (s.createdAt || 0)) < 86400000; // 24 hours
+                    const hasNotSeen = !seenDocs.includes(s.id);
+                    const showBadge = isNew && hasNotSeen;
                     const docTypeLabel = (s.effectiveDocType || 'Item').toUpperCase();
+                    
                     return `
-                        <div class="shelf-item ${s.effectiveDocType || 'book'}" onclick="const el=document.getElementById('section-${s.id}'); if(el) el.scrollIntoView({behavior:'smooth'}); document.querySelector('.manual-nav').classList.remove('nav-open');">
+                        <div class="shelf-item ${s.effectiveDocType || 'book'}" onclick="window.markAsSeen('${s.id}'); const el=document.getElementById('section-${s.id}'); if(el) el.scrollIntoView({behavior:'smooth'}); document.querySelector('.manual-nav').classList.remove('nav-open');">
+                            ${showBadge ? '<span class="new-badge">NEW</span>' : ''}
                             ${s.effectiveVisibility === 'personal' ? '<span class="personal-badge">Personal</span>' : ''}
                             <span class="opacity-60 pr-2">${docTypeLabel}:</span> ${s.title}
                         </div>
@@ -842,7 +994,20 @@
         // --- AUTH & INIT ---
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                try { window.location.href = "index.html"; } catch(e) {
+                try {
+                    const initAuth = async () => {
+                        try {
+                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                await signInWithCustomToken(auth, __initial_auth_token);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (e) {
+                            await signInAnonymously(auth);
+                        }
+                    };
+                    await initAuth();
+                } catch(e) {
                     const initialLoading = document.getElementById('initial-loading');
                     if(initialLoading) initialLoading.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 }
