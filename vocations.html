@@ -962,9 +962,13 @@
         window.addVocation = async () => {
             if (!currentUser) return;
             const maxOrder = vocations.length > 0 ? Math.max(...vocations.map(l => l.order || l.createdAt || 0)) : Date.now();
+            
+            // Generate a random 3-digit Dossier ID (from 001 to 999)
+            const randomId = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+            
             window.showToast("Inking new archive...");
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), { 
-                name: "NEW SUBJECT", artUrl: "", detailArtUrl: "", tagline: "Entry Summary", desc: "", intro: "",
+                name: "NEW SUBJECT", custodianId: randomId, artUrl: "", detailArtUrl: "", tagline: "Entry Summary", desc: "", intro: "",
                 hitDie: "d8", primaryAbility: "Str", saves: "Str", armor: "None", weapons: "None", skills: "None",
                 quickBuild: "", classFeaturesOverview: "",
                 headerCore: "Core Systemic Readout", headerEvolution: "Evolutionary Paths", headerScripts: "Terminal Scripts",
