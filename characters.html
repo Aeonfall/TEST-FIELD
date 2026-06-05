@@ -165,7 +165,7 @@
         .sheet-tabs-container { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(139, 90, 43, 0.3); border-radius: 4px; min-height: 600px; display: flex; flex-direction: column; }
         .tab-header-row { display: flex; border-bottom: 2px solid rgba(139, 90, 43, 0.3); overflow-x: auto; scrollbar-width: none; }
         .tab-header-row::-webkit-scrollbar { display: none; }
-        .tab-btn { padding: 12px 16px; font-size: 11px; font-weight: 900; text-transform: uppercase; color: #555; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; font-family: 'Cinzel', serif; margin-bottom: -2px;}
+        .tab-btn { flex-shrink: 0; padding: 12px 16px; font-size: 11px; font-weight: 900; text-transform: uppercase; color: #555; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; font-family: 'Cinzel', serif; margin-bottom: -2px;}
         .tab-btn.active { color: #7a1b1b; border-bottom-color: #7a1b1b; background: rgba(255,255,255,0.4); }
         .tab-content-area { padding: 24px; flex-grow: 1; }
 
@@ -2519,13 +2519,51 @@
         };
 
         window.openHpAdjustmentModal = () => { document.getElementById('hp-adjust-amount').value = ''; document.getElementById('hp-adjustment-modal').classList.remove('hidden'); document.getElementById('hp-adjust-amount').focus(); };
+        
         window.applyHpAdjustment = async (type) => {
             const amtIn = document.getElementById('hp-adjust-amount'); const amount = parseInt(amtIn.value); if (isNaN(amount) || amount <= 0) { amtIn.focus(); return; }
             const char = characters.find(c => c.id === activeCharId); if (!char) return;
             let curHp = parseInt(char.hpCurrent) || 0, maxHp = parseInt(char.hpMax) || 1, tempHp = parseInt(char.tempHp) || 0, updates = {};
-            if (type === 'dmg') { let remainingDmg = amount; if (tempHp > 0) { const absorbed = Math.min(tempHp, remainingDmg); tempHp -= absorbed; remainingDmg -= absorbed; updates.tempHp = tempHp; } if (remainingDmg > 0) { curHp = Math.max(0, curHp - remainingDmg); updates.hpCurrent = curHp; } window.showToast(`Took ${amount} Damage`); } 
-            else if (type === 'heal') { curHp = Math.min(maxHp, curHp + amount); updates.hpCurrent = curHp; window.showToast(`Healed ${amount} HP`); }
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates); document.getElementById('hp-adjustment-modal').classList.add('hidden');
+            
+            if (type === 'dmg') { 
+                let remainingDmg = amount; 
+                if (tempHp > 0) { 
+                    const absorbed = Math.min(tempHp, remainingDmg); 
+                    tempHp -= absorbed; remainingDmg -= absorbed; 
+                    updates.tempHp = tempHp; 
+                } 
+                if (remainingDmg > 0) { 
+                    curHp = Math.max(0, curHp - remainingDmg); 
+                    updates.hpCurrent = curHp; 
+                    
+                    // AUTO COMA TRIGGER
+                    if (curHp === 0 && (parseInt(char.hpCurrent) || 0) > 0) {
+                        updates.status = 'coma';
+                        updates.comaActive = true;
+                        window.showToast(`Critical Damage! ${char.name} has fallen unconscious!`);
+                    } else {
+                        window.showToast(`Took ${amount} Damage`); 
+                    }
+                } else {
+                    window.showToast(`Took ${amount} Damage (Absorbed by Temp HP)`);
+                }
+            } 
+            else if (type === 'heal') { 
+                curHp = Math.min(maxHp, curHp + amount); 
+                updates.hpCurrent = curHp; 
+                
+                // AUTO WAKE-UP TRIGGER
+                if (curHp > 0 && ((parseInt(char.hpCurrent) || 0) <= 0 || char.status === 'coma')) {
+                    updates.status = 'alive';
+                    updates.comaActive = false;
+                    window.showToast(`Healed ${amount} HP. Awakened!`);
+                } else {
+                    window.showToast(`Healed ${amount} HP`); 
+                }
+            }
+            
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates); 
+            document.getElementById('hp-adjustment-modal').classList.add('hidden');
         };
 
         window.openScoreGenModal = () => { sessionRerollUsed = false; document.getElementById('score-gen-modal')?.classList.remove('hidden'); document.getElementById('gen-results-area')?.classList.add('hidden'); document.getElementById('gen-apply-area')?.classList.add('hidden'); document.getElementById('gen-controls')?.classList.remove('hidden'); };
@@ -2734,7 +2772,40 @@
         };
         window.deleteMove = async () => { const char = characters.find(c => c.id === activeCharId); const moves = char.moves || []; moves.splice(editingMoveIndex, 1); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { moves }); document.getElementById('move-modal').classList.add('hidden'); };
 
-        window.saveCurrentCharacter = (m) => { if (!activeCharId || !currentUser) return; const char = characters.find(c => c.id === activeCharId); if (!((currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm')) return; const data = {}; document.querySelectorAll('[data-key]').forEach(el => data[el.dataset.key] = el.type === 'checkbox' ? el.checked : el.value); data.languages = char.languages || []; data.attacks = Array.from(document.querySelectorAll('#attacks-list > div')).map(r => ({ name: r.querySelector('.atk-name')?.value || "", bonus: r.querySelector('.atk-bonus')?.value || "", dmg: r.querySelector('.atk-dmg')?.value || "" })); data.moves = char.moves || []; updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data); if (m) window.showToast("Synced"); const si = document.getElementById('sync-indicator'); if (si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); } };
+        window.saveCurrentCharacter = (m) => { 
+            if (!activeCharId || !currentUser) return; 
+            const char = characters.find(c => c.id === activeCharId); 
+            if (!((currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm')) return; 
+            
+            const data = {}; 
+            document.querySelectorAll('[data-key]').forEach(el => data[el.dataset.key] = el.type === 'checkbox' ? el.checked : el.value); 
+            
+            // AUTO COMA / AWAKEN FROM MANUAL INPUT
+            const newHp = parseInt(data.hpCurrent) || 0;
+            const oldHp = parseInt(char.hpCurrent) || 0;
+            
+            if (newHp <= 0 && oldHp > 0) {
+                data.hpCurrent = 0; // Prevent negative visual numbers
+                data.status = 'coma';
+                data.comaActive = true;
+                window.showToast("Health depleted. Coma saves initiated.");
+            } else if (newHp > 0 && (oldHp <= 0 || char.status === 'coma')) {
+                data.status = 'alive';
+                data.comaActive = false;
+                window.showToast("Vitality restored. Awakened from coma.");
+            }
+
+            data.languages = char.languages || []; 
+            data.attacks = Array.from(document.querySelectorAll('#attacks-list > div')).map(r => ({ name: r.querySelector('.atk-name')?.value || "", bonus: r.querySelector('.atk-bonus')?.value || "", dmg: r.querySelector('.atk-dmg')?.value || "" })); 
+            data.moves = char.moves || []; 
+            
+            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data); 
+            
+            if (m) window.showToast("Synced"); 
+            const si = document.getElementById('sync-indicator'); 
+            if (si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); } 
+        };
+        
         window.claimCharacter = async () => { const char = characters.find(c => c.id === activeCharId); if (char.owner) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { owner: currentUser.username }); window.showToast("Character Claimed"); };
         
         window.calcMods = () => { 
