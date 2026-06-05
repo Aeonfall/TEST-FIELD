@@ -321,6 +321,14 @@
                     }
                 }
 
+                // Fetch the specific campaign to get the title
+                if (appId && appId !== "demo_campaign") {
+                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                    if (campDoc.exists()) {
+                        document.getElementById('main-campaign-title').innerText = campDoc.data().name;
+                    }
+                }
+
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
