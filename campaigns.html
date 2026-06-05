@@ -316,7 +316,14 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 // If not logged in, boot back to login page
-                window.location.href = "index.html";
+                try {
+                    window.location.href = "index.html";
+                } catch(e) {
+                    console.warn("Preview environment blocked redirect.");
+                    document.getElementById('loading-text').innerText = "Authentication Required";
+                    document.getElementById('loading-text').classList.add('text-blood');
+                    document.getElementById('emergency-logout').classList.remove('hidden');
+                }
                 return;
             }
 
@@ -485,7 +492,11 @@
 
         // Route to the campaign tracker
         window.enterCampaign = (campId) => {
-            window.location.href = `campaign_app.html?id=${campId}`;
+            try {
+                window.location.href = `character.html?id=${campId}`;
+            } catch(e) {
+                showModal("Preview Blocked", "Redirects are disabled in this preview window. On your live site, this will open character.html?id=" + campId);
+            }
         };
 
     </script>
