@@ -18,7 +18,8 @@
                         'blood': '#7a1b1b',
                         'gold': '#c5a059',
                         'wood': '#1a110b',
-                        'stone': '#e8e0cd'
+                        'astral': '#1a0b2e',
+                        'astral-light': '#9d4edd'
                     },
                     fontFamily: {
                         'serif': ['Lora', 'serif'],
@@ -36,17 +37,6 @@
         
         .dashboard-bg { background-color: transparent; }
         
-        .parchment-paper {
-            background-color: #f1e5c5;
-            background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
-            border: 2px solid #c5a059;
-            color: #2c1e16;
-            border-radius: 4px;
-        }
-
         .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
         
@@ -57,7 +47,7 @@
         .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
         .nav-link:hover { color: #f1e5c5; }
 
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 100000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
         .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); text-align: center;}
         
@@ -70,65 +60,138 @@
         input, textarea, select { background: transparent; border: none; font-size: 13px; color: #2c1e16; width: 100%; font-family: 'Lora', serif; }
         input:focus, textarea:focus { outline: none; background-color: rgba(255,255,255,0.6); }
 
-        /* BACKPACK SPECIFIC STYLES */
-        .backpack-container {
-            background-color: #2c1e16;
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%231a110b' fill-opacity='0.6' fill-rule='evenodd'/%3E%3C/svg%3E");
-            border: 2px solid #c5a059;
-            border-radius: 8px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.9);
-            overflow: hidden;
+        /* --- THE FANTASY BAG STYLES --- */
+        .fantasy-bag {
+            border-radius: 24px 24px 40px 40px;
             position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
         }
 
-        .capacity-bar-bg { background: #1a110b; height: 12px; border-radius: 6px; overflow: hidden; border: 1px solid #c5a059; }
-        .capacity-bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
+        /* Bag Types */
+        .bag-standard {
+            background-color: #3e2723;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            border: 4px solid #1a110b;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.9), inset 0px 10px 0px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .bag-haversack {
+            background-color: #2b3d26;
+            background-image: url('https://www.transparenttextures.com/patterns/woven.png');
+            border: 4px solid #142010;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.9), inset 0px 5px 15px rgba(255,255,255,0.1), 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .bag-holding {
+            background-color: #1a0b2e;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            border: 4px solid #4c1d95;
+            box-shadow: inset 0 0 80px rgba(147,51,234,0.6), inset 0px 5px 20px rgba(216,180,226,0.3), 0 20px 50px rgba(0,0,0,0.9);
+        }
 
-        .item-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            border-radius: 4px;
-            transition: all 0.2s;
+        .bag-strap {
+            position: absolute;
+            top: 0; bottom: 0; width: 45px;
+            background-color: #26140e;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            border-left: 2px dashed #c5a059;
+            border-right: 2px dashed #c5a059;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.8), -4px 0 15px rgba(0,0,0,0.8);
+            z-index: 0;
+            opacity: 0.8;
+            transition: all 0.5s;
+        }
+        .bag-holding .bag-strap { background-color: #110722; border-color: #c084fc; box-shadow: 4px 0 15px rgba(147,51,234,0.5), -4px 0 15px rgba(147,51,234,0.5); }
+        .bag-haversack .bag-strap { background-color: #1e110a; border-color: #65a30d; }
+        
+        .bag-strap.left { left: 15%; }
+        .bag-strap.right { right: 15%; }
+
+        .bag-inner { position: relative; z-index: 10; padding: 24px md:padding: 40px; }
+
+        .bag-stitch-border {
+            position: absolute; inset: 8px; border: 2px dashed rgba(197, 160, 89, 0.4); border-radius: 18px 18px 32px 32px; pointer-events: none; z-index: 5; transition: border-color 0.5s;
+        }
+        .bag-holding .bag-stitch-border { border-color: rgba(192, 132, 252, 0.6); box-shadow: inset 0 0 15px rgba(168,85,247,0.3); }
+
+        .capacity-bar-bg { background: #1a110b; height: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #c5a059; box-shadow: inset 0 0 5px black; }
+        .capacity-bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 10px; box-shadow: 0 0 10px #7a1b1b; }
+        .bag-holding .capacity-bar-fill { background: linear-gradient(to right, #7e22ce, #c084fc) !important; box-shadow: 0 0 15px #c084fc; }
+        .bag-haversack .capacity-bar-fill { background: linear-gradient(to right, #15803d, #4ade80) !important; box-shadow: 0 0 15px #4ade80; }
+
+        /* The Coin Pouch */
+        .coin-pouch {
+            background: radial-gradient(circle at center, #5d4037 0%, #26140e 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            border: 2px dashed #8b5a2b;
+            border-radius: 40px 40px 15px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.8);
+            padding: 20px;
+            flex-grow: 1;
+            position: relative;
+            transition: all 0.5s;
+        }
+        .bag-holding .coin-pouch { background: radial-gradient(circle at center, #3b0764 0%, #1e1b4b 100%); border-color: #a855f7; }
+        .coin-pouch::before {
+            content: ''; position: absolute; top: 15px; left: 10%; right: 10%; height: 4px;
+            background: #1a110b; border-bottom: 1px solid #c5a059; border-radius: 50%; opacity: 0.5;
+        }
+
+        /* The Scroll Case (Map) */
+        .scroll-case {
+            background: linear-gradient(to right, #c5a059 0%, #1a110b 5%, #3e2723 50%, #1a110b 95%, #c5a059 100%);
+            border: 2px solid #8b5a2b;
+            border-radius: 12px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.8), inset 0 0 10px black;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            height: 100%;
+            min-height: 80px;
+        }
+        .scroll-case:hover { transform: translateY(-3px) scale(1.02); filter: brightness(1.1); }
+        .scroll-case-endcap { width: 10px; height: 100%; position: absolute; background: #c5a059; border-radius: 4px; box-shadow: inset 0 0 5px black; }
+
+        /* Item Cards */
+        .item-card {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            border-radius: 8px;
+            transition: all 0.2s;
             position: relative;
             color: #f1e5c5;
+            backdrop-filter: blur(2px);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
         }
-        .item-card:hover { transform: translateY(-2px); border-color: #c5a059; background: rgba(255,255,255,0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        
-        .item-tag { font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; background: #7a1b1b; color: white; text-transform: uppercase; font-family: 'Cinzel', serif;}
-        
+        .item-card:hover { transform: translateY(-4px); border-color: #c5a059; background: rgba(0,0,0,0.7); box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 0 15px rgba(197,160,89,0.2); }
+        .bag-holding .item-card { border-color: rgba(168,85,247,0.4); }
+        .bag-holding .item-card:hover { border-color: #d8b4e2; box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 0 15px rgba(168,85,247,0.3); }
+
+        .item-tag { font-size: 8px; font-weight: 900; padding: 3px 8px; border-radius: 4px; background: #7a1b1b; color: white; text-transform: uppercase; font-family: 'Cinzel', serif; border: 1px solid #4a1010; box-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        .steal-btn { background: rgba(0,0,0,0.6); color: #888; border: 1px solid #555; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; transition: all 0.2s; }
+        .steal-btn:hover { color: #f1e5c5; border-color: #c5a059; background: #3e2723; }
+
+        .currency-box { background: rgba(0,0,0,0.6); border: 1px solid rgba(197, 160, 89, 0.3); border-radius: 8px; padding: 10px 5px; text-align: center; box-shadow: inset 0 0 10px black; }
+        .currency-label { font-size: 9px; font-weight: 900; color: #c5a059; text-transform: uppercase; display: block; margin-top: 4px; font-family: 'Cinzel', serif;}
+        .currency-input { font-family: 'Cinzel', serif; font-weight: 900; color: #f1e5c5; font-size: 22px; text-align: center; background: transparent; border: none;}
+
         .log-entry { font-size: 10px; border-left: 2px solid #c5a059; padding-left: 8px; margin-bottom: 6px; font-family: 'Lora', serif; color: #f1e5c5; }
         .log-time { color: #888; font-weight: 900; margin-right: 4px; }
         .log-user { color: #c5a059; font-weight: 700; font-family: 'Cinzel', serif;}
-
-        .currency-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(197, 160, 89, 0.4); border-radius: 4px; padding: 10px; text-align: center; }
-        .currency-label { font-size: 10px; font-weight: 900; color: #c5a059; text-transform: uppercase; display: block; margin-top: 2px; font-family: 'Cinzel', serif;}
-        .currency-input { font-family: 'Cinzel', serif; font-weight: 900; color: #f1e5c5; font-size: 20px; text-align: center; background: transparent; border: none;}
 
         .char-select-btn { border: 1px solid #c5a059; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 4px; text-align: left; font-size: 11px; cursor: pointer; transition: all 0.2s; font-family: 'Cinzel', serif; font-weight: bold; color: #1a110b; }
         .char-select-btn.selected { border-color: #7a1b1b; background: #7a1b1b; color: #f1e5c5; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
         
         /* Map Interaction Styles */
-        .map-rolled {
-            width: 70px; height: 36px;
-            background: #d4c4a8;
-            border: 2px solid #8b7355;
-            border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .map-rolled::before, .map-rolled::after { content: ''; position: absolute; width: 6px; height: 100%; background: #8b7355; }
-        .map-rolled::before { left: 6px; } .map-rolled::after { right: 6px; }
-
         .map-viewer-parchment {
             background-color: #f1e5c5;
             background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-            border: 8px solid #1a110b;
+            border: 12px solid #1a110b;
             outline: 2px solid #c5a059;
-            outline-offset: -6px;
+            outline-offset: -10px;
             width: 95vw; height: 85vh;
             position: relative;
             box-shadow: 0 0 100px rgba(0,0,0,0.9);
@@ -137,7 +200,7 @@
             transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; flex-direction: column;
             overflow: hidden;
-            border-radius: 4px;
+            border-radius: 8px;
         }
         .active-map .map-viewer-parchment { transform: scale(1); opacity: 1; }
         
@@ -150,28 +213,27 @@
             z-index: 10;
         }
         .map-btn {
-            width: 40px; height: 40px; background: #1a110b; border: 2px solid #c5a059; border-radius: 4px;
+            width: 44px; height: 44px; background: #1a110b; border: 2px solid #c5a059; border-radius: 8px;
             display: flex; align-items: center; justify-content: center; font-weight: 900; color: #c5a059;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5); cursor: pointer; transition: 0.2s; font-family: 'Cinzel', serif;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; transition: 0.2s; font-family: 'Cinzel', serif; font-size: 18px;
         }
-        .map-btn:hover { background: #3d2a1f; color: #f1e5c5; }
+        .map-btn:hover { background: #3d2a1f; color: #f1e5c5; transform: scale(1.05); }
 
-        .dm-map-trigger { border: 2px dashed #c5a059; padding: 10px; border-radius: 4px; cursor: pointer; transition: background 0.2s; position: relative; overflow: hidden; background: rgba(255,255,255,0.05); }
-        .dm-map-trigger:hover { background: rgba(255,255,255,0.1); }
+        .dm-map-trigger { border: 2px dashed #c5a059; padding: 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; position: relative; overflow: hidden; background: rgba(255,255,255,0.05); }
+        .dm-map-trigger:hover { background: rgba(255,255,255,0.1); border-color: #f1e5c5; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body class="min-h-screen">
 
     <div id="toast" class="toast">Message</div>
 
-    <!-- Initial Loading State -->
     <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
         <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
         <h2 class="font-heading text-2xl text-parchment animate-pulse">Opening Cache...</h2>
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden w-full">
+    <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view">
         <div class="max-w-7xl mx-auto">
             
             <!-- HEADER -->
@@ -207,123 +269,164 @@
 
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-t border-gray-800/50 pt-8 relative z-[10]">
                 <h2 class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Party Backpack</h2>
+                <button onclick="window.openLoreModal()" class="text-gold hover:text-white transition-colors text-xl"><i class="fa-solid fa-circle-info"></i></button>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 relative z-[10]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-[10]">
                 
-                <!-- LEFT SIDE: Inventory -->
+                <!-- LEFT SIDE: The Fantasy Bag -->
                 <div class="lg:col-span-8">
-                    <div class="backpack-container p-5 md:p-10 min-h-[400px] md:min-h-[600px]">
-                        <div class="flex justify-between items-end mb-4">
-                            <div>
-                                <h2 class="text-xl md:text-3xl font-heading font-black uppercase text-gold drop-shadow-md">The Cache</h2>
-                                <p class="text-[10px] text-gray-400 font-heading tracking-widest uppercase mt-1" id="designated-user-label">Unassigned</p>
-                            </div>
-                            <div class="flex gap-2 md:gap-3 items-center">
-                                <button id="btn-open-vote" onclick="window.handleVoteClick()" class="fantasy-btn px-4 py-1.5 rounded text-[10px] shadow-lg animate-pulse">Vote</button>
-                                <div class="h-6 w-px bg-gold/50"></div>
-                                <div class="text-right">
-                                    <span class="text-xs font-black text-gold font-serif" id="capacity-text">0/20</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="main-bag-container" class="fantasy-bag bag-standard min-h-[500px] md:min-h-[700px]">
+                        <div class="bag-stitch-border"></div>
+                        <div class="bag-strap left"></div>
+                        <div class="bag-strap right"></div>
 
-                        <div class="capacity-bar-bg mb-6">
-                            <div id="capacity-fill" class="capacity-bar-fill bg-gradient-to-r from-blood to-red-600" style="width: 0%"></div>
-                        </div>
-
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest font-heading border-b border-gold/30 pb-1">Shared Assets</h3>
-                            <button id="btn-distribute-funds" onclick="window.openDistributionModal()" class="hidden fantasy-btn px-3 py-1 rounded text-[8px] shadow-md">Distribute</button>
-                        </div>
-                        
-                        <div class="flex flex-col sm:flex-row gap-4 md:gap-6 mb-8 items-center bg-black/40 p-4 rounded border border-gold/30 shadow-inner">
-                            <div class="flex flex-col items-center gap-2 pr-4 border-r border-gold/30">
-                                <div class="map-rolled" onclick="window.openMap()">
-                                    <span class="text-[9px] font-black text-[#1a110b] uppercase tracking-widest font-heading">MAP</span>
+                        <div class="bag-inner p-4 md:p-8">
+                            <!-- Bag Header -->
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 bg-black/60 p-4 rounded-xl border border-gold/20 shadow-lg backdrop-blur-sm relative z-20">
+                                <div class="mb-4 sm:mb-0">
+                                    <h2 id="bag-name-display" class="text-2xl md:text-4xl font-heading font-black uppercase text-gold drop-shadow-md tracking-widest">Standard Backpack</h2>
+                                    <p class="text-[10px] text-gray-400 font-heading tracking-widest uppercase mt-1 bg-black/50 px-2 py-1 rounded inline-block border border-gray-700" id="designated-user-label">Unassigned</p>
                                 </div>
-                                <span class="text-[8px] font-black text-gold/70 uppercase font-heading tracking-widest">Codex</span>
+                                <div class="flex flex-col items-end gap-3 w-full sm:w-auto">
+                                    <div class="flex items-center gap-3 w-full justify-between sm:justify-end">
+                                        <button id="btn-open-vote" onclick="window.handleVoteClick()" class="fantasy-btn px-4 py-2 rounded text-[10px] shadow-lg animate-pulse w-full sm:w-auto text-center">Vote Bearer</button>
+                                        <div class="h-6 w-px bg-gold/30 hidden sm:block"></div>
+                                        <div class="text-right whitespace-nowrap bg-black/50 px-3 py-1.5 rounded border border-gray-700">
+                                            <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest font-heading mr-1">Load</span>
+                                            <span class="text-sm font-black text-gold font-serif" id="capacity-text">0/30</span>
+                                        </div>
+                                    </div>
+                                    <div class="capacity-bar-bg w-full">
+                                        <div id="capacity-fill" class="capacity-bar-fill bg-gradient-to-r from-blood to-red-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="grid grid-cols-4 gap-2 md:gap-4 flex-grow w-full">
-                                <div class="currency-box">
-                                    <input type="number" id="cur-VT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('VT', this.value)">
-                                    <span class="currency-label">VT</span>
+                            <!-- Bag Compartments (Currency & Map) -->
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-10 relative z-20">
+                                
+                                <!-- Coin Pouch -->
+                                <div class="coin-pouch md:col-span-8 flex flex-col">
+                                    <div class="flex justify-between items-center mb-4 px-2">
+                                        <h3 class="text-[11px] font-black uppercase text-gold/90 tracking-widest font-heading">Coin Pouch</h3>
+                                        <button id="btn-distribute-funds" onclick="window.openDistributionModal()" class="hidden fantasy-btn px-3 py-1.5 rounded text-[8px] shadow-md">Distribute</button>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2 flex-grow">
+                                        <div class="currency-box">
+                                            <input type="number" id="cur-VT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('VT', this.value)">
+                                            <span class="currency-label">VT</span>
+                                        </div>
+                                        <div class="currency-box">
+                                            <input type="number" id="cur-BYT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('BYT', this.value)">
+                                            <span class="currency-label">BYT</span>
+                                        </div>
+                                        <div class="currency-box">
+                                            <input type="number" id="cur-CR" min="0" class="currency-input" value="0" onchange="window.updateCurrency('CR', this.value)">
+                                            <span class="currency-label">CR</span>
+                                        </div>
+                                        <div class="currency-box">
+                                            <input type="number" id="cur-SC" min="0" class="currency-input" value="0" onchange="window.updateCurrency('SC', this.value)">
+                                            <span class="currency-label">SC</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="currency-box">
-                                    <input type="number" id="cur-BYT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('BYT', this.value)">
-                                    <span class="currency-label">BYT</span>
-                                </div>
-                                <div class="currency-box">
-                                    <input type="number" id="cur-CR" min="0" class="currency-input" value="0" onchange="window.updateCurrency('CR', this.value)">
-                                    <span class="currency-label">CR</span>
-                                </div>
-                                <div class="currency-box">
-                                    <input type="number" id="cur-SC" min="0" class="currency-input" value="0" onchange="window.updateCurrency('SC', this.value)">
-                                    <span class="currency-label">SC</span>
+
+                                <!-- Scroll Case (Map) -->
+                                <div class="md:col-span-4 relative group">
+                                    <div class="scroll-case relative overflow-hidden" onclick="window.openMap()">
+                                        <div class="absolute left-0 top-0 scroll-case-endcap border-r border-[#8b5a2b]"></div>
+                                        <div class="absolute right-0 top-0 scroll-case-endcap border-l border-[#8b5a2b]"></div>
+                                        
+                                        <div class="flex flex-col items-center justify-center text-center">
+                                            <i class="fa-solid fa-scroll text-3xl text-gold/80 mb-2 drop-shadow-md group-hover:text-parchment transition-colors"></i>
+                                            <span class="text-[10px] font-black text-gold/90 uppercase font-heading tracking-[0.2em] group-hover:text-parchment transition-colors">World Map</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest border-b border-gold/30 pb-1 mb-4 font-heading">Stored Items</h3>
-                        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4"></div>
-                        <div id="empty-state" class="flex flex-col items-center justify-center h-48 md:h-64 text-gray-500 opacity-50">
-                            <span class="text-4xl md:text-5xl mb-3"><i class="fa-solid fa-box-open"></i></span>
-                            <p class="font-serif italic text-sm">The cache is empty...</p>
+                            <!-- Main Inventory Area -->
+                            <div class="relative z-20">
+                                <h3 class="text-[11px] font-black uppercase text-gold/90 tracking-widest border-b border-gold/30 pb-2 mb-6 font-heading flex items-center gap-2">
+                                    <i class="fa-solid fa-box-open text-gray-500"></i> Main Compartment
+                                </h3>
+                                
+                                <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-6">
+                                    <!-- Items populate here -->
+                                </div>
+                                
+                                <div id="empty-state" class="flex flex-col items-center justify-center h-48 md:h-64 text-gold opacity-30 bg-black/20 rounded-xl border border-dashed border-gold/20">
+                                    <span class="text-4xl md:text-5xl mb-4"><i class="fa-solid fa-spider-web"></i></span>
+                                    <p class="font-serif italic text-sm tracking-wide">The compartment is empty...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- RIGHT SIDE: Controls -->
                 <div class="lg:col-span-4 space-y-6">
-                    <div id="election-info-panel" class="hidden bg-[#7a1b1b]/20 p-4 rounded border border-blood animate-pulse shadow-[0_0_15px_rgba(122,27,27,0.3)]">
-                        <h3 class="text-[10px] font-black uppercase text-white mb-3 font-heading tracking-widest text-center border-b border-blood pb-1">Election Active</h3>
-                        <button onclick="window.openElectionModal()" class="w-full fantasy-btn py-3 rounded text-[10px] shadow-lg">Cast Vote</button>
+                    <div id="election-info-panel" class="hidden bg-[#7a1b1b]/20 p-5 rounded-lg border border-blood animate-pulse shadow-[0_0_20px_rgba(122,27,27,0.3)]">
+                        <h3 class="text-[11px] font-black uppercase text-white mb-3 font-heading tracking-widest text-center border-b border-blood/50 pb-2">Election Active</h3>
+                        <button onclick="window.openElectionModal()" class="w-full fantasy-btn py-3.5 rounded text-[11px] shadow-lg">Cast Vote</button>
                     </div>
 
                     <!-- DM MANUAL PANEL -->
-                    <div id="dm-designation-panel" class="hidden dm-panel">
-                        <h3 class="text-[10px] font-black uppercase text-gold mb-4 font-heading tracking-widest border-b border-gold/50 pb-1">DM Controls</h3>
+                    <div id="dm-designation-panel" class="hidden dm-panel relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-blood text-white text-[8px] font-black px-2 py-1 rounded-bl uppercase font-heading">DM</div>
+                        <h3 class="text-[11px] font-black uppercase text-gold mb-5 font-heading tracking-widest border-b border-gold/50 pb-2">Administrative Controls</h3>
                         
-                        <div class="mb-4 pb-4 border-b border-gold/30">
-                            <h4 class="text-[9px] font-black uppercase text-gray-400 mb-2 font-heading tracking-widest">Map Update</h4>
-                            <div class="flex flex-col gap-2">
-                                <label class="dm-map-trigger text-center">
-                                    <span class="text-[9px] font-bold uppercase text-gold font-heading tracking-widest">Choose Map File</span>
-                                    <input type="file" id="dm-map-input-file" accept="image/*" class="hidden" onchange="window.handleMapUpload(event)">
-                                </label>
+                        <div class="mb-5 pb-5 border-b border-gray-700/50">
+                            <h4 class="text-[9px] font-black uppercase text-gray-400 mb-3 font-heading tracking-widest flex items-center gap-2"><i class="fa-solid fa-briefcase"></i> Bag Type</h4>
+                            <select id="bag-type-select" onchange="window.updateBagType(this.value)" class="w-full bg-black/60 border border-gray-600 p-2.5 rounded text-xs text-white font-serif outline-none focus:border-gold shadow-inner">
+                                <option value="standard">Standard Backpack (30 lbs)</option>
+                                <option value="haversack">Handy Haversack (120 lbs)</option>
+                                <option value="holding">Bag of Holding (500 lbs)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-5 pb-5 border-b border-gray-700/50">
+                            <h4 class="text-[9px] font-black uppercase text-gray-400 mb-3 font-heading tracking-widest flex items-center gap-2"><i class="fa-solid fa-map"></i> Update Map</h4>
+                            <label class="dm-map-trigger text-center block w-full shadow-inner">
+                                <span class="text-[10px] font-bold uppercase text-gold font-heading tracking-widest">Select New Image</span>
+                                <input type="file" id="dm-map-input-file" accept="image/*" class="hidden" onchange="window.handleMapUpload(event)">
+                            </label>
+                            <p class="text-[8px] text-gray-500 italic mt-2 text-center">Replaces current map for all players</p>
+                        </div>
+
+                        <div>
+                            <h4 class="text-[9px] font-black uppercase text-gray-400 mb-3 font-heading tracking-widest flex items-center gap-2"><i class="fa-solid fa-crown"></i> Override Bearer</h4>
+                            <input type="text" id="target-owner-in" class="bg-black/60 p-3 rounded text-xs mb-3 border border-gray-600 w-full outline-none focus:border-gold font-serif text-white shadow-inner" placeholder="Exact username...">
+                            <div class="flex gap-2">
+                                <button onclick="window.assignBackpackOwner()" class="flex-1 fantasy-btn-alt py-2.5 rounded text-[9px] shadow">Assign</button>
+                                <button onclick="window.startNewElection()" class="flex-1 fantasy-btn py-2.5 rounded text-[9px] shadow">Force Vote</button>
                             </div>
                         </div>
-
-                        <input type="text" id="target-owner-in" class="bg-black/50 p-3 rounded text-xs mb-3 border border-gray-700 w-full outline-none focus:border-gold font-serif text-white" placeholder="Username...">
-                        <button onclick="window.assignBackpackOwner()" class="w-full fantasy-btn-alt py-2.5 rounded text-[9px]">Assign Owner</button>
-                        <button onclick="window.startNewElection()" class="w-full fantasy-btn py-2.5 rounded text-[9px] mt-3">Trigger Vote</button>
                     </div>
 
-                    <div id="dm-upgrade-panel" class="hidden dm-panel">
-                        <h3 class="text-[10px] font-black uppercase text-gold mb-4 font-heading tracking-widest border-b border-gold/50 pb-1">Storage Capacity</h3>
-                        <div class="flex items-center gap-3">
-                            <input type="number" id="capacity-limit-in" class="bg-black/50 p-2 rounded text-lg font-black w-20 text-center border border-gray-700 text-white font-serif outline-none focus:border-gold">
-                            <button onclick="window.updateCapacity()" class="flex-1 fantasy-btn-alt py-2.5 rounded text-[9px]">Set Max</button>
-                        </div>
-                    </div>
-
-                    <div id="add-item-panel" class="hidden bg-black/60 p-5 rounded border border-gold/30 shadow-lg">
-                        <h3 class="text-[10px] font-black uppercase text-gold mb-4 font-heading tracking-widest border-b border-gold/30 pb-1">Add Item</h3>
-                        <div class="space-y-3">
-                            <input type="text" id="new-item-name" class="w-full bg-black/50 p-3 rounded border border-gray-700 text-sm text-white font-serif outline-none focus:border-gold" placeholder="Item Name">
-                            <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-700">
-                                <label class="text-[9px] text-gray-400 font-bold uppercase tracking-widest font-heading ml-1">Amt / Weight</label>
-                                <input type="number" id="new-item-slots" min="1" class="bg-transparent flex-1 text-right text-white font-bold outline-none" value="1">
+                    <div id="add-item-panel" class="hidden bg-black/60 p-6 rounded-lg border border-gold/40 shadow-xl relative">
+                        <div class="absolute -top-3 left-6 bg-black px-2 text-[10px] font-black uppercase text-gold tracking-widest font-heading">Stow Item</div>
+                        <div class="space-y-4 pt-2">
+                            <div>
+                                <label class="text-[9px] font-black uppercase text-gray-500 font-heading block mb-1">Item Name</label>
+                                <input type="text" id="new-item-name" class="w-full bg-white/5 border border-gray-600 p-3 rounded text-sm text-white font-serif outline-none focus:border-gold focus:bg-white/10 transition-colors shadow-inner" placeholder="E.g. Rope (50ft)">
                             </div>
-                            <textarea id="new-item-desc" class="w-full bg-black/50 p-3 rounded border border-gray-700 h-24 text-xs text-white font-serif outline-none focus:border-gold resize-none" placeholder="Description..."></textarea>
-                            <button onclick="window.addItemToBackpack()" class="w-full fantasy-btn py-3 rounded text-[10px] shadow-lg">Store Item</button>
+                            <div>
+                                <label class="text-[9px] font-black uppercase text-gray-500 font-heading block mb-1">Weight / Slots</label>
+                                <input type="number" id="new-item-slots" min="1" class="w-full bg-white/5 border border-gray-600 p-3 rounded text-sm text-white font-serif outline-none focus:border-gold focus:bg-white/10 transition-colors shadow-inner" value="1">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-black uppercase text-gray-500 font-heading block mb-1">Description</label>
+                                <textarea id="new-item-desc" class="w-full bg-white/5 border border-gray-600 p-3 rounded h-24 text-xs text-white font-serif outline-none focus:border-gold focus:bg-white/10 transition-colors shadow-inner resize-none" placeholder="Notes..."></textarea>
+                            </div>
+                            <button onclick="window.addItemToBackpack()" class="w-full fantasy-btn py-3.5 rounded text-[11px] shadow-lg mt-2">Place in Bag</button>
                         </div>
                     </div>
 
-                    <div class="bg-black/60 p-5 rounded border border-gray-800 flex flex-col h-[350px] shadow-xl">
-                        <h3 class="text-[10px] font-black uppercase text-gold mb-4 tracking-widest border-b border-gold/30 pb-2 font-heading">History</h3>
-                        <div id="log-container" class="flex-grow overflow-y-auto pr-1 scrollbar-hide"></div>
+                    <div class="bg-black/60 p-6 rounded-lg border border-gray-800 flex flex-col h-[400px] shadow-xl relative">
+                        <div class="absolute -top-3 left-6 bg-[#1a110b] px-2 text-[10px] font-black uppercase text-gray-500 tracking-widest font-heading">Ledger</div>
+                        <div id="log-container" class="flex-grow overflow-y-auto pr-2 mt-3 space-y-1"></div>
                     </div>
                 </div>
             </div>
@@ -331,26 +434,29 @@
     </div>
 
     <!-- MAP VIEWER MODAL -->
-    <div id="map-modal" class="fixed inset-0 z-[5000] flex items-center justify-center p-2 md:p-4 hidden transition-all">
-        <div class="modal-overlay absolute inset-0" onclick="window.closeMap()"></div>
-        <div class="map-viewer-parchment shadow-[0_0_80px_rgba(0,0,0,0.9)]" onclick="event.stopPropagation()">
-            <div class="p-4 border-b-2 border-[#8b7355] flex justify-between items-center bg-[#1a110b] shrink-0 shadow-lg">
-                <span class="font-heading font-black uppercase text-gold tracking-widest text-lg md:text-xl drop-shadow-md">World Codex</span>
-                <button onclick="window.closeMap()" class="text-gray-400 hover:text-white transition-colors font-black text-2xl leading-none">✕</button>
+    <div id="map-modal" class="fixed inset-0 z-[5000] flex items-center justify-center p-2 md:p-6 hidden transition-all duration-300 bg-black/90 backdrop-blur-sm">
+        <div class="map-viewer-parchment shadow-[0_0_100px_rgba(0,0,0,1)]" onclick="event.stopPropagation()">
+            <div class="p-4 md:p-6 border-b-4 border-[#8b5a2b] flex justify-between items-center bg-[#1a110b] shrink-0 shadow-lg relative z-20">
+                <span class="font-heading font-black uppercase text-gold tracking-[0.3em] text-lg md:text-2xl drop-shadow-md">World Cartography</span>
+                <button onclick="window.closeMap()" class="text-gray-500 hover:text-white transition-colors font-black text-3xl leading-none">✕</button>
             </div>
             
-            <div id="map-viewport" class="map-viewport">
-                <div id="map-canvas-container" class="relative">
-                    <img id="map-image-display" src="" class="map-image hidden shadow-2xl">
+            <div id="map-viewport" class="map-viewport bg-[#c5ba9e] relative overflow-hidden">
+                <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: linear-gradient(#8b5a2b 1px, transparent 1px), linear-gradient(90deg, #8b5a2b 1px, transparent 1px); background-size: 50px 50px;"></div>
+                
+                <div id="map-canvas-container" class="relative w-full h-full flex items-center justify-center">
+                    <img id="map-image-display" src="" class="map-image hidden shadow-2xl border-4 border-[#3e2723] rounded">
                 </div>
+                
                 <div id="map-empty-view" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span class="text-5xl md:text-7xl mb-4 opacity-50 grayscale">🗺️</span>
-                    <p class="font-serif italic text-gray-700 text-sm">Archives Empty</p>
+                    <span class="text-6xl md:text-8xl mb-6 opacity-30 grayscale filter drop-shadow-lg">🗺️</span>
+                    <p class="font-serif italic text-gray-800 text-lg opacity-60">The cartographer's canvas is blank.</p>
                 </div>
+                
                 <div class="map-controls">
-                    <button class="map-btn" onclick="window.zoomMap(1.2)"><i class="fa-solid fa-plus"></i></button>
-                    <button class="map-btn" onclick="window.zoomMap(0.8)"><i class="fa-solid fa-minus"></i></button>
-                    <button class="map-btn text-[8px] tracking-widest" onclick="window.resetMap()">RST</button>
+                    <button class="map-btn hover:bg-gold hover:text-white" onclick="window.zoomMap(1.2)" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button class="map-btn hover:bg-gold hover:text-white" onclick="window.zoomMap(0.8)" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                    <button class="map-btn hover:bg-gold hover:text-white text-[10px]" onclick="window.resetMap()" title="Reset View"><i class="fa-solid fa-expand"></i></button>
                 </div>
             </div>
         </div>
@@ -358,61 +464,106 @@
 
     <!-- ELECTION MODAL -->
     <div id="election-modal" class="modal-overlay hidden z-[4500]">
-        <div class="modal-container">
-            <h3 class="modal-header">Nominate Manager</h3>
-            <p class="text-xs text-ink font-serif mb-6 italic">Enter the username of the party member who will carry the cache.</p>
-            <input type="text" id="vote-nominee-in" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded text-center font-bold text-ink uppercase tracking-widest mb-2 font-heading" placeholder="USERNAME">
-            <div id="vote-status-display" class="mb-6 text-[9px] font-bold text-blood uppercase tracking-widest font-heading"></div>
+        <div class="modal-container border-2 border-gold shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+            <h3 class="font-heading text-2xl font-black text-blood uppercase mb-2 border-b border-gold/50 pb-2">Nominate Bearer</h3>
+            <p class="text-xs text-ink font-serif mb-6 italic leading-relaxed">Enter the exact username of the party member who will shoulder the burden of the cache.</p>
+            <input type="text" id="vote-nominee-in" class="w-full bg-white/50 border border-gold p-4 rounded text-center font-bold text-ink uppercase tracking-widest mb-2 font-heading outline-none focus:bg-white transition-colors shadow-inner" placeholder="USERNAME">
+            <div id="vote-status-display" class="mb-8 text-[10px] font-bold text-blood uppercase tracking-widest font-heading bg-blood/10 py-2 rounded"></div>
             
             <div class="flex gap-3 font-heading">
-                <button onclick="document.getElementById('election-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                <button onclick="window.submitVote()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Submit Vote</button>
+                <button onclick="document.getElementById('election-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3.5 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.submitVote()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3.5 shadow-md transition-colors">Submit Vote</button>
             </div>
         </div>
     </div>
 
-    <!-- Transfer Modal -->
+    <!-- TAKE ITEM MODAL -->
     <div id="transfer-modal" class="modal-overlay hidden z-[4000]">
-        <div class="modal-container">
-            <h3 class="modal-header" id="take-item-name">Take Item</h3>
-            <p class="text-xs text-ink font-serif mb-4 italic">Select which of your characters will claim this item.</p>
-            <select id="target-pc-select" class="w-full bg-[rgba(255,255,255,0.5)] p-3 rounded border border-gold font-bold mb-8 text-ink text-sm outline-none focus:border-blood font-serif"></select>
+        <div class="modal-container border-2 border-gold shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+            <h3 class="font-heading text-2xl font-black text-blood uppercase mb-2 border-b border-gold/50 pb-2" id="take-item-name">Take Item</h3>
+            <p class="text-xs text-ink font-serif mb-6 italic leading-relaxed">Select which of your characters will remove this item from the shared cache and place it in their personal inventory.</p>
+            <select id="target-pc-select" class="w-full bg-white/50 p-4 rounded border border-gold font-bold mb-8 text-ink text-sm outline-none focus:border-blood font-serif shadow-inner cursor-pointer"></select>
             
             <div class="flex gap-3 font-heading">
-                <button onclick="document.getElementById('transfer-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                <button onclick="window.confirmTakeItem()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Claim Item</button>
+                <button onclick="document.getElementById('transfer-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3.5 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.confirmTakeItem()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3.5 shadow-md transition-colors">Claim Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEAL ITEM MODAL -->
+    <div id="steal-modal" class="modal-overlay hidden z-[4000]">
+        <div class="modal-container border-2 border-blood shadow-[0_0_50px_rgba(0,0,0,0.9)] bg-[#fdfaf3]">
+            <h3 class="font-heading text-2xl font-black text-blood uppercase mb-2 border-b border-blood/50 pb-2">Sleight of Hand</h3>
+            <p class="text-xs text-ink font-serif mb-6 italic leading-relaxed">Attempt to pilfer this item from the cache. A roll of 1d20 + your Sleight of Hand modifier will be made against DC 15.</p>
+            <select id="steal-pc-select" class="w-full bg-white/50 p-4 rounded border border-blood font-bold mb-8 text-ink text-sm outline-none focus:border-blood font-serif shadow-inner cursor-pointer"></select>
+            
+            <div class="flex gap-3 font-heading">
+                <button onclick="document.getElementById('steal-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3.5 hover:bg-gray-200 transition-colors">Abort</button>
+                <button onclick="window.attemptSteal()" class="flex-1 bg-black text-white border border-blood hover:bg-blood font-bold uppercase text-[10px] rounded py-3.5 shadow-md transition-colors">Attempt Theft</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LORE MODAL -->
+    <div id="lore-modal" class="modal-overlay hidden z-[4000]">
+        <div class="modal-container !max-w-2xl border-2 border-gold shadow-[0_0_50px_rgba(0,0,0,0.9)] text-left">
+            <h3 class="font-heading text-2xl font-black text-blood uppercase mb-4 border-b border-gold/50 pb-2 flex justify-between items-center">
+                Magical Storage Rules
+                <button onclick="document.getElementById('lore-modal').classList.add('hidden')" class="text-gray-500 hover:text-ink text-lg leading-none">✕</button>
+            </h3>
+            
+            <div class="space-y-6 text-sm font-serif text-ink leading-relaxed max-h-[60vh] overflow-y-auto pr-4 scrollbar-hide">
+                <div>
+                    <h4 class="font-heading font-black text-gold uppercase tracking-widest mb-1 border-b border-gray-300 pb-1">Bag of Holding</h4>
+                    <p class="italic mb-2 text-xs text-gray-600">Wondrous item, uncommon</p>
+                    <p class="mb-2">This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to <strong>500 pounds</strong>, not exceeding a volume of 64 cubic feet. The bag weighs 15 pounds, regardless of its contents. Retrieving an item from the bag requires an action.</p>
+                    <p class="mb-2">If the bag is overloaded, pierced, or torn, it ruptures and is destroyed, and its contents are scattered in the Astral Plane. If the bag is turned inside out, its contents spill forth, unharmed, but the bag must be put right before it can be used again. Breathing creatures inside the bag can survive up to a number of minutes equal to 10 divided by the number of creatures (minimum 1 minute), after which time they begin to suffocate.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-heading font-black text-gold uppercase tracking-widest mb-1 border-b border-gray-300 pb-1">Handy Haversack</h4>
+                    <p class="italic mb-2 text-xs text-gray-600">Wondrous item, rare</p>
+                    <p class="mb-2">This backpack has a central pouch and two side pouches, each of which is an extradimensional space. The central pouch can hold up to 8 cubic feet or 80 pounds of material. Each side pouch can hold up to 2 cubic feet or 20 pounds of material. The backpack always weighs 5 pounds, regardless of its contents.</p>
+                    <p>Placing an item in the haversack follows the normal rules for interacting with objects. Retrieving an item from the haversack requires you to use an action. When you reach into the haversack for a specific item, the item is always magically on top.</p>
+                </div>
+
+                <div class="bg-red-900/10 border-l-4 border-red-900 p-4 rounded text-red-900">
+                    <p class="font-bold mb-1 uppercase font-heading text-[10px] tracking-widest">Extradimensional Danger</p>
+                    <p class="text-xs">Placing a bag of holding inside an extradimensional space created by a handy haversack, portable hole, or similar item instantly destroys both items and opens a gate to the Astral Plane. The gate originates where the one item was placed inside the other. Any creature within 10 feet of the gate is sucked through it to a random location on the Astral Plane. The gate then closes. The gate is one-way only and can't be reopened.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Currency Distribution Modal -->
     <div id="distribute-modal" class="modal-overlay hidden z-[4500]">
-        <div class="modal-container !max-w-lg">
-            <h3 class="modal-header">Divide Funds</h3>
+        <div class="modal-container !max-w-lg border-2 border-gold shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+            <h3 class="font-heading text-2xl font-black text-blood uppercase mb-6 border-b border-gold/50 pb-2">Divide Spoils</h3>
             
-            <div class="grid grid-cols-4 gap-3 mb-6 bg-[rgba(139,90,43,0.1)] p-4 rounded border border-gold/50">
-                <div><label class="text-[8px] font-black text-blood uppercase font-heading block text-center mb-1">VT</label><input type="number" id="dist-VT" class="w-full bg-white/60 p-2 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif" value="0" oninput="window.calcDistribution()"></div>
-                <div><label class="text-[8px] font-black text-blood uppercase font-heading block text-center mb-1">BYT</label><input type="number" id="dist-BYT" class="w-full bg-white/60 p-2 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif" value="0" oninput="window.calcDistribution()"></div>
-                <div><label class="text-[8px] font-black text-blood uppercase font-heading block text-center mb-1">CR</label><input type="number" id="dist-CR" class="w-full bg-white/60 p-2 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif" value="0" oninput="window.calcDistribution()"></div>
-                <div><label class="text-[8px] font-black text-blood uppercase font-heading block text-center mb-1">SC</label><input type="number" id="dist-SC" class="w-full bg-white/60 p-2 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif" value="0" oninput="window.calcDistribution()"></div>
+            <div class="grid grid-cols-4 gap-3 mb-6 bg-[rgba(139,90,43,0.1)] p-5 rounded-lg border border-gold/50 shadow-inner">
+                <div><label class="text-[9px] font-black text-blood uppercase font-heading block text-center mb-1">Volt</label><input type="number" id="dist-VT" class="w-full bg-white/60 p-2.5 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif shadow-sm" value="0" oninput="window.calcDistribution()"></div>
+                <div><label class="text-[9px] font-black text-blood uppercase font-heading block text-center mb-1">Byte</label><input type="number" id="dist-BYT" class="w-full bg-white/60 p-2.5 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif shadow-sm" value="0" oninput="window.calcDistribution()"></div>
+                <div><label class="text-[9px] font-black text-blood uppercase font-heading block text-center mb-1">Circuit</label><input type="number" id="dist-CR" class="w-full bg-white/60 p-2.5 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif shadow-sm" value="0" oninput="window.calcDistribution()"></div>
+                <div><label class="text-[9px] font-black text-blood uppercase font-heading block text-center mb-1">Scrap</label><input type="number" id="dist-SC" class="w-full bg-white/60 p-2.5 text-center font-bold text-ink border border-gold rounded outline-none focus:border-blood font-serif shadow-sm" value="0" oninput="window.calcDistribution()"></div>
             </div>
             
-            <p class="text-[9px] font-bold text-ink uppercase tracking-widest font-heading mb-2 text-left border-b border-gold/50 pb-1">Select Recipients</p>
-            <div id="dist-char-list" class="flex flex-wrap gap-2 mb-6 max-h-32 overflow-y-auto pr-2 scrollbar-hide"></div>
+            <p class="text-[10px] font-black text-ink uppercase tracking-widest font-heading mb-3 text-left border-b border-gold/30 pb-1">Select Recipients</p>
+            <div id="dist-char-list" class="flex flex-wrap gap-2 mb-6 max-h-40 overflow-y-auto pr-2 scrollbar-hide bg-white/20 p-3 rounded border border-gold/30"></div>
             
-            <div class="bg-black/80 p-4 rounded mb-8 text-center text-[11px] font-black text-gold border border-gold shadow-inner" id="dist-share-preview">0 VT, 0 BYT, 0 CR, 0 SC <span class="block text-[8px] text-gray-400 mt-1 uppercase tracking-widest font-heading font-normal">Per selected member</span></div>
+            <div class="bg-black/80 p-5 rounded-lg mb-8 text-center text-sm font-black text-gold border border-gold shadow-inner" id="dist-share-preview">0 VT, 0 BYT, 0 CR, 0 SC <span class="block text-[9px] text-gray-400 mt-2 uppercase tracking-widest font-heading font-normal">Per selected member</span></div>
             
             <div class="flex gap-3 font-heading">
-                <button onclick="document.getElementById('distribute-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                <button onclick="window.confirmDistribution()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Distribute</button>
+                <button onclick="document.getElementById('distribute-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3.5 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.confirmDistribution()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3.5 shadow-md transition-colors">Distribute</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
@@ -438,10 +589,11 @@
 
         let currentUser = null;
         let activeRole = 'player';
-        let backpackData = { items: [], capacity: 20, designatedOwner: null, electionActive: false, votes: {}, log: [], currencyVT: 0, currencyBYT: 0, currencyCR: 0, currencySC: 0, mapSrc: "" };
+        let backpackData = { items: [], capacity: 30, bagType: 'standard', designatedOwner: null, electionActive: false, votes: {}, log: [], currencyVT: 0, currencyBYT: 0, currencyCR: 0, currencySC: 0, mapSrc: "" };
         let allCharacters = [];
         let itemToTakeIndex = null;
         let selectedDistributionChars = new Set();
+        let prevItemCount = 0; // For Toast notifications
 
         const backpackDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'backpacks', 'party-cache');
 
@@ -463,7 +615,6 @@
         window.updateRoleUI = () => {
             const isDM = activeRole === 'dm';
             document.getElementById('dm-designation-panel').classList.toggle('hidden', !isDM);
-            document.getElementById('dm-upgrade-panel').classList.toggle('hidden', !isDM);
             window.renderBackpack();
         };
 
@@ -502,7 +653,11 @@
         }
 
         window.handleMapUpload = (e) => {
+            if (activeRole !== 'dm') return window.showToast("Only the DM can alter the map.");
             const file = e.target.files[0]; if (!file) return;
+            
+            window.showToast("Processing cartography...");
+            
             const reader = new FileReader();
             reader.onload = (ev) => {
                 const img = new Image();
@@ -515,6 +670,7 @@
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
                     updateDoc(backpackDocRef, { mapSrc: canvas.toDataURL('image/jpeg', 0.8) });
                     addLog("updated World Map");
+                    window.showToast("Map Updated Successfully!");
                 };
                 img.src = ev.target.result;
             };
@@ -529,7 +685,25 @@
             if (!currentUser) return;
             const canEdit = activeRole === 'dm' || backpackData.designatedOwner === currentUser.username;
             
-            document.getElementById('designated-user-label').textContent = backpackData.designatedOwner ? `Manager: ${backpackData.designatedOwner.toUpperCase()}` : "UNASSIGNED";
+            // Update Bag Visual Theme
+            const bagType = backpackData.bagType || 'standard';
+            const bagContainer = document.getElementById('main-bag-container');
+            if (bagContainer) {
+                bagContainer.className = `fantasy-bag bag-${bagType} min-h-[500px] md:min-h-[700px]`;
+            }
+            
+            const typeLabels = {
+                'standard': 'Standard Backpack',
+                'haversack': 'Handy Haversack',
+                'holding': 'Bag of Holding'
+            };
+            document.getElementById('bag-name-display').textContent = typeLabels[bagType] || 'The Cache';
+            if (activeRole === 'dm') {
+                const selectEl = document.getElementById('bag-type-select');
+                if (selectEl) selectEl.value = bagType;
+            }
+
+            document.getElementById('designated-user-label').textContent = backpackData.designatedOwner ? `Bearer: ${backpackData.designatedOwner.toUpperCase()}` : "UNASSIGNED";
             document.getElementById('add-item-panel').classList.toggle('hidden', !canEdit);
             document.getElementById('election-info-panel').classList.toggle('hidden', !backpackData.electionActive);
             document.getElementById('btn-distribute-funds').classList.toggle('hidden', !canEdit);
@@ -541,33 +715,128 @@
 
             const grid = document.getElementById('item-grid'); grid.innerHTML = '';
             let usedAmount = 0;
+            
             (backpackData.items || []).forEach((item, i) => {
                 usedAmount += parseInt(item.slots) || 0;
                 const card = document.createElement('div');
-                card.className = "item-card p-4"; card.onclick = () => window.openTakeModal(i);
+                card.className = "item-card p-4"; 
+                
+                // Clicking takes the item if allowed
+                card.onclick = () => { if(canEdit) window.openTakeModal(i); };
+
+                let controlsHtml = '';
+                if (canEdit) {
+                    controlsHtml += `<button onclick="event.stopPropagation(); window.removeItem(${i})" class="text-blood hover:text-red-400 px-1 font-black transition-colors text-lg leading-none" title="Discard Item">&times;</button>`;
+                }
+                
+                // Steal button is always visible to everyone
+                controlsHtml += `<button onclick="event.stopPropagation(); window.openStealModal(${i})" class="steal-btn ml-2" title="Attempt to Steal"><i class="fa-solid fa-mask"></i></button>`;
+
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="item-tag">Amt: ${item.slots}</span>
-                        ${canEdit ? `<button onclick="event.stopPropagation(); window.removeItem(${i})" class="text-blood hover:text-red-500 px-1 font-black transition-colors">✕</button>` : ''}
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="item-tag shadow-sm">Load: ${item.slots}</span>
+                        <div class="flex items-center">
+                            ${controlsHtml}
+                        </div>
                     </div>
-                    <h4 class="font-heading font-black uppercase text-sm mb-1 text-gold tracking-widest drop-shadow-sm">${item.name}</h4>
+                    <h4 class="font-heading font-black uppercase text-[13px] mb-1 text-gold tracking-widest drop-shadow-sm line-clamp-1">${item.name}</h4>
                     <p class="text-[10px] text-gray-300 font-serif italic line-clamp-2">${item.description || ''}</p>
                 `;
                 grid.appendChild(card);
             });
             
-            document.getElementById('capacity-fill').style.width = `${Math.min(100, (usedAmount / (backpackData.capacity || 20)) * 100)}%`;
-            document.getElementById('capacity-text').textContent = `${usedAmount}/${backpackData.capacity || 20}`;
+            const maxCap = backpackData.capacity || 30;
+            document.getElementById('capacity-fill').style.width = `${Math.min(100, (usedAmount / maxCap) * 100)}%`;
+            document.getElementById('capacity-text').textContent = `${usedAmount}/${maxCap}`;
             document.getElementById('empty-state').classList.toggle('hidden', (backpackData.items || []).length > 0);
             
             const logCont = document.getElementById('log-container');
-            logCont.innerHTML = (backpackData.log || []).slice().reverse().map(l => `<div class="log-entry"><span class="log-time">${l.time}</span> <span class="log-user">${l.user.toUpperCase()}</span> <span class="log-action text-gray-400 font-serif italic ml-1">${l.text}</span></div>`).join('');
+            logCont.innerHTML = (backpackData.log || []).slice().reverse().map(l => `<div class="log-entry"><span class="log-time">${l.time}</span> <span class="log-user">${l.user.toUpperCase()}</span> <span class="log-action text-gray-300 font-serif italic ml-1">${l.text}</span></div>`).join('');
         };
 
         const addLog = async (text) => {
             const currentLogs = [...(backpackData.log || [])].slice(-24);
             currentLogs.push({ text, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
             await updateDoc(backpackDocRef, { log: currentLogs });
+        };
+
+        // --- DM BAG TYPE CONTROLS ---
+        window.updateBagType = async (type) => {
+            if (activeRole !== 'dm') return;
+            let newCap = 30;
+            if (type === 'haversack') newCap = 120;
+            if (type === 'holding') newCap = 500;
+
+            await updateDoc(backpackDocRef, { 
+                bagType: type,
+                capacity: newCap
+            });
+            await addLog(`transmuted the cache into a ${type}`);
+        };
+
+        window.openLoreModal = () => {
+            document.getElementById('lore-modal').classList.remove('hidden');
+        };
+
+        // --- STEALING MECHANIC (SLEIGHT OF HAND) ---
+        window.openStealModal = (idx) => {
+            itemToTakeIndex = idx;
+            const pcSelect = document.getElementById('steal-pc-select'); pcSelect.innerHTML = '';
+            
+            const validChars = allCharacters.filter(c => {
+                if (c.isDeleted || c.status === 'dead') return false;
+                if (activeRole === 'dm' && c.type === 'NPC') return true;
+                if (c.type === 'PC' && c.owner === currentUser.username) return true;
+                return false;
+            });
+
+            if (validChars.length === 0) {
+                window.showToast("No active characters available to attempt theft.");
+                return;
+            }
+
+            validChars.forEach(c => pcSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            document.getElementById('steal-modal').classList.remove('hidden');
+        };
+
+        window.attemptSteal = async () => {
+            const charId = document.getElementById('steal-pc-select').value; 
+            if (!charId || itemToTakeIndex === null) return;
+            
+            const char = allCharacters.find(c => c.id === charId);
+            const item = backpackData.items[itemToTakeIndex];
+            
+            document.getElementById('steal-modal').classList.add('hidden');
+
+            // Calculate Sleight of Hand Bonus
+            const dexVal = parseInt(char.dex) || 10;
+            const dexMod = Math.floor((dexVal - 10) / 2);
+            const profBonus = parseInt(char.profBonus) || 2;
+            const isProficient = !!char.prof_sleight_of_hand;
+            
+            const totalBonus = dexMod + (isProficient ? profBonus : 0);
+            const roll = Math.floor(Math.random() * 20) + 1;
+            const total = roll + totalBonus;
+            const DC = 15; // Base DC for unattended bag
+
+            if (total >= DC) {
+                // SUCCESS
+                const note = `\n- ${item.name.toUpperCase()} (Load: ${item.slots})\n  ${item.description || 'Stolen goods.'}\n`;
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), { inventory: (char.inventory || "") + note });
+                
+                // Silent removal
+                const items = [...backpackData.items]; items.splice(itemToTakeIndex, 1);
+                
+                const currentLogs = [...(backpackData.log || [])].slice(-24);
+                currentLogs.push({ text: "A shadow passed over the cache... an item is missing.", user: "???", time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+                
+                await updateDoc(backpackDocRef, { items: items, log: currentLogs });
+                window.showToast(`Theft Successful! (${total} vs DC ${DC}). Item added to inventory.`);
+            } else {
+                // FAILURE
+                await addLog(`was caught red-handed attempting to steal [${item.name}] from the cache!`);
+                window.showToast(`Theft Failed! (${total} vs DC ${DC}). The party has been alerted.`);
+            }
         };
 
         // --- MODALS & ACTIONS ---
@@ -624,11 +893,11 @@
         
         window.submitVote = async () => {
             const nominee = document.getElementById('vote-nominee-in').value.trim().toLowerCase(); if (!nominee) return;
-            const votes = { ...(backpackData.votes || {}) }; votes[currentUser.uid] = nominee;
+            const votes = { ...(backpackData.votes || {}) }; votes[currentUser.uid] = nominee; // Use user.uid for unique voter ID
             const unique = new Set(Object.values(votes));
             if (unique.size === 1 && Object.keys(votes).length >= 1) { // Just requires 1 vote to claim if undisputed
                 await updateDoc(backpackDocRef, { votes, electionActive: false, designatedOwner: Array.from(unique)[0] });
-                await addLog(`election concluded: ${Array.from(unique)[0]} is manager`);
+                await addLog(`election concluded: ${Array.from(unique)[0]} is bearer`);
                 document.getElementById('election-modal').classList.add('hidden');
             } else { await updateDoc(backpackDocRef, { votes }); window.showToast("Vote Logged"); document.getElementById('election-modal').classList.add('hidden'); }
         };
@@ -648,18 +917,25 @@
 
         window.assignBackpackOwner = async () => {
             const t = document.getElementById('target-owner-in').value.trim().toLowerCase();
-            if (t) { await updateDoc(backpackDocRef, { designatedOwner: t, electionActive: false }); await addLog(`DM assigned manager: ${t}`); }
+            if (t) { await updateDoc(backpackDocRef, { designatedOwner: t, electionActive: false }); await addLog(`DM assigned bearer: ${t}`); }
         };
-
-        window.updateCapacity = async () => { await updateDoc(backpackDocRef, { capacity: Math.max(1, parseInt(document.getElementById('capacity-limit-in').value) || 20) }); };
 
         window.openTakeModal = (idx) => {
             itemToTakeIndex = idx; const item = backpackData.items[idx];
             document.getElementById('take-item-name').textContent = `Claim ${item.name}?`;
             const pcSelect = document.getElementById('target-pc-select'); pcSelect.innerHTML = '';
-            allCharacters.filter(c => c.owner === currentUser.username && c.type === 'PC' && !c.isDeleted).forEach(c => pcSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            
+            // DMs can give to anyone, Players can only take for themselves
+            const validChars = allCharacters.filter(c => {
+                if (c.isDeleted || c.type !== 'PC') return false;
+                if (activeRole === 'dm') return true;
+                return c.owner === currentUser.username;
+            });
+
+            validChars.forEach(c => pcSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            
             if (pcSelect.innerHTML === '') {
-                window.showToast("You don't own any PCs");
+                window.showToast("No valid PCs available to claim item.");
                 return;
             }
             document.getElementById('transfer-modal').classList.remove('hidden');
@@ -668,17 +944,31 @@
         window.confirmTakeItem = async () => {
             const charId = document.getElementById('target-pc-select').value; if (!charId || itemToTakeIndex === null) return;
             const item = backpackData.items[itemToTakeIndex]; const targetChar = allCharacters.find(c => c.id === charId);
-            const note = `\n- ${item.name.toUpperCase()} (Qty: ${item.slots})\n  ${item.description || 'No notes.'}\n`;
+            const note = `\n- ${item.name.toUpperCase()} (Load: ${item.slots})\n  ${item.description || 'No notes.'}\n`;
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), { inventory: (targetChar.inventory || "") + note });
             await addLog(`claimed [${item.name}] for ${targetChar.name}`);
             await window.removeItem(itemToTakeIndex); document.getElementById('transfer-modal').classList.add('hidden');
         };
 
-        // --- AUTH & INIT ---
+        // --- STREAMING_CHUNK:Auth & Init ---
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                try { window.location.href = "index.html"; } catch(e) {
-                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                try {
+                    const initAuth = async () => {
+                        try {
+                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                await signInWithCustomToken(auth, __initial_auth_token);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (e) {
+                            await signInAnonymously(auth);
+                        }
+                    };
+                    await initAuth();
+                } catch(e) {
+                    const initialLoading = document.getElementById('initial-loading');
+                    if(initialLoading) initialLoading.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 }
                 return;
             }
@@ -701,8 +991,8 @@
                 if (appId !== "demo_campaign") {
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists() && campDoc.data().name) {
-                        const titleEls = [document.getElementById('main-campaign-title')];
-                        titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
+                        const titleEl = document.getElementById('main-campaign-title');
+                        if (titleEl) titleEl.innerText = campDoc.data().name;
                         document.title = `${campDoc.data().name} - Party Cache`;
                     }
                 }
@@ -717,7 +1007,24 @@
                 const snap = await getDoc(backpackDocRef);
                 if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
                 
-                onSnapshot(backpackDocRef, (d) => { if (d.exists()) { backpackData = d.data(); window.renderBackpack(); } });
+                onSnapshot(backpackDocRef, (d) => { 
+                    if (d.exists()) { 
+                        const newData = d.data();
+                        
+                        // Check for Item Additions/Removals (Only toast if it changed and we didn't just load)
+                        if (prevItemCount > 0) {
+                            const newCount = (newData.items || []).length;
+                            if (newCount > prevItemCount) window.showToast("An item was added to the Cache.");
+                            if (newCount < prevItemCount) window.showToast("An item was removed from the Cache.");
+                        }
+                        
+                        backpackData = newData;
+                        prevItemCount = (backpackData.items || []).length;
+                        
+                        window.renderBackpack(); 
+                    } 
+                });
+                
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
                     allCharacters = s.docs.map(d => ({id: d.id, ...d.data()}));
                     window.renderBackpack();
