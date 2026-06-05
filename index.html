@@ -242,7 +242,18 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User is authenticated! Redirecting...
-                window.location.href = "campaigns.html";
+                try {
+                    window.location.href = "campaigns.html";
+                } catch(e) {
+                    document.getElementById('initial-loading').classList.add('hidden');
+                    document.getElementById('auth-view').innerHTML = `
+                        <div class="parchment-bg p-10 text-center shadow-2xl border-2 border-gold rounded-lg">
+                            <h2 class="text-blood font-heading text-2xl mb-4 font-bold">Already Logged In!</h2>
+                            <p class="text-ink font-serif text-sm">Because you are viewing this in a preview window, automatic redirects are disabled.<br><br>Please manually open <b>campaigns.html</b> to continue.</p>
+                        </div>
+                    `;
+                    document.getElementById('auth-view').classList.remove('hidden');
+                }
             } else {
                 // User is not logged in. Reveal the login form.
                 document.getElementById('initial-loading').classList.add('hidden');
