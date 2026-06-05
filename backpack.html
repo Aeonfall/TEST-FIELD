@@ -72,7 +72,6 @@
         input:focus, textarea:focus { outline: none; background-color: rgba(255,255,255,0.6); }
 
         /* MULTI-STYLE BACKPACK THEMES */
-        
         /* 1. Default Satchel */
         .bag-theme-satchel {
             background-color: #2c1e16;
@@ -104,23 +103,12 @@
         .bag-theme-holding .item-card:hover { border-color: #c5a059; background: rgba(124, 58, 237, 0.2); box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
 
 
-        .backpack-container {
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            transition: all 0.5s ease;
-        }
+        .backpack-container { border-radius: 8px; overflow: hidden; position: relative; transition: all 0.5s ease; }
 
         .capacity-bar-bg { background: rgba(0,0,0,0.6); height: 12px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
         .capacity-bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
 
-        .item-card {
-            border-radius: 4px;
-            transition: all 0.2s;
-            position: relative;
-            color: #f1e5c5;
-        }
-        
+        .item-card { border-radius: 4px; transition: all 0.2s; position: relative; color: #f1e5c5; }
         .item-tag { font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; background: #7a1b1b; color: white; text-transform: uppercase; font-family: 'Cinzel', serif;}
         
         .log-entry { font-size: 10px; border-left: 2px solid #c5a059; padding-left: 8px; margin-bottom: 6px; font-family: 'Lora', serif; color: #f1e5c5; }
@@ -202,6 +190,7 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
+    <!-- IMPORTANT FIX: Removed 'hidden-view' and just use 'hidden' so JS logic matches correctly -->
     <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden w-full">
         <div class="max-w-7xl mx-auto">
             
@@ -524,7 +513,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
         import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -552,7 +541,6 @@
         let currentUser = null;
         let activeRole = 'player';
         
-        // Data Structure Update: Added 'bagType' and 'maps' array
         let backpackData = { 
             items: [], 
             capacity: 30, 
@@ -561,8 +549,8 @@
             votes: {}, 
             log: [], 
             currencyVT: 0, currencyBYT: 0, currencyCR: 0, currencySC: 0, 
-            mapSrc: "", // Legacy support
-            maps: [], // New multiple maps array
+            mapSrc: "",
+            maps: [],
             bagType: "satchel" 
         };
         
@@ -586,7 +574,7 @@
             holding: {
                 name: "Bag of Holding",
                 desc: "Wondrous item, uncommon.",
-                content: "This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 15 pounds, regardless of its contents. Retrieving an item requires an action.<br><br><b>Danger:</b> If the bag is overloaded, pierced, or torn, it ruptures and is destroyed, and its contents are scattered in a Fractued Plane. Placing a bag of holding inside an extradimensional space created by a handy haversack, portable hole, or similar item instantly destroys both items and opens a gate to a Fractued Plane."
+                content: "This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 15 pounds, regardless of its contents. Retrieving an item requires an action.<br><br><b>Danger:</b> If the bag is overloaded, pierced, or torn, it ruptures and is destroyed, and its contents are scattered in the Astral Plane. Placing a bag of holding inside an extradimensional space created by a handy haversack, portable hole, or similar item instantly destroys both items and opens a gate to the Astral Plane."
             }
         };
 
@@ -622,7 +610,6 @@
 
         window.openMapList = () => {
             let maps = backpackData.maps || [];
-            // Legacy migration
             if (backpackData.mapSrc && maps.length === 0) {
                 maps = [{ name: 'World Map', src: backpackData.mapSrc }];
             }
@@ -699,7 +686,6 @@
             const container = document.getElementById('map-canvas-container');
             if (container) container.style.transform = `translate(${mapPosX}px, ${mapPosY}px) scale(${mapScale})`; 
             
-            // Counter-scale pins so they stay the exact same visual size regardless of map zoom
             document.querySelectorAll('.map-pin-inner').forEach(p => {
                 p.style.transform = `scale(${1/mapScale})`;
             });
@@ -746,11 +732,9 @@
         };
 
         window.handleMapClick = (e) => {
-            // Ignore if we just dragged the map, or if we aren't in pin mode
             if (dragDist > 10 || !isPinMode || currentViewedMapIndex === null) return;
             const img = e.target;
             
-            // Calculate precise percentage regardless of current map scale
             const xPct = (e.offsetX / img.offsetWidth) * 100;
             const yPct = (e.offsetY / img.offsetHeight) * 100;
             
@@ -758,7 +742,7 @@
             document.getElementById('new-pin-name').value = '';
             document.getElementById('new-pin-desc').value = '';
             document.getElementById('new-pin-modal').classList.remove('hidden');
-            window.togglePinMode(); // Auto-turn off tool
+            window.togglePinMode(); 
         };
 
         window.cancelPin = () => {
@@ -806,7 +790,6 @@
                 pEl.style.left = `${pin.x}%`;
                 pEl.style.top = `${pin.y}%`;
                 
-                // Note: using inner div to handle the counter-scaling so bottom-center anchor stays perfectly accurate
                 pEl.innerHTML = `
                     <div class="map-pin-inner" style="transform: scale(${1/mapScale})" onclick="event.stopPropagation(); if(window.dragDist<10) window.openPinDetails(${idx})">
                         <i class="fa-solid fa-location-dot"></i>
@@ -879,9 +862,9 @@
                     }
                     maps.push(newMap);
 
-                    updateDoc(backpackDocRef, { maps: maps, mapSrc: null }); // Null out legacy src
+                    updateDoc(backpackDocRef, { maps: maps, mapSrc: null }); 
                     addLog(`stored new map: ${mapName}`);
-                    document.getElementById('dm-map-name-in').value = ''; // Reset input
+                    document.getElementById('dm-map-name-in').value = ''; 
                 };
                 img.src = ev.target.result;
             };
@@ -895,7 +878,6 @@
         window.renderBackpack = () => {
             if (!currentUser) return;
             
-            // Handle Theming
             const bType = backpackData.bagType || 'satchel';
             const bCont = document.getElementById('backpack-main-container');
             if (bCont) {
@@ -945,7 +927,6 @@
                 const card = document.createElement('div');
                 card.className = "item-card p-4"; 
                 
-                // Instead of clicking whole card, added specific transfer button
                 const transferBtn = `<button onclick="event.stopPropagation(); window.openTakeModal(${i})" class="text-blue-400 hover:text-blue-300 px-2 transition-colors" title="Transfer to Inventory"><i class="fa-solid fa-hand-holding-hand"></i></button>`;
                 const stealBtn = (!canEdit) ? `<button onclick="event.stopPropagation(); window.attemptSteal(${i})" class="text-gray-500 hover:text-gray-300 transition-colors ml-2" title="Sleight of Hand (Steal)"><i class="fa-solid fa-mask"></i></button>` : '';
                 const delBtn = canEdit ? `<button onclick="event.stopPropagation(); window.removeItem(${i})" class="text-blood hover:text-red-500 px-1 font-black transition-colors" title="Discard">✕</button>` : '';
@@ -979,31 +960,25 @@
             await updateDoc(backpackDocRef, { log: currentLogs });
         };
 
-        // --- THEFT MECHANIC ---
         window.attemptSteal = async (idx) => {
             if (!currentUser) return;
             const item = backpackData.items[idx];
             
-            // Simulating a 1d20 + 0 (No specific character selected, using generic player luck)
-            // If they are DM, they automatically succeed as an NPC.
             let roll = Math.floor(Math.random() * 20) + 1;
             let success = roll >= 15 || activeRole === 'dm';
 
             if (success) {
-                // Success: Remove item silently, log cryptically
                 const items = [...backpackData.items];
                 items.splice(idx, 1);
                 await updateDoc(backpackDocRef, { items });
                 await addLog(`A shadow passed over the cache... something is missing.`);
                 window.showToast("Sleight of Hand Success! Item removed.");
             } else {
-                // Failure: Log publicly
                 await addLog(`was caught attempting to steal [${item.name}] from the cache!`);
                 window.showToast(`Caught! (Rolled ${roll} vs DC 15)`);
             }
         };
 
-        // --- MODALS & ACTIONS ---
         window.openDistributionModal = () => {
             const list = document.getElementById('dist-char-list'); list.innerHTML = ''; selectedDistributionChars.clear();
             allCharacters.filter(c => c.type === 'PC' && !c.isDeleted).forEach(pc => {
@@ -1059,7 +1034,7 @@
             const nominee = document.getElementById('vote-nominee-in').value.trim().toLowerCase(); if (!nominee) return;
             const votes = { ...(backpackData.votes || {}) }; votes[currentUser.uid] = nominee;
             const unique = new Set(Object.values(votes));
-            if (unique.size === 1 && Object.keys(votes).length >= 1) { // Just requires 1 vote to claim if undisputed
+            if (unique.size === 1 && Object.keys(votes).length >= 1) { 
                 await updateDoc(backpackDocRef, { votes, electionActive: false, designatedOwner: Array.from(unique)[0] });
                 await addLog(`election concluded: ${Array.from(unique)[0]} is manager`);
                 document.getElementById('election-modal').classList.add('hidden');
@@ -1099,7 +1074,6 @@
             document.getElementById('take-item-name').textContent = `Transfer: ${item.name}`;
             const pcSelect = document.getElementById('target-pc-select'); pcSelect.innerHTML = '';
             
-            // Allow DM to transfer to anyone. Players can only transfer to their own PCs.
             let validChars = allCharacters.filter(c => c.type === 'PC' && !c.isDeleted);
             if (activeRole !== 'dm') {
                 validChars = validChars.filter(c => c.owner === currentUser.username);
@@ -1121,7 +1095,6 @@
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), { inventory: (targetChar.inventory || "") + note });
             await addLog(`transferred [${item.name}] to ${targetChar.name}'s inventory`);
             
-            // Remove from backpack
             const items = [...backpackData.items]; items.splice(itemToTakeIndex, 1);
             await updateDoc(backpackDocRef, { items }); 
             
@@ -1129,77 +1102,89 @@
         };
 
         // --- AUTH & INIT ---
-        onAuthStateChanged(auth, async (u) => {
-            if (!u) {
-                try { window.location.href = "index.html"; } catch(e) {
-                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
-                }
-                return;
-            }
-            
+        const init = async () => {
             try {
-                if (u.isAnonymous) {
-                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    const userDoc = await getDoc(doc(db, 'users', u.uid));
-                    if (userDoc.exists()) {
-                        currentUser = { uid: u.uid, ...userDoc.data() };
-                    } else {
-                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
-                    }
+                    await signInAnonymously(auth);
                 }
-
-                activeRole = currentUser.role || 'player';
-
-                // Fetch campaign name
-                if (appId !== "demo_campaign") {
-                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                    if (campDoc.exists() && campDoc.data().name) {
-                        const titleEls = [document.getElementById('main-campaign-title')];
-                        titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                        document.title = `${campDoc.data().name} - Party Cache`;
-                    }
-                }
-
-                document.getElementById('user-display-name').innerText = currentUser.username;
-                window.updateRoleUI();
-
-                document.getElementById('initial-loading').classList.add('hidden');
-                document.getElementById('dashboard-screen').classList.remove('hidden-view');
-
-                // Initialize Database Connections
-                const snap = await getDoc(backpackDocRef);
-                if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
-                
-                // Track item count to trigger notifications on change
-                let previousItemCount = null;
-
-                onSnapshot(backpackDocRef, (d) => { 
-                    if (d.exists()) { 
-                        const newData = d.data();
-                        
-                        // Check if items changed while someone else edited it
-                        if (previousItemCount !== null && newData.items) {
-                            if (newData.items.length > previousItemCount) window.showToast("An item was added to the cache.");
-                            if (newData.items.length < previousItemCount) window.showToast("An item was removed from the cache.");
-                        }
-                        previousItemCount = (newData.items || []).length;
-                        
-                        backpackData = newData; 
-                        window.renderBackpack(); 
-                        if (currentViewedMapIndex !== null) window.renderPins();
-                    } 
-                });
-                
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
-                    allCharacters = s.docs.map(d => ({id: d.id, ...d.data()}));
-                });
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+            } catch (e) {
+                await signInAnonymously(auth);
             }
-        });
+
+            onAuthStateChanged(auth, async (u) => {
+                if (!u) return; // Prevent loop
+                
+                try {
+                    if (u.isAnonymous) {
+                        currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+                    } else {
+                        const userDoc = await getDoc(doc(db, 'users', u.uid));
+                        if (userDoc.exists()) {
+                            currentUser = { uid: u.uid, ...userDoc.data() };
+                        } else {
+                            currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                        }
+                    }
+
+                    activeRole = currentUser.role || 'player';
+
+                    if (appId !== "demo_campaign") {
+                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                        if (campDoc.exists() && campDoc.data().name) {
+                            const titleEls = [document.getElementById('main-campaign-title')];
+                            titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
+                            document.title = `${campDoc.data().name} - Party Cache`;
+                        }
+                    }
+
+                    document.getElementById('user-display-name').innerText = currentUser.username;
+                    window.updateRoleUI();
+
+                    document.getElementById('initial-loading').classList.add('hidden');
+                    
+                    // Show the dashboard!
+                    const dashboard = document.getElementById('dashboard-screen');
+                    if(dashboard) {
+                        dashboard.classList.remove('hidden', 'hidden-view');
+                    }
+
+                    // Initialize Database Connections
+                    const snap = await getDoc(backpackDocRef);
+                    if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
+                    
+                    let previousItemCount = null;
+
+                    onSnapshot(backpackDocRef, (d) => { 
+                        if (d.exists()) { 
+                            const newData = d.data();
+                            if (previousItemCount !== null && newData.items) {
+                                if (newData.items.length > previousItemCount) window.showToast("An item was added to the cache.");
+                                if (newData.items.length < previousItemCount) window.showToast("An item was removed from the cache.");
+                            }
+                            previousItemCount = (newData.items || []).length;
+                            
+                            backpackData = newData; 
+                            window.renderBackpack(); 
+                            if (currentViewedMapIndex !== null) window.renderPins();
+                        } 
+                    });
+                    
+                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
+                        allCharacters = s.docs.map(d => ({id: d.id, ...d.data()}));
+                    });
+
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+                }
+            });
+        };
+
+        // Start initialization
+        init();
+
     </script>
 </body>
 </html>
