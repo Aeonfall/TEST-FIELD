@@ -6,6 +6,7 @@
     <title>Chronicles - Custodian's Athenaeum</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root {
             --parchment: #f1e5c5;
@@ -25,13 +26,11 @@
             overflow: hidden; 
         }
 
-        /* CUSTOM SCROLLBARS */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(122, 27, 27, 0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(122, 27, 27, 0.6); }
 
-        /* MASTER LAYOUT */
         .parchment-container {
             max-width: 1600px; margin: 20px auto; background: var(--parchment);
             background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
@@ -40,7 +39,6 @@
             border: 2px solid var(--gold); box-sizing: border-box; overflow: hidden;
         }
 
-        /* SIDEBAR NAV */
         .manual-nav {
             width: 340px; background: rgba(0,0,0,0.03); border-right: 2px solid rgba(139, 90, 43, 0.3);
             padding: 40px 20px; flex-shrink: 0; display: flex; flex-direction: column; height: 100%; overflow-y: auto;
@@ -63,65 +61,28 @@
         
         .shelf-item:hover { transform: translateX(8px); filter: brightness(1.1); box-shadow: -4px 6px 15px rgba(0,0,0,0.3); }
 
-        /* BADGES */
-        .new-badge { position: absolute; top: -6px; right: -6px; background: var(--blood-ink); color: white; font-size: 8px; padding: 3px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); pointer-events: none; animation: pulse 2s infinite; font-family: 'Cinzel', serif;}
         .personal-badge { position: absolute; bottom: -6px; right: -6px; background: #1e3a8a; color: white; font-size: 8px; padding: 3px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); pointer-events: none; font-family: 'Cinzel', serif;}
         
-        @keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
-
-        /* BODY CONTENT */
-        .manual-body { 
-            flex-grow: 1; padding: 60px 80px 150px 80px; height: 100%; 
-            overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; 
-            position: relative; 
-        }
+        .manual-body { flex-grow: 1; padding: 60px 80px 150px 80px; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; }
         #manual-sections-container { display: flex; flex-wrap: wrap; align-items: flex-start; width: 100%; gap: 0; }
 
-        /* TYPOGRAPHY & EDITING */
         .manual-h1, .manual-h2, .manual-h3, .manual-p { color: var(--ink); }
         .manual-h2 { font-family: 'Cinzel', serif; font-weight: 900; font-size: 2.4rem; border-bottom: 2px solid var(--blood-ink); padding-bottom: 10px; text-transform: uppercase; margin-bottom: 20px; width: 100%; letter-spacing: 2px; }
         .manual-h3 { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.5rem; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; width: 100%; }
         .manual-p { font-size: 1.05rem; line-height: 1.8; margin-bottom: 15px; }
         .manual-divider { width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--blood-ink), transparent); margin: 40px 0; opacity: 0.5; }
 
-        /* EDIT MODE STYLING */
         .dm-active-edit .dm-editable { transition: all 0.2s; border-radius: 4px; }
         .dm-active-edit .dm-editable:hover { background: rgba(138, 37, 37, 0.03); outline: 1px dashed rgba(138, 37, 37, 0.4); outline-offset: 4px; }
         .dm-active-edit .dm-editable:focus { outline: 2px solid var(--blood-ink); outline-offset: 4px; background: #fff; }
 
-        /* UI CONTROLS */
-        .arch-btn { 
-            font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 10px 20px; 
-            border-radius: 4px; cursor: pointer; transition: all 0.2s; display: inline-flex; 
-            align-items: center; justify-content: center; gap: 8px; 
-            background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: var(--parchment); font-family: 'Cinzel', serif; letter-spacing: 1px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2); border: 2px solid var(--gold);
-        }
+        .arch-btn { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: var(--parchment); font-family: 'Cinzel', serif; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2); border: 2px solid var(--gold); }
         .arch-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6); border-color: #e8cd87; }
         .arch-btn-secondary { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: var(--gold); border: 2px solid var(--gold); }
         .arch-btn-secondary:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: var(--parchment); }
 
-        .tuner-panel { 
-            background: rgba(255, 255, 255, 0.5); border: 1px solid var(--gold); padding: 12px 20px; border-radius: 8px; 
-            margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; 
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.8); width: 100%; position: relative; z-index: 100; 
-        }
-        .tuner-group { display: flex; flex-direction: column; gap: 4px; }
-        .tuner-label { font-size: 9px; font-weight: 900; text-transform: uppercase; color: var(--blood-ink); letter-spacing: 1px; font-family: 'Cinzel', serif;}
-        .tuner-slider { width: 100px; accent-color: var(--blood-ink); height: 4px; background: #ddd; border-radius: 2px; appearance: none; }
-        .tuner-slider::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; background: var(--blood-ink); border-radius: 50%; cursor: pointer; }
+        #dm-global-controls { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(26, 17, 11, 0.95); backdrop-filter: blur(12px); border: 2px solid var(--gold); border-top: 3px solid var(--blood-ink); border-radius: 8px; padding: 16px 24px; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 12px; min-width: 600px; }
 
-        /* STICKY TOOLBAR (GLASSMORPHISM) */
-        #dm-global-controls {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-            background: rgba(26, 17, 11, 0.95); backdrop-filter: blur(12px);
-            border: 2px solid var(--gold); border-top: 3px solid var(--blood-ink); 
-            border-radius: 8px; padding: 16px 24px;
-            z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            display: flex; flex-direction: column; gap: 12px; min-width: 600px;
-        }
-
-        /* DRAG AND DROP */
         .drag-handle { cursor: grab; opacity: 0.6; transition: 0.2s; color: var(--blood-ink); font-size: 20px; }
         .drag-handle:hover { opacity: 1; }
         .section-dragging { opacity: 0.4; transform: scale(0.98); border: 2px dashed var(--blood-ink) !important; border-radius: 8px; }
@@ -130,24 +91,15 @@
         .section-drag-over-left { border-left: 4px solid var(--blood-ink) !important; padding-left: 10px !important; }
         .section-drag-over-right { border-right: 4px solid var(--blood-ink) !important; padding-right: 10px !important; }
 
-        /* TOAST */
-        .toast { 
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-20px); 
-            background: var(--leather); color: var(--parchment); padding: 16px 40px; border-radius: 4px; 
-            z-index: 2000000; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            font-family: 'Cinzel'; font-size: 12px; font-weight: 700; pointer-events: none;
-            border: 1px solid var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-            letter-spacing: 2px; text-transform: uppercase;
-        }
+        .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--leather); color: var(--parchment); padding: 16px 40px; border-radius: 4px; z-index: 2000000; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-family: 'Cinzel'; font-size: 12px; font-weight: 700; pointer-events: none; border: 1px solid var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase; }
 
         .hidden { display: none !important; }
         
-        /* Modal Styles */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(4px); }
         .modal-container { background: var(--parchment); border: 2px solid var(--gold); border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: var(--ink); background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); text-align: center;}
 
-        /* RESPONSIVE DESIGN FOR TABLET & MOBILE */
         .mobile-nav-toggle { display: none; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
 
         @media (max-width: 1024px) {
             .manual-body { padding: 40px 30px; }
@@ -157,27 +109,11 @@
 
         @media (max-width: 768px) {
             .parchment-container { flex-direction: column; margin: 0; height: 100vh; border-radius: 0; border: none; }
-            
-            .mobile-nav-toggle {
-                display: flex; justify-content: space-between; align-items: center;
-                background: var(--parchment-dark); padding: 15px 20px;
-                border-bottom: 2px solid var(--blood-ink); z-index: 50; width: 100%;
-            }
-            
-            .manual-nav {
-                position: absolute; top: 62px; left: -100%; width: 100%; height: calc(100vh - 62px);
-                z-index: 40; background: var(--parchment); transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                border-right: none; padding-bottom: 80px; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            }
+            .mobile-nav-toggle { display: flex; justify-content: space-between; align-items: center; background: var(--parchment-dark); padding: 15px 20px; border-bottom: 2px solid var(--blood-ink); z-index: 50; width: 100%; }
+            .manual-nav { position: absolute; top: 62px; left: -100%; width: 100%; height: calc(100vh - 62px); z-index: 40; background: var(--parchment); transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-right: none; padding-bottom: 80px; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .manual-nav.nav-open { left: 0; }
-            
             .manual-body { padding: 20px 15px 120px 15px; }
-            
             #dm-global-controls { width: 95%; padding: 12px; bottom: 10px; gap: 8px; border-radius: 8px; }
-            .tuner-panel { flex-direction: column; align-items: flex-start; gap: 12px; }
-            .tuner-group { width: 100%; }
-            .tuner-slider { width: 100%; }
-            
             .manual-h1 { font-size: 2.2rem !important; }
             .manual-h2 { font-size: 1.5rem !important; }
             #toast { width: 90%; text-align: center; }
@@ -186,11 +122,17 @@
 </head>
 <body>
 
+    <!-- INITIAL LOADING OVERLAY -->
+    <div id="initial-loading" class="fixed inset-0 bg-[#1a110b] z-[300000] flex flex-col items-center justify-center transition-opacity duration-500">
+        <i class="fa-solid fa-book-journal-whills text-4xl text-[#7a1b1b] mb-4 animate-pulse"></i>
+        <h2 class="font-heading text-xl text-[#c5a059] uppercase tracking-widest animate-pulse">Consulting Archives...</h2>
+    </div>
+
     <div id="toast" class="toast">Notification</div>
 
     <!-- MAIN PARCHMENT CONTAINER -->
     <div class="parchment-container">
-        <!-- MOBILE HEADER (Visible only on small screens) -->
+        <!-- MOBILE HEADER -->
         <div class="mobile-nav-toggle">
             <div id="mobile-campaign-title" class="font-heading font-black text-lg text-[#7a1b1b] uppercase tracking-widest drop-shadow-md">Chronicles</div>
             <button onclick="document.querySelector('.manual-nav').classList.toggle('nav-open')" class="p-2 bg-black/5 rounded hover:bg-black/10 transition-colors">
@@ -202,14 +144,14 @@
         <div class="manual-nav">
             <div class="mb-10 text-center">
                 <h1 id="sidebar-campaign-title" class="font-heading font-black text-3xl md:text-4xl text-[#7a1b1b] uppercase leading-none tracking-wider drop-shadow-md">Chronicles</h1>
-                <p class="text-[10px] uppercase font-bold tracking-[3px] opacity-60 mt-2 text-ink font-heading">Custodian's Athenaeum</p>
+                <p id="sidebar-subtitle" class="text-[10px] uppercase font-bold tracking-[3px] opacity-60 mt-2 text-ink font-heading">Custodian's Athenaeum</p>
                 
                 <div id="user-display-container" class="mt-8 border-y border-black/10 py-5 bg-black/5 rounded-lg shadow-inner">
                     <div id="user-identity" class="font-heading text-xs font-black uppercase text-[#1a110b]">Authenticating...</div>
                 </div>
             </div>
             
-            <button id="sync-btn" onclick="forceSync()" class="w-full arch-btn arch-btn-secondary !text-[10px] mb-6 flex items-center justify-center gap-2 !py-2 border-dashed">
+            <button id="sync-btn" onclick="window.forceSync()" class="w-full arch-btn arch-btn-secondary !text-[10px] mb-6 flex items-center justify-center gap-2 !py-2 border-dashed">
                 <i class="fa-solid fa-arrows-rotate sync-icon transition-all duration-500 ease-in-out"></i>
                 Synchronize Archive
             </button>
@@ -231,16 +173,16 @@
             <div id="dm-global-controls" class="hidden">
                 <div class="text-[10px] font-black uppercase text-center text-gold mb-2 tracking-widest border-b border-gold/30 pb-2 font-heading w-full">Archival Insertion Tools</div>
                 <div id="toolbar-main" class="flex flex-wrap justify-center gap-3 w-full">
-                    <button class="arch-btn" onclick="switchToolbar('book')"><i class="fa-solid fa-book mr-2"></i> Tome</button>
-                    <button class="arch-btn" onclick="switchToolbar('journal')"><i class="fa-solid fa-book-journal-whills mr-2"></i> Journal</button>
-                    <button class="arch-btn" onclick="switchToolbar('textbook')"><i class="fa-solid fa-book-open mr-2"></i> Text Book</button>
-                    <button class="arch-btn" onclick="switchToolbar('newspaper')"><i class="fa-solid fa-newspaper mr-2"></i> Chronicle</button>
-                    <button class="arch-btn" onclick="switchToolbar('manuscript')"><i class="fa-solid fa-scroll mr-2"></i> Manuscript</button>
-                    <button class="arch-btn" onclick="switchToolbar('parchment')"><i class="fa-solid fa-file-lines mr-2"></i> Parchment</button>
-                    <button class="arch-btn" onclick="switchToolbar('song')"><i class="fa-solid fa-music mr-2"></i> Songs & Poems</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('book')"><i class="fa-solid fa-book mr-2"></i> Tome</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('journal')"><i class="fa-solid fa-book-journal-whills mr-2"></i> Journal</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('textbook')"><i class="fa-solid fa-book-open mr-2"></i> Text Book</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('newspaper')"><i class="fa-solid fa-newspaper mr-2"></i> Chronicle</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('manuscript')"><i class="fa-solid fa-scroll mr-2"></i> Manuscript</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('parchment')"><i class="fa-solid fa-file-lines mr-2"></i> Parchment</button>
+                    <button class="arch-btn" onclick="window.switchToolbar('song')"><i class="fa-solid fa-music mr-2"></i> Songs & Poems</button>
                 </div>
                 <div id="toolbar-sub" class="hidden flex flex-wrap justify-center gap-3 items-center w-full">
-                    <button class="arch-btn arch-btn-secondary" onclick="resetToolbar()"><i class="fa-solid fa-arrow-left mr-2"></i> Return</button>
+                    <button class="arch-btn arch-btn-secondary" onclick="window.resetToolbar()"><i class="fa-solid fa-arrow-left mr-2"></i> Return</button>
                     <div class="h-8 w-[2px] bg-gold mx-2"></div>
                     <div id="sub-tool-buttons" class="flex flex-wrap gap-2">
                         <!-- Populated dynamically -->
@@ -258,10 +200,10 @@
         <div class="modal-container !p-0 overflow-hidden">
             <div class="bg-[#1a110b] text-[#f1e5c5] p-5 flex justify-between items-center border-b-2 border-[#c5a059]">
                 <span class="font-heading uppercase text-sm font-black tracking-wider">Bind Citizen Record</span>
-                <button onclick="closeModal('uid-link-modal')" class="text-gold hover:text-white text-lg leading-none">&times;</button>
+                <button onclick="window.closeModal('uid-link-modal')" class="text-gold hover:text-white text-lg leading-none">&times;</button>
             </div>
             <div class="p-6 text-left">
-                <input type="text" id="user-search" class="w-full bg-white/50 border border-gold p-3 mb-4 rounded font-serif text-sm focus:outline-none focus:border-blood shadow-inner text-ink" placeholder="Search character name..." oninput="filterDMUsers(this.value)">
+                <input type="text" id="user-search" class="w-full bg-white/50 border border-gold p-3 mb-4 rounded font-serif text-sm focus:outline-none focus:border-blood shadow-inner text-ink" placeholder="Search character name..." oninput="window.filterDMUsers(this.value)">
                 
                 <div id="user-results" class="max-h-60 overflow-y-auto border border-black/10 rounded bg-white mb-2 shadow-inner">
                     <!-- Populated dynamically -->
@@ -277,7 +219,7 @@
             <p id="del-modal-text" class="text-sm text-ink mb-8 italic font-serif leading-relaxed">This entry will be permanently expunged from the archives.</p>
             <div class="flex flex-col gap-3 font-heading">
                 <button id="confirm-del-btn" class="w-full bg-blood text-parchment py-3 rounded border border-gold font-bold uppercase text-xs shadow transition-colors hover:bg-red-800">Confirm Purge</button>
-                <button onclick="closeModal('del-modal')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
+                <button onclick="window.closeModal('del-modal')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
             </div>
         </div>
     </div>
@@ -356,6 +298,7 @@
         let manualSections = [];
         let allUsers = [];
         let manualHeader = { title: "Custodian's Athenaeum", subtitle: "Restricted Historical Records" };
+        let campaignSettings = { terms: {} };
         
         let currentUser = null;
         let activeRole = 'player'; 
@@ -365,11 +308,9 @@
         let targetSectionForUID = null;
         let saveTimers = {};
 
-        // Drag & Drop State
         let draggedId = null;
         let dropSide = null;
 
-        // Unified Toolbar Configuration
         const standardTools = [
             { label: 'Main Heading', type: 'subheading', icon: 'fa-heading' },
             { label: 'Sub-Heading', type: 'inner-subheading', icon: 'fa-list' },
@@ -399,7 +340,7 @@
                 (docSnap) => {
                     if (docSnap.exists()) {
                         manualHeader = docSnap.data();
-                        renderManual();
+                        window.renderManual();
                     }
                 },
                 (error) => console.error("Header listener error:", error)
@@ -411,21 +352,36 @@
                 (snap) => {
                     manualSections = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                     manualSections.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-                    renderManual();
+                    window.renderManual();
                 },
                 (error) => console.error("Sections listener error:", error)
             );
 
-            // Users (For Binding/Linking)
-            if (activeRole === 'dm') {
-                onSnapshot(
-                    collection(db, 'artifacts', appId, 'public', 'data', 'characters'),
-                    (snap) => {
-                        // Only fetch PCs for binding to documents
-                        allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).filter(c => c.type === 'PC' && !c.isDeleted);
+            // Users (For Binding/Linking and Visibility Checking)
+            // Available to all users so they can match their characters to personal entries
+            onSnapshot(
+                collection(db, 'artifacts', appId, 'public', 'data', 'characters'),
+                (snap) => {
+                    allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).filter(c => c.type === 'PC' && !c.isDeleted);
+                    window.renderManual();
+                }
+            );
+
+            // Sync Terminology
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => {
+                if (docSnap.exists()) {
+                    campaignSettings = docSnap.data();
+                    const custName = campaignSettings.terms?.lore_custodians || "Custodian's Athenaeum";
+                    
+                    const subEl = document.getElementById('sidebar-subtitle');
+                    if (subEl) subEl.innerText = custName;
+                    
+                    if (manualHeader.title === "Custodian's Athenaeum" && custName !== "Custodian's Athenaeum") {
+                        manualHeader.title = custName;
+                        window.renderManual();
                     }
-                );
-            }
+                }
+            });
         };
 
         // --- UI UTILITIES ---
@@ -434,7 +390,7 @@
             const isDM = activeRole === 'dm';
             document.getElementById('dm-global-controls')?.classList.toggle('hidden', !isDM);
             document.body.classList.toggle('dm-active-edit', isDM);
-            renderManual();
+            window.renderManual();
         };
 
         window.switchToolbar = (category) => {
@@ -444,7 +400,7 @@
             const container = document.getElementById('sub-tool-buttons');
             if (container && categoryTools[category]) {
                 container.innerHTML = categoryTools[category].map(tool => `
-                    <button class="arch-btn" onclick="addManualSection('${tool.type}', '${category}')"><i class="fa-solid ${tool.icon} mr-1"></i> ${tool.label}</button>
+                    <button class="arch-btn" onclick="window.addManualSection('${tool.type}', '${category}')"><i class="fa-solid ${tool.icon} mr-1"></i> ${tool.label}</button>
                 `).join('');
             }
         };
@@ -454,7 +410,6 @@
             document.getElementById('toolbar-sub')?.classList.add('hidden');
         };
 
-        // --- MANUAL SYNC ---
         window.forceSync = () => {
             const icon = document.querySelector('.sync-icon');
             if (icon) {
@@ -468,7 +423,6 @@
                 }, 500);
             }
             
-            // Force save active edit
             if (activeEditId) {
                 const el = document.querySelector(`[data-id="${activeEditId}"]`);
                 if (el) {
@@ -483,10 +437,9 @@
             }
             
             window.showToast("Archive Synchronized");
-            renderManual();
+            window.renderManual();
         };
 
-        // --- CONTENT MANAGEMENT (CRUD) ---
         window.addManualSection = async (type, docType) => {
             if (!currentUser || activeRole !== 'dm') return;
             
@@ -495,20 +448,41 @@
             if (type === 'inner-subheading') defaultTitle = "NEW SUB-HEADING";
             if (type === 'divider') defaultTitle = "";
 
-            const data = {
+            const primaryRef = doc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION));
+            const textRef = doc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION));
+            
+            const batch = writeBatch(db);
+            const baseOrder = manualSections.length ? Math.max(...manualSections.map(s => s.order || 0)) + 1 : 0;
+
+            batch.set(primaryRef, {
                 title: defaultTitle,
                 content: type === 'divider' ? "" : "Inscribe text here...",
                 type: type,
                 docType: docType,
-                order: manualSections.length,
+                order: baseOrder,
                 createdAt: Date.now(),
                 width: 100,
-                visibility: 'public', // Default public for the library
+                visibility: 'public',
                 sharedWith: []
-            };
+            });
+
+            // Automatically generate a text block below any new heading so the DM can write in it immediately
+            if (type === 'subheading' || type === 'inner-subheading') {
+                batch.set(textRef, {
+                    title: "TEXT",
+                    content: "Inscribe text here...",
+                    type: 'text',
+                    docType: docType,
+                    order: baseOrder + 1,
+                    createdAt: Date.now() + 1,
+                    width: 100,
+                    visibility: 'public',
+                    sharedWith: []
+                });
+            }
 
             try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), data);
+                await batch.commit();
                 window.showToast("Archival Entry Added");
             } catch (err) {
                 console.error("Add section error:", err);
@@ -527,7 +501,6 @@
             });
         };
 
-        // --- EDITING LOGIC ---
         window.setEditing = (id) => { activeEditId = id; };
         window.clearEditing = () => { activeEditId = null; };
 
@@ -562,7 +535,6 @@
             }, 800);
         };
 
-        // --- DRAG AND DROP ---
         window.handleDragStart = (e, id) => {
             if (activeRole !== 'dm') return;
             draggedId = id;
@@ -638,7 +610,6 @@
             draggedId = null;
         };
 
-        // --- BINDING SPECIFIC USERS (DM) ---
         window.openUserModal = (sectionId) => {
             targetSectionForUID = sectionId;
             document.getElementById('uid-link-modal')?.classList.remove('hidden');
@@ -655,7 +626,7 @@
             const filtered = allUsers.filter(u => (u.name || '').toLowerCase().includes(search));
             
             container.innerHTML = filtered.map(u => `
-                <div class="flex justify-between items-center p-3 hover:bg-black/5 border-b border-black/5 transition-colors cursor-pointer" onclick="assignUIDToSection('${u.uid}')">
+                <div class="flex justify-between items-center p-3 hover:bg-black/5 border-b border-black/5 transition-colors cursor-pointer" onclick="window.assignUIDToSection('${u.uid}')">
                     <div>
                         <div class="font-bold text-sm text-ink font-heading uppercase">${u.name || 'Unidentified'}</div>
                         <div class="font-serif text-[10px] text-ink/60 mt-0.5">Player: ${u.owner || 'Unknown'}</div>
@@ -691,20 +662,14 @@
             }
         };
 
-        // --- RENDER LOGIC ---
-        const renderManual = () => {
+        window.renderManual = () => {
             const isDM = activeRole === 'dm';
-            // We use the character's name to identify if they are bound to a document (since allUsers stores characters)
-            // But since this is a general library, any player can see 'public' docs.
-            // For 'personal' docs, we need to know if any of the player's characters are bound.
-            
             const myCharacters = allUsers.filter(u => u.owner === currentUser?.username).map(c => c.uid);
             
             const navList = document.getElementById('nav-list');
             const container = document.getElementById('manual-sections-container');
             if (!container || !navList) return;
 
-            // --- INHERITANCE LOGIC ---
             let currentHeadingVisibility = 'public';
             let currentHeadingSharedWith = [];
             let currentHeadingDocType = 'book';
@@ -729,37 +694,33 @@
                 };
             });
 
-            // Filter sections based on visibility rules
             const visibleSections = processedSections.filter(s => {
                 if (isDM) return true;
                 if (s.effectiveVisibility === 'public') return true;
-                // If personal, check if any of the player's characters are in the shared list
                 if (s.effectiveVisibility === 'personal' && s.effectiveSharedWith?.some(uid => myCharacters.includes(uid))) return true;
                 return false;
             });
 
-            // --- RENDER HEADER ---
             const headerEl = document.getElementById('manual-header');
             if (headerEl) {
                 headerEl.innerHTML = `
                     <h1 id="manual-main-title" class="manual-h1 text-5xl font-heading font-black uppercase text-[#7a1b1b] dm-editable outline-none" 
                         contenteditable="${isDM}" 
-                        onfocus="setEditing('manual-main-title')" 
-                        onblur="clearEditing(); renderManual()" 
-                        oninput="dbUpdateHeader('title', this.innerText)">
+                        onfocus="window.setEditing('manual-main-title')" 
+                        onblur="window.clearEditing(); window.renderManual()" 
+                        oninput="window.dbUpdateHeader('title', this.innerText)">
                         ${activeEditId === 'manual-main-title' ? manualHeader.title : manualHeader.title}
                     </h1>
                     <p id="manual-main-subtitle" class="font-heading font-bold text-sm text-ink/60 mt-4 dm-editable outline-none uppercase tracking-[0.3em]" 
                         contenteditable="${isDM}" 
-                        onfocus="setEditing('manual-main-subtitle')" 
-                        onblur="clearEditing(); renderManual()" 
-                        oninput="dbUpdateHeader('subtitle', this.innerText)">
+                        onfocus="window.setEditing('manual-main-subtitle')" 
+                        onblur="window.clearEditing(); window.renderManual()" 
+                        oninput="window.dbUpdateHeader('subtitle', this.innerText)">
                         ${activeEditId === 'manual-main-subtitle' ? manualHeader.subtitle : manualHeader.subtitle}
                     </p>
                 `;
             }
 
-            // --- RENDER SIDEBAR NAV ---
             navList.innerHTML = visibleSections
                 .filter(s => s.type === 'subheading')
                 .map(s => {
@@ -772,7 +733,6 @@
                     `;
                 }).join('');
 
-            // --- RENDER CONTENT BLOCKS ---
             container.innerHTML = visibleSections.map(s => {
                 const hId = `head-${s.id}`;
                 const cId = `content-${s.id}`;
@@ -781,7 +741,6 @@
                 
                 const customStyle = `width: calc(${s.width ?? 100}% - 16px); margin: 8px; flex-shrink: 0;`;
 
-                // DM Controls UI Panel
                 let dmControlsHTML = '';
                 if (isDM) {
                     dmControlsHTML = `
@@ -791,14 +750,14 @@
                             <div class="flex flex-col gap-1">
                                 <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Width</span>
                                 <input type="range" class="w-24 accent-blood" min="20" max="100" step="5" value="${s.width ?? 100}" 
-                                    oninput="dbUpdateSection('${s.id}', 'width', parseInt(this.value))">
+                                    oninput="window.dbUpdateSection('${s.id}', 'width', parseInt(this.value))">
                             </div>
                             
                             ${isHeading ? `
                                 <div class="flex flex-col gap-1">
                                     <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Access Level</span>
                                     <select class="text-[10px] font-bold bg-white/50 border border-gold rounded p-1 outline-none font-serif text-ink" 
-                                        onchange="dbUpdateSection('${s.id}', 'visibility', this.value)">
+                                        onchange="window.dbUpdateSection('${s.id}', 'visibility', this.value)">
                                         <option value="public" ${s.visibility==='public'?'selected':''}>Public (All)</option>
                                         <option value="secret" ${s.visibility==='secret'?'selected':''}>Secret (Hidden)</option>
                                         <option value="personal" ${s.visibility==='personal'?'selected':''}>Personal (Bound)</option>
@@ -808,10 +767,10 @@
                                 <div class="flex flex-col gap-1">
                                     <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Bind Character</span>
                                     <div class="flex items-center gap-1">
-                                        <button class="bg-black/80 hover:bg-black text-gold border border-gold px-2 py-1 rounded text-[9px] font-bold transition-colors font-heading uppercase" onclick="openUserModal('${s.id}')">
+                                        <button class="bg-black/80 hover:bg-black text-gold border border-gold px-2 py-1 rounded text-[9px] font-bold transition-colors font-heading uppercase" onclick="window.openUserModal('${s.id}')">
                                             ${sharedCharacter ? sharedCharacter.name : 'Select'}
                                         </button>
-                                        ${sharedCharacter ? `<button onclick="unbindUIDFromSection('${s.id}')" class="text-blood hover:text-red-900 text-lg leading-none ml-1" title="Unbind">&times;</button>` : ''}
+                                        ${sharedCharacter ? `<button onclick="window.unbindUIDFromSection('${s.id}')" class="text-blood hover:text-red-900 text-lg leading-none ml-1" title="Unbind">&times;</button>` : ''}
                                     </div>
                                 </div>
                             ` : `
@@ -821,38 +780,35 @@
                                 </div>
                             `}
                             
-                            <button onclick="triggerDelete('${s.id}')" class="ml-auto text-blood hover:bg-blood hover:text-parchment w-6 h-6 rounded flex items-center justify-center transition-colors border border-transparent hover:border-blood" title="Delete Block">
+                            <button onclick="window.triggerDelete('${s.id}')" class="ml-auto text-blood hover:bg-blood hover:text-parchment w-6 h-6 rounded flex items-center justify-center transition-colors border border-transparent hover:border-blood" title="Delete Block">
                                 <i class="fa-solid fa-trash-can text-[10px]"></i>
                             </button>
                         </div>
                     `;
                 }
 
-                // Inner Content Block HTML
                 let contentHTML = '';
                 
-                // Content Title parsing based on type
                 if (s.type === 'subheading') {
-                    contentHTML += `<h2 id="${hId}" class="manual-h2 dm-editable outline-none mt-8" contenteditable="${isDM}" onfocus="setEditing('${hId}')" onblur="clearEditing(); renderManual()" oninput="dbUpdateSection('${s.id}', 'title', this.innerText)">${activeEditId === hId ? s.title : s.title}</h2>`;
+                    contentHTML += `<h2 id="${hId}" class="manual-h2 dm-editable outline-none mt-8" contenteditable="${isDM}" onfocus="window.setEditing('${hId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'title', this.innerText)">${activeEditId === hId ? s.title : s.title}</h2>`;
                 } else if (s.type === 'inner-subheading') {
-                    contentHTML += `<h3 id="${hId}" class="manual-h3 dm-editable outline-none mt-4" contenteditable="${isDM}" onfocus="setEditing('${hId}')" onblur="clearEditing(); renderManual()" oninput="dbUpdateSection('${s.id}', 'title', this.innerText)">${activeEditId === hId ? s.title : s.title}</h3>`;
+                    contentHTML += `<h3 id="${hId}" class="manual-h3 dm-editable outline-none mt-4" contenteditable="${isDM}" onfocus="window.setEditing('${hId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'title', this.innerText)">${activeEditId === hId ? s.title : s.title}</h3>`;
                 } else if (s.type === 'divider') {
                     contentHTML += `<div class="manual-divider"></div>`;
                 }
 
-                // Main body parsed based on type
                 if (s.type === 'text') {
-                    contentHTML += `<div id="${cId}" class="manual-p dm-editable outline-none" contenteditable="${isDM}" onfocus="setEditing('${cId}')" onblur="clearEditing(); renderManual()" oninput="dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>`;
+                    contentHTML += `<div id="${cId}" class="manual-p dm-editable outline-none" contenteditable="${isDM}" onfocus="window.setEditing('${cId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>`;
                 } else if (s.type === 'textbook') {
                     contentHTML += `
                         <div class="bg-[rgba(255,255,255,0.6)] border-t-4 border-[#1a110b] p-6 rounded shadow-inner my-4 relative">
                             <div class="absolute -top-[14px] left-4 bg-[#1a110b] text-gold px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded shadow font-heading border border-gold">Scholar's Note</div>
-                            <div id="${cId}" class="manual-p dm-editable outline-none text-ink font-serif" contenteditable="${isDM}" onfocus="setEditing('${cId}')" onblur="clearEditing(); renderManual()" oninput="dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>
+                            <div id="${cId}" class="manual-p dm-editable outline-none text-ink font-serif" contenteditable="${isDM}" onfocus="window.setEditing('${cId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>
                         </div>`;
                 } else if (s.type === 'note') {
                     contentHTML += `
                         <div class="bg-[rgba(122,27,27,0.05)] border-l-4 border-blood p-5 rounded shadow-sm my-4 italic">
-                            <div id="${cId}" class="manual-p dm-editable outline-none !mb-0 text-[#3e2723]" contenteditable="${isDM}" onfocus="setEditing('${cId}')" onblur="clearEditing(); renderManual()" oninput="dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>
+                            <div id="${cId}" class="manual-p dm-editable outline-none !mb-0 text-[#3e2723]" contenteditable="${isDM}" onfocus="window.setEditing('${cId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>
                         </div>`;
                 }
 
@@ -860,11 +816,11 @@
                     <section id="section-${s.id}" 
                         class="relative transition-all rounded ${isDM ? 'hover:bg-white/30 p-2' : ''}" 
                         draggable="${isDM}" 
-                        ondragstart="handleDragStart(event, '${s.id}')" 
-                        ondragover="handleDragOver(event)" 
-                        ondragleave="handleDragLeave(event)" 
-                        ondrop="handleDrop(event, '${s.id}')" 
-                        ondragend="handleDragEnd(event)"
+                        ondragstart="window.handleDragStart(event, '${s.id}')" 
+                        ondragover="window.handleDragOver(event)" 
+                        ondragleave="window.handleDragLeave(event)" 
+                        ondrop="window.handleDrop(event, '${s.id}')" 
+                        ondragend="window.handleDragEnd(event)"
                         style="${customStyle}">
                         
                         ${dmControlsHTML}
@@ -875,12 +831,11 @@
             }).join('');
         };
 
-        // Setup the confirm delete button behavior globally
         const confirmBtn = document.getElementById('confirm-del-btn');
         if (confirmBtn) {
             confirmBtn.onclick = async () => {
                 if (deleteCallback) await deleteCallback();
-                closeModal('del-modal');
+                window.closeModal('del-modal');
             };
         }
 
@@ -888,7 +843,8 @@
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
                 try { window.location.href = "index.html"; } catch(e) {
-                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                    const initialLoading = document.getElementById('initial-loading');
+                    if(initialLoading) initialLoading.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 }
                 return;
             }
@@ -907,7 +863,6 @@
 
                 activeRole = currentUser.role || 'player';
 
-                // Fetch campaign name
                 if (appId !== "demo_campaign") {
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists() && campDoc.data().name) {
@@ -918,18 +873,22 @@
                 }
 
                 document.getElementById('user-identity').innerText = currentUser.username;
-                
-                // Toggle DM Features & UI
                 window.updateRoleUI();
 
-                document.getElementById('initial-loading').classList.add('hidden');
-                document.getElementById('dashboard-screen').classList.remove('hidden-view');
+                const loadingEl = document.getElementById('initial-loading');
+                if (loadingEl) loadingEl.classList.add('hidden');
+                
+                const contentPane = document.getElementById('content-pane');
+                if(contentPane) contentPane.classList.remove('hidden-view');
 
                 setupListeners();
 
             } catch (error) {
                 console.error(error);
-                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+                const loadingEl = document.getElementById('initial-loading');
+                if (loadingEl) {
+                    loadingEl.innerHTML = `<h2 class="font-heading text-2xl text-[#7a1b1b]">Database Access Denied</h2>`;
+                }
             }
         });
 
