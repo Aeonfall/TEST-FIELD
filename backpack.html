@@ -1102,89 +1102,78 @@
         };
 
         // --- AUTH & INIT ---
-        const init = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) {
+                try { window.location.href = "index.html"; } catch(e) {
+                    document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 }
-            } catch (e) {
-                await signInAnonymously(auth);
+                return;
             }
-
-            onAuthStateChanged(auth, async (u) => {
-                if (!u) return; // Prevent loop
-                
-                try {
-                    if (u.isAnonymous) {
-                        currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+            
+            try {
+                if (u.isAnonymous) {
+                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+                } else {
+                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    if (userDoc.exists()) {
+                        currentUser = { uid: u.uid, ...userDoc.data() };
                     } else {
-                        const userDoc = await getDoc(doc(db, 'users', u.uid));
-                        if (userDoc.exists()) {
-                            currentUser = { uid: u.uid, ...userDoc.data() };
-                        } else {
-                            currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
-                        }
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
                     }
-
-                    activeRole = currentUser.role || 'player';
-
-                    if (appId !== "demo_campaign") {
-                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                        if (campDoc.exists() && campDoc.data().name) {
-                            const titleEls = [document.getElementById('main-campaign-title')];
-                            titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                            document.title = `${campDoc.data().name} - Party Cache`;
-                        }
-                    }
-
-                    document.getElementById('user-display-name').innerText = currentUser.username;
-                    window.updateRoleUI();
-
-                    document.getElementById('initial-loading').classList.add('hidden');
-                    
-                    // Show the dashboard!
-                    const dashboard = document.getElementById('dashboard-screen');
-                    if(dashboard) {
-                        dashboard.classList.remove('hidden', 'hidden-view');
-                    }
-
-                    // Initialize Database Connections
-                    const snap = await getDoc(backpackDocRef);
-                    if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
-                    
-                    let previousItemCount = null;
-
-                    onSnapshot(backpackDocRef, (d) => { 
-                        if (d.exists()) { 
-                            const newData = d.data();
-                            if (previousItemCount !== null && newData.items) {
-                                if (newData.items.length > previousItemCount) window.showToast("An item was added to the cache.");
-                                if (newData.items.length < previousItemCount) window.showToast("An item was removed from the cache.");
-                            }
-                            previousItemCount = (newData.items || []).length;
-                            
-                            backpackData = newData; 
-                            window.renderBackpack(); 
-                            if (currentViewedMapIndex !== null) window.renderPins();
-                        } 
-                    });
-                    
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
-                        allCharacters = s.docs.map(d => ({id: d.id, ...d.data()}));
-                    });
-
-                } catch (error) {
-                    console.error(error);
-                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
                 }
-            });
-        };
 
-        // Start initialization
-        init();
+                activeRole = currentUser.role || 'player';
 
+                if (appId !== "demo_campaign") {
+                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                    if (campDoc.exists() && campDoc.data().name) {
+                        const titleEls = [document.getElementById('main-campaign-title')];
+                        titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
+                        document.title = `${campDoc.data().name} - Party Cache`;
+                    }
+                }
+
+                document.getElementById('user-display-name').innerText = currentUser.username;
+                window.updateRoleUI();
+
+                document.getElementById('initial-loading').classList.add('hidden');
+                
+                // Show the dashboard!
+                const dashboard = document.getElementById('dashboard-screen');
+                if(dashboard) {
+                    dashboard.classList.remove('hidden', 'hidden-view');
+                }
+
+                // Initialize Database Connections
+                const snap = await getDoc(backpackDocRef);
+                if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
+                
+                let previousItemCount = null;
+
+                onSnapshot(backpackDocRef, (d) => { 
+                    if (d.exists()) { 
+                        const newData = d.data();
+                        if (previousItemCount !== null && newData.items) {
+                            if (newData.items.length > previousItemCount) window.showToast("An item was added to the cache.");
+                            if (newData.items.length < previousItemCount) window.showToast("An item was removed from the cache.");
+                        }
+                        previousItemCount = (newData.items || []).length;
+                        
+                        backpackData = newData; 
+                        window.renderBackpack(); 
+                        if (currentViewedMapIndex !== null) window.renderPins();
+                    } 
+                });
+                
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
+                    allCharacters = s.docs.map(d => ({id: d.id, ...d.data()}));
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+            }
+        });
     </script>
 </body>
 </html>
