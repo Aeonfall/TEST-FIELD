@@ -3,66 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chronicles Graveyard</title>
+    <title>Graveyard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    
     <script>
         tailwind.config = {
-            theme: { 
-                extend: { 
-                    colors: { 
-                        'parchment': '#f1e5c5', 
-                        'ink': '#2c1e16', 
-                        'blood': '#7a1b1b', 
-                        'gold': '#c5a059', 
-                        'wood': '#1a110b' 
-                    }, 
-                    fontFamily: { 
-                        'serif': ['Lora', 'serif'], 
-                        'heading': ['Cinzel', 'serif'] 
-                    } 
-                } 
-            }
+            theme: { extend: { colors: { 'parchment': '#f1e5c5', 'ink': '#2c1e16', 'blood': '#7a1b1b', 'gold': '#c5a059', 'wood': '#1a110b' }, fontFamily: { 'serif': ['Lora', 'serif'], 'heading': ['Cinzel', 'serif'] } } }
         }
     </script>
-
     <style>
-        body { 
-            font-family: 'Lora', serif; 
-            background-color: #1a110b; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E"); 
-            color: #f1e5c5; 
-            overflow-x: hidden; 
-        }
-        
-        .parchment-bg { 
-            background-color: #f1e5c5; 
-            background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); 
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7); 
-            border: 2px solid #c5a059; 
-            color: #2c1e16; 
-        }
-        
+        body { font-family: 'Lora', serif; background-color: #1a110b; background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E"); color: #f1e5c5; overflow-x: hidden; }
+        .parchment-bg { background-color: #f1e5c5; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7); border: 2px solid #c5a059; color: #2c1e16; }
         .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
-        
         .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
         .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
-        
         .card { transition: all 0.2s; position: relative; border: 1px solid #555; background-color: rgba(0,0,0,0.7); }
-        .card:hover { border-color: #c5a059; box-shadow: 0 5px 15px rgba(0,0,0,0.8); transform: translateY(-2px); }
-        
-        .status-badge { position: absolute; top: 8px; right: 8px; font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 99px; text-transform: uppercase; z-index: 10; font-family: 'Cinzel', serif;}
-        
         .nav-link { color: #888; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; white-space: nowrap; font-family: 'Cinzel', serif; }
         .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
         .nav-link:hover { color: #f1e5c5; }
-        
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
     </style>
@@ -71,11 +33,13 @@
 
     <div id="toast" class="toast">Message</div>
 
+    <!-- Initial Loading State -->
     <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
         <i class="fa-solid fa-ghost fa-bounce text-6xl text-gray-500 mb-6"></i>
         <h2 class="font-heading text-2xl text-parchment animate-pulse">Entering the Catacombs...</h2>
     </div>
 
+    <!-- MAIN DASHBOARD -->
     <div id="dashboard-screen" class="min-h-screen p-4 md:p-8 hidden w-full">
         <div class="max-w-6xl mx-auto">
             <!-- HEADER & NAVIGATION -->
@@ -83,7 +47,7 @@
                 <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
                 
                 <div class="text-center md:text-left w-full md:w-auto">
-                    <h1 class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
+                    <h1 id="campaign-title" class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
                     <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
                         <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">The Graveyard</p>
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
@@ -95,7 +59,7 @@
 
                 <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
                     <div class="flex items-center gap-4">
-                        <button onclick="window.routeToNexus()" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded !border-gray-600 !text-gray-400 hover:!text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded !border-gray-600 !text-gray-400 hover:!text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
                     </div>
 
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
@@ -104,7 +68,7 @@
                         <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
                         <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
                         <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
-                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link active">Graveyard</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link active !text-gray-400 !border-gray-500">Graveyard</a>
                     </nav>
                 </div>
             </header>
@@ -126,7 +90,7 @@
             <h3 id="manage-soul-name" class="font-heading text-lg text-ink text-center mb-6 uppercase tracking-wider">Unknown</h3>
             
             <div class="space-y-4">
-                <button onclick="window.resurrectCharacter()" class="w-full py-3 bg-green-800 hover:bg-green-700 text-parchment border border-green-600 rounded font-heading font-bold uppercase text-xs shadow transition-colors">Resurrect / Awaken</button>
+                <button onclick="window.resurrectCharacter()" class="w-full py-3 bg-green-800 text-parchment border border-green-600 rounded font-heading font-bold uppercase text-xs shadow">Resurrect / Awaken</button>
                 <button onclick="window.permDeleteCharacter()" class="w-full py-3 bg-transparent text-blood border-2 border-blood hover:bg-blood hover:text-parchment rounded font-heading font-bold uppercase text-xs transition-colors">Permanently Delete</button>
             </div>
             
@@ -148,7 +112,7 @@
         };
 
         window.routeTo = (page) => {
-            const currentId = new URLSearchParams(window.location.search).get('id') || new URLSearchParams(window.location.search).get('campaignId');
+            const currentId = new URLSearchParams(window.location.search).get('id');
             try {
                 if (currentId && currentId !== "demo_campaign") {
                     window.location.href = `${page}?id=${currentId}`;
@@ -160,14 +124,6 @@
             }
         };
 
-        window.routeToNexus = () => {
-            try {
-                window.location.href = 'campaigns.html';
-            } catch(e) {
-                window.showToast('Redirects disabled in preview window.');
-            }
-        };
-
         // --- FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
@@ -175,8 +131,7 @@
             projectId: "dndcampaigns-f3d48",
             storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
             messagingSenderId: "1074491536795",
-            appId: "1:1074491536795:web:56211729489be776d79d3e",
-            measurementId: "G-71DW54NTWV"
+            appId: "1:1074491536795:web:56211729489be776d79d3e"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -186,8 +141,6 @@
         // --- CAMPAIGN SCOPING ---
         const urlParams = new URLSearchParams(window.location.search);
         let appId = urlParams.get('id') || urlParams.get('campaignId');
-        
-        // Preview Environment Safeguard
         const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         
         if (!appId) {
@@ -221,39 +174,22 @@
             const isDM = currentUser && currentUser.role === 'dm';
 
             deadCharacters.forEach(c => {
-                let badgeClass = "bg-gray-800";
-                let badgeText = "RETIRED";
-                let borderClass = "border-gray-600";
-                let imgFilter = "filter grayscale opacity-60";
-
-                if (c.status === 'coma') {
-                    badgeClass = "bg-amber-600 text-white";
-                    badgeText = "COMA";
-                    borderClass = "border-amber-600";
-                    imgFilter = "sepia contrast-125 opacity-80";
-                } else if (c.status === 'dead') {
-                    badgeClass = "bg-red-900 text-white";
-                    badgeText = "DEAD";
-                    borderClass = "border-red-900";
-                }
-
                 const mediaSrc = c.imageSrc 
-                    ? `<img src="${c.imageSrc}" class="w-full h-full object-cover ${imgFilter}">` 
+                    ? `<img src="${c.imageSrc}" class="w-full h-full object-cover filter grayscale opacity-60">` 
                     : `<div class="w-full h-full flex items-center justify-center text-3xl text-gray-600"><i class="fa-solid fa-skull"></i></div>`;
                 
                 const d = document.createElement('div'); 
-                d.className = `bg-black bg-opacity-80 rounded card border-l-4 flex flex-col overflow-hidden ${borderClass}`;
+                d.className = `bg-black bg-opacity-80 rounded card flex flex-col overflow-hidden`;
                 
-                const dmManageBtn = isDM ? `<button onclick="window.openSoulManager('${c.id}', '${c.name}')" class="mt-3 w-full bg-gray-800 hover:bg-gold hover:text-ink text-gray-300 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest transition-colors border border-gray-600 hover:border-gold font-heading">Manage Soul</button>` : '';
+                const dmManageBtn = isDM ? `<button onclick="window.openSoulManager('${c.id}', '${c.name}')" class="mt-3 w-full bg-gray-800 hover:bg-gray-700 text-gray-300 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest transition-colors border border-gray-600 font-heading">Manage Soul</button>` : '';
 
                 d.innerHTML = `
                     <div class="p-4 md:p-5 relative flex-grow">
-                        <span class="status-badge ${badgeClass}">${badgeText}</span>
-                        <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center gap-4">
                             <div class="w-14 h-14 rounded bg-black bg-opacity-50 border border-gray-700 overflow-hidden relative shrink-0">${mediaSrc}</div>
                             <div class="flex-grow min-w-0">
                                 <h5 class="text-gray-400 font-heading font-bold text-sm md:text-base leading-tight truncate tracking-wider">${c.name || 'Unknown'}</h5>
-                                <p class="text-[10px] text-gray-600 uppercase tracking-widest mt-0.5 font-serif italic">${c.status === 'coma' ? 'Unconscious' : 'Fallen'} ${c.class || 'Adventurer'} Lvl ${c.level || 1}</p>
+                                <p class="text-[10px] text-gray-600 uppercase tracking-widest mt-0.5 font-serif italic">Fallen ${c.class || 'Adventurer'} Lvl ${c.level || 1}</p>
                                 ${dmManageBtn}
                             </div>
                         </div>
@@ -321,24 +257,27 @@
                     }
                 }
 
-                // Fetch the specific campaign to get the title
-                if (appId && appId !== "demo_campaign") {
-                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                    if (campDoc.exists()) {
-                        document.getElementById('main-campaign-title').innerText = campDoc.data().name;
-                    }
-                }
-
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
 
+                // NEW: Fetch and set the dynamic campaign name
+                try {
+                    const campSnap = await getDoc(doc(db, 'campaigns', appId));
+                    if (campSnap.exists() && campSnap.data().name) {
+                        document.getElementById('campaign-title').textContent = campSnap.data().name;
+                        document.title = campSnap.data().name + " - Graveyard"; // Updates the browser tab too!
+                    }
+                } catch (err) {
+                    console.log("Could not load campaign title:", err);
+                }
+
                 // Attach Database Listener specific to Graveyard
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { 
-                    // Only keep characters that are marked as deleted OR dead OR in a coma
+                    // Only keep characters that are marked as deleted OR dead
                     deadCharacters = snap.docs
                         .map(d => ({id: d.id, ...d.data()}))
-                        .filter(c => c.isDeleted === true || c.status === 'dead' || c.status === 'coma');
+                        .filter(c => c.isDeleted === true || c.status === 'dead');
                     renderGraveyard(); 
                 });
 
