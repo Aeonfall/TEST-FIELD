@@ -2268,6 +2268,10 @@
             document.querySelectorAll('.read-only-hide').forEach(el => el.classList.toggle('hidden', !canEdit));
             document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
             
+            // NEW: Show the DM Oversight Panel if the user is a DM
+            const dmPanel = document.getElementById('dm-oversight-panel');
+            if (dmPanel) dmPanel.classList.toggle('hidden-view', !isDM);
+
             const claimBtn = document.getElementById('claim-char-btn'); 
             if (claimBtn) { if (!char.owner && currentUser && char.type !== 'NPC') claimBtn.classList.remove('hidden'); else claimBtn.classList.add('hidden'); }
 
