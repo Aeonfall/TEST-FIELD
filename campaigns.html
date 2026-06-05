@@ -2,228 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chronicles of the Realm - Nexus</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chronicles Nexus</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'parchment': '#f1e5c5',
-                        'ink': '#2c1e16',
-                        'blood': '#7a1b1b',
-                        'gold': '#c5a059',
-                        'wood': '#1a110b'
-                    },
-                    fontFamily: {
-                        'serif': ['Lora', 'serif'],
-                        'heading': ['Cinzel', 'serif'],
-                    }
-                }
-            }
+            theme: { extend: { colors: { 'parchment': '#f1e5c5', 'ink': '#2c1e16', 'blood': '#7a1b1b', 'gold': '#c5a059', 'wood': '#1a110b' }, fontFamily: { 'serif': ['Lora', 'serif'], 'heading': ['Cinzel', 'serif'] } } }
         }
     </script>
     <style>
-        body {
-            background-color: #1a110b;
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
-            color: #2c1e16;
-            overflow-x: hidden;
-        }
-
-        .parchment-bg {
-            background-color: #f1e5c5;
-            background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
-            border: 2px solid #c5a059;
-        }
-
-        .fantasy-btn {
-            background: linear-gradient(to bottom, #8a2b2b, #5a1111);
-            color: #f1e5c5;
-            border: 2px solid #c5a059;
-            font-family: 'Cinzel', serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        }
-
-        .fantasy-btn:hover {
-            background: linear-gradient(to bottom, #a33232, #7a1b1b);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.6);
-            border-color: #e8cd87;
-        }
-
-        .ornamental-hr {
-            border: 0;
-            height: 2px;
-            background-image: linear-gradient(to right, rgba(197, 160, 89, 0), rgba(197, 160, 89, 0.8), rgba(197, 160, 89, 0));
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        .ornamental-hr::after {
-            content: "♦";
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #c5a059;
-            font-size: 16px;
-        }
-
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        body { font-family: 'Lora', serif; background-color: #1a110b; background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E"); color: #f1e5c5; overflow-x: hidden; }
+        .parchment-bg { background-color: #f1e5c5; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7); border: 2px solid #c5a059; color: #2c1e16; }
+        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
+        .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
+        .card { transition: all 0.2s; position: relative; border: 1px solid #555; background-color: rgba(0,0,0,0.7); cursor: pointer; }
+        .card:hover { transform: translateY(-4px); border-color: #c5a059; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(197, 160, 89, 0.2); }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
     </style>
 </head>
-<body class="font-serif antialiased min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center">
 
-    <!-- Global Modal -->
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 z-[100] flex items-center justify-center hidden backdrop-blur-sm">
-        <div class="parchment-bg p-8 max-w-sm w-full mx-4 rounded-lg shadow-2xl text-center">
-            <h3 id="modal-title" class="font-heading text-2xl font-bold text-blood mb-4">Notification</h3>
-            <p id="modal-message" class="text-ink mb-6"></p>
-            <button onclick="document.getElementById('modal-container').classList.add('hidden')" class="fantasy-btn px-6 py-2 rounded">Acknowledge</button>
+    <div id="toast" class="toast">Message</div>
+
+    <!-- Initial Loading State -->
+    <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
+        <i class="fa-solid fa-compass fa-spin text-6xl text-gray-500 mb-6"></i>
+        <h2 class="font-heading text-2xl text-parchment animate-pulse">Charting the Realms...</h2>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard-screen" class="min-h-screen p-4 md:p-8 hidden w-full">
+        <div class="max-w-6xl mx-auto">
+            <!-- HEADER -->
+            <header class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-700 pb-6 gap-6 relative">
+                <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
+                
+                <div class="text-center md:text-left w-full md:w-auto">
+                    <h1 class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
+                    <div class="flex items-center justify-center md:justify-start gap-3 mt-2">
+                        <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Campaign Nexus</p>
+                        <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
+                            <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Traveler</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                    <!-- JOIN BY CODE -->
+                    <div class="flex items-center bg-black bg-opacity-50 border border-gray-700 rounded overflow-hidden">
+                        <input type="text" id="invite-code-input" class="bg-transparent border-none text-gray-300 px-4 py-2 text-sm font-heading focus:outline-none w-40" placeholder="Invite Code...">
+                        <button onclick="window.joinByCode()" class="bg-gray-800 hover:bg-gray-700 text-gold px-4 py-2 text-xs font-bold uppercase tracking-widest font-heading transition-colors border-l border-gray-700">Join</button>
+                    </div>
+                    <!-- CREATE CAMPAIGN (DM ONLY) -->
+                    <button id="btn-create-campaign" onclick="document.getElementById('create-campaign-modal').classList.remove('hidden')" class="fantasy-btn px-6 py-2 rounded text-xs hidden">
+                        <i class="fa-solid fa-plus mr-2"></i>New Realm
+                    </button>
+                    <!-- LOGOUT -->
+                    <button onclick="window.logout()" class="text-[10px] font-black text-gray-500 hover:text-red-500 uppercase tracking-widest transition-colors font-heading ml-2">Logout</button>
+                </div>
+            </header>
+
+            <!-- MY ADVENTURES -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-heading text-gold mb-4 border-b border-gray-800 pb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-book-journal-whills text-lg"></i> My Adventures
+                </h2>
+                <div id="my-adventures-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Joined campaigns populate here -->
+                </div>
+            </div>
+
+            <!-- PUBLIC REALMS -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-heading text-gray-500 mb-4 border-b border-gray-800 pb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-globe text-lg"></i> Public Realms
+                </h2>
+                <div id="public-realms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-90">
+                    <!-- Public campaigns populate here -->
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Loading State -->
-    <div id="loading-view" class="flex flex-col items-center justify-center fade-in text-center">
-        <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
-        <h2 id="loading-text" class="font-heading text-2xl text-parchment animate-pulse mb-4">Consulting the Archives...</h2>
-        
-        <!-- Emergency logout if database is locked -->
-        <button id="emergency-logout" onclick="window.emergencyLogout()" class="hidden border-2 border-blood text-blood hover:bg-blood hover:text-parchment px-4 py-2 rounded font-heading font-bold transition">Sign Out & Restart</button>
-    </div>
-
-    <!-- Main Dashboard -->
-    <div id="dashboard-view" class="hidden w-full max-w-5xl fade-in flex-col gap-6">
-        
-        <!-- Header -->
-        <div class="parchment-bg p-6 rounded-lg flex flex-col md:flex-row justify-between items-center shadow-xl">
-            <div class="text-center md:text-left">
-                <h1 class="font-heading text-3xl font-bold text-ink drop-shadow-sm">Nexus of Realms</h1>
-                <p class="italic text-gray-700">Welcome back, <span id="nexus-username" class="font-bold text-blood">Traveler</span></p>
-            </div>
-            <div class="flex flex-wrap justify-center gap-4 mt-4 md:mt-0">
-                <button onclick="window.openProfileModal()" class="fantasy-btn px-4 py-2 rounded text-sm"><i class="fa-solid fa-user-pen mr-2"></i>Edit Profile</button>
-                <button id="btn-forge-campaign" onclick="window.openForgeModal()" class="fantasy-btn px-4 py-2 rounded hidden"><i class="fa-solid fa-hammer mr-2"></i>Forge Campaign</button>
-                <button onclick="window.signOutUser()" class="border-2 border-blood text-blood hover:bg-blood hover:text-parchment px-4 py-2 rounded font-heading font-bold transition">Depart (Sign Out)</button>
-            </div>
-        </div>
-
-        <!-- Join Private Campaign -->
-        <div class="parchment-bg p-6 rounded-lg shadow-xl text-center">
-            <h2 class="font-heading text-xl font-bold text-ink mb-2">Join Private Campaign</h2>
-            <p class="text-sm italic mb-4 text-gray-700">Speak the secret 4-digit code provided by your Dungeon Master.</p>
-            <div class="flex justify-center gap-2 max-w-xs mx-auto">
-                <input type="text" id="private-code-input" maxlength="4" class="w-full text-center text-2xl tracking-[0.5em] p-2 bg-white bg-opacity-50 border border-gold focus:outline-none focus:border-blood rounded font-bold" placeholder="••••">
-                <button onclick="window.joinPrivateCampaign()" class="fantasy-btn px-6 py-2 rounded">Enter</button>
-            </div>
-        </div>
-
-        <!-- Campaign Lists -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- CREATE CAMPAIGN MODAL -->
+    <div id="create-campaign-modal" class="modal-overlay hidden z-[800]">
+        <div class="parchment-bg rounded-lg max-w-md w-full p-8 shadow-2xl border-2 border-blood">
+            <h2 class="font-heading text-2xl font-bold text-blood text-center mb-6 border-b border-blood pb-2">Forge a New Realm</h2>
             
-            <!-- Open Campaigns -->
-            <div class="parchment-bg p-6 rounded-lg shadow-xl">
-                <h2 class="font-heading text-2xl font-bold text-blood mb-2 text-center">Public Realms</h2>
-                <hr class="ornamental-hr">
-                <div id="public-campaigns-list" class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                    <p class="text-center italic text-gray-500">Searching...</p>
-                </div>
-            </div>
-
-            <!-- My Campaigns -->
-            <div class="parchment-bg p-6 rounded-lg shadow-xl">
-                <h2 class="font-heading text-2xl font-bold text-ink mb-2 text-center">My Adventures</h2>
-                <hr class="ornamental-hr">
-                <div id="my-campaigns-list" class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                    <p class="text-center italic text-gray-500">Loading...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Forge Campaign Modal -->
-    <div id="forge-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden backdrop-blur-sm">
-        <div class="parchment-bg p-8 max-w-md w-full mx-4 rounded-lg shadow-2xl">
-            <h3 class="font-heading text-2xl font-bold text-blood mb-4 text-center">Forge a New Realm</h3>
-            <div class="space-y-4">
+            <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block font-heading font-bold text-ink mb-1">Campaign Title</label>
-                    <input type="text" id="new-camp-name" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" placeholder="E.g. Curse of Strahd">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-ink mb-1 font-heading">Campaign Name</label>
+                    <input type="text" id="new-campaign-name" class="w-full bg-transparent border-b-2 border-gray-400 focus:border-blood text-ink py-2 text-lg font-serif outline-none placeholder-gray-500" placeholder="e.g. The Shattered Isles">
                 </div>
                 <div>
-                    <label class="block font-heading font-bold text-ink mb-1">Description</label>
-                    <textarea id="new-camp-desc" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded resize-none h-20" placeholder="A dark fantasy adventure in the lands of Barovia..."></textarea>
-                </div>
-                <div>
-                    <label class="block font-heading font-bold text-ink mb-1">Access Level</label>
-                    <select id="new-camp-type" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" onchange="document.getElementById('code-container').classList.toggle('hidden', this.value !== 'private')">
-                        <option value="public">Public (Anyone can join)</option>
-                        <option value="private">Private (Requires Code)</option>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-ink mb-1 font-heading mt-4">Visibility</label>
+                    <select id="new-campaign-vis" class="w-full bg-transparent border-b-2 border-gray-400 focus:border-blood text-ink py-2 font-serif outline-none">
+                        <option value="private">Private (Invite Code Only)</option>
+                        <option value="public">Public (Visible to all)</option>
                     </select>
                 </div>
-                <div id="code-container" class="hidden">
-                    <label class="block font-heading font-bold text-ink mb-1">4-Digit Secret Code</label>
-                    <input type="text" id="new-camp-code" maxlength="4" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded text-center tracking-[0.5em] font-bold" placeholder="1234">
-                </div>
-                <div class="flex gap-4 mt-6">
-                    <button onclick="document.getElementById('forge-modal').classList.add('hidden')" class="flex-1 border-2 border-blood text-blood px-4 py-2 rounded font-heading font-bold">Cancel</button>
-                    <button onclick="window.createCampaign()" class="flex-1 fantasy-btn px-4 py-2 rounded">Create</button>
-                </div>
+            </div>
+            
+            <div class="flex justify-end gap-4 mt-8">
+                <button onclick="document.getElementById('create-campaign-modal').classList.add('hidden')" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink font-heading px-4">Cancel</button>
+                <button onclick="window.createCampaign()" class="fantasy-btn px-6 py-2 rounded text-xs">Create</button>
             </div>
         </div>
     </div>
 
-    <!-- Profile Settings Modal -->
-    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden backdrop-blur-sm">
-        <div class="parchment-bg p-8 max-w-md w-full mx-4 rounded-lg shadow-2xl">
-            <h3 class="font-heading text-2xl font-bold text-blood mb-4 text-center">Update Identity</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block font-heading font-bold text-ink mb-1">Display Name</label>
-                    <input type="text" id="edit-profile-name" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" placeholder="Your true name...">
-                </div>
-                <div>
-                    <label class="block font-heading font-bold text-ink mb-1">Your Path</label>
-                    <select id="edit-profile-role" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" onchange="document.getElementById('edit-dm-secret-container').classList.toggle('hidden', this.value !== 'dm')">
-                        <option value="player">Player</option>
-                        <option value="dm">Dungeon Master</option>
-                    </select>
-                </div>
-                <div id="edit-dm-secret-container" class="hidden">
-                    <label class="block font-heading font-bold text-blood mb-1">DM Sanctum Password</label>
-                    <p class="text-xs italic mb-2 text-gray-700">Required to claim the mantle of Dungeon Master.</p>
-                    <input type="password" id="edit-profile-dm-secret" class="w-full p-2 bg-white bg-opacity-50 border border-blood rounded" placeholder="Sanctum passphrase...">
-                </div>
-                <div class="flex gap-4 mt-6">
-                    <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="flex-1 border-2 border-blood text-blood px-4 py-2 rounded font-heading font-bold">Cancel</button>
-                    <button onclick="window.saveProfile()" class="flex-1 fantasy-btn px-4 py-2 rounded">Save Changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        // IMPORT arrayUnion for joining campaigns!
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs, arrayUnion } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+        // --- CORE UI FUNCTIONS ---
+        window.showToast = (m) => { 
+            const t = document.getElementById('toast'); 
+            if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 4000); } 
+        };
+
+        // --- FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
             authDomain: "dndcampaigns-f3d48.firebaseapp.com",
@@ -238,268 +144,218 @@
         const db = getFirestore(app);
 
         let currentUser = null;
+        let allCampaigns = [];
 
-        // Make functions globally available to HTML buttons
-        window.showModal = (title, msg) => {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = msg;
-            document.getElementById('modal-container').classList.remove('hidden');
-        };
+        // Generate Random Invite Code
+        function generateCode() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
 
-        window.signOutUser = () => signOut(auth);
-        window.emergencyLogout = () => signOut(auth);
-        window.openForgeModal = () => document.getElementById('forge-modal').classList.remove('hidden');
-
-        // Logic for Profile Editing
-        window.openProfileModal = () => {
-            document.getElementById('edit-profile-name').value = currentUser.username;
-            document.getElementById('edit-profile-role').value = currentUser.role;
-            document.getElementById('edit-profile-dm-secret').value = ''; // Clear password field
-            document.getElementById('edit-dm-secret-container').classList.toggle('hidden', currentUser.role !== 'dm');
-            document.getElementById('profile-modal').classList.remove('hidden');
-        };
-
-        window.saveProfile = async () => {
-            const newName = document.getElementById('edit-profile-name').value.trim();
-            const newRole = document.getElementById('edit-profile-role').value;
-            const secretInput = document.getElementById('edit-profile-dm-secret').value.trim();
-            
-            if (!newName) return showModal("Hold!", "You must have a display name.");
-
-            // Verify DM Sanctum Password
-            if (newRole === 'dm') {
-                if (!secretInput) {
-                    return showModal("Hold!", "You must enter a Sanctum Password to be a Dungeon Master.");
-                }
-                // If they already have a secret stored, verify it matches
-                if (currentUser.dmSecret && currentUser.dmSecret !== secretInput) {
-                    return showModal("Access Denied", "Incorrect Sanctum Password.");
-                }
-            }
-
-            try {
-                // Update Firestore
-                const updates = {
-                    username: newName,
-                    role: newRole
-                };
-
-                // If upgrading to DM for the first time, save the new password
-                if (newRole === 'dm' && !currentUser.dmSecret) {
-                    updates.dmSecret = secretInput;
-                    currentUser.dmSecret = secretInput;
-                }
-
-                await updateDoc(doc(db, 'users', currentUser.uid), updates);
-
-                // Update Local State & UI
-                currentUser.username = newName;
-                currentUser.role = newRole;
-                
-                document.getElementById('nexus-username').innerText = newName;
-                if (newRole === 'dm') {
-                    document.getElementById('btn-forge-campaign').classList.remove('hidden');
-                } else {
-                    document.getElementById('btn-forge-campaign').classList.add('hidden');
-                }
-
-                document.getElementById('profile-modal').classList.add('hidden');
-                loadCampaigns(); // Refresh lists
-                showModal("Success", "Your identity has been updated!");
-            } catch (e) {
-                console.error(e);
-                showModal("Error", "Failed to update profile in the archives.");
-            }
-        };
-
-        // Check authentication status
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                // If not logged in, boot back to login page
+        // Generate Card HTML
+        function createCampaignCard(camp, isMine) {
+            const d = document.createElement('div');
+            d.className = "bg-black bg-opacity-60 rounded-lg card p-5 flex flex-col justify-between";
+            d.onclick = () => {
                 try {
-                    window.location.href = "index.html";
+                    window.location.href = `characters.html?id=${camp.id}`;
                 } catch(e) {
-                    console.warn("Preview environment blocked redirect.");
-                    document.getElementById('loading-text').innerText = "Authentication Required";
-                    document.getElementById('loading-text').classList.add('text-blood');
-                    document.getElementById('emergency-logout').classList.remove('hidden');
+                    window.showToast("Redirects disabled in preview window.");
                 }
-                return;
-            }
+            };
 
-            // Fallback button if rules are still blocking access
-            setTimeout(() => {
-                document.getElementById('emergency-logout').classList.remove('hidden');
-            }, 3000);
+            const isDM = currentUser && camp.dmId === currentUser.uid;
+            let badges = '';
+            
+            if (isDM) badges += `<span class="bg-blood text-white px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading font-black shadow-md">DM</span>`;
+            else if (isMine) badges += `<span class="bg-green-700 text-white px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading font-black shadow-md">Joined</span>`;
 
-            try {
-                if (user.isAnonymous) {
-                    currentUser = { uid: user.uid, username: "Guest Traveler", role: 'player' };
-                } else {
-                    const userDoc = await getDoc(doc(db, 'users', user.uid));
-                    if (userDoc.exists()) {
-                        currentUser = { uid: user.uid, ...userDoc.data() };
-                    } else {
-                        // AUTO-HEAL FEATURE: Recreates missing profile silently
-                        currentUser = { 
-                            username: user.displayName || (user.email ? user.email.split('@')[0] : 'Traveler'), 
-                            email: user.email || 'unknown@realm.com',
-                            role: 'player',
-                            dmSecret: null,
-                            createdAt: new Date().toISOString()
-                        };
-                        await setDoc(doc(db, 'users', user.uid), currentUser);
-                        currentUser.uid = user.uid;
-                    }
+            if (camp.visibility === 'private') badges += `<span class="bg-gray-800 text-gray-400 border border-gray-600 px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading shadow-md ml-1"><i class="fa-solid fa-lock text-[7px] mr-1"></i>Private</span>`;
+
+            d.innerHTML = `
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-heading font-bold text-gold drop-shadow">${camp.name}</h3>
+                        <div class="flex gap-1">${badges}</div>
+                    </div>
+                    <p class="text-xs text-gray-500 font-serif italic mb-4">Run by ${camp.dmName || 'Unknown DM'}</p>
+                </div>
+                <div class="border-t border-gray-700 pt-3 flex justify-between items-center mt-2">
+                    <span class="text-[9px] text-gray-500 uppercase font-heading tracking-widest">
+                        ${isDM ? `Invite Code: <span class="text-white bg-gray-800 px-1 rounded">${camp.inviteCode}</span>` : 'Click to enter realm'}
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-gray-600 text-xs"></i>
+                </div>
+            `;
+            return d;
+        }
+
+        // Render Grids
+        function renderCampaigns() {
+            const myGrid = document.getElementById('my-adventures-grid');
+            const pubGrid = document.getElementById('public-realms-grid');
+            
+            myGrid.innerHTML = ''; 
+            pubGrid.innerHTML = '';
+
+            const joinedIds = currentUser?.joinedCampaigns || [];
+
+            allCampaigns.forEach(camp => {
+                const isMine = joinedIds.includes(camp.id) || camp.dmId === currentUser.uid;
+                
+                if (isMine) {
+                    myGrid.appendChild(createCampaignCard(camp, true));
+                } else if (camp.visibility === 'public') {
+                    pubGrid.appendChild(createCampaignCard(camp, false));
                 }
-
-                // Update UI based on Role
-                document.getElementById('nexus-username').innerText = currentUser.username;
-                if (currentUser.role === 'dm') {
-                    document.getElementById('btn-forge-campaign').classList.remove('hidden');
-                }
-
-                // Reveal Dashboard
-                document.getElementById('loading-view').classList.add('hidden');
-                const dash = document.getElementById('dashboard-view');
-                dash.classList.remove('hidden');
-                dash.classList.add('flex'); // Add flexbox layout back
-
-                // Load Campaigns
-                loadCampaigns();
-
-            } catch (error) {
-                console.error("Initialization Error:", error);
-                document.getElementById('loading-text').innerText = "Database Access Denied";
-                document.getElementById('loading-text').classList.add('text-blood');
-                document.getElementById('emergency-logout').classList.remove('hidden');
-            }
-        });
-
-        // Fetch Campaigns
-        function loadCampaigns() {
-            // Load Public Campaigns
-            const publicQ = query(collection(db, 'campaigns'), where('type', '==', 'public'));
-            onSnapshot(publicQ, (snap) => {
-                const list = document.getElementById('public-campaigns-list');
-                list.innerHTML = '';
-                if (snap.empty) {
-                    list.innerHTML = '<p class="text-center italic text-gray-500">No public realms discovered yet.</p>';
-                }
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    list.innerHTML += `
-                        <div class="border border-gold p-4 rounded bg-white bg-opacity-40 shadow-sm flex flex-col gap-3">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-heading font-bold text-ink text-lg">${data.name}</div>
-                                    <div class="text-xs font-bold text-blood">DM: ${data.dmName}</div>
-                                </div>
-                                <button onclick="window.enterCampaign('${doc.id}')" class="fantasy-btn px-4 py-1.5 rounded text-sm">Enter</button>
-                            </div>
-                            ${data.description ? `<p class="text-sm italic text-gray-800 border-t border-gold border-opacity-30 pt-2">${data.description}</p>` : ''}
-                        </div>
-                    `;
-                });
-            }, (error) => {
-                console.error("Public Campaigns Error", error);
             });
 
-            // Load DM Campaigns
-            if (currentUser.role === 'dm') {
-                const myQ = query(collection(db, 'campaigns'), where('dmId', '==', currentUser.uid));
-                onSnapshot(myQ, (snap) => {
-                    const list = document.getElementById('my-campaigns-list');
-                    list.innerHTML = '';
-                    if (snap.empty) {
-                        list.innerHTML = '<p class="text-center italic text-gray-500">You have not forged any realms.</p>';
-                    }
-                    snap.forEach(doc => {
-                        const data = doc.data();
-                        list.innerHTML += `
-                            <div class="border border-gold p-4 rounded bg-white bg-opacity-40 shadow-sm flex flex-col gap-3">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <div class="font-heading font-bold text-ink text-lg">${data.name}</div>
-                                        <div class="text-xs font-bold text-blood">${data.type.toUpperCase()} ${data.code ? `(Code: <span class="tracking-widest">${data.code}</span>)` : ''}</div>
-                                    </div>
-                                    <button onclick="window.enterCampaign('${doc.id}')" class="fantasy-btn px-4 py-1.5 rounded text-sm">Enter</button>
-                                </div>
-                                ${data.description ? `<p class="text-sm italic text-gray-800 border-t border-gold border-opacity-30 pt-2">${data.description}</p>` : ''}
-                            </div>
-                        `;
-                    });
-                }, (error) => {
-                    console.error("My Campaigns Error", error);
-                });
-            } else {
-                document.getElementById('my-campaigns-list').innerHTML = '<p class="text-center italic text-gray-500">Join a realm to begin your adventure.</p>';
+            if (myGrid.children.length === 0) {
+                myGrid.innerHTML = `<div class="col-span-full py-8 text-center border border-dashed border-gray-800 rounded bg-black bg-opacity-30"><p class="text-gray-500 text-xs italic font-serif">You have not joined any adventures yet. Enter a code or join a public realm.</p></div>`;
+            }
+            if (pubGrid.children.length === 0) {
+                pubGrid.innerHTML = `<div class="col-span-full py-8 text-center border border-dashed border-gray-800 rounded bg-black bg-opacity-30"><p class="text-gray-500 text-xs italic font-serif">No public realms are currently available.</p></div>`;
             }
         }
 
-        // Logic to Forge a new Campaign
-        window.createCampaign = async () => {
-            const name = document.getElementById('new-camp-name').value.trim();
-            const desc = document.getElementById('new-camp-desc').value.trim();
-            const type = document.getElementById('new-camp-type').value;
-            const code = document.getElementById('new-camp-code').value.trim();
+        // --- ACTIONS ---
 
-            if (!name) return showModal("Hold!", "You must name your realm.");
-            if (type === 'private' && code.length !== 4) return showModal("Hold!", "Private realms require a 4-digit code.");
+        // Join By Code (Adds to Profile)
+        window.joinByCode = async () => {
+            const code = document.getElementById('invite-code-input').value.trim().toUpperCase();
+            if (!code) return window.showToast("Enter a code first.");
 
             try {
-                await addDoc(collection(db, 'campaigns'), {
-                    name,
-                    description: desc,
-                    type,
-                    code: type === 'private' ? code : null,
-                    dmId: currentUser.uid,
-                    dmName: currentUser.username,
-                    createdAt: new Date().toISOString()
-                });
-                
-                document.getElementById('forge-modal').classList.add('hidden');
-                document.getElementById('new-camp-name').value = '';
-                document.getElementById('new-camp-desc').value = '';
-                document.getElementById('new-camp-code').value = '';
-                showModal("Success", `The realm of ${name} has been forged!`);
-            } catch (e) {
-                console.error(e);
-                showModal("Error", "Failed to forge realm. Check database rules.");
-            }
-        };
-
-        // Logic to join a private campaign
-        window.joinPrivateCampaign = async () => {
-            const code = document.getElementById('private-code-input').value.trim();
-            if (code.length !== 4) return showModal("Hold!", "Please enter a 4-digit code.");
-
-            try {
-                const q = query(collection(db, 'campaigns'), where('code', '==', code), where('type', '==', 'private'));
+                const q = query(collection(db, 'campaigns'), where('inviteCode', '==', code));
                 const snap = await getDocs(q);
                 
                 if (snap.empty) {
-                    showModal("Access Denied", "No realm matches that secret code.");
-                } else {
-                    const campDoc = snap.docs[0];
-                    window.enterCampaign(campDoc.id);
+                    window.showToast("Invalid Invite Code.");
+                    return;
                 }
-            } catch (e) {
-                console.error(e);
-                showModal("Error", "Failed to search the archives.");
+
+                const camp = snap.docs[0];
+
+                // Auto-save this campaign to the user's "My Adventures" list
+                if (currentUser && currentUser.uid) {
+                    await updateDoc(doc(db, 'users', currentUser.uid), {
+                        joinedCampaigns: arrayUnion(camp.id)
+                    });
+                }
+
+                window.showToast(`Joined ${camp.data().name}!`);
+                
+                setTimeout(() => {
+                    try {
+                        window.location.href = `characters.html?id=${camp.id}`;
+                    } catch(e) {
+                        window.showToast("Redirect disabled in preview.");
+                    }
+                }, 1000);
+
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error joining campaign.");
             }
         };
 
-        // Route to the campaign tracker
-        window.enterCampaign = (campId) => {
+        // Create Campaign (DM Only, Adds to Profile)
+        window.createCampaign = async () => {
+            if (!currentUser || currentUser.role !== 'dm') return;
+            const name = document.getElementById('new-campaign-name').value.trim();
+            const vis = document.getElementById('new-campaign-vis').value;
+            
+            if (!name) return window.showToast("Name is required.");
+
             try {
-                // FIXED: This now points to characters.html (plural)
-                window.location.href = `characters.html?id=${campId}`;
-            } catch(e) {
-                showModal("Preview Blocked", "Redirects are disabled in this preview window. On your live site, this will open characters.html?id=" + campId);
+                const newRef = await addDoc(collection(db, 'campaigns'), {
+                    name: name,
+                    visibility: vis,
+                    dmId: currentUser.uid,
+                    dmName: currentUser.username,
+                    inviteCode: generateCode(),
+                    createdAt: Date.now()
+                });
+
+                // Auto-save the newly created campaign to the DM's profile
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    joinedCampaigns: arrayUnion(newRef.id)
+                });
+
+                document.getElementById('create-campaign-modal').classList.add('hidden');
+                document.getElementById('new-campaign-name').value = '';
+                window.showToast("Realm Forged Successfully!");
+
+            } catch (err) {
+                console.error(err);
+                window.showToast("Failed to forge realm.");
             }
         };
 
+        window.logout = () => {
+            signOut(auth).then(() => {
+                try { window.location.href = "index.html"; } catch(e) {}
+            });
+        };
+
+        // --- AUTH & DATA SYNC ---
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) {
+                try { window.location.href = "index.html"; } catch(e) {
+                    document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                }
+                return;
+            }
+            
+            try {
+                const userDocRef = doc(db, 'users', u.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (userDocSnap.exists()) {
+                    currentUser = { uid: u.uid, ...userDocSnap.data() };
+                } else {
+                    // Make sure new users get a default joinedCampaigns array
+                    currentUser = { 
+                        uid: u.uid, 
+                        username: u.displayName || 'Traveler', 
+                        role: 'player',
+                        joinedCampaigns: []
+                    };
+                    await setDoc(userDocRef, currentUser);
+                }
+
+                // Make sure legacy users have the array to prevent crashes
+                if (!currentUser.joinedCampaigns) {
+                    currentUser.joinedCampaigns = [];
+                }
+
+                document.getElementById('user-display-name').innerText = currentUser.username;
+                if (currentUser.role === 'dm') {
+                    document.getElementById('btn-create-campaign').classList.remove('hidden');
+                }
+
+                document.getElementById('initial-loading').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+
+                // Listen for Campaign updates
+                onSnapshot(collection(db, 'campaigns'), (snap) => {
+                    allCampaigns = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderCampaigns();
+                });
+
+                // Listen for User Profile updates (in case they join a campaign in another tab)
+                onSnapshot(userDocRef, (userSnap) => {
+                    if (userSnap.exists()) {
+                        currentUser = { uid: u.uid, ...userSnap.data() };
+                        if (!currentUser.joinedCampaigns) currentUser.joinedCampaigns = [];
+                        renderCampaigns();
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Connection Failed</h2>`;
+            }
+        });
     </script>
 </body>
 </html>
