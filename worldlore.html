@@ -34,36 +34,68 @@
             background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
-        .dashboard-bg { background-color: transparent; }
-        
-        .parchment-paper {
-            background-color: #f1e5c5;
-            background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
-            border: 2px solid #c5a059;
-            color: #2c1e16;
-            border-radius: 4px;
-        }
-        
-        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); font-weight: 900; }
+        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
         
-        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; font-weight: 900;}
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
         .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
 
         .nav-link { color: #888; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; white-space: nowrap; font-family: 'Cinzel', serif; }
         .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
         .nav-link:hover { color: #f1e5c5; }
 
-        .sidebar-link { display: block; padding: 12px 16px; margin-bottom: 8px; border-radius: 4px; font-family: 'Cinzel', serif; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #f1e5c5; background: rgba(0,0,0,0.4); border: 1px solid #555; transition: all 0.2s; }
-        .sidebar-link:hover { background: rgba(0,0,0,0.8); border-color: #c5a059; transform: translateX(4px); }
-        .sidebar-link.active-page { background: #7a1b1b; border-color: #c5a059; color: white; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        /* THE LEATHER-BOUND JOURNAL CONTAINER */
+        .journal-cover {
+            max-width: 1500px;
+            margin: 0 auto 40px auto;
+            background-color: #1a110b; /* Dark Wood / Leather */
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+            border: 2px solid #c5a059;
+        }
 
-        /* HANDBOOK SPECIFIC STYLES */
+        .journal-cover::after {
+            content: ''; position: absolute; inset: 10px; border: 1.5px dashed rgba(197, 160, 89, 0.3); pointer-events: none; border-radius: 8px;
+        }
+
+        .parchment-container {
+            background-color: #f1e5c5;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 80px rgba(139, 90, 43, 0.3);
+            border-left: 22px solid #2c1e16; /* Book Spine */
+            border-radius: 2px 6px 6px 2px;
+            display: flex;
+            min-height: 80vh;
+            position: relative;
+        }
+
+        /* NAVIGATION SIDEBAR (Left Page) */
+        .manual-nav { 
+            width: 320px; 
+            border-right: 2px solid rgba(139, 90, 43, 0.3); 
+            padding: 40px 0; 
+            flex-shrink: 0; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 5px 0 15px -5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header { padding: 0 20px 20px 20px; border-bottom: 1px dashed rgba(139, 90, 43, 0.3); margin-bottom: 20px; text-align: center; }
+
+        .shelf-item { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 14px 24px; margin: 4px 16px; cursor: pointer; border-radius: 4px; transition: 0.2s; border-left: 4px solid transparent; color: #2c1e16; letter-spacing: 1px; }
+        .shelf-item:hover { background: rgba(139, 90, 43, 0.1); border-left-color: #7a1b1b; transform: translateX(5px); }
+
+        /* MAIN CONTENT AREA (Right Page) */
+        .manual-body { flex-grow: 1; padding: 60px 80px 160px 80px; height: 80vh; overflow-y: auto; scroll-behavior: smooth; position: relative; }
+        
         .manual-body [contenteditable], .manual-body [contenteditable] * { color: #2c1e16 !important; }
         .arch-link, .definition-word { color: #7a1b1b !important; }
+        
+        .manual-h1 { font-family: 'Cinzel', serif; font-weight: 900; font-size: 60px; text-transform: uppercase; line-height: 0.9; color: #7a1b1b; margin-bottom: 10px; text-align: center; }
         
         .manual-h2 { font-family: 'Cinzel', serif; font-weight: 900; font-size: 2.5rem; border-bottom: 3px double #c5a059; padding-bottom: 10px; text-transform: uppercase; margin: 40px 0 20px 0; width: 100%; display: block; color: #7a1b1b; }
         .manual-h3 { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.5rem; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 5px; text-transform: uppercase; margin: 25px 0 15px 0; width: 100%; display: block; color: #2c1e16; }
@@ -78,7 +110,7 @@
         .manual-note-box, .manual-info-box { border: 2px solid #c5a059; border-radius: 8px; padding: 30px; margin-bottom: 30px; position: relative; background: rgba(255,255,255,0.4); box-shadow: inset 0 0 20px rgba(139,90,43,0.1); }
         .manual-note-box { background: rgba(122, 27, 27, 0.05) !important; border-color: #7a1b1b; }
 
-        .adaptive-carousel { position: relative; width: 100%; background: rgba(255,255,255,0.4); border: 2px solid #c5a059; border-radius: 8px; overflow: hidden; margin: 30px 0; }
+        .adaptive-carousel { position: relative; width: 100%; background: rgba(255,255,255,0.4); border: 2px solid #c5a059; border-radius: 8px; overflow: hidden; margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .carousel-viewport { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 250px; }
         .carousel-slide { display: none; width: 100%; padding: 40px; text-align: center; }
         .carousel-slide.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -114,6 +146,12 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .hidden-view { display: none !important; }
+
+        @media (max-width: 1024px) {
+            .parchment-container { flex-direction: column; border-left: none; border-top: 22px solid #2c1e16; }
+            .manual-nav { width: 100%; border-right: none; border-bottom: 2px solid rgba(139, 90, 43, 0.3); padding: 20px 0; height: auto; }
+            .manual-body { padding: 40px 20px; height: auto; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -123,12 +161,12 @@
     <!-- Initial Loading State -->
     <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
         <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
-        <h2 class="font-heading text-2xl text-parchment animate-pulse">Charting the Tomes...</h2>
+        <h2 class="font-heading text-2xl text-parchment animate-pulse">Dusting the Archives...</h2>
     </div>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- MAIN DASHBOARD WRAPPER -->
     <div id="dashboard-screen" class="min-h-screen p-4 md:p-8 hidden w-full">
-        <div class="max-w-[1400px] mx-auto">
+        <div class="max-w-[1500px] mx-auto">
             <!-- HEADER & NAVIGATION -->
             <header class="flex flex-col items-center md:items-start md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative">
                 <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
@@ -138,7 +176,7 @@
                     <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
                         <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Campaign Library</p>
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
-                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
                         </div>
                     </div>
@@ -160,46 +198,46 @@
                 </div>
             </header>
 
-            <!-- HANDBOOK SPLIT LAYOUT -->
-            <div class="flex flex-col lg:flex-row gap-8 items-start">
-                
-                <!-- LEFT SIDEBAR: Library Navigation -->
-                <div class="w-full lg:w-64 flex-shrink-0">
-                    <div class="bg-black/60 border border-gray-700 rounded-lg p-4 sticky top-4">
-                        <h2 class="text-gold font-heading font-bold text-lg mb-4 text-center border-b border-gray-700 pb-2">The Archives</h2>
-                        <nav id="library-nav" class="flex flex-col">
-                            <!-- Links generated dynamically by JS based on current page -->
-                        </nav>
+            <!-- THE STORYBOOK -->
+            <div class="journal-cover">
+                <div class="parchment-container">
+                    
+                    <!-- LEFT PAGE: Index/Sidebar -->
+                    <div class="manual-nav" id="sidebar">
+                        <div class="sidebar-header">
+                            <h1 id="storybook-campaign-title" class="font-heading font-black text-4xl text-blood uppercase leading-none tracking-tighter">Lore</h1>
+                            <p class="font-serif text-[10px] uppercase font-bold tracking-[0.3em] opacity-50 mt-2 text-ink">World Archives</p>
+                        </div>
                         
-                        <!-- Extra Archives Links requested for World Lore -->
-                        <div class="mt-8 border-t border-gray-700 pt-4 space-y-2">
-                            <a href="#" onclick="window.routeTo('library.html'); return false;" class="sidebar-link !bg-black/40 hover:!border-blue-500 !text-gray-400 hover:!text-white"><i class="fa-solid fa-book-journal-whills mr-2 text-blue-500"></i> Custodian's Archive</a>
-                            <a href="#" onclick="window.routeTo('archlibrary.html'); return false;" class="sidebar-link !bg-black/40 hover:!border-purple-500 !text-gray-400 hover:!text-white"><i class="fa-solid fa-book-open-reader mr-2 text-purple-500"></i> Public Library</a>
+                        <div id="nav-list" class="flex-grow overflow-y-auto px-2 space-y-1">
+                            <!-- Dynamic Index Links populate here -->
+                        </div>
+                        
+                        <div class="p-4 mt-auto border-t border-black/10 space-y-2">
+                            <a href="#" onclick="window.routeTo('library.html'); return false;" class="block text-center py-2 text-ink font-bold text-[10px] uppercase tracking-widest hover:bg-black/5 rounded transition-all"><i class="fa-solid fa-book-journal-whills mr-2 text-blood"></i> Custodian's Athenaeum</a>
+                            <a href="#" onclick="window.routeTo('archlibrary.html'); return false;" class="block text-center py-2 text-ink font-bold text-[10px] uppercase tracking-widest hover:bg-black/5 rounded transition-all"><i class="fa-solid fa-book-open-reader mr-2 text-gold"></i> Archivist's Scriptorium</a>
                         </div>
                     </div>
-                </div>
 
-                <!-- RIGHT AREA: The Parchment Document -->
-                <div class="flex-grow w-full relative">
-                    <div id="page-title-display" class="text-3xl md:text-4xl font-heading font-bold text-gray-400 uppercase tracking-widest mb-6 drop-shadow">World Lore</div>
-                    
-                    <div class="parchment-paper p-6 md:p-12 min-h-[600px] mb-24" id="content-pane">
+                    <!-- RIGHT PAGE: Reading Content -->
+                    <div class="manual-body" id="content-pane">
                         <div id="manual-header" class="mb-12"></div>
                         <div id="manual-sections-container" class="flex flex-wrap items-start gap-4"></div>
+                        
+                        <!-- DM CONTROLS (Floating at bottom of right area) -->
+                        <div id="dm-global-controls">
+                            <button onmousedown="event.preventDefault(); window.addManualSection('heading')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-heading mr-1"></i> Heading</button>
+                            <button onmousedown="event.preventDefault(); window.addManualSection('subheading')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-list mr-1"></i> Sub</button>
+                            <button onmousedown="event.preventDefault(); window.addManualSection('text')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-paragraph mr-1"></i> Text</button>
+                            <button onmousedown="event.preventDefault(); window.addManualSection('table')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-table mr-1"></i> Table</button>
+                            <button onmousedown="event.preventDefault(); window.addManualSection('note')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-scroll mr-1"></i> Note</button>
+                            <button onmousedown="event.preventDefault(); window.addManualSection('info')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-chart-bar mr-1"></i> Info</button>
+                            <button onmousedown="event.preventDefault(); window.addManualSection('media')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-images mr-1"></i> Carousel</button>
+                            <div class="w-px h-6 bg-gold mx-1"></div>
+                            <button onmousedown="event.preventDefault(); window.forceSync()" class="fantasy-btn px-4 py-1.5 rounded text-[9px] font-bold">SYNC</button>
+                        </div>
                     </div>
 
-                    <!-- DM CONTROLS (Floating at bottom of right area) -->
-                    <div id="dm-global-controls">
-                        <button onmousedown="event.preventDefault(); window.addManualSection('heading')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-heading mr-1"></i> Heading</button>
-                        <button onmousedown="event.preventDefault(); window.addManualSection('subheading')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-list mr-1"></i> Sub</button>
-                        <button onmousedown="event.preventDefault(); window.addManualSection('text')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-paragraph mr-1"></i> Text</button>
-                        <button onmousedown="event.preventDefault(); window.addManualSection('table')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-table mr-1"></i> Table</button>
-                        <button onmousedown="event.preventDefault(); window.addManualSection('note')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-scroll mr-1"></i> Note</button>
-                        <button onmousedown="event.preventDefault(); window.addManualSection('info')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-chart-bar mr-1"></i> Info</button>
-                        <button onmousedown="event.preventDefault(); window.addManualSection('media')" class="fantasy-btn-alt px-3 py-1.5 rounded text-[9px] font-bold"><i class="fa-solid fa-images mr-1"></i> Carousel</button>
-                        <div class="w-px h-6 bg-gold mx-1"></div>
-                        <button onmousedown="event.preventDefault(); window.forceSync()" class="fantasy-btn px-4 py-1.5 rounded text-[9px] font-bold">SYNC</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -272,36 +310,17 @@
 
         // Hardcode pageId so it doesn't break depending on preview URL
         let pageId = "worldlore";
-        const DB_COLLECTION = `manualSections_${pageId}`;
-        const HEADER_DOC = `header_${pageId}`;
+        const DB_COLLECTION = `loreSections_${pageId}`;
+        const HEADER_DOC = `loreHeader_${pageId}`;
 
-        // The list of all library pages to build the sidebar navigation
-        const libraryPages = [
-            { id: 'handbook', title: 'Main Index' },
-            { id: 'howtoplay', title: 'How to Play' },
-            { id: 'lineages', title: 'Lineages' },
-            { id: 'backgrounds', title: 'Backgrounds' },
-            { id: 'vocations', title: 'Vocations' },
-            { id: 'landmarks', title: 'Landmarks' },
-            { id: 'scriptcodex', title: 'Script Codex' },
-            { id: 'gear_artifacts', title: 'Gear & Artifacts' },
-            { id: 'worldlore', title: 'World Lore' },
-            { id: 'sessionlogs', title: 'Session Logs' }
-        ];
-
-        // Setup the Sidebar
-        function renderSidebar() {
-            const nav = document.getElementById('library-nav');
-            const currentPageTitle = libraryPages.find(p => p.id === pageId)?.title || "World Lore";
-            document.getElementById('page-title-display').textContent = currentPageTitle;
-
-            nav.innerHTML = libraryPages.map(page => {
-                const isActive = page.id === pageId;
-                // If it's the main handbook, point to handbook.html, otherwise point to their specific names
-                const targetUrl = `${page.id}.html?id=${appId}`;
-                return `<a href="${targetUrl}" class="sidebar-link ${isActive ? 'active-page' : ''}">${page.title}</a>`;
-            }).join('');
-        }
+        // Setup the Sidebar Index
+        window.renderNav = () => {
+            const nav = document.getElementById('nav-list');
+            if (!nav) return;
+            nav.innerHTML = window.aeonState.sections.filter(s => s.type === 'heading').map(s => `
+                <div class="shelf-item" onclick="const el=document.getElementById('section-${s.id}'); if(el) el.scrollIntoView({behavior:'smooth'})">${s.title}</div>
+            `).join('');
+        };
 
         // --- HANDBOOK STATE & LOGIC ---
         let currentUser = null;
@@ -358,7 +377,7 @@
             if (activeRole !== 'dm') return;
             clearTimeout(window.aeonState.saveTimer);
             window.aeonState.saveTimer = setTimeout(async () => {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'manualConfig', HEADER_DOC), { [field]: val }, { merge: true });
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'loreConfig', HEADER_DOC), { [field]: val }, { merge: true });
             }, 500);
         };
 
@@ -484,6 +503,8 @@
                 <p class="text-[11px] font-black uppercase tracking-[0.4em] opacity-40 mt-2 dm-editable text-center" contenteditable="${isDM}" data-id="header-subtitle" onfocus="window.aeonState.activeEditId='header-subtitle'; window.aeonState.lastActiveId='header'" oninput="window.dbUpdateHeader('subtitle', this.innerText)" onpaste="window.handlePaste(event)">${window.aeonState.header.subtitle || 'Records of the known world.'}</p>
             `;
             
+            window.renderNav();
+            
             container.innerHTML = window.aeonState.sections.map(s => {
                 const width = s.width || 100;
                 let body = '';
@@ -501,7 +522,7 @@
                 else if (s.type === 'heading' || s.type === 'subheading') { 
                     const tag = s.type === 'heading' ? 'h2' : 'h3';
                     const cls = s.type === 'heading' ? 'manual-h2' : 'manual-h3';
-                    body = `<${tag} class="${cls} dm-editable" data-id="${s.id}" contenteditable="${isDM}" onfocus="window.aeonState.activeEditId='${s.id}'; window.aeonState.lastActiveId='${s.id}'" onblur="window.aeonState.activeEditId=null" onpaste="window.handlePaste(event)" oninput="const val=this.innerText; if('${s.type}'==='heading'){ window.aeonState.sections.find(x=>x.id==='${s.id}').title=val; window.dbUpdateSection('${s.id}', {content: this.innerHTML, title: val}); } else { window.dbUpdateSection('${s.id}', 'content', this.innerHTML); }">${window.parseContent(s.content, isDM, s.id)}</${tag}>`; 
+                    body = `<${tag} class="${cls} dm-editable" data-id="${s.id}" contenteditable="${isDM}" onfocus="window.aeonState.activeEditId='${s.id}'; window.aeonState.lastActiveId='${s.id}'" onblur="window.aeonState.activeEditId=null" onpaste="window.handlePaste(event)" oninput="const val=this.innerText; if('${s.type}'==='heading'){ window.aeonState.sections.find(x=>x.id==='${s.id}').title=val; window.renderNav(); window.dbUpdateSection('${s.id}', {content: this.innerHTML, title: val}); } else { window.dbUpdateSection('${s.id}', 'content', this.innerHTML); }">${window.parseContent(s.content, isDM, s.id)}</${tag}>`; 
                 } 
                 else {
                     const boxClass = s.type === 'note' ? 'manual-note-box' : s.type === 'info' ? 'manual-info-box' : '';
@@ -651,6 +672,8 @@
                     if (campDoc.exists() && campDoc.data().name) {
                         const titleEl = document.getElementById('main-campaign-title');
                         if (titleEl) titleEl.innerText = campDoc.data().name;
+                        const bookTitle = document.getElementById('storybook-campaign-title');
+                        if (bookTitle) bookTitle.innerText = campDoc.data().name;
                         document.title = `${campDoc.data().name} - World Lore`;
                     }
                 }
@@ -662,12 +685,9 @@
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
-                
-                // Render the sidebar based on filename
-                renderSidebar();
 
                 // Listen for manual configuration (Title/Subtitle)
-                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'manualConfig', HEADER_DOC), d => {
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'loreConfig', HEADER_DOC), d => {
                     if (d.exists()) { window.aeonState.header = d.data(); window.renderManual(); }
                 }, err => console.error("Header Listen Error:", err));
 
@@ -677,8 +697,7 @@
                     if (!window.aeonState.activeEditId && !window.aeonState.isInteracting) {
                         window.renderManual(); 
                     } else {
-                        // Just update nav if editing so we don't steal focus
-                        // Re-render nav isn't strictly necessary on every keystroke but good to keep synced.
+                        window.renderNav();
                     }
                 }, err => console.error("Sections Sync Error:", err));
 
