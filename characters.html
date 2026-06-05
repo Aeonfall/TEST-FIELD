@@ -270,23 +270,25 @@
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
                             <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
+                            <button id="btn-campaign-settings" onclick="window.openSettingsModal()" class="hidden text-[10px] text-gold hover:text-white font-black ml-2 border-l border-gray-600 pl-3 transition-colors" title="Campaign Terminology Settings"><i class="fa-solid fa-gear"></i></button>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
                     <div class="flex items-center gap-4">
-                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded !border-gray-600 !text-gray-400 hover:!text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
                     </div>
 
+                    <!-- NAVIGATION -->
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
-                        <a href="#" onclick="window.setView('party'); return false;" id="nav-party" class="nav-link active">Party</a>
-                        <a href="#" onclick="window.setView('encounters'); return false;" id="nav-encounters" class="nav-link hidden !text-blood">Encounters</a>
-                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
-                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
-                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
-                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
-                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
+                        <a href="#" onclick="window.setView('party'); return false;" id="nav-party" class="nav-link active dyn-term" data-term="nav_party">Party</a>
+                        <a href="#" onclick="window.setView('encounters'); return false;" id="nav-encounters" class="nav-link hidden !text-blood dyn-term" data-term="nav_encounters">Encounters</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link dyn-term" data-term="nav_npcs">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link dyn-term" data-term="nav_beasts">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link dyn-term" data-term="nav_backpack">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link dyn-term" data-term="nav_handbook">Handbook</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link dyn-term" data-term="nav_graveyard">Graveyard</a>
                     </nav>
                 </div>
             </header>
@@ -1009,22 +1011,81 @@
             <div id="party-manage-main" class="space-y-6">
                 <div>
                     <label class="tiny-label">Party Name</label>
-                    <input type="text" id="manage-party-name" class="w-full bg-[rgba(255,255,255,0.5)] p-3 rounded font-bold font-serif">
+                    <input type="text" id="manage-party-name" class="w-full bg-gray-100 p-3 rounded font-bold">
                 </div>
-                <div class="pt-4 border-t border-gold font-heading">
-                    <button onclick="window.confirmDeletePartyState()" class="w-full py-3 bg-transparent border border-blood text-blood hover:bg-blood hover:text-parchment rounded text-xs font-bold uppercase transition-colors">Disband Party</button>
+                <div class="pt-4 border-t">
+                    <button onclick="window.confirmDeletePartyState()" class="w-full py-3 bg-red-50 text-red-600 rounded text-xs font-black uppercase">Disband Party</button>
                 </div>
             </div>
-            <div id="party-manage-delete" class="hidden space-y-4 text-center font-heading">
-                <p class="text-sm font-bold text-blood uppercase border-b border-dashed border-blood pb-2 mb-4">Disband this party? Members will become unassigned.</p>
+            <div id="party-manage-delete" class="hidden space-y-4 text-center">
+                <p class="text-sm font-bold text-red-600 uppercase">Disband this party? Members will become unassigned.</p>
                 <div class="flex gap-2">
-                    <button onclick="window.resetPartyManageState()" class="flex-grow py-3 bg-transparent border border-ink text-ink rounded text-xs font-bold">Cancel</button>
-                    <button onclick="window.executeDeleteParty()" class="flex-grow py-3 bg-blood text-parchment border border-gold rounded text-xs font-bold">YES, DISBAND</button>
+                    <button onclick="window.resetPartyManageState()" class="flex-grow py-3 bg-gray-100 rounded text-xs font-black">Cancel</button>
+                    <button onclick="window.executeDeleteParty()" class="flex-grow py-3 bg-red-600 text-white rounded text-xs font-black">YES, DISBAND</button>
                 </div>
             </div>
-            <div class="modal-footer font-heading">
-                <button onclick="document.getElementById('manage-party-modal').classList.add('hidden')" class="px-6 py-2 text-555 font-bold uppercase text-xs underline">Close</button>
-                <button onclick="window.savePartyRename()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs">Save Changes</button>
+            <div class="modal-footer">
+                <button onclick="document.getElementById('manage-party-modal').classList.add('hidden')" class="px-6 py-2 text-gray-400 font-bold uppercase text-xs">Close</button>
+                <button onclick="window.savePartyRename()" class="px-8 py-2 bg-indigo-600 text-white rounded font-black uppercase text-xs">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAMPAIGN TERMINOLOGY SETTINGS MODAL (DM ONLY) -->
+    <div id="settings-modal" class="modal-overlay hidden z-[900]">
+        <div class="modal-container !bg-[#1a110b] !border-gold !text-parchment shadow-2xl !max-w-3xl flex flex-col p-6 md:p-8 !bg-none h-[90vh]">
+            <h2 class="font-heading text-2xl font-black text-gold uppercase tracking-widest border-b border-gold/30 pb-4 mb-4 text-center shrink-0">Campaign Terminology</h2>
+            <p class="text-xs text-gray-400 font-serif italic text-center mb-6 shrink-0">Rename the core pillars of your world. These names will update across all ledgers and navigation links.</p>
+            
+            <div class="overflow-y-auto space-y-8 pr-4 scrollbar-hide flex-grow pb-8 text-left">
+                <div>
+                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Navigation & Core Hubs</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Party</label><input type="text" id="term-nav_party" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">NPCs</label><input type="text" id="term-nav_npcs" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Bestiary</label><input type="text" id="term-nav_beasts" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Backpack</label><input type="text" id="term-nav_backpack" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Handbook</label><input type="text" id="term-nav_handbook" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Graveyard</label><input type="text" id="term-nav_graveyard" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Session Logs</label><input type="text" id="term-nav_logs" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Library & Lore</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Vocations</label><input type="text" id="term-book_vocations" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Lineages</label><input type="text" id="term-book_lineages" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Backgrounds</label><input type="text" id="term-book_backgrounds" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Landmarks</label><input type="text" id="term-book_landmarks" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Script Codex</label><input type="text" id="term-book_scriptcodex" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Gear & Artifacts</label><input type="text" id="term-book_artifacts" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">World Lore</label><input type="text" id="term-book_worldlore" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div class="col-span-2 sm:col-span-3 h-2"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Custodian's Athenaeum</label><input type="text" id="term-lore_custodians" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Archivist Library</label><input type="text" id="term-lore_archivists" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Classes (Script Codex Tabs)</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Heartbound</label><input type="text" id="term-class_heartbound" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Nomad</label><input type="text" id="term-class_nomad" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Wilderness Warden</label><input type="text" id="term-class_warden" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Chronicler</label><input type="text" id="term-class_chronicler" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Orator</label><input type="text" id="term-class_orator" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Scriptweaver</label><input type="text" id="term-class_scriptweaver" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">War-Touched</label><input type="text" id="term-class_wartouched" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Archivist</label><input type="text" id="term-class_archivist" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Fabricator</label><input type="text" id="term-class_fabricator" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 mt-6 pt-4 border-t border-gold/30 shrink-0 font-heading">
+                <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="flex-1 bg-transparent border border-gray-500 text-gray-400 hover:text-white px-4 py-3 rounded font-bold uppercase text-xs transition-colors">Cancel</button>
+                <button onclick="window.saveTerminology()" class="flex-1 fantasy-btn px-4 py-3 rounded font-bold uppercase text-xs shadow-lg">Save Settings</button>
             </div>
         </div>
     </div>
@@ -1296,6 +1357,7 @@
         let currentRound = 1;
         let activeTurnId = null;
         let pendingHoldId = null;
+        let campaignSettings = { terms: {} };
         
         // COMPENDIUM CACHE
         let compendiumNPCs = [];
@@ -1332,6 +1394,103 @@
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
             const btn = document.getElementById(`tab-btn-${tabId}`); if(btn) btn.classList.add('active');
             const pane = document.getElementById(`tab-content-${tabId}`); if(pane) pane.classList.remove('hidden');
+        };
+
+        // --- TERMINOLOGY SYSTEM ---
+        window.openSettingsModal = () => {
+            const t = campaignSettings.terms || {};
+            // Populate defaults or saved terms
+            document.getElementById('term-nav_party').value = t.nav_party || 'Party';
+            document.getElementById('term-nav_npcs').value = t.nav_npcs || 'NPCs';
+            document.getElementById('term-nav_beasts').value = t.nav_beasts || 'Bestiary';
+            document.getElementById('term-nav_backpack').value = t.nav_backpack || 'Backpack';
+            document.getElementById('term-nav_handbook').value = t.nav_handbook || 'Handbook';
+            document.getElementById('term-nav_graveyard').value = t.nav_graveyard || 'Graveyard';
+            document.getElementById('term-nav_logs').value = t.nav_logs || 'Logs';
+
+            document.getElementById('term-book_vocations').value = t.book_vocations || 'Vocations';
+            document.getElementById('term-book_lineages').value = t.book_lineages || 'Lineages';
+            document.getElementById('term-book_backgrounds').value = t.book_backgrounds || 'Backgrounds';
+            document.getElementById('term-book_landmarks').value = t.book_landmarks || 'Landmarks';
+            document.getElementById('term-book_scriptcodex').value = t.book_scriptcodex || 'Script Codex';
+            document.getElementById('term-book_artifacts').value = t.book_artifacts || 'Gear & Artifacts';
+            document.getElementById('term-book_worldlore').value = t.book_worldlore || 'World Lore';
+            document.getElementById('term-lore_custodians').value = t.lore_custodians || "Custodian's Athenaeum";
+            document.getElementById('term-lore_archivists').value = t.lore_archivists || "Archivist Public Library";
+
+            document.getElementById('term-class_heartbound').value = t.class_heartbound || 'Heartbound';
+            document.getElementById('term-class_nomad').value = t.class_nomad || 'Nomad';
+            document.getElementById('term-class_warden').value = t.class_warden || 'Wilderness Warden';
+            document.getElementById('term-class_chronicler').value = t.class_chronicler || 'Chronicler';
+            document.getElementById('term-class_orator').value = t.class_orator || 'Orator';
+            document.getElementById('term-class_scriptweaver').value = t.class_scriptweaver || 'Scriptweaver';
+            document.getElementById('term-class_wartouched').value = t.class_wartouched || 'War-Touched';
+            document.getElementById('term-class_archivist').value = t.class_archivist || 'Archivist';
+            document.getElementById('term-class_fabricator').value = t.class_fabricator || 'Fabricator';
+
+            document.getElementById('settings-modal').classList.remove('hidden');
+        };
+
+        window.saveTerminology = async () => {
+            const terms = {
+                nav_party: document.getElementById('term-nav_party').value.trim() || 'Party',
+                nav_npcs: document.getElementById('term-nav_npcs').value.trim() || 'NPCs',
+                nav_beasts: document.getElementById('term-nav_beasts').value.trim() || 'Bestiary',
+                nav_backpack: document.getElementById('term-nav_backpack').value.trim() || 'Backpack',
+                nav_handbook: document.getElementById('term-nav_handbook').value.trim() || 'Handbook',
+                nav_graveyard: document.getElementById('term-nav_graveyard').value.trim() || 'Graveyard',
+                nav_logs: document.getElementById('term-nav_logs').value.trim() || 'Logs',
+
+                book_vocations: document.getElementById('term-book_vocations').value.trim() || 'Vocations',
+                book_lineages: document.getElementById('term-book_lineages').value.trim() || 'Lineages',
+                book_backgrounds: document.getElementById('term-book_backgrounds').value.trim() || 'Backgrounds',
+                book_landmarks: document.getElementById('term-book_landmarks').value.trim() || 'Landmarks',
+                book_scriptcodex: document.getElementById('term-book_scriptcodex').value.trim() || 'Script Codex',
+                book_artifacts: document.getElementById('term-book_artifacts').value.trim() || 'Gear & Artifacts',
+                book_worldlore: document.getElementById('term-book_worldlore').value.trim() || 'World Lore',
+                lore_custodians: document.getElementById('term-lore_custodians').value.trim() || "Custodian's Athenaeum",
+                lore_archivists: document.getElementById('term-lore_archivists').value.trim() || "Archivist Public Library",
+
+                class_heartbound: document.getElementById('term-class_heartbound').value.trim() || 'Heartbound',
+                class_nomad: document.getElementById('term-class_nomad').value.trim() || 'Nomad',
+                class_warden: document.getElementById('term-class_warden').value.trim() || 'Wilderness Warden',
+                class_chronicler: document.getElementById('term-class_chronicler').value.trim() || 'Chronicler',
+                class_orator: document.getElementById('term-class_orator').value.trim() || 'Orator',
+                class_scriptweaver: document.getElementById('term-class_scriptweaver').value.trim() || 'Scriptweaver',
+                class_wartouched: document.getElementById('term-class_wartouched').value.trim() || 'War-Touched',
+                class_archivist: document.getElementById('term-class_archivist').value.trim() || 'Archivist',
+                class_fabricator: document.getElementById('term-class_fabricator').value.trim() || 'Fabricator'
+            };
+
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), { terms }, { merge: true });
+                document.getElementById('settings-modal').classList.add('hidden');
+                window.showToast("Terminology Updated!");
+            } catch (err) {
+                console.error(err);
+                window.showToast("Failed to save terminology");
+            }
+        };
+
+        const applyTerminology = (terms) => {
+            if (!terms) return;
+            const safeSet = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerText = val; };
+            
+            // Update Navigation
+            safeSet('nav-party', terms.nav_party);
+            safeSet('nav-npcs', terms.nav_npcs);
+            safeSet('nav-beasts', terms.nav_beasts);
+            safeSet('nav-backpack', terms.nav_backpack);
+            safeSet('nav-handbook', terms.nav_handbook);
+            safeSet('nav-graveyard', terms.nav_graveyard);
+
+            // Update View Title dynamically if viewing the Party tab
+            const vt = document.getElementById('view-title');
+            if (vt) {
+                if (vt.innerText === 'The Party' || vt.innerText === (campaignSettings?.terms?.nav_party || 'Party')) {
+                    vt.innerText = terms.nav_party || 'The Party';
+                }
+            }
         };
 
         window.switchSubFilter = (filterId) => {
@@ -3008,6 +3167,7 @@
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists()) {
                         document.getElementById('main-campaign-title').innerText = campDoc.data().name;
+                        document.title = `${campDoc.data().name} - Manager`;
                     }
                 }
 
@@ -3018,11 +3178,20 @@
                 document.getElementById('btn-create-npc')?.classList.toggle('hidden', !isDM);
                 document.getElementById('nav-encounters')?.classList.toggle('hidden', !isDM);
                 document.getElementById('create-actions')?.classList.remove('hidden');
+                document.getElementById('btn-campaign-settings')?.classList.toggle('hidden', !isDM);
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
                 
                 setupListeners();
+
+                // Listen for Central Campaign Settings (Terminology)
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => {
+                    if (docSnap.exists()) {
+                        campaignSettings = docSnap.data();
+                        applyTerminology(campaignSettings.terms);
+                    }
+                }, (err) => console.error("Terminology Sync Error:", err));
 
             } catch (error) {
                 console.error(error);
