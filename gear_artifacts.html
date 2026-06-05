@@ -39,6 +39,14 @@
         .rarity-legendary { color: #d97706; }
         .rarity-mythic { color: #dc2626; text-shadow: 0 0 5px rgba(220,38,38,0.5); }
 
+        /* Rarity Border Glows */
+        .card-common { border-color: #4b5563 !important; }
+        .card-uncommon { border-color: #16a34a !important; box-shadow: inset 0 0 15px rgba(22, 163, 74, 0.1), 0 5px 15px rgba(0,0,0,0.4) !important; }
+        .card-rare { border-color: #2563eb !important; box-shadow: inset 0 0 15px rgba(37, 99, 235, 0.2), 0 5px 15px rgba(0,0,0,0.4) !important; }
+        .card-epic { border-color: #9333ea !important; box-shadow: inset 0 0 20px rgba(147, 51, 234, 0.3), 0 5px 20px rgba(147, 51, 234, 0.2) !important; }
+        .card-legendary { border-color: #d97706 !important; box-shadow: inset 0 0 25px rgba(217, 119, 6, 0.4), 0 5px 25px rgba(217, 119, 6, 0.3) !important; }
+        .card-mythic { border-color: #dc2626 !important; box-shadow: inset 0 0 30px rgba(220, 38, 38, 0.5), 0 5px 30px rgba(220, 38, 38, 0.4) !important; }
+
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 100000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(4px); }
         
@@ -173,6 +181,12 @@
             <div id="private-link-container" class="mb-4 hidden">
                 <label class="block text-[10px] font-bold text-purple-800 uppercase tracking-widest font-heading mb-1">Link to Player Username</label>
                 <input type="text" id="item-linked-user" class="w-full bg-purple-50 border border-purple-300 rounded p-2 text-ink text-sm outline-none focus:border-purple-600" placeholder="Exact username...">
+            </div>
+
+            <!-- Image Asset Link -->
+            <div class="mb-4">
+                <label class="block text-[10px] font-bold text-ink uppercase tracking-widest font-heading mb-1">Asset URL (Image Link)</label>
+                <input type="text" id="item-artUrl" class="w-full bg-white/50 border border-gold rounded p-2 text-ink text-xs outline-none focus:border-blood italic font-serif" placeholder="https://i.postimg.cc/... (Optional)">
             </div>
 
             <div class="mb-4">
@@ -347,6 +361,18 @@
             }
         };
 
+        const getCardBorderColor = (rarity) => {
+            switch((rarity || '').toLowerCase()) {
+                case 'common': return 'card-common';
+                case 'uncommon': return 'card-uncommon';
+                case 'rare': return 'card-rare';
+                case 'epic': return 'card-epic';
+                case 'legendary': return 'card-legendary';
+                case 'mythic': return 'card-mythic';
+                default: return '';
+            }
+        };
+
         window.renderItems = () => {
             const isDM = activeRole === 'dm';
             const grid = document.getElementById('items-grid');
@@ -389,9 +415,18 @@
                 }
 
                 const rColor = getRarityColor(item.rarity);
+                const borderGlow = getCardBorderColor(item.rarity);
+                
+                let imageHtml = '';
+                if (item.artUrl) {
+                    imageHtml = `
+                    <div class="mb-4 rounded overflow-hidden border-2 border-gold/50 shadow-inner group">
+                        <img src="${item.artUrl}" class="w-full h-auto max-h-48 object-cover filter sepia-[0.3] brightness-[0.9] group-hover:sepia-0 group-hover:brightness-110 transition-all duration-300">
+                    </div>`;
+                }
 
                 return `
-                    <div class="parchment-card p-6 h-full flex flex-col hover:border-blood transition-colors shadow-lg">
+                    <div class="parchment-card p-6 h-full flex flex-col hover:-translate-y-1 transition-transform shadow-lg ${borderGlow}">
                         ${dmControlsHtml}
                         
                         <div class="mb-4 pr-16">
@@ -402,6 +437,8 @@
                                 <span class="${rColor}">${item.rarity || 'Unknown'}</span>
                             </div>
                         </div>
+
+                        ${imageHtml}
 
                         <div class="flex justify-between items-center bg-[rgba(139,90,43,0.1)] border border-gold/40 p-2 rounded mb-4 font-heading text-xs font-bold">
                             <span class="text-ink"><i class="fa-solid fa-weight-hanging text-gray-500 mr-1"></i> ${item.weight || '--'}</span>
@@ -446,6 +483,7 @@
                 document.getElementById('item-visibility').value = item.visibility || 'public';
                 document.getElementById('item-forsale').checked = !!item.forSale;
                 document.getElementById('item-linked-user').value = item.linkedUsername || '';
+                document.getElementById('item-artUrl').value = item.artUrl || '';
                 document.getElementById('item-properties').value = item.properties || '';
                 document.getElementById('item-desc').value = item.desc || '';
                 
@@ -483,6 +521,7 @@
                 visibility: document.getElementById('item-visibility').value,
                 forSale: document.getElementById('item-forsale').checked,
                 linkedUsername: document.getElementById('item-linked-user').value.trim().toLowerCase(),
+                artUrl: document.getElementById('item-artUrl').value.trim(),
                 properties: document.getElementById('item-properties').value.trim(),
                 desc: document.getElementById('item-desc').value.trim(),
                 updatedAt: Date.now()
