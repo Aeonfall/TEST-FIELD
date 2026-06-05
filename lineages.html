@@ -828,16 +828,11 @@
             if (!currentUser) return;
             const maxOrder = lineages.length > 0 ? Math.max(...lineages.map(l => l.order || l.createdAt || 0)) : Date.now();
             
-            // Calculate the next sequential Dossier ID
-            let nextId = 1;
-            if (lineages.length > 0) {
-                const ids = lineages.map(l => parseInt(l.custodianId) || 0);
-                nextId = Math.max(...ids) + 1;
-            }
-            const newCustodianId = String(nextId).padStart(3, '0');
+            // Generate a random 3-digit Dossier ID
+            const newCustodianId = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
             
             window.showToast("Inking new archive...");
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'handbookLineages'), { 
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), { 
                 name: "NEW SUBJECT", custodianId: newCustodianId, speed: "30", size: "M", desc: "", traits: "", intros: [],
                 cultureName: "", majorityPop: "", coreValues: "", government: "", belief: "", culturalPractices: "", attitudes: "",
                 mechTraits: "", mechDescription: "", mechBackgrounds: "", mechLanguages: "", mechFeats: "", mechEquipment: "", mechTables: "[]",
