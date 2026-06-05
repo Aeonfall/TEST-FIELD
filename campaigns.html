@@ -166,6 +166,10 @@
                     <input type="text" id="new-camp-name" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" placeholder="E.g. Curse of Strahd">
                 </div>
                 <div>
+                    <label class="block font-heading font-bold text-ink mb-1">Description</label>
+                    <textarea id="new-camp-desc" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded resize-none h-20" placeholder="A dark fantasy adventure in the lands of Barovia..."></textarea>
+                </div>
+                <div>
                     <label class="block font-heading font-bold text-ink mb-1">Access Level</label>
                     <select id="new-camp-type" class="w-full p-2 bg-white bg-opacity-50 border border-gold rounded" onchange="document.getElementById('code-container').classList.toggle('hidden', this.value !== 'private')">
                         <option value="public">Public (Anyone can join)</option>
@@ -286,12 +290,15 @@
                 snap.forEach(doc => {
                     const data = doc.data();
                     list.innerHTML += `
-                        <div class="border border-gold p-3 rounded bg-white bg-opacity-30 flex justify-between items-center">
-                            <div>
-                                <div class="font-bold text-ink">${data.name}</div>
-                                <div class="text-xs text-gray-600">DM: ${data.dmName}</div>
+                        <div class="border border-gold p-4 rounded bg-white bg-opacity-40 shadow-sm flex flex-col gap-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-heading font-bold text-ink text-lg">${data.name}</div>
+                                    <div class="text-xs font-bold text-blood">DM: ${data.dmName}</div>
+                                </div>
+                                <button onclick="window.enterCampaign('${doc.id}')" class="fantasy-btn px-4 py-1.5 rounded text-sm">Enter</button>
                             </div>
-                            <button onclick="window.enterCampaign('${doc.id}')" class="fantasy-btn px-3 py-1 rounded text-sm">Enter</button>
+                            ${data.description ? `<p class="text-sm italic text-gray-800 border-t border-gold border-opacity-30 pt-2">${data.description}</p>` : ''}
                         </div>
                     `;
                 });
@@ -311,12 +318,15 @@
                     snap.forEach(doc => {
                         const data = doc.data();
                         list.innerHTML += `
-                            <div class="border border-gold p-3 rounded bg-white bg-opacity-30 flex justify-between items-center">
-                                <div>
-                                    <div class="font-bold text-ink">${data.name}</div>
-                                    <div class="text-xs text-blood">${data.type.toUpperCase()} ${data.code ? `(Code: ${data.code})` : ''}</div>
+                            <div class="border border-gold p-4 rounded bg-white bg-opacity-40 shadow-sm flex flex-col gap-3">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-heading font-bold text-ink text-lg">${data.name}</div>
+                                        <div class="text-xs font-bold text-blood">${data.type.toUpperCase()} ${data.code ? `(Code: <span class="tracking-widest">${data.code}</span>)` : ''}</div>
+                                    </div>
+                                    <button onclick="window.enterCampaign('${doc.id}')" class="fantasy-btn px-4 py-1.5 rounded text-sm">Enter</button>
                                 </div>
-                                <button onclick="window.enterCampaign('${doc.id}')" class="fantasy-btn px-3 py-1 rounded text-sm">Enter</button>
+                                ${data.description ? `<p class="text-sm italic text-gray-800 border-t border-gold border-opacity-30 pt-2">${data.description}</p>` : ''}
                             </div>
                         `;
                     });
@@ -331,6 +341,7 @@
         // Logic to Forge a new Campaign
         window.createCampaign = async () => {
             const name = document.getElementById('new-camp-name').value.trim();
+            const desc = document.getElementById('new-camp-desc').value.trim();
             const type = document.getElementById('new-camp-type').value;
             const code = document.getElementById('new-camp-code').value.trim();
 
@@ -340,6 +351,7 @@
             try {
                 await addDoc(collection(db, 'campaigns'), {
                     name,
+                    description: desc,
                     type,
                     code: type === 'private' ? code : null,
                     dmId: currentUser.uid,
@@ -349,6 +361,7 @@
                 
                 document.getElementById('forge-modal').classList.add('hidden');
                 document.getElementById('new-camp-name').value = '';
+                document.getElementById('new-camp-desc').value = '';
                 document.getElementById('new-camp-code').value = '';
                 showModal("Success", `The realm of ${name} has been forged!`);
             } catch (e) {
