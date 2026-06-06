@@ -269,123 +269,248 @@
             </div>
             
             <div class="p-6 md:p-8 space-y-6 font-serif text-[13px] text-ink leading-relaxed">
-                <p>When a character casts any spell (or script), the same basic rules are followed, regardless of the character’s class or the spell’s effects. Each spell description begins with a block of information, including the spell’s name, level, school of magic, casting time, range, components, and duration. The rest of a spell entry describes the spell’s effect.</p>
-
                 <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Casting Time</h3>
-                    <p class="mb-2">Most spells require a single action to cast, but some spells require a bonus action, a reaction, or much more time to cast.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Bonus Action</h4>
-                    <p class="mb-2">A spell cast with a bonus action is especially swift. You must use a bonus action on your turn to cast the spell, provided that you haven’t already taken a bonus action this turn. You can’t cast another spell during the same turn, except for a cantrip with a casting time of 1 action.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Reactions</h4>
-                    <p class="mb-2">Some spells can be cast as reactions. These spells take a fraction of a second to bring about and are cast in response to some event. If a spell can be cast as a reaction, the spell description tells you exactly when you can do so.</p>
-
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Longer Casting Times</h4>
-                    <p class="mb-2">Certain spells (including spells cast as rituals) require more time to cast: minutes or even hours. When you cast a spell with a casting time longer than a single action or reaction, you must spend your action each turn casting the spell, and you must maintain your concentration while you do so. If your concentration is broken, the spell fails, but you don’t expend a spell slot. If you want to try casting the spell again, you must start over.</p>
+                    <p class="mb-2"><strong class="font-heading text-blood text-base uppercase tracking-widest">Scriptcasting</strong></p>
+                    <p class="mb-2">The Eternal Heart saturates Aeonfall with unseen energies. Across the world, these energies can be shaped into precise patterns known as <strong>Scripts</strong>.</p>
+                    <p>This section provides the rules for Scriptcasting. Different Vocations access Scripts in different ways. Some learn them through study and experimentation, others through instinctive connection to the Heart, ancient relics, mutations, or forgotten Founder knowledge. Regardless of its source, all Scriptcasting follows the rules presented here.</p>
                 </div>
 
                 <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Range</h3>
-                    <p class="mb-2">The target of a spell must be within the spell’s range. For a spell like <em>magic missile</em>, the target is a creature. For a spell like <em>fireball</em>, the target is the point in space where the ball of fire erupts.</p>
-                    <p class="mb-2">Most spells have ranges expressed in feet. Some spells can target only a creature (including you) that you touch. Other spells, such as the <em>shield</em> spell, affect only you. These spells have a range of self.</p>
-                    <p class="mb-2">Spells that create cones or lines of effect that originate from you also have a range of self, indicating that the origin point of the spell’s effect must be you.</p>
-                    <p>Once a spell is cast, its effects aren’t limited by its range, unless the spell’s description says otherwise.</p>
+                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">What Is a Script?</h3>
+                    <p class="mb-2">A Script is a structured expression of Heart-energy.</p>
+                    <p class="mb-2">When a Scriptcaster uses a Script, they shape the invisible currents of the Eternal Heart into a specific pattern that produces a desired effect. To outside observers, this may appear as glowing sigils, streams of energy, shifting runes, altered matter, summoned constructs, or impossible phenomena.</p>
+                    <p class="mb-2">Scripts can be used as tools, weapons, defenses, healing techniques, communication methods, and reality-altering effects. Some Scripts create energy, others manipulate matter, minds, life, or the environment itself.</p>
+                    <p>Many Scripts originate from Founder archives, forgotten civilizations, ancient relics, or discoveries made by modern Scriptcasters. New Scripts continue to be developed throughout Aeonfall.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Script Tier</h3>
+                        <p class="mb-2">Every Script belongs to a <strong>Tier</strong> from 0 to 9. A Script's Tier represents the complexity and power required to shape Heart-energy into that effect.</p>
+                        <ul class="list-disc pl-6 mb-2 space-y-1">
+                            <li><strong>Tier 0:</strong> Tricks</li>
+                            <li><strong>Tier 1–3:</strong> Basic Scripts</li>
+                            <li><strong>Tier 4–6:</strong> Advanced Scripts</li>
+                            <li><strong>Tier 7–9:</strong> Master Scripts</li>
+                        </ul>
+                        <p>Higher-Tier Scripts require greater mastery and cannot be used until a Scriptcaster gains sufficient experience. A character's level and a Script's Tier do not directly correspond. Most Scriptcasters cannot access Tier 9 Scripts until the highest levels of play.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Known and Prepared</h3>
+                        <p class="mb-2">Before a Scriptcaster can use a Script, they must either:</p>
+                        <ul class="list-disc pl-6 mb-2 space-y-1">
+                            <li>Know the Script permanently.</li>
+                            <li>Have it prepared.</li>
+                            <li>Have access to it through a relic, archive, implant, or other special feature.</li>
+                        </ul>
+                        <p>Different Vocations manage Scripts differently. Some maintain a list of Scripts permanently fixed in memory. Others prepare a selection after rest, study, meditation, maintenance, or recalibration. The number available depends on level and class features.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Script Slots</h3>
+                        <p class="mb-2">Shaping Heart-energy places strain on both body and mind. Each Scriptcaster possesses a limited number of <strong>Script Slots</strong>, representing how much energy they can safely channel before requiring rest.</p>
+                        <p class="mb-2">When a Script is used, a Script Slot of the Script's Tier or higher is expended. All expended Script Slots are restored after a Long Rest unless a feature states otherwise.</p>
+                        <p class="font-bold text-blood italic mt-4">Using a Script at a Higher Tier</p>
+                        <p>A Script can be executed using a higher-Tier Script Slot. When this occurs, the Script is treated as being cast at that higher Tier. Many Scripts become stronger when executed this way, gaining increased damage, range, duration, targets, or additional effects.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Focus & Armor</h3>
+                        <p class="font-bold text-blood italic">Scriptcasting Focus</p>
+                        <p class="mb-2">Most Scriptcasters channel their abilities through a Scriptcasting Focus (e.g., Founder Relays, Signal Rods, Arc-Cores, Memory Shards, Resonance Totems, Script Tablets, Engraved Weapons, or Heart-Touched Relics).</p>
+                        <p class="mb-4">A Scriptcasting Focus replaces most material components unless a Script specifically requires a unique component with a cost.</p>
+                        
+                        <p class="font-bold text-blood italic">Casting in Armor</p>
+                        <p>Executing Scripts requires precise control and movement. You must be proficient with any armor you wear to use Scripts while wearing it. Otherwise, the armor interferes with the gestures, movements, and concentration required for Scriptcasting.</p>
+                    </div>
                 </div>
 
                 <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Components</h3>
-                    <p class="mb-2">A spell’s components are the physical requirements you must meet in order to cast it. Each spell’s description indicates whether it requires verbal (V), somatic (S), or material (M) components. If you can’t provide one or more of a spell’s components, you are unable to cast the spell.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Verbal (V)</h4>
-                    <p class="mb-2">Most spells require the chanting of mystic words. The words themselves aren’t the source of the spell’s power; rather, the particular combination of sounds, with specific pitch and resonance, sets the threads of magic in motion. Thus, a character who is gagged or in an area of silence can’t cast a spell with a verbal component.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Somatic (S)</h4>
-                    <p class="mb-2">Spellcasting gestures might include a forceful gesticulation or an intricate set of gestures. If a spell requires a somatic component, the caster must have free use of at least one hand to perform these gestures.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Material (M)</h4>
-                    <p class="mb-2">Casting some spells requires particular objects, specified in parentheses in the component entry. A character can use a component pouch or a spellcasting focus in place of the components specified for a spell. But if a cost is indicated for a component, a character must have that specific component before he or she can cast the spell.</p>
-                    <p class="mb-2">If a spell states that a material component is consumed by the spell, the caster must provide this component for each casting of the spell.</p>
-                    <p>A spellcaster must have a hand free to access a spell’s material components—or to hold a spellcasting focus—but it can be the same hand that he or she uses to perform somatic components.</p>
+                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Tricks & Concord</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-heading font-bold text-[15px] mb-1">Tricks (Tier 0)</h4>
+                            <p>Tricks are Tier 0 Scripts. A Trick can be used at will without expending a Script Slot and does not require preparation. Through constant repetition, the pattern becomes instinctive, allowing the Scriptcaster to execute it repeatedly with minimal effort.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-heading font-bold text-[15px] mb-1">Concord</h4>
+                            <p>Certain Scripts possess the <strong>Concord</strong> tag. A Concord Script can be executed through an extended and precise process known as entering Concord. Executing a Script through Concord takes <strong>10 additional minutes</strong> beyond its normal execution time and does not expend a Script Slot. To use Concord, you must possess a feature granting access to it.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Duration</h3>
-                    <p class="mb-2">A spell’s duration is the length of time the spell persists. A duration can be expressed in rounds, minutes, hours, or even years. Some spells specify that their effects last until the spells are dispelled or destroyed.</p>
+                <div class="bg-[rgba(139,90,43,0.05)] border-l-4 border-blood p-5 rounded-r shadow-inner">
+                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">The Discipline of Mechanum</h3>
+                    <p class="mb-3">Mechanum is the Discipline of technology, machinery, circuitry, and the fusion of Heart-energy with engineered systems. Unlike other Disciplines, Mechanum emerged after the Founders learned to merge Scriptcasting principles with advanced technology.</p>
+                    <p class="mb-3">To many scholars, Mechanum represents the bridge between magic and science. To others, there is no distinction—both are merely different methods of shaping the Eternal Heart.</p>
                     
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Instantaneous</h4>
-                    <p class="mb-2">Many spells are instantaneous. The spell harms, heals, creates, or alters a creature or an object in a way that can’t be dispelled, because its magic exists only for an instant.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Concentration</h4>
-                    <p class="mb-2">Some spells require you to maintain concentration in order to keep their magic active. If you lose concentration, such a spell ends. If a spell must be maintained with concentration, that fact appears in its Duration entry, and the spell specifies how long you can concentrate on it. You can end concentration at any time (no action required).</p>
-                    <p class="mb-2">Normal activity, such as moving and attacking, doesn’t interfere with concentration. The following factors can break concentration:</p>
-                    <ul class="list-disc pl-6 mb-2 space-y-2">
-                        <li><strong>Casting another spell that requires concentration.</strong> You lose concentration on a spell if you cast another spell that requires concentration. You can’t concentrate on two spells at once.</li>
-                        <li><strong>Taking damage.</strong> Whenever you take damage while you are concentrating on a spell, you must make a Constitution saving throw to maintain your concentration. The DC equals 10 or half the damage you take, whichever number is higher. If you take damage from multiple sources, you make a separate saving throw for each source.</li>
-                        <li><strong>Being incapacitated or killed.</strong> You lose concentration on a spell if you are incapacitated or if you die.</li>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <h4 class="font-heading font-bold text-[12px] uppercase text-gray-700 mb-1">Common Mechanum Uses</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-xs">
+                                <li>Controlling machines and constructs.</li>
+                                <li>Activating/disabling technology.</li>
+                                <li>Manipulating grids & power networks.</li>
+                                <li>Creating hard-light / digital illusions.</li>
+                                <li>Repairing mechanical devices.</li>
+                                <li>Communicating with AI.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-heading font-bold text-[12px] uppercase text-gray-700 mb-1">Visual Manifestations</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-xs">
+                                <li>Glowing circuitry & holographic runes.</li>
+                                <li>Streams of data-like symbols.</li>
+                                <li>Arc-light discharges.</li>
+                                <li>Geometric projections.</li>
+                                <li>Mechanical drones & Founder interface patterns.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p class="text-xs mb-4"><strong>Examples of Scripts:</strong> Interface, System Scan, Arc Pulse, Drone Deployment, Circuit Lock, Override Protocol, Holographic Veil, Emergency Reboot, Signal Disruption, Construct Repair, Neural Link, Power Surge, Machine Communion, Data Extraction, Automated Defense Grid.</p>
+
+                    <h4 class="font-heading font-bold text-[12px] uppercase text-gray-700 mb-2">Relationship to Other Disciplines</h4>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                        <li><strong>Aegis + Mechanum:</strong> Tech shields & defensive systems.</li>
+                        <li><strong>Calling + Mechanum:</strong> Summons drones & artificial entities.</li>
+                        <li><strong>Sight + Mechanum:</strong> Scans data, sensors, and networks.</li>
+                        <li><strong>Dominion + Mechanum:</strong> Influences AI and cybernetic minds.</li>
+                        <li><strong>Ruin + Mechanum:</strong> Destructive energy via tech systems.</li>
+                        <li><strong>Veil + Mechanum:</strong> Generates holograms & digital deception.</li>
+                        <li><strong>Mortis + Mechanum:</strong> Synthetic life & machine resurrection.</li>
+                        <li><strong>Forge + Mechanum:</strong> Modifies cybernetics & mechanical structures.</li>
                     </ul>
-                    <p>The GM might also decide that certain environmental phenomena require you to succeed on a DC 10 Constitution saving throw to maintain concentration.</p>
                 </div>
 
                 <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Targets</h3>
-                    <p class="mb-2">A typical spell requires you to pick one or more targets to be affected by the spell’s magic. A spell’s description tells you whether the spell targets creatures, objects, or a point of origin for an area of effect.</p>
-                    <p class="mb-2">Unless a spell has a perceptible effect, a creature might not know it was targeted by a spell at all. An effect like crackling lightning is obvious, but a more subtle effect typically goes unnoticed, unless a spell says otherwise.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">A Clear Path to the Target</h4>
-                    <p class="mb-2">To target something, you must have a clear path to it, so it can’t be behind total cover. If you place an area of effect at a point that you can’t see and an obstruction, such as a wall, is between you and that point, the point of origin comes into being on the near side of that obstruction.</p>
-                    
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1">Targeting Yourself</h4>
-                    <p>If a spell targets a creature of your choice, you can choose yourself, unless the creature must be hostile or specifically a creature other than you. If you are in the area of effect of a spell you cast, you can target yourself.</p>
+                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Executing a Script</h3>
+                    <p class="mb-4">Each Script contains the following information: Name, Tier, Discipline, Execution Time, Range, Components, and Duration. The remainder of the entry describes the Script's effects.</p>
+
+                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Execution Time</h4>
+                    <p class="mb-2">Most Scripts require one Action. Some require a Bonus Action, Reaction, or longer periods.</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <li><strong>Bonus Action:</strong> Executed with exceptional speed. If you execute a Script as a Bonus Action, the only other Script you may use during that turn is a Trick with an Execution Time of one Action.</li>
+                        <li><strong>Reaction:</strong> Triggered in response to specific events. The description explains exactly when it may be used.</li>
+                        <li><strong>Extended Execution:</strong> Requires minutes or hours. You must continue focusing on the Script. If interrupted, the Script fails, but no Script Slot is expended.</li>
+                    </ul>
+
+                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Range & Targets</h4>
+                    <p class="mb-2">A Script's target must be within its listed Range. Scripts with a Range of <em>Self</em> affect only the Scriptcaster or originate from them. Once a Script takes effect, its results are not limited by Range unless stated otherwise.</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <li><strong>A Clear Path:</strong> A target must have a clear path from the Scriptcaster. Total Cover blocks targeting unless stated otherwise.</li>
+                        <li><strong>Targeting Yourself:</strong> Unless specified, a Scriptcaster may target themselves with any Script capable of affecting a willing creature.</li>
+                    </ul>
+
+                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Components</h4>
+                    <p class="mb-2">Most Scripts require one or more of the following components:</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <li><strong>Vocal (V):</strong> A spoken phrase, coded sequence, harmonic tone, or command word.</li>
+                        <li><strong>Somatic (S):</strong> Movements, gestures, or runic patterns. A free hand is required.</li>
+                        <li><strong>Material (M):</strong> Unique substances, relic fragments, or catalysts. Consumed components must be provided each time the Script is used.</li>
+                    </ul>
+
+                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Duration & Concentration</h4>
+                    <p class="mb-2">A Duration determines how long effects remain active. <strong>Instantaneous</strong> Scripts produce their effect and immediately conclude.</p>
+                    <p class="mb-2"><strong>Concentration:</strong> If concentration ends, the Script immediately ends as well. You may concentrate on only one Script at a time. Concentration ends if:</p>
+                    <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <li>You begin concentrating on another Script.</li>
+                        <li>You become Incapacitated or die.</li>
+                        <li>You fail a Constitution saving throw after taking damage (DC = 10 or half the damage taken, whichever is higher).</li>
+                    </ul>
                 </div>
 
                 <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Areas of Effect</h3>
-                    <p class="mb-2">Spells such as <em>burning hands</em> and <em>cone of cold</em> cover an area, allowing them to affect multiple creatures at once.</p>
-                    <p class="mb-2">A spell’s description specifies its area of effect, which typically has one of five different shapes: cone, cube, cylinder, line, or sphere. Every area of effect has a point of origin, a location from which the spell’s energy erupts. The rules for each shape specify how you position its point of origin. Typically, a point of origin is a point in space, but some spells have an area whose origin is a creature or an object.</p>
-                    <p class="mb-2">A spell’s effect expands in straight lines from the point of origin. If no unblocked straight line extends from the point of origin to a location within the area of effect, that location isnt included in the spell’s area. To block one of these imaginary lines, an obstruction must provide total cover.</p>
+                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Script Disciplines</h3>
+                    <p class="mb-3">Script scholars classify all known Scripts into eight Disciplines, describing how a Script manipulates Heart-energy.</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                        <div class="bg-black/5 p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[15px] mb-2 text-blood">Cone</h4>
-                            <p class="text-xs">A cone extends in a direction you choose from its point of origin. A cone’s width at a given point along its length is equal to that point’s distance from the point of origin. A cone’s area of effect specifies its maximum length. A cone’s point of origin is not included in the cone’s area of effect, unless you decide otherwise.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Aegis</strong>
+                            Protection, barriers, wards, nullification, and defensive manipulation.
                         </div>
-                        <div class="bg-black/5 p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[15px] mb-2 text-blood">Cube</h4>
-                            <p class="text-xs">You select a cube’s point of origin, which lies anywhere on a face of the cubic effect. The cube’s size is expressed as the length of each side. A cube’s point of origin is not included in the cube’s area of effect, unless you decide otherwise.</p>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Calling</strong>
+                            Summoning, transportation, creation, and relocation.
                         </div>
-                        <div class="bg-black/5 p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[15px] mb-2 text-blood">Cylinder</h4>
-                            <p class="text-xs">A cylinder’s point of origin is the center of a circle of a particular radius. The energy expands in straight lines from the point of origin to the perimeter of the circle, forming the base of the cylinder, then shoots up or down to a distance equal to the height of the cylinder. A cylinder’s point of origin is included in the cylinder’s area of effect.</p>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Sight</strong>
+                            Information gathering, prediction, detection, and revelation.
                         </div>
-                        <div class="bg-black/5 p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[15px] mb-2 text-blood">Line</h4>
-                            <p class="text-xs">A line extends from its point of origin in a straight path up to its length and covers an area defined by its width. A line’s point of origin is not included in the line’s area of effect, unless you decide otherwise.</p>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Dominion</strong>
+                            Mental influence, emotional manipulation, commands, and control.
                         </div>
-                        <div class="bg-black/5 p-4 rounded border border-gold/30 md:col-span-2 text-center md:text-left">
-                            <h4 class="font-heading font-bold text-[15px] mb-2 text-blood">Sphere</h4>
-                            <p class="text-xs">You select a sphere’s point of origin, and the sphere extends outward from that point. The sphere’s size is expressed as a radius in feet that extends from the point. A sphere’s point of origin is included in the sphere’s area of effect.</p>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Ruin</strong>
+                            Energy projection, elemental force, destruction, and healing through Heart-energy.
+                        </div>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Veil</strong>
+                            Deception, concealment, sensory manipulation, and false perceptions.
+                        </div>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Mortis</strong>
+                            Life, death, vitality, decay, undeath, and soul manipulation.
+                        </div>
+                        <div class="bg-black/5 p-3 rounded border border-gold/30">
+                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Forge</strong>
+                            Transformation, enhancement, adaptation, and alteration of matter.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 mt-6 pb-1">Areas of Effect</h3>
+                    <p class="mb-2">A Script’s effect expands in straight lines from the point of origin. Total Cover blocks the spread of an Area of Effect.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
+                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Cone</h4>
+                            <p class="text-xs">Extends in a direction you choose from its origin. Width at a given point equals that point’s distance from the origin. Origin is not included unless decided otherwise.</p>
+                        </div>
+                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
+                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Cube</h4>
+                            <p class="text-xs">Origin lies anywhere on a face of the cubic effect. Size is expressed as the length of each side. Origin is not included unless decided otherwise.</p>
+                        </div>
+                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
+                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Cylinder</h4>
+                            <p class="text-xs">Origin is the center of a circle. Energy expands in straight lines to the perimeter, then shoots up or down to the cylinder's height. Origin is included.</p>
+                        </div>
+                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
+                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Line</h4>
+                            <p class="text-xs">Extends in a straight path up to its length and covers an area defined by its width. Origin is not included unless decided otherwise.</p>
+                        </div>
+                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30 md:col-span-2 text-center md:text-left">
+                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Sphere</h4>
+                            <p class="text-xs">Extends outward from the origin point. The size is expressed as a radius in feet. Origin is included.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 border-t border-gold/30 pt-6">
                     <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">Saving Throws</h3>
-                        <p class="mb-4">Many spells specify that a target can make a saving throw to avoid some or all of a spell’s effects. The spell specifies the ability that the target uses for the save and what happens on a success or failure.</p>
+                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">Resistance Checks</h3>
+                        <p class="mb-4">Many Scripts force targets to make a saving throw to resist effects. The Script specifies which ability is used.</p>
                         <div class="p-3 bg-black/10 rounded border-2 border-gold/40 text-center font-bold shadow-inner">
-                            Spell Save DC = 8 + Mod + Proficiency
+                            Script Save DC = 8 + Proficiency + Ability Mod + Special
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">Attack Rolls</h3>
-                        <p class="mb-4">Some spells require the caster to make an attack roll to determine whether the spell effect hits the intended target.</p>
+                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">Script Attacks</h3>
+                        <p class="mb-4">Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged attack rules (disadvantage if within 5 ft of a hostile).</p>
                         <div class="p-3 bg-black/10 rounded border-2 border-gold/40 text-center font-bold mb-3 shadow-inner">
-                            Spell Attack = Mod + Proficiency
+                            Script Attack = Proficiency + Ability Mod
                         </div>
-                        <p class="text-[11px] italic text-gray-700">Remember: you have disadvantage on a ranged attack roll if you are within 5 feet of a hostile creature that can see you and isn’t incapacitated.</p>
                     </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gold/30 text-xs text-gray-600 text-center italic">
+                    Combining Script Effects: Different Scripts combine normally while their durations overlap. The same Script used multiple times does not stack with itself; only the most powerful version applies.
                 </div>
 
             </div>
