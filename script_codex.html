@@ -427,7 +427,8 @@
             const currentId = new URLSearchParams(window.location.search).get('id') || new URLSearchParams(window.location.search).get('campaignId');
             try {
                 if (currentId && currentId !== "demo_campaign") {
-                    window.location.href = `${page}?id=${currentId}`;
+                    const separator = page.includes('?') ? '&' : '?';
+                    window.location.href = `${page}${separator}id=${currentId}`;
                 } else {
                     window.location.href = page;
                 }
@@ -578,7 +579,9 @@
             let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
             // Parse parentheses into Artifact Links for the view modal
-            let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, '(<a href="#" onclick="event.stopPropagation(); window.routeTo(\'gear_artifacts.html\'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">$1</a>)');
+            let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, (match, p1) => {
+                return `(<a href="#" onclick="event.stopPropagation(); window.routeTo('gear_artifacts.html?targetItem=${encodeURIComponent(p1.trim())}'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">${p1}</a>)`;
+            });
 
             document.getElementById('view-modal-title').textContent = s.name || 'Unnamed Script';
             document.getElementById('view-modal-meta').textContent = metaTxt;
@@ -637,7 +640,9 @@
                 let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
                 // --- Parse Parentheses into Artifact Links (Stop bubbling on click) ---
-                let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, '(<a href="#" onclick="event.stopPropagation(); window.routeTo(\'gear_artifacts.html\'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">$1</a>)');
+                let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, (match, p1) => {
+                    return `(<a href="#" onclick="event.stopPropagation(); window.routeTo('gear_artifacts.html?targetItem=${encodeURIComponent(p1.trim())}'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">${p1}</a>)`;
+                });
 
                 let dmControls = isDM ? `<button onclick="event.stopPropagation(); window.openScriptModal('${s.id}')" class="absolute top-4 right-4 text-gold hover:text-white transition-colors z-10"><i class="fa-solid fa-pen"></i></button>` : '';
 
