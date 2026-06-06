@@ -104,7 +104,12 @@
         .dm-mode-active .dm-editable:hover { background: rgba(255,255,255,0.4); border-radius: 4px; }
         .dm-editable:focus { background: rgba(255, 255, 255, 0.6) !important; box-shadow: inset 0 0 0 1px #c5a059; border-radius: 8px; padding: 4px; }
 
+        /* NEW TOOLTIP STYLES ADDED HERE */
         .definition-word { border-bottom: 2px dotted #c5a059; cursor: help; position: relative; font-weight: 700; }
+        .definition-word::after { content: attr(data-definition); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(5px); background: #1a110b; color: #f1e5c5; padding: 8px 12px; border-radius: 6px; border: 1px solid #c5a059; font-family: 'Lora', serif; font-size: 13px; font-weight: 400; line-height: 1.4; width: max-content; max-width: 250px; text-align: center; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.8); pointer-events: none; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+        .definition-word::before { content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%) translateY(5px); border-width: 6px; border-style: solid; border-color: #c5a059 transparent transparent transparent; z-index: 1001; pointer-events: none; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+        .definition-word:hover::after, .definition-word:hover::before { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
         .arch-link { text-decoration: underline; text-decoration-style: double; text-decoration-color: #c5a059; font-weight: 700; transition: 0.2s; }
 
         .manual-note-box, .manual-info-box { border: 2px solid #c5a059; border-radius: 8px; padding: 30px; margin-bottom: 30px; position: relative; background: rgba(255,255,255,0.4); box-shadow: inset 0 0 20px rgba(139,90,43,0.1); }
@@ -358,9 +363,34 @@
 
         window.parseContent = (text, isDM, id) => {
             if (!text) return '';
-            if (isDM && window.aeonState.activeEditId === id) return text;
+            
             let p = text;
-            p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, '<span class="definition-word text-blood border-b-2 border-dotted border-gold cursor-help" title="$2">$1</span>');
+            
+            // Clean up existing data-definitions that might have inherited hidden HTML tags
+            p = p.replace(/data-definition="([^"]*)"/gi, (match, defVal) => {
+                let cleanDef = defVal.replace(/&lt;.*?&gt;|<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return `data-definition="${cleanDef}"`;
+            });
+
+            // Self-healing for old titles, stripping out tags just in case
+            p = p.replace(/(<span[^>]*class="[^"]*definition-word[^"]*"[^>]*)\btitle="([^"]*)"/gi, (match, p1, p2) => {
+                let clean = p2.replace(/&lt;.*?&gt;|<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return p1 + 'data-definition="' + clean + '"';
+            });
+            p = p.replace(/(<span[^>]*)\btitle="([^"]*)"([^>]*class="[^"]*definition-word[^"]*"[^>]*>)/gi, (match, p1, p2, p3) => {
+                let clean = p2.replace(/&lt;.*?&gt;|<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return p1 + 'data-definition="' + clean + '"' + p3;
+            });
+
+            if (isDM && window.aeonState.activeEditId === id) return p;
+            
+            // For newly written [[Word | Definition]] elements, strip accidental HTML and use data-definition
+            p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, (match, word, def) => {
+                const cleanWord = word.replace(/<[^>]+>/g, '').trim();
+                const cleanDef = def.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return `<span class="definition-word text-blood border-b-2 border-dotted border-gold cursor-help" data-definition="${cleanDef}">${cleanWord}</span>`;
+            });
+            
             p = p.replace(/\(\(([^|)]+)\|([^)]+)\)\)/g, '<a href="$2" target="_blank" class="arch-link text-blood font-bold underline decoration-double decoration-gold">$1</a>');
             p = p.replace(/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g, (m, url, desc) => {
                 const trimmedUrl = url.trim();
