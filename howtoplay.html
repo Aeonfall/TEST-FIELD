@@ -322,12 +322,30 @@
             
             let p = text;
             
-            p = p.replace(/(<span[^>]*class="definition-word"[^>]*)\btitle="([^"]*)"/gi, '$1data-definition="$2"');
-            p = p.replace(/(<span[^>]*)\btitle="([^"]*)"([^>]*class="definition-word"[^>]*>)/gi, '$1data-definition="$2"$3');
+            // Clean up existing data-definitions that might have inherited hidden HTML tags
+            p = p.replace(/data-definition="([^"]*)"/gi, (match, defVal) => {
+                let cleanDef = defVal.replace(/&lt;.*?&gt;|<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return `data-definition="${cleanDef}"`;
+            });
+
+            // Self-healing for old titles, stripping out tags just in case
+            p = p.replace(/(<span[^>]*class="definition-word"[^>]*)\btitle="([^"]*)"/gi, (match, p1, p2) => {
+                let clean = p2.replace(/&lt;.*?&gt;|<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return p1 + 'data-definition="' + clean + '"';
+            });
+            p = p.replace(/(<span[^>]*)\btitle="([^"]*)"([^>]*class="definition-word"[^>]*>)/gi, (match, p1, p2, p3) => {
+                let clean = p2.replace(/&lt;.*?&gt;|<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return p1 + 'data-definition="' + clean + '"' + p3;
+            });
 
             if (isDM && window.aeonState.activeEditId === id) return p;
             
-            p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, '<span class="definition-word" data-definition="$2">$1</span>');
+            // For newly written [[Word | Definition]] elements, strip accidental HTML
+            p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, (match, word, def) => {
+                const cleanWord = word.replace(/<[^>]+>/g, '').trim();
+                const cleanDef = def.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+                return `<span class="definition-word" data-definition="${cleanDef}">${cleanWord}</span>`;
+            });
             
             p = p.replace(/\(\(([^|)]+)\|([^)]+)\)\)/g, '<a href="$2" target="_blank" class="arch-link">$1</a>');
             p = p.replace(/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g, (m, url, desc) => {
