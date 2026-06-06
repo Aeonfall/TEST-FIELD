@@ -102,6 +102,10 @@
 
         /* Interactive Elements */
         .definition-word { border-bottom: 2px dotted #c5a059; cursor: help; position: relative; font-weight: 700; color: #7a1b1b; }
+        .definition-word::after { content: attr(data-definition); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(5px); background: #1a110b; color: #f1e5c5; padding: 8px 12px; border-radius: 6px; border: 1px solid #c5a059; font-family: 'Lora', serif; font-size: 13px; font-weight: 400; line-height: 1.4; width: max-content; max-width: 250px; text-align: center; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.8); pointer-events: none; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+        .definition-word::before { content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%) translateY(5px); border-width: 6px; border-style: solid; border-color: #c5a059 transparent transparent transparent; z-index: 1001; pointer-events: none; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+        .definition-word:hover::after, .definition-word:hover::before { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        
         .arch-link { text-decoration: underline; text-decoration-style: double; text-decoration-color: #c5a059; font-weight: 700; transition: 0.2s; color: #7a1b1b; }
         .arch-link:hover { background: rgba(197, 160, 89, 0.2); }
 
@@ -317,7 +321,10 @@
             if (!text) return '';
             if (isDM && window.aeonState.activeEditId === id) return text;
             let p = text;
-            p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, '<span class="definition-word" title="$2">$1</span>');
+            
+            // Replaced default title attribute with data-definition attribute for custom CSS tooltips
+            p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, '<span class="definition-word" data-definition="$2">$1</span>');
+            
             p = p.replace(/\(\(([^|)]+)\|([^)]+)\)\)/g, '<a href="$2" target="_blank" class="arch-link">$1</a>');
             p = p.replace(/\{\{([^}|]+)(?:\|([^}]+))?\}\}/g, (m, url, desc) => {
                 const trimmedUrl = url.trim();
