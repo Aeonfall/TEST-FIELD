@@ -637,7 +637,7 @@
                 let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
                 // --- Parse Parentheses into Artifact Links (Stop bubbling on click) ---
-                let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, '(<a href="#" onclick="event.stopPropagation(); window.routeTo(\'gears_artifacts.html\'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">$1</a>)');
+                let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, '(<a href="#" onclick="event.stopPropagation(); window.routeTo(\'gear_artifacts.html\'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">$1</a>)');
 
                 let dmControls = isDM ? `<button onclick="event.stopPropagation(); window.openScriptModal('${s.id}')" class="absolute top-4 right-4 text-gold hover:text-white transition-colors z-10"><i class="fa-solid fa-pen"></i></button>` : '';
 
