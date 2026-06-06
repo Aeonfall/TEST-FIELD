@@ -319,10 +319,14 @@
 
         window.parseContent = (text, isDM, id) => {
             if (!text) return '';
-            if (isDM && window.aeonState.activeEditId === id) return text;
+            
             let p = text;
             
-            // Replaced default title attribute with data-definition attribute for custom CSS tooltips
+            p = p.replace(/(<span[^>]*class="definition-word"[^>]*)\btitle="([^"]*)"/gi, '$1data-definition="$2"');
+            p = p.replace(/(<span[^>]*)\btitle="([^"]*)"([^>]*class="definition-word"[^>]*>)/gi, '$1data-definition="$2"$3');
+
+            if (isDM && window.aeonState.activeEditId === id) return p;
+            
             p = p.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, '<span class="definition-word" data-definition="$2">$1</span>');
             
             p = p.replace(/\(\(([^|)]+)\|([^)]+)\)\)/g, '<a href="$2" target="_blank" class="arch-link">$1</a>');
