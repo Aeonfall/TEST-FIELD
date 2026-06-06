@@ -17,17 +17,11 @@
                         'ink': '#2c1e16',
                         'blood': '#7a1b1b',
                         'gold': '#c5a059',
-                        'wood': '#1a110b',
-                        'aeon-bg': '#1a1c23',
-                        'aeon-red': '#dc2626',
-                        'aeon-blue': '#38bdf8',
-                        'aeon-gray': '#475569',
-                        'aeon-border': '#334155'
+                        'wood': '#1a110b'
                     },
                     fontFamily: {
                         'serif': ['Lora', 'serif'],
-                        'heading': ['Cinzel', 'serif'],
-                        'sans': ['ui-sans-serif', 'system-ui', 'sans-serif']
+                        'heading': ['Cinzel', 'serif']
                     }
                 }
             }
@@ -93,35 +87,29 @@
         .dm-overlay-input { background: white; border: 1px solid #e5dccb; border-radius: 4px; padding: 12px; width: 100%; font-family: 'Lora', serif; font-size: 14px; outline: none; resize: vertical; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: border-color 0.2s; }
         .dm-overlay-input:focus { border-color: #c5a059; }
 
-        /* AEONFALL CALENDAR MODAL STYLES */
-        .aeon-cal-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 20px; backdrop-filter: blur(8px); }
-        .aeon-cal-container { background: var(--aeon-bg); border: 1px solid var(--aeon-border); border-radius: 12px; width: 100%; max-width: 600px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: white; }
-        .aeon-cal-title { font-family: 'sans-serif'; font-size: 28px; color: var(--aeon-red); font-weight: 400; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 24px; }
-        .aeon-cal-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60%; height: 2px; background: linear-gradient(90deg, var(--aeon-red), transparent); }
+        /* FANTASY CALENDAR MODAL STYLES */
+        .aeon-cal-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 20px; backdrop-filter: blur(4px); }
+        .aeon-cal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 6px; width: 100%; max-width: 600px; padding: 30px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); }
+        .aeon-cal-title { font-family: 'Cinzel', serif; font-size: 28px; color: #7a1b1b; font-weight: 900; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; }
+        .aeon-cal-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60%; height: 2px; background: linear-gradient(90deg, #7a1b1b, transparent); }
         
-        .aeon-tab-container { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; }
-        .aeon-tab { flex: 1; padding: 6px 0; text-align: center; font-family: 'sans-serif'; font-size: 14px; color: var(--aeon-gray); border-radius: 4px; transition: 0.2s; cursor: pointer; }
-        .aeon-tab.active { background: rgba(220, 38, 38, 0.2); color: var(--aeon-red); }
+        .aeon-tab-container { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; font-family: 'Cinzel', serif; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 8px;}
+        .aeon-tab { flex: 1; padding: 6px 0; text-align: center; font-size: 14px; color: #a3886b; transition: 0.2s; cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;}
+        .aeon-tab.active { color: #7a1b1b; text-shadow: 0 0 10px rgba(122,27,27,0.2); }
         
-        .aeon-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 16px; }
-        .aeon-day-header { font-family: 'sans-serif'; font-size: 11px; text-transform: uppercase; color: var(--aeon-gray); text-align: center; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; }
-        .aeon-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'sans-serif'; font-size: 16px; color: white; border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative; border: 1px solid transparent; }
-        .aeon-cell:hover:not(.empty) { background: rgba(255,255,255,0.05); }
-        .aeon-cell.empty { color: var(--aeon-gray); opacity: 0.5; cursor: default; }
-        .aeon-cell.active-day { border-color: var(--aeon-border); background: rgba(255,255,255,0.03); }
-        .aeon-cell.today-glow { color: var(--aeon-red); font-weight: bold; }
-        
-        .aeon-dot-container { display: flex; gap: 3px; position: absolute; bottom: 6px; }
-        .aeon-dot { width: 4px; height: 4px; border-radius: 50%; }
-        .aeon-dot-moon1 { background-color: white; }
-        .aeon-dot-moon2 { background-color: #a855f7; }
-        .aeon-dot-event { background-color: var(--aeon-red); }
+        .aeon-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 16px; }
+        .aeon-day-header { font-family: 'Cinzel', serif; font-size: 11px; text-transform: uppercase; color: #8b5a2b; text-align: center; letter-spacing: 1px; margin-bottom: 8px; font-weight: 900; border-bottom: 1px solid rgba(139, 90, 43, 0.2); padding-bottom: 4px;}
+        .aeon-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Lora', serif; font-size: 16px; color: #2c1e16; border-radius: 4px; cursor: pointer; transition: 0.2s; position: relative; border: 1px solid rgba(139,90,43,0.1); background: rgba(255,255,255,0.4); font-weight: 600; box-shadow: inset 0 0 5px rgba(255,255,255,0.5);}
+        .aeon-cell:hover:not(.empty) { border-color: #c5a059; background: rgba(197, 160, 89, 0.2); transform: scale(1.05); z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .aeon-cell.empty { background: transparent; color: #a38c75; opacity: 0.3; cursor: default; border-color: transparent; box-shadow: none;}
+        .aeon-cell.active-day { border-color: #c5a059; background: rgba(197, 160, 89, 0.3); font-weight: 900;}
+        .aeon-cell.today-glow { color: #f1e5c5; font-weight: 900; border-color: #7a1b1b; background: #7a1b1b; box-shadow: 0 4px 10px rgba(122, 27, 27, 0.4);}
 
-        .aeon-btn-icon { color: var(--aeon-gray); transition: 0.2s; cursor: pointer; background: transparent; border: none; font-size: 16px; padding: 4px 8px; }
-        .aeon-btn-icon:hover { color: white; }
+        .aeon-btn-icon { color: #8b5a2b; transition: 0.2s; cursor: pointer; background: transparent; border: none; font-size: 16px; padding: 4px 8px; }
+        .aeon-btn-icon:hover { color: #7a1b1b; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col items-center">
 
     <div id="toast" class="toast">Message</div>
 
@@ -132,7 +120,7 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view">
+    <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view w-full">
         <div class="max-w-6xl mx-auto">
             <!-- HEADER & NAVIGATION -->
             <header class="flex flex-col items-center md:items-start md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative">
@@ -143,7 +131,7 @@
                     <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
                         <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">History & Timekeeping</p>
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
                         </div>
                     </div>
@@ -161,7 +149,7 @@
                         <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
                         <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
                         <a href="#" onclick="window.routeTo('sessionlogs.html'); return false;" class="nav-link active">Logs</a>
-                        <a href="#" onclick="window.openCalendarModal(false); return false;" class="nav-link !text-blue-400 hover:!text-blue-300">Calendar</a>
+                        <a href="#" onclick="window.openCalendarModal(false); return false;" class="nav-link !text-blood hover:!text-red-400">Calendar</a>
                         <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
@@ -185,8 +173,8 @@
     </div>
 
     <!-- SHEET SCREEN (Reading the Log) -->
-    <div id="sheet-screen" class="hidden-view">
-        <nav class="sticky top-0 z-[60] bg-[#1a110b] p-2 shadow-2xl border-b border-gray-800 font-heading">
+    <div id="sheet-screen" class="hidden-view w-full">
+        <nav class="sticky top-0 z-[60] bg-[#1a110b] p-2 shadow-2xl border-b border-gray-800 font-heading w-full">
             <div class="max-w-4xl mx-auto flex justify-between items-center text-gray-300 px-4">
                 <button onclick="window.closeSheet()" class="text-gold hover:text-white font-bold flex items-center gap-2 text-xs uppercase tracking-widest"><span>←</span> Return to Journals</button>
                 <div class="flex items-center gap-4">
@@ -306,29 +294,29 @@
         </div>
     </div>
 
-    <!-- AEONFALL CALENDAR MODAL -->
+    <!-- FANTASY CALENDAR MODAL -->
     <div id="aeon-cal-modal" class="aeon-cal-modal hidden">
         <div class="aeon-cal-container shadow-[0_0_80px_rgba(0,0,0,0.9)]">
             
-            <div class="border-b border-red-900/40 pb-2 mb-6 flex justify-between items-end">
-                <h2 class="text-2xl md:text-3xl font-sans font-normal text-red-600 tracking-wide inline-block border-b-2 border-red-600/50 pb-1 relative top-[11px]">Aeonfall Calendar</h2>
-                <button onclick="window.closeCalendarModal()" class="text-gray-500 hover:text-white text-2xl font-black mb-2 transition-colors">✕</button>
+            <div class="border-b border-gold/40 pb-2 mb-6 flex justify-between items-end">
+                <h2 class="text-2xl md:text-3xl font-heading font-black text-blood tracking-widest inline-block border-b-2 border-blood pb-1 relative top-[11px] uppercase">World Calendar</h2>
+                <button onclick="window.closeCalendarModal()" class="text-ink hover:text-blood text-2xl font-black mb-2 transition-colors">✕</button>
             </div>
 
             <div class="aeon-tab-container">
                 <div class="aeon-tab opacity-50 cursor-not-allowed">Week</div>
-                <div class="aeon-tab active font-bold">Month</div>
+                <div class="aeon-tab active font-black">Month</div>
                 <div class="aeon-tab opacity-50 cursor-not-allowed">Year</div>
             </div>
 
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-gray-800 pb-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-[rgba(139,90,43,0.3)] pb-6">
                 <div>
-                    <div class="text-3xl md:text-4xl font-sans mb-1"><span id="cal-month-display" class="text-red-600 tracking-wide font-normal">Virell</span> <span id="cal-year-display" class="text-blue-400 font-bold">836</span></div>
-                    <div class="text-blue-400 text-sm md:text-base font-medium opacity-90">Year <span id="cal-sub-year">836</span> P.D.</div>
+                    <div class="text-3xl md:text-4xl font-heading font-black mb-1"><span id="cal-month-display" class="text-blood tracking-wider uppercase">Virell</span> <span id="cal-year-display" class="text-ink font-bold">836</span></div>
+                    <div class="text-ink text-sm md:text-base font-bold font-serif opacity-80 italic">Year <span id="cal-sub-year">836</span> P.D.</div>
                 </div>
-                <div class="flex items-center gap-3 md:gap-5 text-gray-400 text-sm tracking-widest uppercase font-bold bg-black/30 p-2 rounded-lg border border-gray-800">
+                <div class="flex items-center gap-3 md:gap-5 text-[#8b5a2b] text-sm tracking-widest uppercase font-black bg-[rgba(255,255,255,0.4)] p-2 rounded border border-[rgba(139,90,43,0.3)] font-heading shadow-inner">
                     <button onclick="window.changeCalMonth(-1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button onclick="window.goToCurrentDate()" class="hover:text-white transition-colors">TODAY</button>
+                    <button onclick="window.goToCurrentDate()" class="hover:text-blood transition-colors">TODAY</button>
                     <button onclick="window.changeCalMonth(1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-right"></i></button>
                     <button onclick="window.openCalSettings()" class="aeon-btn-icon" id="cal-dm-gear"><i class="fa-solid fa-gear"></i></button>
                 </div>
@@ -348,12 +336,13 @@
                 <!-- Days populated by JS -->
             </div>
 
-            <div class="flex justify-between items-center text-[10px] text-gray-500 uppercase tracking-widest font-sans font-bold pt-4 border-t border-gray-800">
-                <div class="flex gap-4">
-                    <span class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-white"></div> Selura</span>
-                    <span class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-[#a855f7]"></div> Veythar</span>
+            <div class="flex justify-between items-center text-[10px] text-[#8b5a2b] uppercase tracking-widest font-heading font-bold pt-4 mt-2 border-t border-[rgba(139,90,43,0.3)]">
+                <div class="flex gap-3 md:gap-4">
+                    <span class="flex items-center gap-1"><span class="opacity-50">🌕</span> Selura</span>
+                    <span class="flex items-center gap-1"><span class="opacity-50">🌔</span> Veythar</span>
+                    <span class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-[#7a1b1b]"></div> Event</span>
                 </div>
-                <button onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="hover:text-white transition-colors"><i class="fa-solid fa-book mr-1"></i> Lore</button>
+                <button onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="hover:text-[#7a1b1b] transition-colors"><i class="fa-solid fa-book mr-1"></i> Lore</button>
             </div>
 
         </div>
@@ -361,67 +350,67 @@
 
     <!-- CALENDAR DM CONTROLS MODAL -->
     <div id="cal-settings-modal" class="modal-overlay hidden z-[4000]">
-        <div class="bg-[#1a1c23] border border-gray-700 rounded-lg max-w-sm w-full p-6 text-gray-200">
-            <h3 class="font-sans text-xl text-red-500 mb-4 border-b border-gray-700 pb-2">Calendar Settings</h3>
-            <div class="space-y-4">
-                <button onclick="window.setAsCurrentDate()" class="w-full bg-blue-900/30 hover:bg-blue-900/50 text-blue-400 border border-blue-800 py-3 rounded font-sans font-bold uppercase text-xs tracking-wider transition-colors">Set Visible Month as "Today"</button>
-                <div class="border-t border-gray-700 pt-4">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Adjust Year</label>
-                    <div class="flex gap-2">
-                        <button onclick="window.changeCalYear(-1)" class="bg-gray-800 px-4 py-2 rounded text-white">-</button>
-                        <input type="number" id="manual-year-input" class="bg-black/50 border border-gray-700 text-white text-center w-full rounded" readonly>
-                        <button onclick="window.changeCalYear(1)" class="bg-gray-800 px-4 py-2 rounded text-white">+</button>
+        <div class="modal-container">
+            <h3 class="font-heading text-xl font-black text-blood uppercase mb-4 border-b border-gold pb-2">Calendar Settings</h3>
+            <div class="space-y-4 text-left">
+                <button onclick="window.setAsCurrentDate()" class="w-full bg-[rgba(197,160,89,0.2)] hover:bg-[rgba(197,160,89,0.4)] text-ink border border-gold py-3 rounded font-heading font-black uppercase text-xs tracking-wider transition-colors shadow">Set Visible Month as "Today"</button>
+                <div class="border-t border-[rgba(139,90,43,0.3)] pt-4 mt-4">
+                    <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-2 font-heading">Adjust Year</label>
+                    <div class="flex gap-2 font-heading">
+                        <button onclick="window.changeCalYear(-1)" class="bg-[#1a110b] px-4 py-2 rounded text-gold border border-gold font-bold hover:bg-[#2c1e16] transition-colors">-</button>
+                        <input type="number" id="manual-year-input" class="bg-[rgba(255,255,255,0.5)] border border-gold text-ink font-bold text-center w-full rounded outline-none" readonly>
+                        <button onclick="window.changeCalYear(1)" class="bg-[#1a110b] px-4 py-2 rounded text-gold border border-gold font-bold hover:bg-[#2c1e16] transition-colors">+</button>
                     </div>
                 </div>
             </div>
-            <div class="mt-6 text-center">
-                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-white">Close</button>
+            <div class="mt-8 pt-4 border-t border-[rgba(139,90,43,0.3)] text-center">
+                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-ink font-heading transition-colors">Close</button>
             </div>
         </div>
     </div>
 
     <!-- EVENT MANAGER MODAL -->
     <div id="event-modal" class="modal-overlay hidden z-[4000]">
-        <div class="bg-[#1a1c23] border border-gray-700 rounded-lg max-w-sm w-full p-6 text-gray-200">
-            <h3 class="font-sans text-xl text-red-500 mb-4 border-b border-gray-700 pb-2">Log Calendar Event</h3>
-            <p id="event-date-display" class="text-xs text-blue-400 font-bold uppercase tracking-widest mb-4"></p>
-            <div class="space-y-4 text-left font-sans mb-6">
+        <div class="modal-container !max-w-md">
+            <h3 class="font-heading text-xl font-black text-blood uppercase mb-2 border-b border-gold pb-2">Log Calendar Event</h3>
+            <p id="event-date-display" class="text-[10px] text-ink font-black uppercase tracking-widest mb-4 font-heading italic"></p>
+            <div class="space-y-4 text-left font-serif mb-6">
                 <div>
-                    <input type="text" id="new-event-title" class="w-full bg-black/50 border border-gray-600 rounded p-2 text-white outline-none focus:border-red-500 text-sm" placeholder="Event Title (e.g. Festival, Battle)">
+                    <input type="text" id="new-event-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-sm font-bold" placeholder="Event Title (e.g. Festival, Battle)">
                 </div>
                 <div>
-                    <textarea id="new-event-desc" class="w-full bg-black/50 border border-gray-600 rounded p-2 text-white outline-none focus:border-red-500 min-h-[60px] resize-y text-sm" placeholder="Description..."></textarea>
+                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] resize-y text-sm italic" placeholder="Description..."></textarea>
                 </div>
                 <div>
-                    <select id="new-event-vis" class="w-full bg-black/50 border border-gray-600 rounded p-2 text-white outline-none focus:border-red-500 text-xs font-bold uppercase">
+                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer">
                         <option value="public">Public Knowledge</option>
                         <option value="secret">DM Secret</option>
                     </select>
                 </div>
             </div>
-            <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto"></div>
-            <div class="flex justify-between gap-3">
-                <button onclick="document.getElementById('event-modal').classList.add('hidden')" class="flex-1 text-gray-500 font-bold uppercase text-xs border border-gray-700 rounded py-2 hover:bg-gray-800 transition-colors">Cancel</button>
-                <button onclick="window.saveCalendarEvent()" class="flex-1 bg-red-900/60 hover:bg-red-800 text-white font-bold uppercase text-xs rounded py-2 transition-colors border border-red-900">Save Event</button>
+            <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto scrollbar-hide text-left"></div>
+            <div class="flex justify-between gap-3 font-heading">
+                <button onclick="document.getElementById('event-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Save Event</button>
             </div>
         </div>
     </div>
 
     <!-- CALENDAR LORE MODAL -->
     <div id="cal-lore-modal" class="modal-overlay hidden z-[5000]">
-        <div class="bg-[#1a1c23] border border-gray-700 rounded-lg max-w-2xl w-full text-gray-200 flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center border-b border-red-900/50 p-6 pb-4 shrink-0">
-                <h3 class="font-sans text-2xl text-red-500 tracking-wide font-normal">Calendar of Aeonfall</h3>
-                <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="text-gray-500 hover:text-white text-2xl font-black transition-colors">✕</button>
+        <div class="modal-container !max-w-2xl flex flex-col max-h-[85vh] !p-0 overflow-hidden text-left">
+            <div class="flex justify-between items-center border-b-[3px] border-blood p-6 pb-4 shrink-0 bg-[#f4eee1]">
+                <h3 class="font-heading font-black text-2xl text-blood tracking-widest uppercase">Calendar of Aeonfall</h3>
+                <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="text-ink hover:text-blood text-2xl font-black transition-colors leading-none">✕</button>
             </div>
             
-            <div class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-gray-300">
-                <p class="italic text-gray-400">How Time Endures After the World Broke.</p>
+            <div class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-ink bg-transparent">
+                <p class="italic font-bold text-[#8b5a2b] border-b border-gold/40 pb-4">How Time Endures After the World Broke.</p>
                 <p>Time did not stop when the world fractured. It adapted. The Aeonfall Calendar is a reconstructed system derived from pre-collapse records, Custodian archives, and long-standing cultural consensus.</p>
                 
-                <div>
-                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Time Structure</h4>
-                    <ul class="list-disc pl-5 space-y-1">
+                <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
+                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Time Structure</h4>
+                    <ul class="list-disc pl-5 space-y-1 font-bold">
                         <li><b>Year:</b> 360 days</li>
                         <li><b>Months:</b> 12 months, 30 days each</li>
                         <li><b>Week:</b> 7 days</li>
@@ -431,52 +420,52 @@
                 </div>
 
                 <div>
-                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">The Four Eras</h4>
-                    <ul class="space-y-3">
-                        <li><strong class="text-white">The Age of Concord:</strong> The height of Aeon. An era of unified knowledge. Most surviving records originate here, though many are incomplete.</li>
-                        <li><strong class="text-white">The Sundering:</strong> The Calamity of Aeon. Marked by the destabilization of the Eternal Heart and widespread system failure. Dates are unreliable.</li>
-                        <li><strong class="text-white">The Interregnum:</strong> Early Aeonfall. An age of survival and fragmentation. Written history fades, replaced by localized oral accounts.</li>
-                        <li><strong class="text-white">The Shattered Dawn (Current Era):</strong> Civilization returns in altered form. Most modern dating uses this era (P.D. - Post Dawn / SD - Shattered Dawn) as its reference.</li>
+                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">The Four Eras</h4>
+                    <ul class="space-y-4">
+                        <li><strong class="text-black font-heading uppercase text-xs block mb-1">The Age of Concord</strong> The height of Aeon. An era of unified knowledge. Most surviving records originate here, though many are incomplete.</li>
+                        <li><strong class="text-black font-heading uppercase text-xs block mb-1">The Sundering</strong> The Calamity of Aeon. Marked by the destabilization of the Eternal Heart and widespread system failure. Dates are unreliable.</li>
+                        <li><strong class="text-black font-heading uppercase text-xs block mb-1">The Interregnum</strong> Early Aeonfall. An age of survival and fragmentation. Written history fades, replaced by localized oral accounts.</li>
+                        <li><strong class="text-black font-heading uppercase text-xs block mb-1">The Shattered Dawn (Current Era)</strong> Civilization returns in altered form. Most modern dating uses this era (P.D. - Post Dawn / SD - Shattered Dawn) as its reference.</li>
                     </ul>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Months (30 Days)</h4>
-                        <ol class="list-decimal pl-5 text-xs space-y-0.5 font-bold text-blue-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gold/40">
+                    <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
+                        <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Months (30 Days)</h4>
+                        <ol class="list-decimal pl-5 text-[11px] space-y-1 font-bold text-ink font-heading">
                             <li>Luminar</li><li>Terralis</li><li>Hydrath</li><li>Ignivar</li>
                             <li>Metallon</li><li>Virell</li><li>Nocthyr</li><li>Cognalis</li>
                             <li>Cragthorn</li><li>Ashveil</li><li>Fallowen</li><li>Heartveil</li>
                         </ol>
                     </div>
-                    <div>
-                        <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Days of the Week</h4>
-                        <ol class="list-decimal pl-5 text-xs space-y-0.5 font-bold text-blue-300">
+                    <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
+                        <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Days of the Week</h4>
+                        <ol class="list-decimal pl-5 text-[11px] space-y-1 font-bold text-ink font-heading">
                             <li>Miresen</li><li>Veysen</li><li>Thalsen</li><li>Kaelsen</li>
                             <li>Dravesen</li><li>Lursen</li><li>Sorvsen</li>
                         </ol>
                     </div>
                 </div>
 
-                <div>
-                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">The Two Moons</h4>
+                <div class="pt-4 border-t border-gold/40">
+                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">The Two Moons</h4>
                     <ul class="space-y-3">
-                        <li class="bg-black/30 p-3 rounded border border-gray-800"><b><div class="inline-block w-2 h-2 rounded-full bg-white mr-1 shadow-[0_0_5px_white]"></div> Selura (The Silver Moon):</b> Cycle: 30 days. Associations: Memory, history, reflection. Selura’s full cycle aligns with the monthly calendar.</li>
-                        <li class="bg-black/30 p-3 rounded border border-gray-800"><b><div class="inline-block w-2 h-2 rounded-full bg-[#a855f7] mr-1 shadow-[0_0_5px_#a855f7]"></div> Veythar (The Red/Purple Moon):</b> Cycle: 15 days. Associations: Change, danger, the Eternal Heart. Completes two cycles per month.</li>
+                        <li class="bg-[rgba(255,255,255,0.4)] p-3 rounded border border-gold shadow-inner"><b class="font-heading text-xs uppercase"><span class="opacity-60 mr-1">🌕</span> Selura (The Silver Moon):</b> Cycle: 30 days. Associations: Memory, history, reflection. Selura’s full cycle aligns with the monthly calendar.</li>
+                        <li class="bg-[rgba(255,255,255,0.4)] p-3 rounded border border-gold shadow-inner"><b class="font-heading text-xs uppercase"><span class="opacity-60 mr-1">🌔</span> Veythar (The Red/Purple Moon):</b> Cycle: 15 days. Associations: Change, danger, the Eternal Heart. Completes two cycles per month.</li>
                     </ul>
                 </div>
 
-                <div>
-                    <h4 class="font-sans font-bold text-red-400 uppercase tracking-widest border-b border-gray-800 pb-1 mb-2 text-xs">Seasonal Markers & Observances</h4>
-                    <ul class="space-y-2 text-xs">
-                        <li><strong class="text-white">Dawnsreach:</strong> Balance of light and dark. Days begin to grow longer.</li>
-                        <li><strong class="text-white">Solflare:</strong> Longest day. Peak heat, labor, and travel.</li>
-                        <li><strong class="text-white">Duskfall:</strong> Balance returns. Nights begin to lengthen.</li>
-                        <li><strong class="text-white">Nightvein:</strong> Longest night. A time of endurance and reflection.</li>
-                        <li class="mt-2 text-red-400"><b>Prime Day:</b> Trade, family gathering. (1st of Luminar)</li>
-                        <li class="text-red-400"><b>Forge Day:</b> Industry, craftsmanship. (10th of Metallon)</li>
-                        <li class="text-red-400"><b>Ashlight Commemoration:</b> Remembrance of the Sundering. (30th of Ashveil)</li>
-                        <li class="text-red-400"><b>Veilwake:</b> Reflection on loss and survival. (30th of Heartveil)</li>
+                <div class="pt-4 border-t border-gold/40">
+                    <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Seasonal Markers & Observances</h4>
+                    <ul class="space-y-3 text-xs">
+                        <li><strong class="text-black font-heading text-[10px] uppercase block">Dawnsreach:</strong> Balance of light and dark. Days begin to grow longer.</li>
+                        <li><strong class="text-black font-heading text-[10px] uppercase block">Solflare:</strong> Longest day. Peak heat, labor, and travel.</li>
+                        <li><strong class="text-black font-heading text-[10px] uppercase block">Duskfall:</strong> Balance returns. Nights begin to lengthen.</li>
+                        <li><strong class="text-black font-heading text-[10px] uppercase block">Nightvein:</strong> Longest night. A time of endurance and reflection.</li>
+                        <li class="mt-4 pt-2 border-t border-dashed border-gold/50 text-blood font-bold"><b>Prime Day:</b> Trade, family gathering. (1st of Luminar)</li>
+                        <li class="text-blood font-bold"><b>Forge Day:</b> Industry, craftsmanship. (10th of Metallon)</li>
+                        <li class="text-blood font-bold"><b>Ashlight Commemoration:</b> Remembrance of the Sundering. (30th of Ashveil)</li>
+                        <li class="text-blood font-bold"><b>Veilwake:</b> Reflection on loss and survival. (30th of Heartveil)</li>
                     </ul>
                 </div>
             </div>
@@ -540,7 +529,7 @@
             else { try { window.location.href = "campaigns.html"; } catch(e) {} }
         }
 
-        const DB_COLLECTION = `sessionLogs`;
+        const DB_COLLECTION = `sessionLogs_${appId}`;
 
         let logs = [], activeLogId = null, activeRole = 'player', currentUser = null; 
         let autoSaveTimer = null;
@@ -750,10 +739,10 @@
                 const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
                 
                 eventsList.innerHTML = dayEvents.map(e => `
-                    <div class="bg-black/40 p-2 rounded border-l-2 ${e.vis === 'secret' ? 'border-purple-500' : 'border-red-500'} relative">
-                        <div class="text-[10px] font-bold text-white uppercase">${e.title}</div>
-                        <div class="text-[9px] text-gray-400 truncate">${e.desc}</div>
-                        <button onclick="window.deleteCalendarEvent('${e.id}')" class="absolute top-2 right-2 text-red-500 hover:text-white text-xs">✕</button>
+                    <div class="bg-black/10 p-3 rounded border-l-2 ${e.vis === 'secret' ? 'border-purple-500' : 'border-blood'} relative shadow-sm">
+                        <div class="text-[10px] font-black text-ink uppercase font-heading">${e.title}</div>
+                        <div class="text-[11px] text-ink/70 italic font-serif mt-1">${e.desc}</div>
+                        <button onclick="window.deleteCalendarEvent('${e.id}')" class="absolute top-2 right-2 text-blood hover:text-red-700 text-xs transition-colors"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 `).join('');
                 
@@ -800,23 +789,28 @@
                 const hasSelura = d === 15;
                 const hasVeythar = (d === 7 || d === 22);
 
-                let dotsHtml = `<div class="aeon-dot-container">`;
-                if(hasSelura) dotsHtml += `<div class="aeon-dot aeon-dot-moon1" title="Full Selura"></div>`;
-                if(hasVeythar) dotsHtml += `<div class="aeon-dot aeon-dot-moon2" title="Full Veythar"></div>`;
+                let contentHtml = `<span class="relative z-10 mt-1">${d}</span>`;
+                let iconsHtml = `<div class="absolute inset-0 flex justify-between p-1 pointer-events-none opacity-30 text-[8px] leading-none">`;
+                if(hasSelura) iconsHtml += `<span title="Full Selura">🌕</span>`; else iconsHtml += `<span></span>`;
+                if(hasVeythar) iconsHtml += `<span title="Full Veythar">🌔</span>`; else iconsHtml += `<span></span>`;
+                iconsHtml += `</div>`;
 
+                let dotsHtml = `<div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">`;
+                
                 // Events & Holidays
                 const isHoliday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
                 const hasCustomEvents = calendarEvents.some(e => e.y === viewYear && e.m === viewMonth && e.d === d && (e.vis === 'public' || activeRole === 'dm'));
 
                 if (isHoliday || hasCustomEvents) {
-                    dotsHtml += `<div class="aeon-dot aeon-dot-event"></div>`;
-                    if (isCurrent) classes += " !border-red-900"; // Red outline if today has an event
+                    dotsHtml += `<div class="w-1.5 h-1.5 rounded-full bg-blood shadow-sm" title="Event/Holiday"></div>`;
+                    if (isCurrent) classes += " !border-blood"; 
                 }
                 dotsHtml += `</div>`;
 
                 grid.innerHTML += `
                     <div class="${classes}" onclick="window.selectCalDay(${d})">
-                        ${d}
+                        ${iconsHtml}
+                        ${contentHtml}
                         ${dotsHtml}
                     </div>
                 `;
@@ -895,8 +889,8 @@
         };
 
         // --- AUTH & INIT ---
-        onAuthStateChanged(auth, async (u) => {
-            if (!u) {
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
                 try { window.location.href = "index.html"; } catch(e) {
                     document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 }
@@ -904,14 +898,14 @@
             }
             
             try {
-                if (u.isAnonymous) {
-                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+                if (user.isAnonymous) {
+                    currentUser = { uid: user.uid, username: "Guest Traveler", role: 'player' };
                 } else {
-                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
                     if (userDoc.exists()) {
-                        currentUser = { uid: u.uid, ...userDoc.data() };
+                        currentUser = { uid: user.uid, ...userDoc.data() };
                     } else {
-                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                        currentUser = { uid: user.uid, username: user.displayName || 'Traveler', role: 'player' };
                     }
                 }
 
@@ -980,7 +974,6 @@
                 autoSaveTimer = setTimeout(() => window.saveLog(), 1000); 
             } 
         });
-
     </script>
 </body>
 </html>
