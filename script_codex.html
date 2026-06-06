@@ -578,7 +578,7 @@
             let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
             // Parse parentheses into Artifact Links for the view modal
-            let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, '(<a href="#" onclick="event.stopPropagation(); window.routeTo(\'gears_artifacts.html\'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">$1</a>)');
+            let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, '(<a href="#" onclick="event.stopPropagation(); window.routeTo(\'gear_artifacts.html\'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">$1</a>)');
 
             document.getElementById('view-modal-title').textContent = s.name || 'Unnamed Script';
             document.getElementById('view-modal-meta').textContent = metaTxt;
