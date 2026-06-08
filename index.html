@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
@@ -32,19 +32,92 @@
     </script>
     <style>
         body {
-            background-color: #1a110b;
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-color: #0a0604; /* Dark abyss */
             color: #2c1e16;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden; /* Lock scrolling for cinematic feel */
         }
 
+        /* --- Cinematic Background Elements --- */
+        .ambient-fog {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 60% 30%, rgba(197, 160, 89, 0.08) 0%, transparent 60%),
+                        radial-gradient(circle at 50% 80%, rgba(122, 27, 27, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .scanlines {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.35;
+        }
+
+        .vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(10, 6, 4, 0.95) 100%);
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .pattern-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%23c5a059' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* --- Campfire & Embers --- */
+        @keyframes fireGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.5)) saturate(1.2); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 20px rgba(122, 27, 27, 0.8)) saturate(1.5); transform: scale(1.05); }
+        }
+        .campfire-core {
+            animation: fireGlow 2s infinite ease-in-out;
+        }
+
+        .ember {
+            position: absolute;
+            bottom: 12%;
+            width: 4px;
+            height: 4px;
+            background: #c5a059;
+            border-radius: 50%;
+            box-shadow: 0 0 8px 2px #7a1b1b;
+            opacity: 0;
+            animation: floatUp 4s infinite ease-in;
+            z-index: 3;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-250px) translateX(30px) scale(0.3); opacity: 0; }
+        }
+        .ember:nth-child(1) { right: 39%; animation-duration: 3s; animation-delay: 0s; }
+        .ember:nth-child(2) { right: 41%; animation-duration: 4.5s; animation-delay: 1.2s; }
+        .ember:nth-child(3) { right: 38%; animation-duration: 3.5s; animation-delay: 2.1s; }
+        .ember:nth-child(4) { right: 40.5%; animation-duration: 5s; animation-delay: 0.5s; }
+        .ember:nth-child(5) { right: 39.5%; animation-duration: 3.8s; animation-delay: 3s; }
+
+        /* --- Title Glow --- */
+        .intro-title-glow {
+            text-shadow: 0 0 20px rgba(197, 160, 89, 0.4), 0 0 40px rgba(122, 27, 27, 0.6);
+            letter-spacing: 0.1em;
+        }
+
+        /* --- Existing Parchment Theme --- */
         .parchment-bg {
             background-color: #f1e5c5;
             background-image: 
                 radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%),
                 url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 30px rgba(0,0,0,0.7);
+            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 10px 40px rgba(0,0,0,0.8);
             border: 2px solid #c5a059;
             border-radius: 4px;
         }
@@ -66,6 +139,27 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.6);
             border-color: #e8cd87;
+        }
+        
+        .fantasy-btn-intro {
+            background: transparent;
+            color: #c5a059;
+            border: 2px solid #c5a059;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.2), inset 0 0 10px rgba(197, 160, 89, 0.1);
+            text-shadow: 0 0 8px rgba(197, 160, 89, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .fantasy-btn-intro:hover {
+            background: rgba(122, 27, 27, 0.4);
+            color: #f1e5c5;
+            border-color: #f1e5c5;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(122, 27, 27, 0.8), inset 0 0 15px rgba(122, 27, 27, 0.5);
         }
 
         .fantasy-input {
@@ -101,17 +195,100 @@
             font-size: 16px;
         }
 
-        .fade-in { animation: fadeIn 0.5s ease-in; }
+        /* --- Animations --- */
+        .fade-in { animation: fadeIn 1s ease-in forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .slide-up { animation: slideUp 0.4s ease-out forwards; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-out { animation: fadeOut 0.8s ease-out forwards; }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.05); visibility: hidden; pointer-events: none; } }
+
+        .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="font-serif antialiased h-screen flex flex-col items-center justify-center">
+<body class="font-serif antialiased w-screen h-screen">
 
+    <!-- ======================================================= -->
+    <!-- CINEMATIC BACKGROUND (Remains persistent)               -->
+    <!-- ======================================================= -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <!-- Sky Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#140a08] via-[#1f120e] to-[#0a0604]"></div>
+        
+        <!-- Glowing Amber Moon -->
+        <div class="absolute top-[15%] right-[25%] md:right-[35%] w-48 h-48 md:w-72 md:h-72 bg-radial from-[#c5a059] via-[rgba(197,160,89,0.3)] to-transparent rounded-full filter blur-[10px] mix-blend-screen opacity-60"></div>
+        <div class="absolute top-[18%] right-[27%] md:right-[37%] w-36 h-36 md:w-56 md:h-56 bg-[#f1e5c5] rounded-full opacity-80 shadow-[0_0_100px_rgba(197,160,89,0.5)]"></div>
+
+        <!-- Overlays -->
+        <div class="pattern-overlay"></div>
+        <div class="ambient-fog"></div>
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
+
+        <!-- Procedural Ruins SVG (Adapted to Chronicles of the Realm Theme) -->
+        <svg class="absolute bottom-0 right-0 w-[110%] md:w-[85%] h-[85%] md:h-[95%] text-[#0a0604] fill-current opacity-90" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice">
+            <!-- Distant Mountains/Hills -->
+            <path d="M0 720 Q 350 640, 700 700 T 1200 680 L 1200 900 L 0 900 Z" fill="#0f0806" />
+            <path d="M0 760 Q 250 710, 500 750 T 1200 730 L 1200 900 L 0 900 Z" fill="#140a08" />
+
+            <!-- Gnarled Dead Tree (Left) -->
+            <path d="M-50 800 Q 20 650, 40 500 T 100 200 Q 110 180, 95 160 T 70 210 Q 90 280, 50 450 T -50 800" fill="#0a0504" />
+            
+            <!-- Right Tree & Crows -->
+            <path d="M1200 600 Q 1050 450, 1020 300 T 950 150 Q 940 100, 910 80 T 890 120 Q 920 180, 960 300 Q 940 280, 910 250 T 830 220 Q 860 260, 930 330 T 1200 600" fill="#080403" />
+            <path d="M913 243 Q 910 235, 915 233 Q 923 234, 920 243 Z" fill="#000" />
+            <path d="M915 240 L 925 242 L 918 245 Z" fill="#000" />
+            <path d="M843 218 Q 840 210, 845 208 Q 853 209, 850 218 Z" fill="#000" />
+
+            <!-- Left Cathedral Gothic Wall -->
+            <path d="M200 850 L 200 400 Q 200 300, 280 250 L 400 250 Q 480 300, 480 400 L 480 850 Z" fill="#0d0705"/>
+            <!-- Inner Arch details -->
+            <path d="M230 850 L 230 420 Q 230 350, 280 310 L 400 310 Q 450 350, 450 420 L 450 850 Z" fill="#080403" />
+            
+            <!-- Stained glass rosette window -->
+            <circle cx="340" cy="450" r="75" fill="#140a08" stroke="#0a0504" stroke-width="8" />
+            <path d="M340 375 L 340 525 M 265 450 L 415 450 M 287 397 L 393 503 M 287 503 L 393 397" stroke="#080403" stroke-width="4" />
+            <circle cx="340" cy="450" r="35" fill="none" stroke="#0a0504" stroke-width="6" />
+            
+            <!-- Battlements & Pillars -->
+            <path d="M480 700 L 520 620 L 560 620 L 560 850 Z" fill="#0d0705" />
+            
+            <!-- Triple Gothic Arches -->
+            <path d="M560 850 L 560 520 Q 560 440, 610 400 Q 660 440, 660 520 L 660 850 Z" fill="#0d0705" />
+            <path d="M660 850 L 660 480 Q 660 400, 710 360 Q 760 400, 760 480 L 760 850 Z" fill="#0d0705" />
+            <path d="M760 850 L 760 520 Q 760 440, 810 400 Q 860 440, 860 520 L 860 850 Z" fill="#0d0705" />
+
+            <!-- Inner hollows for depth -->
+            <path d="M575 850 L 575 530 Q 575 470, 610 430 Q 645 470, 645 530 L 645 850 Z" fill="#080403" />
+            <path d="M675 850 L 675 490 Q 675 430, 710 390 Q 745 430, 745 490 L 745 850 Z" fill="#050201" />
+            <path d="M775 850 L 775 530 Q 775 470, 810 430 Q 845 470, 845 530 L 845 850 Z" fill="#080403" />
+
+            <!-- Right crumbling walls -->
+            <path d="M860 850 L 860 560 Q 860 480, 920 450 L 1000 450 L 1000 850 Z" fill="#0d0705" />
+            <path d="M885 850 L 885 590 L 975 590 L 975 850 Z" fill="#080403" />
+
+            <!-- Campfire base stones -->
+            <circle cx="710" cy="815" r="22" fill="#050201" />
+        </svg>
+
+        <!-- Dynamic Campfire -->
+        <div class="campfire-core absolute bottom-[8%] right-[38%] md:right-[40.2%] w-16 h-16 bg-gradient-to-t from-red-600 via-amber-600 to-yellow-500 rounded-full filter blur-xl opacity-80 z-10"></div>
+        
+        <!-- Floating Embers -->
+        <div class="ember"></div>
+        <div class="ember"></div>
+        <div class="ember"></div>
+        <div class="ember"></div>
+        <div class="ember"></div>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- UI OVERLAYS (Loading, Global Modals)                    -->
+    <!-- ======================================================= -->
+    
     <!-- Global Modal for Errors -->
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden backdrop-blur-sm">
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 z-[100] flex items-center justify-center hidden backdrop-blur-sm">
         <div class="parchment-bg p-8 max-w-sm w-full mx-4 rounded-lg shadow-2xl text-center">
             <h3 id="modal-title" class="font-heading text-2xl font-bold text-blood mb-4">Notification</h3>
             <p id="modal-message" class="text-ink mb-6"></p>
@@ -119,23 +296,46 @@
         </div>
     </div>
 
-    <!-- Initial Loading State (While checking auth session) -->
-    <div id="initial-loading" class="flex flex-col items-center justify-center fade-in">
-        <i class="fa-solid fa-circle-notch fa-spin text-6xl text-gold mb-6"></i>
-        <h2 class="font-heading text-2xl text-parchment animate-pulse">Reading the Runes...</h2>
+    <!-- Initial Loading State -->
+    <div id="initial-loading" class="fixed inset-0 z-50 flex flex-col items-center justify-center fade-in backdrop-blur-sm bg-wood/80">
+        <i class="fa-solid fa-circle-notch fa-spin text-6xl text-gold mb-6 filter drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]"></i>
+        <h2 class="font-heading text-2xl text-parchment animate-pulse tracking-widest">Reading the Runes...</h2>
     </div>
 
-    <!-- Auth View (Hidden until auth check completes) -->
-    <div id="auth-view" class="hidden w-full max-w-lg p-4 fade-in">
-        <div class="parchment-bg p-10 relative overflow-hidden shadow-2xl">
-            <div class="absolute top-2 left-2 text-gold text-2xl"><i class="fa-solid fa-dragon"></i></div>
-            <div class="absolute top-2 right-2 text-gold text-2xl"><i class="fa-solid fa-khanda"></i></div>
-            <div class="absolute bottom-2 left-2 text-gold text-2xl"><i class="fa-solid fa-dungeon"></i></div>
-            <div class="absolute bottom-2 right-2 text-gold text-2xl"><i class="fa-solid fa-dice-d20"></i></div>
+
+    <!-- ======================================================= -->
+    <!-- SCREEN 1: CINEMATIC INTRO ("Press Start" Screen)        -->
+    <!-- ======================================================= -->
+    <div id="intro-view" class="absolute inset-0 z-40 flex flex-col items-center justify-center hidden">
+        <div class="text-center px-4">
+            <h1 class="font-heading text-5xl sm:text-7xl md:text-8xl font-black text-parchment intro-title-glow mb-2 drop-shadow-2xl">
+                Chronicles of the Realm
+            </h1>
+            <p class="text-gold text-lg md:text-2xl font-serif italic mb-12 opacity-80 tracking-widest">
+                The Eternal Campaign Awaits
+            </p>
+            
+            <button onclick="transitionToAuth()" class="fantasy-btn-intro px-10 py-4 text-xl rounded-sm">
+                Enter The Realm
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- SCREEN 2: AUTHENTICATION PARCHMENT MODAL                -->
+    <!-- ======================================================= -->
+    <div id="auth-view" class="absolute inset-0 z-30 hidden flex items-center justify-center p-4">
+        <div class="parchment-bg p-10 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] w-full max-w-lg">
+            <!-- Corner Ornaments -->
+            <div class="absolute top-2 left-2 text-gold text-2xl opacity-70"><i class="fa-solid fa-dragon"></i></div>
+            <div class="absolute top-2 right-2 text-gold text-2xl opacity-70"><i class="fa-solid fa-khanda"></i></div>
+            <div class="absolute bottom-2 left-2 text-gold text-2xl opacity-70"><i class="fa-solid fa-dungeon"></i></div>
+            <div class="absolute bottom-2 right-2 text-gold text-2xl opacity-70"><i class="fa-solid fa-dice-d20"></i></div>
 
             <div class="text-center mb-6">
-                <h1 class="font-heading text-4xl font-bold text-ink drop-shadow-md mb-2">Chronicles of the Realm</h1>
-                <p class="text-sm italic text-gray-700">Identify thyself to access the campaigns</p>
+                <h2 class="font-heading text-3xl font-bold text-ink drop-shadow-md mb-2">Identify Thyself</h2>
+                <p class="text-sm italic text-gray-700">Prove your worth to access the archives.</p>
                 <hr class="ornamental-hr">
             </div>
 
@@ -156,7 +356,7 @@
                 </div>
 
                 <!-- Registration Only Fields -->
-                <div id="register-fields" class="hidden space-y-5 slide-up">
+                <div id="register-fields" class="hidden space-y-5">
                     <div>
                         <label class="block font-heading font-bold text-ink mb-1">Display Name</label>
                         <input type="text" id="auth-reg-username" class="fantasy-input w-full p-3 rounded" placeholder="E.g. Gandalf">
@@ -178,7 +378,7 @@
                             </label>
                         </div>
                     </div>
-                    <div id="dm-secret-container" class="hidden slide-up">
+                    <div id="dm-secret-container" class="hidden">
                         <label class="block font-heading font-bold text-blood mb-1">DM Sanctum Password</label>
                         <p class="text-xs italic mb-2">Required to edit campaign rules and world lore.</p>
                         <input type="password" id="auth-dm-secret" class="fantasy-input w-full p-3 rounded" placeholder="Sanctum passphrase...">
@@ -198,20 +398,23 @@
                     Continue with Google
                 </button>
                 
-                <button type="button" id="btn-guest-signin" class="w-full py-3 fantasy-btn-alt rounded mt-2">
-                    <i class="fa-solid fa-eye mr-2"></i>Enter as Guest
+                <button type="button" id="btn-guest-signin" class="w-full py-3 bg-wood text-parchment hover:text-white font-bold rounded shadow flex items-center justify-center gap-3 transition border border-gold hover:border-parchment mt-2">
+                    <i class="fa-solid fa-eye"></i> Enter as Guest
                 </button>
             </form>
         </div>
     </div>
 
+
+    <!-- ======================================================= -->
+    <!-- LOGIC & FIREBASE INTEGRATION                            -->
+    <!-- ======================================================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
             authDomain: "dndcampaigns-f3d48.firebaseapp.com",
@@ -222,14 +425,13 @@
             measurementId: "G-71DW54NTWV"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
-        let currentAuthMode = 'login'; // 'login' or 'register'
+        let currentAuthMode = 'login'; 
 
         window.showModal = (title, message) => {
             document.getElementById('modal-title').innerText = title;
@@ -237,8 +439,22 @@
             document.getElementById('modal-container').classList.remove('hidden');
         };
 
+        // UI Transition logic from Intro to Auth Form
+        window.transitionToAuth = () => {
+            const introView = document.getElementById('intro-view');
+            const authView = document.getElementById('auth-view');
+
+            introView.classList.remove('fade-in');
+            introView.classList.add('fade-out');
+
+            setTimeout(() => {
+                introView.classList.add('hidden');
+                authView.classList.remove('hidden');
+                authView.classList.add('slide-up');
+            }, 600); // Matches CSS animation timing roughly
+        };
+
         // --- AUTHENTICATION STATE OBSERVER ---
-        // Automatically redirects to campaigns.html if user is already logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User is authenticated! Redirecting...
@@ -246,18 +462,22 @@
                     window.location.href = "campaigns.html";
                 } catch(e) {
                     document.getElementById('initial-loading').classList.add('hidden');
+                    
+                    // Show a beautiful "Already Logged In" card floating over the ruins
                     document.getElementById('auth-view').innerHTML = `
-                        <div class="parchment-bg p-10 text-center shadow-2xl border-2 border-gold rounded-lg">
+                        <div class="parchment-bg p-10 text-center shadow-2xl border-2 border-gold rounded-lg max-w-sm">
                             <h2 class="text-blood font-heading text-2xl mb-4 font-bold">Already Logged In!</h2>
                             <p class="text-ink font-serif text-sm">Because you are viewing this in a preview window, automatic redirects are disabled.<br><br>Please manually open <b>campaigns.html</b> to continue.</p>
                         </div>
                     `;
                     document.getElementById('auth-view').classList.remove('hidden');
+                    document.getElementById('auth-view').classList.add('fade-in');
                 }
             } else {
-                // User is not logged in. Reveal the login form.
+                // User is NOT logged in. Show the cinematic Intro view first!
                 document.getElementById('initial-loading').classList.add('hidden');
-                document.getElementById('auth-view').classList.remove('hidden');
+                document.getElementById('intro-view').classList.remove('hidden');
+                document.getElementById('intro-view').classList.add('fade-in');
             }
         });
 
@@ -279,6 +499,10 @@
                 btnLogin.className = "flex-1 py-2 font-heading font-bold text-ink hover:text-blood transition";
                 registerFields.classList.remove('hidden');
                 submitBtn.innerText = "Forge Account";
+                
+                // Add a slide animation when opening the register fields
+                registerFields.classList.add('slide-up');
+                setTimeout(() => registerFields.classList.remove('slide-up'), 600);
             }
         };
 
@@ -295,21 +519,18 @@
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
                 
-                // Check if user already exists in our Firestore
                 const userDocRef = doc(db, 'users', user.uid);
                 const userDoc = await getDoc(userDocRef);
                 
                 if (!userDoc.exists()) {
-                    // Create default player profile for new Google users
                     await setDoc(userDocRef, {
                         username: user.displayName || 'Wanderer',
                         email: user.email,
-                        role: 'player', // Default to player, they can forge a DM account via email if needed
+                        role: 'player', 
                         dmSecret: null,
                         createdAt: new Date().toISOString()
                     });
                 }
-                // onAuthStateChanged will handle the redirect
             } catch (error) {
                 console.error("Google Auth Error:", error);
                 showModal("Error", error.message);
@@ -325,7 +546,6 @@
 
             try {
                 await signInAnonymously(auth);
-                // onAuthStateChanged will automatically catch this and redirect!
             } catch (error) {
                 console.error("Guest Auth Error:", error);
                 showModal("Error", "Failed to enter as guest. " + error.message);
@@ -348,7 +568,6 @@
 
             try {
                 if (currentAuthMode === 'register') {
-                    // REGISTRATION
                     const username = document.getElementById('auth-reg-username').value.trim();
                     if(!username) {
                         submitBtn.disabled = false;
@@ -365,11 +584,9 @@
                         return showModal("Hold!", "A Dungeon Master must set a Sanctum password.");
                     }
 
-                    // 1. Create account in Firebase Auth
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
 
-                    // 2. Save public profile data to Firestore 'users' collection
                     await setDoc(doc(db, 'users', user.uid), {
                         username: username,
                         email: email,
@@ -377,12 +594,8 @@
                         dmSecret: role === 'dm' ? dmSecret : null,
                         createdAt: new Date().toISOString()
                     });
-
-                    // onAuthStateChanged will automatically catch this and redirect!
                 } else {
-                    // LOGIN
                     await signInWithEmailAndPassword(auth, email, password);
-                    // onAuthStateChanged will automatically catch this and redirect!
                 }
             } catch (error) {
                 console.error("Auth Error:", error);
