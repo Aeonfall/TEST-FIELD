@@ -38,6 +38,32 @@
             overflow: hidden; /* Lock scrolling for cinematic feel */
         }
 
+        /* --- Audio HUD Control (Adapted to Theme) --- */
+        .audio-control {
+            position: fixed; /* Keep strictly pinned to the viewport */
+            top: 24px;
+            right: 24px;
+            z-index: 9999; /* Absolute highest layer to guarantee clicks register */
+            pointer-events: auto; /* Ensures it is always clickable */
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(197, 160, 89, 0.3); /* Gold border */
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #8a8a8a;
+            letter-spacing: 0.1rem;
+            transition: all 0.2s ease;
+            font-family: 'Cinzel', serif;
+            backdrop-filter: blur(4px);
+        }
+
+        .audio-control:hover {
+            color: #ffffff;
+            border-color: #c5a059; /* Solid gold */
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.4);
+        }
+
         /* --- Cinematic Background Elements --- */
         .ambient-fog {
             position: absolute;
@@ -209,6 +235,19 @@
 <body class="font-serif antialiased w-screen h-screen">
 
     <!-- ======================================================= -->
+    <!-- DOM AUDIO ELEMENTS                                      -->
+    <!-- ======================================================= -->
+    <audio id="bg-music" src="https://assets.mixkit.co/music/preview/mixkit-mysterious-ambient-118.mp3" loop preload="auto"></audio>
+    <audio id="click-sfx" src="https://assets.mixkit.co/sfx/preview/mixkit-page-turn-single-1104.mp3" preload="auto"></audio>
+
+    <!-- ======================================================= -->
+    <!-- AUDIO HUD CONTROLS                                      -->
+    <!-- ======================================================= -->
+    <div class="audio-control" onclick="toggleAudioInit()">
+        <span id="audio-icon"><i class="fa-solid fa-volume-xmark"></i> SOUND OFF</span>
+    </div>
+
+    <!-- ======================================================= -->
     <!-- CINEMATIC BACKGROUND (Remains persistent)               -->
     <!-- ======================================================= -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -315,7 +354,7 @@
                 The Eternal Campaign Awaits
             </p>
             
-            <button onclick="transitionToAuth()" class="fantasy-btn-intro px-10 py-4 text-xl rounded-sm">
+            <button onclick="enterGame()" class="fantasy-btn-intro px-10 py-4 text-xl rounded-sm">
                 Enter The Realm
             </button>
         </div>
@@ -405,45 +444,77 @@
         </div>
     </div>
 
-
     <!-- ======================================================= -->
-    <!-- LOGIC & FIREBASE INTEGRATION                            -->
+    <!-- UI & AUDIO LOGIC (Extracted to guarantee instant loads) -->
     <!-- ======================================================= -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    <script>
+        // Global State variables
+        window.currentAuthMode = 'login';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
-            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
-            projectId: "dndcampaigns-f3d48",
-            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
-            messagingSenderId: "1074491536795",
-            appId: "1:1074491536795:web:56211729489be776d79d3e",
-            measurementId: "G-71DW54NTWV"
+        // Audio initialization wrapper
+        window.toggleAudioInit = function() {
+            const bgMusic = document.getElementById('bg-music');
+            const audioIcon = document.getElementById('audio-icon');
+            
+            // Set volumes
+            bgMusic.volume = 0.4;
+            document.getElementById('click-sfx').volume = 0.8;
+
+            if (bgMusic.paused) {
+                // Fix: Optimistically update the UI instantly so it feels responsive!
+                audioIcon.innerHTML = '<i class="fa-solid fa-volume-high"></i> SOUND ON';
+                
+                const playPromise = bgMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Playback prevented:", error);
+                        // Revert UI if the browser blocked the playback
+                        audioIcon.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+                        window.showModal("Notice", "Your browser requires you to click anywhere on the page before playing background audio.");
+                    });
+                }
+            } else {
+                bgMusic.pause();
+                audioIcon.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+            }
         };
 
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        let currentAuthMode = 'login'; 
-
-        window.showModal = (title, message) => {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            document.getElementById('modal-container').classList.remove('hidden');
+        window.playSimpleClick = function() {
+            const bgMusic = document.getElementById('bg-music');
+            const clickSfx = document.getElementById('click-sfx');
+            
+            if(!bgMusic.paused) { // Only play SFX if they unmuted the audio
+                clickSfx.volume = 0.8;
+                clickSfx.currentTime = 0;
+                clickSfx.play().catch(err => console.log("SFX blocked:", err));
+            }
         };
 
-        // UI Transition logic from Intro to Auth Form
-        window.transitionToAuth = () => {
+        window.enterGame = function() {
             const introView = document.getElementById('intro-view');
             const authView = document.getElementById('auth-view');
+            const bgMusic = document.getElementById('bg-music');
+            const clickSfx = document.getElementById('click-sfx');
 
+            // 1. Play dramatic transition impact SFX immediately
+            clickSfx.volume = 0.8;
+            clickSfx.currentTime = 0;
+            clickSfx.play().catch(err => console.log("SFX blocked:", err));
+
+            // 2. Fade out background music seamlessly
+            let currentVol = bgMusic.volume;
+            let fadeInterval = setInterval(() => {
+                if (currentVol > 0.05) {
+                    currentVol -= 0.05;
+                    bgMusic.volume = currentVol;
+                } else {
+                    bgMusic.pause();
+                    bgMusic.volume = 0.4; // Reset volume
+                    clearInterval(fadeInterval);
+                }
+            }, 100);
+
+            // 3. Initiate the visual screen transition
             introView.classList.remove('fade-in');
             introView.classList.add('fade-out');
 
@@ -451,39 +522,13 @@
                 introView.classList.add('hidden');
                 authView.classList.remove('hidden');
                 authView.classList.add('slide-up');
-            }, 600); // Matches CSS animation timing roughly
+            }, 600);
         };
 
-        // --- AUTHENTICATION STATE OBSERVER ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // User is authenticated! Redirecting...
-                try {
-                    window.location.href = "campaigns.html";
-                } catch(e) {
-                    document.getElementById('initial-loading').classList.add('hidden');
-                    
-                    // Show a beautiful "Already Logged In" card floating over the ruins
-                    document.getElementById('auth-view').innerHTML = `
-                        <div class="parchment-bg p-10 text-center shadow-2xl border-2 border-gold rounded-lg max-w-sm">
-                            <h2 class="text-blood font-heading text-2xl mb-4 font-bold">Already Logged In!</h2>
-                            <p class="text-ink font-serif text-sm">Because you are viewing this in a preview window, automatic redirects are disabled.<br><br>Please manually open <b>campaigns.html</b> to continue.</p>
-                        </div>
-                    `;
-                    document.getElementById('auth-view').classList.remove('hidden');
-                    document.getElementById('auth-view').classList.add('fade-in');
-                }
-            } else {
-                // User is NOT logged in. Show the cinematic Intro view first!
-                document.getElementById('initial-loading').classList.add('hidden');
-                document.getElementById('intro-view').classList.remove('hidden');
-                document.getElementById('intro-view').classList.add('fade-in');
-            }
-        });
-
-        // Tab Switching Logic
-        window.switchAuthTab = (mode) => {
-            currentAuthMode = mode;
+        window.switchAuthTab = function(mode) {
+            window.playSimpleClick();
+            window.currentAuthMode = mode;
+            
             const btnLogin = document.getElementById('tab-login');
             const btnRegister = document.getElementById('tab-register');
             const registerFields = document.getElementById('register-fields');
@@ -500,11 +545,75 @@
                 registerFields.classList.remove('hidden');
                 submitBtn.innerText = "Forge Account";
                 
-                // Add a slide animation when opening the register fields
                 registerFields.classList.add('slide-up');
                 setTimeout(() => registerFields.classList.remove('slide-up'), 600);
             }
         };
+
+        window.showModal = function(title, message) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('modal-container').classList.remove('hidden');
+        };
+    </script>
+
+
+    <!-- ======================================================= -->
+    <!-- LOGIC & FIREBASE INTEGRATION                            -->
+    <!-- ======================================================= -->
+    <script type="module">
+        // FIX: Version changed from 12.14.0 (which doesn't exist and breaks the script) to 11.6.1 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e",
+            measurementId: "G-71DW54NTWV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        
+        // FIX: Wrapped analytics in try/catch to prevent Adblockers from crashing the entire app
+        let analytics;
+        try {
+            analytics = getAnalytics(app);
+        } catch(e) {
+            console.log("Analytics blocked by client.");
+        }
+        
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // --- AUTHENTICATION STATE OBSERVER ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                try {
+                    window.location.href = "campaigns.html";
+                } catch(e) {
+                    document.getElementById('initial-loading').classList.add('hidden');
+                    document.getElementById('auth-view').innerHTML = `
+                        <div class="parchment-bg p-10 text-center shadow-2xl border-2 border-gold rounded-lg max-w-sm">
+                            <h2 class="text-blood font-heading text-2xl mb-4 font-bold">Already Logged In!</h2>
+                            <p class="text-ink font-serif text-sm">Because you are viewing this in a preview window, automatic redirects are disabled.<br><br>Please manually open <b>campaigns.html</b> to continue.</p>
+                        </div>
+                    `;
+                    document.getElementById('auth-view').classList.remove('hidden');
+                    document.getElementById('auth-view').classList.add('fade-in');
+                }
+            } else {
+                document.getElementById('initial-loading').classList.add('hidden');
+                document.getElementById('intro-view').classList.remove('hidden');
+                document.getElementById('intro-view').classList.add('fade-in');
+            }
+        });
 
         // Handle DM Secret visibility
         document.querySelectorAll('input[name="auth-role"]').forEach(radio => {
@@ -514,7 +623,15 @@
         });
 
         // Handle Google Sign-In
-        document.getElementById('btn-google-signin').addEventListener('click', async () => {
+        document.getElementById('btn-google-signin').addEventListener('click', async (e) => {
+            e.preventDefault(); // Prevent any accidental form submission
+            window.playSimpleClick();
+            
+            // FIX: Prevent browser crashes in the preview window iframe
+            if (window !== window.top) {
+                return window.showModal("Preview Limitation", "Google Sign-In popups are blocked by your browser when viewed inside a preview window. To test Google Sign-In, please host this file or open it directly in a new tab.");
+            }
+
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
@@ -533,12 +650,22 @@
                 }
             } catch (error) {
                 console.error("Google Auth Error:", error);
-                showModal("Error", error.message);
+                
+                // Fix: Providing specific errors to help you debug if you are testing on local domains
+                if (error.code === 'auth/unauthorized-domain') {
+                    window.showModal("Domain Error", "This domain is not authorized in your Firebase Console. Please add it to your Authorized Domains.");
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    window.showModal("Notice", "The login popup was closed.");
+                } else {
+                    window.showModal("Error", "Google Sign in failed: " + error.message);
+                }
             }
         });
 
         // Handle Guest Sign-In
         document.getElementById('btn-guest-signin').addEventListener('click', async () => {
+            window.playSimpleClick();
+
             const submitBtn = document.getElementById('btn-guest-signin');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin mr-2'></i>Opening Gates...";
@@ -548,7 +675,7 @@
                 await signInAnonymously(auth);
             } catch (error) {
                 console.error("Guest Auth Error:", error);
-                showModal("Error", "Failed to enter as guest. " + error.message);
+                window.showModal("Error", "Failed to enter as guest. " + error.message);
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
@@ -560,19 +687,21 @@
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value.trim();
             
-            if(!email || !password) return showModal("Hold!", "Email and password are required.");
+            if(!email || !password) return window.showModal("Hold!", "Email and password are required.");
+            
+            window.playSimpleClick();
             
             const submitBtn = document.getElementById('auth-submit-btn');
             submitBtn.innerText = "Entering the Realm...";
             submitBtn.disabled = true;
 
             try {
-                if (currentAuthMode === 'register') {
+                if (window.currentAuthMode === 'register') {
                     const username = document.getElementById('auth-reg-username').value.trim();
                     if(!username) {
                         submitBtn.disabled = false;
                         submitBtn.innerText = "Forge Account";
-                        return showModal("Hold!", "You must choose a display name.");
+                        return window.showModal("Hold!", "You must choose a display name.");
                     }
 
                     const role = document.querySelector('input[name="auth-role"]:checked').value;
@@ -581,7 +710,7 @@
                     if (role === 'dm' && !dmSecret) {
                         submitBtn.innerText = "Forge Account";
                         submitBtn.disabled = false;
-                        return showModal("Hold!", "A Dungeon Master must set a Sanctum password.");
+                        return window.showModal("Hold!", "A Dungeon Master must set a Sanctum password.");
                     }
 
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -600,14 +729,14 @@
             } catch (error) {
                 console.error("Auth Error:", error);
                 submitBtn.disabled = false;
-                submitBtn.innerText = currentAuthMode === 'login' ? "Enter the Realm" : "Forge Account";
+                submitBtn.innerText = window.currentAuthMode === 'login' ? "Enter the Realm" : "Forge Account";
                 
                 if(error.code === 'auth/email-already-in-use') {
-                    showModal("Access Denied", "That email is already claimed by another traveler.");
+                    window.showModal("Access Denied", "That email is already claimed by another traveler.");
                 } else if (error.code === 'auth/invalid-credential') {
-                    showModal("Access Denied", "Incorrect email or passphrase.");
+                    window.showModal("Access Denied", "Incorrect email or passphrase.");
                 } else {
-                    showModal("Error", error.message);
+                    window.showModal("Error", error.message);
                 }
             }
         });
