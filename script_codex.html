@@ -292,12 +292,27 @@
     <div id="transfer-modal" class="modal-overlay hidden z-[900]">
         <div class="modal-container !max-w-md text-center">
             <h2 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-2 border-b-2 border-gold pb-2">Transfer Knowledge</h2>
-            <p class="text-xs font-serif text-ink italic mb-6">Select a character to inject this script directly into their abilities ledger.</p>
+            <p class="text-xs font-serif text-ink italic mb-6">Select a character or vocation to inject this script directly into their ledger.</p>
             
-            <select id="transfer-char-select" class="form-input mb-8 text-center text-sm font-bold uppercase font-heading cursor-pointer">
-                <option value="">Select Target...</option>
-                <!-- Populated by JS -->
-            </select>
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="tiny-label text-left">To Character</label>
+                    <select id="transfer-char-select" class="form-input text-center text-sm font-bold uppercase font-heading cursor-pointer">
+                        <option value="">Select Target...</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <div class="transfer-or-divider text-xs font-heading text-blood font-black">-- OR --</div>
+                
+                <div class="transfer-voc-container">
+                    <label class="tiny-label text-left">To Vocation (Terminal Scripts)</label>
+                    <select id="transfer-voc-select" class="form-input text-center text-sm font-bold uppercase font-heading cursor-pointer">
+                        <option value="">Select Vocation...</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+            </div>
 
             <div class="flex justify-center gap-4 font-heading">
                 <button onclick="document.getElementById('transfer-modal').classList.add('hidden')" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink px-4">Cancel</button>
@@ -363,6 +378,7 @@
         // --- STATE ---
         let scripts = [];
         let characters = []; // For transfer feature
+        let vocationsData = []; // For vocation transfer
         let currentUser = null;
         let activeRole = 'player';
         
@@ -856,19 +872,40 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
             targetTransferScript = scripts.find(s => s.id === scriptId);
             if (!targetTransferScript) return;
             
-            const select = document.getElementById('transfer-char-select');
-            select.innerHTML = '<option value="">Select Target...</option>';
+            const charSelect = document.getElementById('transfer-char-select');
+            charSelect.innerHTML = '<option value="">Select Character...</option>';
             
             // Filter characters: DMs see all PCs, Players see only their own PCs
             const isDM = activeRole === 'dm';
             const validTargets = characters.filter(c => c.type === 'PC' && !c.isDeleted && (isDM || c.owner === currentUser.username));
             
             if (validTargets.length === 0) {
-                select.innerHTML = '<option value="">No valid characters found</option>';
+                charSelect.innerHTML = '<option value="">No valid characters found</option>';
             } else {
                 validTargets.forEach(c => {
-                    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                    charSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
                 });
+            }
+            
+            // Vocation Dropdown (DM Only)
+            const vocSelect = document.getElementById('transfer-voc-select');
+            const vocContainer = document.querySelector('.transfer-voc-container');
+            const orDivider = document.querySelector('.transfer-or-divider');
+            
+            if (isDM) {
+                vocContainer.classList.remove('hidden');
+                orDivider.classList.remove('hidden');
+                vocSelect.innerHTML = '<option value="">Select Vocation...</option>';
+                if (vocationsData.length === 0) {
+                    vocSelect.innerHTML += '<option value="">No vocations found</option>';
+                } else {
+                    vocationsData.forEach(v => {
+                        vocSelect.innerHTML += `<option value="${v.id}">${v.name}</option>`;
+                    });
+                }
+            } else {
+                vocContainer.classList.add('hidden');
+                orDivider.classList.add('hidden');
             }
             
             document.getElementById('transfer-modal').classList.remove('hidden');
@@ -876,45 +913,80 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
 
         window.executeTransfer = async () => {
             const charId = document.getElementById('transfer-char-select').value;
-            if (!charId || !targetTransferScript) return window.showToast("Select a character first.");
+            const vocId = document.getElementById('transfer-voc-select')?.value;
+            const isDM = activeRole === 'dm';
             
-            const char = characters.find(c => c.id === charId);
-            if (!char) return window.showToast("Character not found.");
+            if (!charId && !vocId) return window.showToast("Select a target first.");
+            if (!targetTransferScript) return window.showToast("No script selected.");
 
-            // Format description and compile the move object
+            // Format description for character ledger
             let fullDesc = `**Cast Time:** ${targetTransferScript.activation || '--'}\n**Range:** ${targetTransferScript.range || '--'}\n**Duration:** ${targetTransferScript.duration || '--'}\n**Components:** ${targetTransferScript.comp || '--'}\n\n${targetTransferScript.desc}`;
-            
-            const newMove = {
-                name: targetTransferScript.name,
-                roll: "", // Scripts usually don't have a single hardcoded roll
-                desc: fullDesc,
-                lvl: targetTransferScript.level === '0' ? 'Tricks (0)' : `Level ${targetTransferScript.level}`,
-                type: "scriptcasting",
-                school: targetTransferScript.school || '',
-                sType: targetTransferScript.sType || '',
-                activation: targetTransferScript.activation || '',
-                range: targetTransferScript.range || '',
-                comp: targetTransferScript.comp || '',
-                duration: targetTransferScript.duration || '',
-                scaling: targetTransferScript.scaling || ''
-            };
-
-            const updatedMoves = [...(char.moves || []), newMove];
 
             try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), {
-                    moves: updatedMoves
-                });
+                if (charId) {
+                    const char = characters.find(c => c.id === charId);
+                    if (!char) return window.showToast("Character not found.");
+                    
+                    const newMove = {
+                        name: targetTransferScript.name,
+                        roll: "", // Scripts usually don't have a single hardcoded roll
+                        desc: fullDesc,
+                        lvl: targetTransferScript.level === '0' ? 'Tricks (0)' : `Level ${targetTransferScript.level}`,
+                        type: "scriptcasting",
+                        school: targetTransferScript.school || '',
+                        sType: targetTransferScript.sType || '',
+                        activation: targetTransferScript.activation || '',
+                        range: targetTransferScript.range || '',
+                        comp: targetTransferScript.comp || '',
+                        duration: targetTransferScript.duration || '',
+                        scaling: targetTransferScript.scaling || ''
+                    };
+
+                    const updatedMoves = [...(char.moves || []), newMove];
+
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', charId), {
+                        moves: updatedMoves
+                    });
+                    window.showToast(`Script injected into ${char.name}'s ledger!`);
+                } 
+                else if (vocId && isDM) {
+                    const voc = vocationsData.find(v => v.id === vocId);
+                    if (!voc) return window.showToast("Vocation not found.");
+
+                    const VOCATIONS_COLLECTION = `handbookVocations_${appId}`;
+                    const targetLevelStr = targetTransferScript.level === '0' ? 'Tricks' : `Tier ${targetTransferScript.level}`;
+                    let tiers = JSON.parse(voc.scriptTiers || '[]');
+                    
+                    // Look for existing tier with matching level or create new
+                    let tierIndex = tiers.findIndex(t => (t.title || '').toLowerCase().includes(targetLevelStr.toLowerCase()) || (t.title || '').toLowerCase().includes(`level ${targetTransferScript.level}`));
+                    
+                    const listEntry = `\n- **${targetTransferScript.name}** [${targetTransferScript.school || 'Universal'}]: ${targetTransferScript.activation}, ${targetTransferScript.range}, ${targetTransferScript.duration}`;
+                    
+                    if (tierIndex >= 0) {
+                        tiers[tierIndex].list = (tiers[tierIndex].list || '') + listEntry;
+                    } else {
+                        tiers.push({ title: `${targetLevelStr} Scripts`, list: listEntry.trim() });
+                    }
+
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', VOCATIONS_COLLECTION, vocId), {
+                        scriptTiers: JSON.stringify(tiers)
+                    });
+                    window.showToast(`Script injected into ${voc.name}'s Terminal Scripts!`);
+                }
+
                 document.getElementById('transfer-modal').classList.add('hidden');
-                window.showToast(`Script injected into ${char.name}'s ledger!`);
                 targetTransferScript = null;
+                
+                // Clear dropdowns
+                document.getElementById('transfer-char-select').value = '';
+                if(document.getElementById('transfer-voc-select')) document.getElementById('transfer-voc-select').value = '';
+                
             } catch (err) {
                 console.error(err);
                 window.showToast("Transfer failed.");
             }
         };
 
-        // --- STREAMING_CHUNK:Firebase Auth and Listeners Init... ---
         // --- AUTH & INITIALIZATION ---
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
@@ -1010,6 +1082,12 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                 // 3. Listen for Characters (For Transfer Feature)
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => {
                     characters = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                });
+
+                // 4. Listen for Vocations (For Transfer Feature)
+                const VOCATIONS_COLLECTION = `handbookVocations_${appId}`;
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', VOCATIONS_COLLECTION), (snap) => {
+                    vocationsData = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 });
 
             } catch (error) {
