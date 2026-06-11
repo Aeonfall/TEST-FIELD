@@ -591,7 +591,7 @@
                 if (item.type === 'Material Component') {
                     codexLinkHtml = `
                     <div class="mt-3 border-t border-gold/30 pt-3">
-                        <button onclick="window.routeTo('scriptcodex.html')" class="w-full bg-black/30 hover:bg-black/50 text-gold border border-gold/40 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-all hover:shadow-[0_0_10px_rgba(197,160,89,0.3)]"><i class="fa-solid fa-scroll mr-2"></i> Consult Script Codex</button>
+                        <button onclick="window.routeTo('script_codex.html')" class="w-full bg-black/30 hover:bg-black/50 text-gold border border-gold/40 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-all hover:shadow-[0_0_10px_rgba(197,160,89,0.3)]"><i class="fa-solid fa-scroll mr-2"></i> Consult Script Codex</button>
                     </div>`;
                 }
 
@@ -914,6 +914,38 @@
                 // 1. Listen for Items
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
                     allItems = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.name > b.name ? 1 : -1));
+                    
+                    const targetItemName = new URLSearchParams(window.location.search).get('targetItem');
+                    if (targetItemName && !window.targetItemFocused) {
+                        const targetObj = allItems.find(i => i.name.toLowerCase() === targetItemName.toLowerCase());
+                        if (targetObj) {
+                            if (targetObj.visibility === 'public') {
+                                document.body.classList.remove('theme-bazaar');
+                                currentFilter = 'public';
+                            }
+                            if (targetObj.type) {
+                                currentTypeFilter = targetObj.type;
+                            }
+                            
+                            // Adjust UI without manually double rendering
+                            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                            const filterTab = document.getElementById(`tab-${currentFilter}`);
+                            if (filterTab) filterTab.classList.add('active');
+                            
+                            document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+                            const typeTab = document.getElementById(`tab-type-${currentTypeFilter.replace(/\s+/g, '-')}`);
+                            if (typeTab) typeTab.classList.add('active');
+                            
+                            const titles = { 'store': 'The Bazaar', 'public': 'Public Codex', 'private': 'Personal Cache' };
+                            const titleEl = document.getElementById('view-title');
+                            if (titleEl) {
+                                titleEl.textContent = titles[currentFilter];
+                                titleEl.className = currentFilter === 'store' ? "font-heading text-3xl font-black text-bazaar-orange uppercase tracking-widest drop-shadow-lg hidden lg:block" : "font-heading text-2xl font-black text-gold uppercase tracking-widest drop-shadow hidden lg:block";
+                            }
+                            window.targetItemFocused = true;
+                        }
+                    }
+                    
                     window.renderItems();
                 }, (err) => {
                     console.error("Archive failure:", err);
