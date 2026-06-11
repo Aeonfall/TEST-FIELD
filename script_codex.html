@@ -259,260 +259,31 @@
 
     <!-- DEFINITIONS MODAL -->
     <div id="definitions-modal" class="modal-overlay hidden z-[850]">
-        <div class="modal-container max-w-4xl max-h-[85vh] overflow-y-auto scrollbar-hide relative !p-0">
+        <div class="modal-container max-w-4xl max-h-[85vh] overflow-y-auto scrollbar-hide relative !p-0 flex flex-col">
             <div class="sticky top-0 bg-[#f1e5c5] p-6 border-b-2 border-gold z-10 flex justify-between items-center shadow-md">
                 <div>
                     <h2 class="font-heading text-2xl font-black text-blood uppercase tracking-widest leading-none">Codex Definitions</h2>
                     <p class="text-xs font-serif text-ink italic mt-1">Foundational rules of magic and spellcasting.</p>
                 </div>
-                <button onclick="document.getElementById('definitions-modal').classList.add('hidden')" class="text-2xl text-gray-500 hover:text-blood transition-colors"><i class="fa-solid fa-times"></i></button>
+                <div class="flex items-center gap-4">
+                    <button id="btn-edit-definitions" onclick="window.toggleDefinitionsEditMode(true)" class="hidden text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink"><i class="fa-solid fa-pen mr-1"></i>Edit</button>
+                    <button onclick="document.getElementById('definitions-modal').classList.add('hidden')" class="text-2xl text-gray-500 hover:text-blood transition-colors"><i class="fa-solid fa-times"></i></button>
+                </div>
             </div>
             
-            <div class="p-6 md:p-8 space-y-6 font-serif text-[13px] text-ink leading-relaxed">
-                <div>
-                    <p class="mb-2"><strong class="font-heading text-blood text-base uppercase tracking-widest">Scriptcasting</strong></p>
-                    <p class="mb-2">The Eternal Heart saturates Aeonfall with unseen energies. Across the world, these energies can be shaped into precise patterns known as <strong>Scripts</strong>.</p>
-                    <p>This section provides the rules for Scriptcasting. Different Vocations access Scripts in different ways. Some learn them through study and experimentation, others through instinctive connection to the Heart, ancient relics, mutations, or forgotten Founder knowledge. Regardless of its source, all Scriptcasting follows the rules presented here.</p>
+            <!-- View Mode -->
+            <div id="definitions-view" class="p-6 md:p-8 space-y-4 font-serif text-[13px] text-ink leading-relaxed overflow-y-auto">
+                <!-- Rendered Markdown Content -->
+            </div>
+
+            <!-- Edit Mode -->
+            <div id="definitions-edit" class="hidden p-6 md:p-8 flex flex-col h-full bg-black/5">
+                <p class="text-xs font-serif italic text-gray-600 mb-2">Use Markdown formatting: ### for headers, **bold**, *italic*, and - for bullets.</p>
+                <textarea id="definitions-textarea" class="form-input flex-grow min-h-[400px] font-serif text-sm leading-relaxed mb-4 bg-white/70" placeholder="Enter codex definitions here..."></textarea>
+                <div class="flex justify-end gap-4 font-heading mt-auto pt-4 border-t border-gold/30">
+                    <button onclick="window.toggleDefinitionsEditMode(false)" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink px-4">Cancel</button>
+                    <button onclick="window.saveDefinitions()" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg">Save Definitions</button>
                 </div>
-
-                <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">What Is a Script?</h3>
-                    <p class="mb-2">A Script is a structured expression of Heart-energy.</p>
-                    <p class="mb-2">When a Scriptcaster uses a Script, they shape the invisible currents of the Eternal Heart into a specific pattern that produces a desired effect. To outside observers, this may appear as glowing sigils, streams of energy, shifting runes, altered matter, summoned constructs, or impossible phenomena.</p>
-                    <p class="mb-2">Scripts can be used as tools, weapons, defenses, healing techniques, communication methods, and reality-altering effects. Some Scripts create energy, others manipulate matter, minds, life, or the environment itself.</p>
-                    <p>Many Scripts originate from Founder archives, forgotten civilizations, ancient relics, or discoveries made by modern Scriptcasters. New Scripts continue to be developed throughout Aeonfall.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Script Tier</h3>
-                        <p class="mb-2">Every Script belongs to a <strong>Tier</strong> from 0 to 9. A Script's Tier represents the complexity and power required to shape Heart-energy into that effect.</p>
-                        <ul class="list-disc pl-6 mb-2 space-y-1">
-                            <li><strong>Tier 0:</strong> Tricks</li>
-                            <li><strong>Tier 1–3:</strong> Basic Scripts</li>
-                            <li><strong>Tier 4–6:</strong> Advanced Scripts</li>
-                            <li><strong>Tier 7–9:</strong> Master Scripts</li>
-                        </ul>
-                        <p>Higher-Tier Scripts require greater mastery and cannot be used until a Scriptcaster gains sufficient experience. A character's level and a Script's Tier do not directly correspond. Most Scriptcasters cannot access Tier 9 Scripts until the highest levels of play.</p>
-                    </div>
-
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Known and Prepared</h3>
-                        <p class="mb-2">Before a Scriptcaster can use a Script, they must either:</p>
-                        <ul class="list-disc pl-6 mb-2 space-y-1">
-                            <li>Know the Script permanently.</li>
-                            <li>Have it prepared.</li>
-                            <li>Have access to it through a relic, archive, implant, or other special feature.</li>
-                        </ul>
-                        <p>Different Vocations manage Scripts differently. Some maintain a list of Scripts permanently fixed in memory. Others prepare a selection after rest, study, meditation, maintenance, or recalibration. The number available depends on level and class features.</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Script Slots</h3>
-                        <p class="mb-2">Shaping Heart-energy places strain on both body and mind. Each Scriptcaster possesses a limited number of <strong>Script Slots</strong>, representing how much energy they can safely channel before requiring rest.</p>
-                        <p class="mb-2">When a Script is used, a Script Slot of the Script's Tier or higher is expended. All expended Script Slots are restored after a Long Rest unless a feature states otherwise.</p>
-                        <p class="font-bold text-blood italic mt-4">Using a Script at a Higher Tier</p>
-                        <p>A Script can be executed using a higher-Tier Script Slot. When this occurs, the Script is treated as being cast at that higher Tier. Many Scripts become stronger when executed this way, gaining increased damage, range, duration, targets, or additional effects.</p>
-                    </div>
-
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Focus & Armor</h3>
-                        <p class="font-bold text-blood italic">Scriptcasting Focus</p>
-                        <p class="mb-2">Most Scriptcasters channel their abilities through a Scriptcasting Focus (e.g., Founder Relays, Signal Rods, Arc-Cores, Memory Shards, Resonance Totems, Script Tablets, Engraved Weapons, or Heart-Touched Relics).</p>
-                        <p class="mb-4">A Scriptcasting Focus replaces most material components unless a Script specifically requires a unique component with a cost.</p>
-                        
-                        <p class="font-bold text-blood italic">Casting in Armor</p>
-                        <p>Executing Scripts requires precise control and movement. You must be proficient with any armor you wear to use Scripts while wearing it. Otherwise, the armor interferes with the gestures, movements, and concentration required for Scriptcasting.</p>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Tricks & Concord</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h4 class="font-heading font-bold text-[15px] mb-1">Tricks (Tier 0)</h4>
-                            <p>Tricks are Tier 0 Scripts. A Trick can be used at will without expending a Script Slot and does not require preparation. Through constant repetition, the pattern becomes instinctive, allowing the Scriptcaster to execute it repeatedly with minimal effort.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-heading font-bold text-[15px] mb-1">Concord</h4>
-                            <p>Certain Scripts possess the <strong>Concord</strong> tag. A Concord Script can be executed through an extended and precise process known as entering Concord. Executing a Script through Concord takes <strong>10 additional minutes</strong> beyond its normal execution time and does not expend a Script Slot. To use Concord, you must possess a feature granting access to it.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[rgba(139,90,43,0.05)] border-l-4 border-blood p-5 rounded-r shadow-inner">
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">The Discipline of Mechanum</h3>
-                    <p class="mb-3">Mechanum is the Discipline of technology, machinery, circuitry, and the fusion of Heart-energy with engineered systems. Unlike other Disciplines, Mechanum emerged after the Founders learned to merge Scriptcasting principles with advanced technology.</p>
-                    <p class="mb-3">To many scholars, Mechanum represents the bridge between magic and science. To others, there is no distinction—both are merely different methods of shaping the Eternal Heart.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <h4 class="font-heading font-bold text-[12px] uppercase text-gray-700 mb-1">Common Mechanum Uses</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li>Controlling machines and constructs.</li>
-                                <li>Activating/disabling technology.</li>
-                                <li>Manipulating grids & power networks.</li>
-                                <li>Creating hard-light / digital illusions.</li>
-                                <li>Repairing mechanical devices.</li>
-                                <li>Communicating with AI.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="font-heading font-bold text-[12px] uppercase text-gray-700 mb-1">Visual Manifestations</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li>Glowing circuitry & holographic runes.</li>
-                                <li>Streams of data-like symbols.</li>
-                                <li>Arc-light discharges.</li>
-                                <li>Geometric projections.</li>
-                                <li>Mechanical drones & Founder interface patterns.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <p class="text-xs mb-4"><strong>Examples of Scripts:</strong> Interface, System Scan, Arc Pulse, Drone Deployment, Circuit Lock, Override Protocol, Holographic Veil, Emergency Reboot, Signal Disruption, Construct Repair, Neural Link, Power Surge, Machine Communion, Data Extraction, Automated Defense Grid.</p>
-
-                    <h4 class="font-heading font-bold text-[12px] uppercase text-gray-700 mb-2">Relationship to Other Disciplines</h4>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                        <li><strong>Aegis + Mechanum:</strong> Tech shields & defensive systems.</li>
-                        <li><strong>Calling + Mechanum:</strong> Summons drones & artificial entities.</li>
-                        <li><strong>Sight + Mechanum:</strong> Scans data, sensors, and networks.</li>
-                        <li><strong>Dominion + Mechanum:</strong> Influences AI and cybernetic minds.</li>
-                        <li><strong>Ruin + Mechanum:</strong> Destructive energy via tech systems.</li>
-                        <li><strong>Veil + Mechanum:</strong> Generates holograms & digital deception.</li>
-                        <li><strong>Mortis + Mechanum:</strong> Synthetic life & machine resurrection.</li>
-                        <li><strong>Forge + Mechanum:</strong> Modifies cybernetics & mechanical structures.</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Executing a Script</h3>
-                    <p class="mb-4">Each Script contains the following information: Name, Tier, Discipline, Execution Time, Range, Components, and Duration. The remainder of the entry describes the Script's effects.</p>
-
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Execution Time</h4>
-                    <p class="mb-2">Most Scripts require one Action. Some require a Bonus Action, Reaction, or longer periods.</p>
-                    <ul class="list-disc pl-6 mb-4 space-y-2">
-                        <li><strong>Bonus Action:</strong> Executed with exceptional speed. If you execute a Script as a Bonus Action, the only other Script you may use during that turn is a Trick with an Execution Time of one Action.</li>
-                        <li><strong>Reaction:</strong> Triggered in response to specific events. The description explains exactly when it may be used.</li>
-                        <li><strong>Extended Execution:</strong> Requires minutes or hours. You must continue focusing on the Script. If interrupted, the Script fails, but no Script Slot is expended.</li>
-                    </ul>
-
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Range & Targets</h4>
-                    <p class="mb-2">A Script's target must be within its listed Range. Scripts with a Range of <em>Self</em> affect only the Scriptcaster or originate from them. Once a Script takes effect, its results are not limited by Range unless stated otherwise.</p>
-                    <ul class="list-disc pl-6 mb-4 space-y-2">
-                        <li><strong>A Clear Path:</strong> A target must have a clear path from the Scriptcaster. Total Cover blocks targeting unless stated otherwise.</li>
-                        <li><strong>Targeting Yourself:</strong> Unless specified, a Scriptcaster may target themselves with any Script capable of affecting a willing creature.</li>
-                    </ul>
-
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Components</h4>
-                    <p class="mb-2">Most Scripts require one or more of the following components:</p>
-                    <ul class="list-disc pl-6 mb-4 space-y-2">
-                        <li><strong>Vocal (V):</strong> A spoken phrase, coded sequence, harmonic tone, or command word.</li>
-                        <li><strong>Somatic (S):</strong> Movements, gestures, or runic patterns. A free hand is required.</li>
-                        <li><strong>Material (M):</strong> Unique substances, relic fragments, or catalysts. Consumed components must be provided each time the Script is used.</li>
-                    </ul>
-
-                    <h4 class="font-heading font-bold text-[15px] mt-4 mb-1 text-blood">Duration & Concentration</h4>
-                    <p class="mb-2">A Duration determines how long effects remain active. <strong>Instantaneous</strong> Scripts produce their effect and immediately conclude.</p>
-                    <p class="mb-2"><strong>Concentration:</strong> If concentration ends, the Script immediately ends as well. You may concentrate on only one Script at a time. Concentration ends if:</p>
-                    <ul class="list-disc pl-6 mb-4 space-y-2">
-                        <li>You begin concentrating on another Script.</li>
-                        <li>You become Incapacitated or die.</li>
-                        <li>You fail a Constitution saving throw after taking damage (DC = 10 or half the damage taken, whichever is higher).</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 pb-1">Script Disciplines</h3>
-                    <p class="mb-3">Script scholars classify all known Scripts into eight Disciplines, describing how a Script manipulates Heart-energy.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Aegis</strong>
-                            Protection, barriers, wards, nullification, and defensive manipulation.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Calling</strong>
-                            Summoning, transportation, creation, and relocation.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Sight</strong>
-                            Information gathering, prediction, detection, and revelation.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Dominion</strong>
-                            Mental influence, emotional manipulation, commands, and control.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Ruin</strong>
-                            Energy projection, elemental force, destruction, and healing through Heart-energy.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Veil</strong>
-                            Deception, concealment, sensory manipulation, and false perceptions.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Mortis</strong>
-                            Life, death, vitality, decay, undeath, and soul manipulation.
-                        </div>
-                        <div class="bg-black/5 p-3 rounded border border-gold/30">
-                            <strong class="font-heading text-[13px] uppercase tracking-widest text-blood block mb-1">Forge</strong>
-                            Transformation, enhancement, adaptation, and alteration of matter.
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-2 mt-6 pb-1">Areas of Effect</h3>
-                    <p class="mb-2">A Script’s effect expands in straight lines from the point of origin. Total Cover blocks the spread of an Area of Effect.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Cone</h4>
-                            <p class="text-xs">Extends in a direction you choose from its origin. Width at a given point equals that point’s distance from the origin. Origin is not included unless decided otherwise.</p>
-                        </div>
-                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Cube</h4>
-                            <p class="text-xs">Origin lies anywhere on a face of the cubic effect. Size is expressed as the length of each side. Origin is not included unless decided otherwise.</p>
-                        </div>
-                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Cylinder</h4>
-                            <p class="text-xs">Origin is the center of a circle. Energy expands in straight lines to the perimeter, then shoots up or down to the cylinder's height. Origin is included.</p>
-                        </div>
-                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30">
-                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Line</h4>
-                            <p class="text-xs">Extends in a straight path up to its length and covers an area defined by its width. Origin is not included unless decided otherwise.</p>
-                        </div>
-                        <div class="bg-[rgba(139,90,43,0.05)] p-4 rounded border border-gold/30 md:col-span-2 text-center md:text-left">
-                            <h4 class="font-heading font-bold text-[14px] mb-1 text-ink">Sphere</h4>
-                            <p class="text-xs">Extends outward from the origin point. The size is expressed as a radius in feet. Origin is included.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 border-t border-gold/30 pt-6">
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">Resistance Checks</h3>
-                        <p class="mb-4">Many Scripts force targets to make a saving throw to resist effects. The Script specifies which ability is used.</p>
-                        <div class="p-3 bg-black/10 rounded border-2 border-gold/40 text-center font-bold shadow-inner">
-                            Script Save DC = 8 + Proficiency + Ability Mod + Special
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mb-3 pb-1">Script Attacks</h3>
-                        <p class="mb-4">Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged attack rules (disadvantage if within 5 ft of a hostile).</p>
-                        <div class="p-3 bg-black/10 rounded border-2 border-gold/40 text-center font-bold mb-3 shadow-inner">
-                            Script Attack = Proficiency + Ability Mod
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 pt-4 border-t border-gold/30 text-xs text-gray-600 text-center italic">
-                    Combining Script Effects: Different Scripts combine normally while their durations overlap. The same Script used multiple times does not stack with itself; only the most powerful version applies.
-                </div>
-
             </div>
         </div>
     </div>
@@ -601,6 +372,7 @@
         let activeScriptId = null;
         let targetTransferScript = null;
         let campaignSettings = { terms: {} };
+        let customDefinitions = null;
 
         // --- VOCATION CONFIGURATION ---
         const VOC_KEYS = [
@@ -733,6 +505,189 @@
 
         window.closeViewModal = () => {
             document.getElementById('script-view-modal').classList.add('hidden');
+        };
+
+        // --- DEFINITIONS SYSTEM ---
+        const DEFAULT_DEFINITIONS = `**Scriptcasting**
+The Eternal Heart saturates Aeonfall with unseen energies. Across the world, these energies can be shaped into precise patterns known as **Scripts**.
+
+This section provides the rules for Scriptcasting. Different Vocations access Scripts in different ways. Some learn them through study and experimentation, others through instinctive connection to the Heart, ancient relics, mutations, or forgotten Founder knowledge. Regardless of its source, all Scriptcasting follows the rules presented here.
+
+### What Is a Script?
+A Script is a structured expression of Heart-energy.
+
+When a Scriptcaster uses a Script, they shape the invisible currents of the Eternal Heart into a specific pattern that produces a desired effect. To outside observers, this may appear as glowing sigils, streams of energy, shifting runes, altered matter, summoned constructs, or impossible phenomena.
+
+Scripts can be used as tools, weapons, defenses, healing techniques, communication methods, and reality-altering effects. Some Scripts create energy, others manipulate matter, minds, life, or the environment itself.
+
+### Script Tier
+Every Script belongs to a **Tier** from 0 to 9. A Script's Tier represents the complexity and power required to shape Heart-energy into that effect.
+
+- **Tier 0:** Tricks
+- **Tier 1–3:** Basic Scripts
+- **Tier 4–6:** Advanced Scripts
+- **Tier 7–9:** Master Scripts
+
+Higher-Tier Scripts require greater mastery and cannot be used until a Scriptcaster gains sufficient experience. A character's level and a Script's Tier do not directly correspond. Most Scriptcasters cannot access Tier 9 Scripts until the highest levels of play.
+
+### Known and Prepared
+Before a Scriptcaster can use a Script, they must either:
+
+- Know the Script permanently.
+- Have it prepared.
+- Have access to it through a relic, archive, implant, or other special feature.
+
+Different Vocations manage Scripts differently. Some maintain a list of Scripts permanently fixed in memory. Others prepare a selection after rest, study, meditation, maintenance, or recalibration. The number available depends on level and class features.
+
+### Script Slots
+Shaping Heart-energy places strain on both body and mind. Each Scriptcaster possesses a limited number of **Script Slots**, representing how much energy they can safely channel before requiring rest.
+
+When a Script is used, a Script Slot of the Script's Tier or higher is expended. All expended Script Slots are restored after a Long Rest unless a feature states otherwise.
+
+*Using a Script at a Higher Tier*
+A Script can be executed using a higher-Tier Script Slot. When this occurs, the Script is treated as being cast at that higher Tier. Many Scripts become stronger when executed this way, gaining increased damage, range, duration, targets, or additional effects.
+
+### Focus & Armor
+*Scriptcasting Focus*
+Most Scriptcasters channel their abilities through a Scriptcasting Focus (e.g., Founder Relays, Signal Rods, Arc-Cores, Memory Shards, Resonance Totems, Script Tablets, Engraved Weapons, or Heart-Touched Relics). A Scriptcasting Focus replaces most material components unless a Script specifically requires a unique component with a cost.
+
+*Casting in Armor*
+Executing Scripts requires precise control and movement. You must be proficient with any armor you wear to use Scripts while wearing it. Otherwise, the armor interferes with the gestures, movements, and concentration required for Scriptcasting.
+
+### Tricks & Concord
+*Tricks (Tier 0)*
+Tricks are Tier 0 Scripts. A Trick can be used at will without expending a Script Slot and does not require preparation. Through constant repetition, the pattern becomes instinctive, allowing the Scriptcaster to execute it repeatedly with minimal effort.
+
+*Concord*
+Certain Scripts possess the **Concord** tag. A Concord Script can be executed through an extended and precise process known as entering Concord. Executing a Script through Concord takes **10 additional minutes** beyond its normal execution time and does not expend a Script Slot. To use Concord, you must possess a feature granting access to it.
+
+### Executing a Script
+Each Script contains the following information: Name, Tier, Discipline, Execution Time, Range, Components, and Duration. The remainder of the entry describes the Script's effects.
+
+*Execution Time*
+Most Scripts require one Action. Some require a Bonus Action, Reaction, or longer periods.
+- **Bonus Action:** Executed with exceptional speed. If you execute a Script as a Bonus Action, the only other Script you may use during that turn is a Trick with an Execution Time of one Action.
+- **Reaction:** Triggered in response to specific events. The description explains exactly when it may be used.
+- **Extended Execution:** Requires minutes or hours. You must continue focusing on the Script. If interrupted, the Script fails, but no Script Slot is expended.
+
+*Range & Targets*
+A Script's target must be within its listed Range. Scripts with a Range of *Self* affect only the Scriptcaster or originate from them. Once a Script takes effect, its results are not limited by Range unless stated otherwise.
+- **A Clear Path:** A target must have a clear path from the Scriptcaster. Total Cover blocks targeting unless stated otherwise.
+- **Targeting Yourself:** Unless specified, a Scriptcaster may target themselves with any Script capable of affecting a willing creature.
+
+*Components*
+Most Scripts require one or more of the following components:
+- **Vocal (V):** A spoken phrase, coded sequence, harmonic tone, or command word.
+- **Somatic (S):** Movements, gestures, or runic patterns. A free hand is required.
+- **Material (M):** Unique substances, relic fragments, or catalysts. Consumed components must be provided each time the Script is used.
+
+*Duration & Concentration*
+A Duration determines how long effects remain active. **Instantaneous** Scripts produce their effect and immediately conclude.
+
+**Concentration:** If concentration ends, the Script immediately ends as well. You may concentrate on only one Script at a time. Concentration ends if:
+- You begin concentrating on another Script.
+- You become Incapacitated or die.
+- You fail a Constitution saving throw after taking damage (DC = 10 or half the damage taken, whichever is higher).
+
+### Script Disciplines
+Script scholars classify all known Scripts into eight Disciplines, describing how a Script manipulates Heart-energy.
+- **Aegis:** Protection, barriers, wards, nullification, and defensive manipulation.
+- **Calling:** Summoning, transportation, creation, and relocation.
+- **Sight:** Information gathering, prediction, detection, and revelation.
+- **Dominion:** Mental influence, emotional manipulation, commands, and control.
+- **Ruin:** Energy projection, elemental force, destruction, and healing through Heart-energy.
+- **Veil:** Deception, concealment, sensory manipulation, and false perceptions.
+- **Mortis:** Life, death, vitality, decay, undeath, and soul manipulation.
+- **Forge:** Transformation, enhancement, adaptation, and alteration of matter.
+
+### Areas of Effect
+A Script’s effect expands in straight lines from the point of origin. Total Cover blocks the spread of an Area of Effect.
+- **Cone:** Extends in a direction you choose from its origin. Width at a given point equals that point’s distance from the origin. Origin is not included unless decided otherwise.
+- **Cube:** Origin lies anywhere on a face of the cubic effect. Size is expressed as the length of each side. Origin is not included unless decided otherwise.
+- **Cylinder:** Origin is the center of a circle. Energy expands in straight lines to the perimeter, then shoots up or down to the cylinder's height. Origin is included.
+- **Line:** Extends in a straight path up to its length and covers an area defined by its width. Origin is not included unless decided otherwise.
+- **Sphere:** Extends outward from the origin point. The size is expressed as a radius in feet. Origin is included.
+
+### Resistance Checks & Attacks
+Many Scripts force targets to make a saving throw to resist effects. The Script specifies which ability is used. 
+**Script Save DC = 8 + Proficiency + Ability Mod + Special**
+
+Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged attack rules (disadvantage if within 5 ft of a hostile). 
+**Script Attack = Proficiency + Ability Mod**
+
+*Combining Script Effects:* Different Scripts combine normally while their durations overlap. The same Script used multiple times does not stack with itself; only the most powerful version applies.`;
+
+        window.parseMarkdown = (text) => {
+            if (!text) return '';
+            let html = text.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // Encode HTML tags
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mt-6 mb-2 pb-1">$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2 class="font-heading text-2xl font-bold text-blood uppercase tracking-wide border-b-2 border-gold mt-8 mb-4 pb-2">$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1 class="font-heading text-3xl font-black text-blood uppercase tracking-widest mt-8 mb-4">$1</h1>');
+            
+            // Emphasis
+            html = html.replace(/\*\*(.*?)\*\*/g, '<b class="font-bold text-ink">$1</b>');
+            html = html.replace(/\*(.*?)\*/g, '<i class="italic text-ink/90">$1</i>');
+            
+            // Lists
+            html = html.replace(/^\- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>');
+            
+            // Paragraphs
+            let paragraphs = html.split(/\n\n+/);
+            html = paragraphs.map(p => {
+                if(p.trim().startsWith('<h') || p.trim().startsWith('<li')) return p;
+                return `<p class="mb-3">${p.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+            
+            // Group List Items
+            html = html.replace(/(<li[^>]*>[\s\S]*?<\/li>)/g, '<ul class="mb-4 space-y-1 ml-2">$1</ul>');
+            html = html.replace(/<\/ul>\s*<ul class="mb-4 space-y-1 ml-2">/g, ''); 
+            
+            return html;
+        };
+
+        window.renderDefinitions = () => {
+            const container = document.getElementById('definitions-view');
+            if (container) {
+                container.innerHTML = window.parseMarkdown(customDefinitions || DEFAULT_DEFINITIONS);
+            }
+        };
+
+        window.toggleDefinitionsEditMode = (editMode) => {
+            if (editMode && activeRole !== 'dm') {
+                window.showToast("Only the Game Master can edit the Codex Definitions.");
+                return;
+            }
+
+            const viewDiv = document.getElementById('definitions-view');
+            const editDiv = document.getElementById('definitions-edit');
+            
+            if (editMode) {
+                viewDiv.classList.add('hidden');
+                editDiv.classList.remove('hidden');
+                document.getElementById('definitions-textarea').value = customDefinitions || DEFAULT_DEFINITIONS;
+            } else {
+                viewDiv.classList.remove('hidden');
+                editDiv.classList.add('hidden');
+            }
+        };
+
+        window.saveDefinitions = async () => {
+            if (activeRole !== 'dm') return;
+            const newText = document.getElementById('definitions-textarea').value.trim();
+            
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'codexDefinitions'), {
+                    text: newText,
+                    updatedAt: Date.now()
+                }, { merge: true });
+                window.showToast("Definitions saved.");
+                window.toggleDefinitionsEditMode(false);
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving definitions.");
+            }
         };
 
         window.renderScripts = () => {
@@ -1001,6 +956,7 @@
                 // Toggle DM Features
                 const isDM = activeRole === 'dm';
                 document.getElementById('btn-create-script')?.classList.toggle('hidden', !isDM);
+                document.getElementById('btn-edit-definitions')?.classList.toggle('hidden', !isDM);
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
@@ -1034,6 +990,16 @@
                         window.setLevelFilter(currentLevelFilter);
                     }
                 }, (err) => console.error("Terminology Sync Error:", err));
+
+                // Listen for Codex Definitions
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'codexDefinitions'), (docSnap) => {
+                    if (docSnap.exists()) {
+                        customDefinitions = docSnap.data().text;
+                    } else {
+                        customDefinitions = null;
+                    }
+                    window.renderDefinitions();
+                }, (err) => console.error("Definitions Sync Error:", err));
 
                 // 2. Listen for Scripts
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
