@@ -461,19 +461,21 @@
             container.innerHTML = html;
         };
 
-        window.setTypeFilter = (typeId) => {
+        window.setTypeFilter = (typeId, skipRender = false) => {
             currentTypeFilter = typeId;
             document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
             const activeTab = document.getElementById(`tab-type-${typeId.replace(/\s+/g, '-')}`);
             if (activeTab) activeTab.classList.add('active');
-            window.renderItems();
+            
+            if (!skipRender) window.renderItems();
         };
 
         // --- FILTERING & RENDERING ---
-        window.setFilter = (filter) => {
+        window.setFilter = (filter, skipRender = false) => {
             currentFilter = filter;
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(`tab-${filter}`).classList.add('active');
+            const activeTab = document.getElementById(`tab-${filter}`);
+            if (activeTab) activeTab.classList.add('active');
             
             // Toggle Background Theme
             if (filter === 'store') {
@@ -489,15 +491,16 @@
             };
             
             const titleEl = document.getElementById('view-title');
-            titleEl.textContent = titles[filter];
-            
-            if(filter === 'store') {
-                titleEl.className = "font-heading text-3xl font-black text-bazaar-orange uppercase tracking-widest drop-shadow-lg hidden lg:block";
-            } else {
-                titleEl.className = "font-heading text-2xl font-black text-gold uppercase tracking-widest drop-shadow hidden lg:block";
+            if (titleEl) {
+                titleEl.textContent = titles[filter];
+                if(filter === 'store') {
+                    titleEl.className = "font-heading text-3xl font-black text-bazaar-orange uppercase tracking-widest drop-shadow-lg hidden lg:block";
+                } else {
+                    titleEl.className = "font-heading text-2xl font-black text-gold uppercase tracking-widest drop-shadow hidden lg:block";
+                }
             }
             
-            window.renderItems();
+            if (!skipRender) window.renderItems();
         };
 
         const getRarityColor = (rarity) => {
@@ -634,18 +637,19 @@
                 `;
             }).join('');
 
-            // Scroll to the targeted item if one exists
+            // Scroll to the targeted item if one exists and hasn't scrolled yet
             const urlParamsLocal = new URLSearchParams(window.location.search);
             const targetItemName = urlParamsLocal.get('targetItem');
-            if (targetItemName) {
+            if (targetItemName && !window.hasScrolledToTarget) {
                  const targetObj = visibleItems.find(i => i.name.toLowerCase() === targetItemName.toLowerCase());
                  if (targetObj) {
                      setTimeout(() => {
                          const element = document.getElementById(`item-${targetObj.id}`);
                          if (element) {
                              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                             window.hasScrolledToTarget = true;
                          }
-                     }, 500); // Wait for render
+                     }, 300); // Wait for render paint
                  }
             }
         };
@@ -907,7 +911,7 @@
                 
                 // Initialize Tabs
                 window.renderTypeTabs();
-                window.setFilter('store');
+                window.setFilter('store'); // Default, gets overridden by URL params if needed
                 
                 // Setup Database Listeners
                 
@@ -920,28 +924,15 @@
                         const targetObj = allItems.find(i => i.name.toLowerCase() === targetItemName.toLowerCase());
                         if (targetObj) {
                             if (targetObj.visibility === 'public') {
-                                document.body.classList.remove('theme-bazaar');
-                                currentFilter = 'public';
+                                window.setFilter('public', true);
+                            } else if (targetObj.visibility === 'private') {
+                                window.setFilter('private', true);
                             }
+                            
                             if (targetObj.type) {
-                                currentTypeFilter = targetObj.type;
+                                window.setTypeFilter(targetObj.type, true);
                             }
                             
-                            // Adjust UI without manually double rendering
-                            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                            const filterTab = document.getElementById(`tab-${currentFilter}`);
-                            if (filterTab) filterTab.classList.add('active');
-                            
-                            document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
-                            const typeTab = document.getElementById(`tab-type-${currentTypeFilter.replace(/\s+/g, '-')}`);
-                            if (typeTab) typeTab.classList.add('active');
-                            
-                            const titles = { 'store': 'The Bazaar', 'public': 'Public Codex', 'private': 'Personal Cache' };
-                            const titleEl = document.getElementById('view-title');
-                            if (titleEl) {
-                                titleEl.textContent = titles[currentFilter];
-                                titleEl.className = currentFilter === 'store' ? "font-heading text-3xl font-black text-bazaar-orange uppercase tracking-widest drop-shadow-lg hidden lg:block" : "font-heading text-2xl font-black text-gold uppercase tracking-widest drop-shadow hidden lg:block";
-                            }
                             window.targetItemFocused = true;
                         }
                     }
