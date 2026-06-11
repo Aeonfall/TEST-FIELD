@@ -197,7 +197,7 @@
     </div>
 
     <!-- FORGE / EDIT ITEM MODAL -->
-    <div id="item-modal" class="modal-overlay hidden">
+    <div id="item-modal" class="modal-overlay hidden z-[950]">
         <div class="parchment-card p-6 md:p-8 w-full max-w-2xl overflow-y-auto max-h-[90vh] scrollbar-hide">
             <h3 id="item-modal-title" class="font-heading text-2xl font-black text-blood uppercase mb-4 border-b border-blood/30 pb-2 text-center">Forge Artifact</h3>
             
@@ -909,35 +909,6 @@
                 window.renderTypeTabs();
                 window.setFilter('store');
                 
-                // Setup Database Listeners
-                
-                // 1. Listen for Items
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
-                    allItems = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.name > b.name ? 1 : -1));
-                    window.renderItems();
-                }, (err) => {
-                    console.error("Archive failure:", err);
-                    window.showToast("Archival Stream Error");
-                });
-
-                // 2. Listen for Characters (for purchasing logic)
-                if (activeRole !== 'dm') {
-                    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => {
-                        myCharacters = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                    });
-                }
-
-            } catch (error) {
-                console.error("Initialization Error:", error);
-                const initLoad = document.getElementById('initial-loading');
-                if (initLoad) {
-                    initLoad.innerHTML = `<h2 class="font-heading text-2xl text-blood">Connection Failed</h2><p class="text-xs text-gray-400 mt-2">${error.message}</p>`;
-                }
-            }
-        });
-    </script>
-</body>
-</html>
                 // Setup Database Listeners
                 
                 // 1. Listen for Items
