@@ -209,6 +209,48 @@
         </div>
     </div>
 
+    <!-- VIEW ITEM MODAL -->
+    <div id="item-view-modal" class="modal-overlay hidden" onclick="if(event.target===this) window.closeItemViewModal()">
+        <div class="parchment-card bg-[#f1e5c5] w-full max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-hide relative p-8 md:p-12 border-4 border-double border-gold/40 shadow-2xl z-[200001]">
+            <button onclick="window.closeItemViewModal()" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-blood transition-colors bg-black/5 rounded-full w-10 h-10 flex items-center justify-center border border-gold/30 z-50"><i class="fa-solid fa-times"></i></button>
+            
+            <div class="border-b-2 border-gold pb-4 mb-6 text-center mt-4">
+                <h2 id="view-item-name" class="font-heading text-3xl md:text-4xl font-black text-ink uppercase tracking-widest drop-shadow-sm mb-2">Item Name</h2>
+                <div class="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest font-heading">
+                    <span id="view-item-type" class="text-gray-700 bg-black/5 px-2 py-0.5 rounded">Type</span>
+                    <span class="text-gray-400">•</span>
+                    <span id="view-item-rarity" class="font-black drop-shadow-sm">Rarity</span>
+                </div>
+            </div>
+
+            <div class="flex justify-center mb-6 w-full" id="view-item-image-container">
+                <!-- Image -->
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6 p-4 bg-[rgba(139,90,43,0.05)] rounded border border-gold/30 text-sm font-serif shadow-inner">
+                <div class="text-center"><b class="block text-blood font-heading uppercase text-[10px] mb-1">Weight</b><span id="view-item-weight" class="text-ink font-bold">--</span></div>
+                <div class="text-center"><b class="block text-blood font-heading uppercase text-[10px] mb-1">Base Value</b><span id="view-item-value" class="text-blood font-black tracking-wider">--</span></div>
+            </div>
+
+            <div id="view-item-properties-container" class="hidden mb-6 bg-[rgba(139,37,37,0.05)] p-4 rounded border-l-4 border-blood">
+                <b class="block text-blood font-heading uppercase text-[10px] mb-1">Properties</b>
+                <p id="view-item-properties" class="italic text-blood font-bold font-serif text-sm"></p>
+            </div>
+
+            <div id="view-item-desc" class="font-serif text-sm md:text-base text-ink leading-relaxed whitespace-pre-wrap mb-6">
+                Description goes here...
+            </div>
+
+            <div id="view-item-codex-container" class="hidden mt-4 border-t border-gold/30 pt-6">
+                 <button onclick="window.routeTo('script_codex.html')" class="w-full bg-black/30 hover:bg-black/50 text-gold border border-gold/40 py-3 rounded text-xs font-black uppercase tracking-widest transition-all hover:shadow-[0_0_10px_rgba(197,160,89,0.3)]"><i class="fa-solid fa-scroll mr-2"></i> Consult Script Codex</button>
+            </div>
+            
+            <div id="view-item-buy-container" class="mt-6 border-t border-gold/30 pt-6 text-center hidden">
+                 <!-- Buy button goes here -->
+            </div>
+        </div>
+    </div>
+
     <!-- FORGE / EDIT ITEM MODAL -->
     <div id="item-modal" class="modal-overlay hidden z-[950]">
         <div class="parchment-card p-6 md:p-8 w-full max-w-2xl overflow-y-auto max-h-[90vh] scrollbar-hide">
@@ -340,6 +382,12 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX FOR MEDIA -->
+    <div id="lightbox" class="fixed inset-0 z-[9999] bg-black/95 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="window.closeLightbox()">
+        <button class="absolute top-6 right-8 text-gray-400 text-4xl hover:text-gold z-[10001] transition-colors drop-shadow-lg">&times;</button>
+        <div id="lightbox-content" class="relative max-w-[95vw] max-h-[95vh] w-full h-full flex items-center justify-center pointer-events-none"></div>
+    </div>
+
     <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
@@ -383,6 +431,14 @@
             } catch(e) {
                 window.showToast("Redirects disabled in preview window.");
             }
+        };
+
+        window.parseAeonfallContent = (text) => {
+            if (!text) return '';
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+            html = html.replace(/\n/g, '<br>');
+            return html;
         };
 
         // --- FIREBASE SETUP ---
@@ -540,6 +596,110 @@
             }
         };
 
+        // --- VIEW ITEM MODAL ---
+        window.viewItem = (id) => {
+            const item = allItems.find(i => i.id === id);
+            if (!item) return;
+
+            // Remove the flashing highlight from the grid item so it stops pulsing
+            const cardEl = document.getElementById(`item-${id}`);
+            if (cardEl) {
+                cardEl.classList.remove('target-highlight');
+            }
+            
+            // Scrub the target from the URL so it doesn't return on background syncs
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                if (url.searchParams.has('targetItem')) {
+                    url.searchParams.delete('targetItem');
+                    window.history.replaceState(null, '', url);
+                }
+            }
+
+            document.getElementById('view-item-name').textContent = item.name;
+            document.getElementById('view-item-type').textContent = item.type || 'Item';
+            
+            const rarityEl = document.getElementById('view-item-rarity');
+            rarityEl.textContent = item.rarity || 'Unknown';
+            rarityEl.className = `font-black drop-shadow-sm ${getRarityColor(item.rarity)}`;
+
+            const imgContainer = document.getElementById('view-item-image-container');
+            if (item.artUrl) {
+                imgContainer.innerHTML = `<img src="${item.artUrl}" class="max-w-full h-auto max-h-64 object-contain rounded border-2 border-gold/40 shadow-lg cursor-zoom-in" onclick="event.stopPropagation(); window.zoomMedia('${item.artUrl}')">`;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.innerHTML = '';
+                imgContainer.classList.add('hidden');
+            }
+
+            document.getElementById('view-item-weight').textContent = item.weight || '--';
+            document.getElementById('view-item-value').innerHTML = `<i class="fa-solid fa-gem text-gold mr-1"></i> ${window.scrapToFormat(item.baseValueScrap)}`;
+
+            const propsContainer = document.getElementById('view-item-properties-container');
+            if (item.properties) {
+                document.getElementById('view-item-properties').textContent = item.properties;
+                propsContainer.classList.remove('hidden');
+            } else {
+                propsContainer.classList.add('hidden');
+            }
+
+            document.getElementById('view-item-desc').innerHTML = window.parseAeonfallContent(item.desc);
+
+            // Handle Buy Button inside view modal
+            const buyContainer = document.getElementById('view-item-buy-container');
+            if (currentFilter === 'store' && activeRole !== 'dm') {
+                buyContainer.innerHTML = `<button onclick="window.closeItemViewModal(); window.openBuyModal('${item.id}')" class="bg-gradient-to-b from-bazaar-orange to-bazaar-red text-white border-2 border-bazaar-yellow font-heading font-black tracking-widest uppercase text-xs px-8 py-3 rounded shadow-[0_4px_10px_rgba(0,0,0,0.5)] hover:from-bazaar-yellow hover:to-bazaar-orange transition-all hover:-translate-y-1"><i class="fa-solid fa-coins mr-2"></i> Acquire Artifact</button>`;
+                buyContainer.classList.remove('hidden');
+            } else {
+                buyContainer.classList.add('hidden');
+            }
+
+            // Handle Codex Link inside view modal
+            const codexContainer = document.getElementById('view-item-codex-container');
+            if (item.type === 'Material Component') {
+                codexContainer.classList.remove('hidden');
+            } else {
+                codexContainer.classList.add('hidden');
+            }
+
+            document.getElementById('item-view-modal').classList.remove('hidden');
+        };
+
+        window.closeItemViewModal = () => {
+            document.getElementById('item-view-modal').classList.add('hidden');
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete('targetItem');
+                window.history.replaceState(null, '', url);
+            }
+        };
+
+        window.zoomMedia = (url) => { 
+            if (!url || url.trim() === 'undefined' || url.trim() === 'null') return; 
+            const lb = document.getElementById('lightbox');
+            const content = document.getElementById('lightbox-content');
+            
+            if (url.includes('.mp4') || url.includes('.webm')) {
+                content.innerHTML = `<video src="${url}" autoplay controls loop class="max-w-full max-h-full object-contain rounded border-2 border-gold shadow-2xl pointer-events-auto"></video>`;
+            } else {
+                content.innerHTML = `<img src="${url}" class="max-w-full max-h-full object-contain rounded border-2 border-gold shadow-2xl pointer-events-auto">`;
+            }
+            
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+            requestAnimationFrame(() => lb.classList.remove('opacity-0'));
+        };
+
+        window.closeLightbox = () => {
+            const lb = document.getElementById('lightbox');
+            lb.classList.add('opacity-0');
+            setTimeout(() => {
+                lb.classList.add('hidden');
+                lb.classList.remove('flex');
+                document.getElementById('lightbox-content').innerHTML = '';
+            }, 300); 
+        };
+
         window.renderItems = () => {
             const isDM = activeRole === 'dm';
             const grid = document.getElementById('items-grid');
@@ -574,8 +734,8 @@
                 if (isDM) {
                     dmControlsHtml = `
                         <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
-                            <button onclick="window.openItemModal('${item.id}')" class="text-gold hover:text-yellow-600 bg-white/80 rounded px-2 py-1 shadow-sm transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="window.triggerDel('${item.id}')" class="text-blood hover:text-red-500 bg-white/80 rounded px-2 py-1 shadow-sm transition-colors" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="event.stopPropagation(); window.openItemModal('${item.id}')" class="text-gold hover:text-yellow-600 bg-white/80 rounded px-2 py-1 shadow-sm transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="event.stopPropagation(); window.triggerDel('${item.id}')" class="text-blood hover:text-red-500 bg-white/80 rounded px-2 py-1 shadow-sm transition-colors" title="Delete"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     `;
                 }
@@ -585,7 +745,7 @@
                 let buyBtnHtml = '';
                 if (currentFilter === 'store') {
                     if (!isDM) {
-                        buyBtnHtml = `<div class="mt-auto pt-4 border-t border-gold/40 flex justify-center"><button onclick="window.openBuyModal('${item.id}')" class="w-full bg-gradient-to-b from-bazaar-orange to-bazaar-red text-white border-2 border-bazaar-yellow font-heading font-black tracking-widest uppercase text-[10px] py-3 rounded shadow-[0_4px_10px_rgba(0,0,0,0.5)] hover:from-bazaar-yellow hover:to-bazaar-orange transition-all hover:-translate-y-1"><i class="fa-solid fa-coins mr-2"></i>Acquire</button></div>`;
+                        buyBtnHtml = `<div class="mt-auto pt-4 border-t border-gold/40 flex justify-center"><button onclick="event.stopPropagation(); window.openBuyModal('${item.id}')" class="w-full bg-gradient-to-b from-bazaar-orange to-bazaar-red text-white border-2 border-bazaar-yellow font-heading font-black tracking-widest uppercase text-[10px] py-3 rounded shadow-[0_4px_10px_rgba(0,0,0,0.5)] hover:from-bazaar-yellow hover:to-bazaar-orange transition-all hover:-translate-y-1"><i class="fa-solid fa-coins mr-2"></i>Acquire</button></div>`;
                     } else {
                         buyBtnHtml = `<div class="mt-auto pt-4 border-t border-gold/40 text-center text-[9px] font-bold text-gray-500 uppercase tracking-widest font-heading bg-black/10 p-2 rounded">Players can purchase this</div>`;
                     }
@@ -607,11 +767,11 @@
                 if (item.type === 'Material Component') {
                     codexLinkHtml = `
                     <div class="mt-3 border-t border-gold/30 pt-3">
-                        <button onclick="window.routeTo('script_codex.html')" class="w-full bg-black/30 hover:bg-black/50 text-gold border border-gold/40 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-all hover:shadow-[0_0_10px_rgba(197,160,89,0.3)]"><i class="fa-solid fa-scroll mr-2"></i> Consult Script Codex</button>
+                        <button onclick="event.stopPropagation(); window.routeTo('script_codex.html')" class="w-full bg-black/30 hover:bg-black/50 text-gold border border-gold/40 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-all hover:shadow-[0_0_10px_rgba(197,160,89,0.3)]"><i class="fa-solid fa-scroll mr-2"></i> Consult Script Codex</button>
                     </div>`;
                 }
 
-                // If user arrives via URL param targetItem (linked from Codex), highlight the item
+                // If user arrives via URL param targetItem (linked from Codex), highlight the item initially
                 const urlParamsLocal = new URLSearchParams(window.location.search);
                 const targetItemName = urlParamsLocal.get('targetItem');
                 let highlightClass = '';
@@ -620,7 +780,7 @@
                 }
 
                 return `
-                    <div class="parchment-card p-6 md:p-8 h-full flex flex-col hover:-translate-y-2 transition-transform duration-300 shadow-xl ${borderGlow} ${highlightClass}" id="item-${item.id}">
+                    <div class="parchment-card cursor-pointer p-6 md:p-8 h-full flex flex-col hover:-translate-y-2 transition-transform duration-300 shadow-xl ${borderGlow} ${highlightClass}" id="item-${item.id}" onclick="window.viewItem('${item.id}')">
                         ${dmControlsHtml}
                         
                         <div class="mb-4 pr-16 border-b border-gold/30 pb-3">
@@ -639,10 +799,14 @@
                             <span class="text-blood tracking-wider font-black text-sm drop-shadow-sm"><i class="fa-solid fa-gem text-gold mr-1"></i> ${costFormatted}</span>
                         </div>
 
-                        <div class="mb-6 flex-grow text-sm font-serif text-ink leading-relaxed">
-                            ${item.desc ? `<p class="mb-4 whitespace-pre-wrap">${item.desc}</p>` : ''}
-                            ${item.properties ? `<div class="bg-[rgba(139,37,37,0.05)] p-3 rounded border-l-4 border-blood"><p class="italic text-blood font-bold">${item.properties}</p></div>` : ''}
+                        <div class="mb-4 flex-grow text-sm font-serif text-ink leading-relaxed relative">
+                            <div class="line-clamp-3">
+                                ${item.desc ? `<p class="whitespace-pre-wrap">${item.desc}</p>` : ''}
+                            </div>
+                            ${item.properties ? `<div class="bg-[rgba(139,37,37,0.05)] p-2 rounded border-l-4 border-blood mt-2"><p class="italic text-blood font-bold text-xs line-clamp-1">${item.properties}</p></div>` : ''}
                         </div>
+                        
+                        <div class="text-[10px] text-gray-500 italic mt-auto mb-4 text-center border-t border-gold/20 pt-2">(Click to inspect artifact)</div>
                         
                         ${codexLinkHtml}
                         ${buyBtnHtml}
@@ -660,9 +824,10 @@
                          const element = document.getElementById(`item-${targetObj.id}`);
                          if (element) {
                              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                             window.viewItem(targetObj.id); // Auto-open the detailed modal!
                              window.hasScrolledToTarget = true;
                          }
-                     }, 500); // Increased wait time slightly to ensure grid layout settles
+                     }, 500); // Wait for grid layout to settle
                  }
             }
         };
