@@ -31,7 +31,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -521,6 +521,12 @@
 
         window.closeViewModal = () => {
             document.getElementById('script-view-modal').classList.add('hidden');
+            // Remove targetScript from URL cleanly so it doesn't reopen on refresh
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete('targetScript');
+                window.history.replaceState(null, '', url);
+            }
         };
 
         // --- DEFINITIONS SYSTEM ---
@@ -960,7 +966,8 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                     // Look for existing tier with matching level or create new
                     let tierIndex = tiers.findIndex(t => (t.title || '').toLowerCase().includes(targetLevelStr.toLowerCase()) || (t.title || '').toLowerCase().includes(`level ${targetTransferScript.level}`));
                     
-                    const listEntry = `\n- **${targetTransferScript.name}** [${targetTransferScript.school || 'Universal'}]: ${targetTransferScript.activation}, ${targetTransferScript.range}, ${targetTransferScript.duration}`;
+                    // Generate clickable HTML link string
+                    const listEntry = `\n- <a href="#" onclick="event.preventDefault(); window.routeTo('script_codex.html?targetScript=${targetTransferScript.id}');" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="View Script" contenteditable="false">**${targetTransferScript.name.toUpperCase()}**</a> [${targetTransferScript.school || 'Universal'}]: ${targetTransferScript.activation}, ${targetTransferScript.range}, ${targetTransferScript.duration}`;
                     
                     if (tierIndex >= 0) {
                         tiers[tierIndex].list = (tiers[tierIndex].list || '') + listEntry;
@@ -1077,6 +1084,14 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
                     scripts = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.name > b.name ? 1 : -1));
                     window.renderScripts();
+
+                    // Open specific script if requested via URL (e.g. from Vocations page link)
+                    const targetScriptId = new URLSearchParams(window.location.search).get('targetScript');
+                    if (targetScriptId && !window.targetScriptOpened) {
+                        setTimeout(() => window.viewScript(targetScriptId), 200); // Wait briefly for DOM to be ready
+                        window.targetScriptOpened = true; 
+                    }
+
                 }, (err) => console.error("Script Sync Error:", err));
 
                 // 3. Listen for Characters (For Transfer Feature)
