@@ -134,7 +134,7 @@
                         <a href="#" onclick="window.routeTo('beasts.html'); return false;" id="nav-beasts" class="nav-link">Bestiary</a>
                         <a href="#" onclick="window.routeTo('backpack.html'); return false;" id="nav-backpack" class="nav-link">Backpack</a>
                         <a href="#" onclick="window.routeTo('handbook.html'); return false;" id="nav-handbook" class="nav-link">Handbook</a>
-                        <a href="#" onclick="window.routeTo('scriptcodex.html'); return false;" class="nav-link active">Script Codex</a>
+                        <a href="#" onclick="window.routeTo('script_codex.html'); return false;" class="nav-link active">Script Codex</a>
                         <a href="#" onclick="window.routeTo('graveyard.html'); return false;" id="nav-graveyard" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
@@ -966,8 +966,8 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                     // Look for existing tier with matching level or create new
                     let tierIndex = tiers.findIndex(t => (t.title || '').toLowerCase().includes(targetLevelStr.toLowerCase()) || (t.title || '').toLowerCase().includes(`level ${targetTransferScript.level}`));
                     
-                    // Generate clickable HTML link string
-                    const listEntry = `\n- <a href="#" onclick="event.preventDefault(); window.routeTo('script_codex.html?targetScript=${targetTransferScript.id}');" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="View Script" contenteditable="false">**${targetTransferScript.name.toUpperCase()}**</a> [${targetTransferScript.school || 'Universal'}]: ${targetTransferScript.activation}, ${targetTransferScript.range}, ${targetTransferScript.duration}`;
+                    // Generate clickable HTML link string. Uses direct href to prevent double query strings from older routeTo functions.
+                    const listEntry = `\n- <a href="#" onclick="event.preventDefault(); const cid = new URLSearchParams(window.location.search).get('id'); window.location.href = 'script_codex.html?targetScript=${targetTransferScript.id}' + (cid ? '&id=' + cid : '');" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="View Script" contenteditable="false">**${targetTransferScript.name.toUpperCase()}**</a> [${targetTransferScript.school || 'Universal'}]: ${targetTransferScript.activation}, ${targetTransferScript.range}, ${targetTransferScript.duration}`;
                     
                     if (tierIndex >= 0) {
                         tiers[tierIndex].list = (tiers[tierIndex].list || '') + listEntry;
