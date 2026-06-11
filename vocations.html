@@ -357,7 +357,8 @@
             const currentId = new URLSearchParams(window.location.search).get('id') || new URLSearchParams(window.location.search).get('campaignId');
             try {
                 if (currentId && currentId !== "demo_campaign") {
-                    window.location.href = `${page}?id=${currentId}`;
+                    const separator = page.includes('?') ? '&' : '?';
+                    window.location.href = `${page}${separator}id=${currentId}`;
                 } else {
                     window.location.href = page;
                 }
