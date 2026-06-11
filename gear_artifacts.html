@@ -118,6 +118,19 @@
             90% { opacity: 1; }
             100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
+
+        /* Targeting Highlight Animation */
+        @keyframes targetPulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); border-color: #c5a059; }
+            70% { box-shadow: 0 0 0 20px rgba(197, 160, 89, 0); border-color: #f1e5c5; }
+            100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); border-color: #c5a059; }
+        }
+        .target-highlight {
+            animation: targetPulseGlow 2s infinite !important;
+            background-color: rgba(197, 160, 89, 0.15) !important;
+            transform: scale(1.02) !important;
+            z-index: 20;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -603,7 +616,7 @@
                 const targetItemName = urlParamsLocal.get('targetItem');
                 let highlightClass = '';
                 if (targetItemName && item.name.toLowerCase() === targetItemName.toLowerCase()) {
-                    highlightClass = 'ring-4 ring-gold animate-pulse scale-105 z-20';
+                    highlightClass = 'target-highlight';
                 }
 
                 return `
@@ -649,7 +662,7 @@
                              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                              window.hasScrolledToTarget = true;
                          }
-                     }, 300); // Wait for render paint
+                     }, 500); // Increased wait time slightly to ensure grid layout settles
                  }
             }
         };
@@ -911,7 +924,7 @@
                 
                 // Initialize Tabs
                 window.renderTypeTabs();
-                window.setFilter('store'); // Default, gets overridden by URL params if needed
+                window.setFilter('store', true); // Default, gets overridden by URL params if needed
                 
                 // Setup Database Listeners
                 
@@ -923,12 +936,14 @@
                     if (targetItemName && !window.targetItemFocused) {
                         const targetObj = allItems.find(i => i.name.toLowerCase() === targetItemName.toLowerCase());
                         if (targetObj) {
+                            // Properly trigger the native filter methods to visually update the UI tabs
                             if (targetObj.visibility === 'public') {
                                 window.setFilter('public', true);
                             } else if (targetObj.visibility === 'private') {
                                 window.setFilter('private', true);
                             }
                             
+                            // Switch to proper item category tab safely
                             if (targetObj.type) {
                                 window.setTypeFilter(targetObj.type, true);
                             }
