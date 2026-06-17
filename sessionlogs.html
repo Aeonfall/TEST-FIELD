@@ -455,7 +455,7 @@
 
             <div class="flex justify-center gap-3 font-heading border-t border-[rgba(139,90,43,0.3)] pt-4">
                 <button onclick="document.getElementById('day-details-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Close</button>
-                <button id="day-details-dm-btn" onclick="window.openEventManager()" class="hidden flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Manage Events</button>
+                <button id="day-details-dm-btn" onclick="window.openEventManager()" class="hidden flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">+ Scribe New Event</button>
             </div>
         </div>
     </div>
@@ -523,6 +523,12 @@
                 
                 <div id="expanded-event-desc" class="font-serif text-sm md:text-base leading-relaxed whitespace-pre-wrap mb-8 flex-grow">
                     Description goes here...
+                </div>
+
+                <!-- NEW DM CONTROLS UNDER DESCRIPTION -->
+                <div id="expanded-dm-controls" class="hidden gap-4 mb-6 pt-4 border-t border-[rgba(139,90,43,0.3)] shrink-0">
+                    <button id="expanded-edit-btn-large" class="fantasy-btn px-6 py-2 text-[10px] rounded"><i class="fa-solid fa-pen mr-1"></i> Edit Event</button>
+                    <button id="expanded-delete-btn-large" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-white px-6 py-2 text-[10px] rounded font-bold uppercase font-heading tracking-widest transition-colors"><i class="fa-solid fa-trash mr-1"></i> Erase Event</button>
                 </div>
 
                 <!-- Comments Section -->
@@ -754,7 +760,7 @@
             '8-15': 'Duskfall', '9-30': 'Ashlight', '11-15': 'Nightvein', '11-30': 'Veilwake'
         };
         const HOLIDAY_DESCRIPTIONS = {
-            '0-1': 'A celebration of trade, family, and community connection.',
+            '0-1': 'A celebration of trade, family, and community connection. After the harvest and preparation for colder months, settlements and enclaves hold fairs, marketplaces, and communal gatherings. It is a time to strengthen social bonds, exchange goods, and honor family ties.\n\nTraditions & Activities:\n• Market Fairs: Vendors and scavengers trade goods, tools, relics, and stories.\n• Family Feasts: Communities gather to share meals and honor elders and children.\n• Gift-Giving: Tokens of appreciation, small crafted items, or seeds for the next year are exchanged.\n• Games & Competitions: Archery contests, scavenger hunts, or mechanical challenges inspired by Aeon relics.\n• Lantern Lighting: Some settlements release lanterns symbolizing connection, prosperity, and hope.\n\nCultural Significance:\n• Strengthens community bonds in a fractured world.\n• Marks a pause from survival and conflict, even in dangerous areas.\n• In Aeonfall, Prime Day is secular, open to all, regardless of belief in the Eternal Heart or Founders.',
             '2-15': 'Balance of light and dark. Days begin to grow longer.',
             '4-10': 'A day honoring industry, craftsmanship, and the Custodians.',
             '5-15': 'The longest day. Peak heat, labor, and travel.',
@@ -895,6 +901,7 @@
                             <div class="bg-[rgba(197,160,89,0.2)] p-4 rounded border border-gold shadow-sm mb-3 cursor-pointer hover:bg-[rgba(197,160,89,0.3)] transition-colors" onclick="window.openEventExpanded('hol-${viewMonth}-${d}')">
                                 <div class="text-[10px] font-black text-blood uppercase tracking-widest font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> World Holiday</div>
                                 <div class="font-bold text-ink text-sm">${holiday}</div>
+                                <div class="text-sm text-ink/80 italic font-serif mt-2 whitespace-pre-wrap">${HOLIDAY_DESCRIPTIONS[`${viewMonth}-${d}`]}</div>
                             </div>
                         `;
                     }
@@ -920,11 +927,22 @@
                         if (isSecret) { borderCol = 'border-purple-600'; badge = '<span class="absolute top-2 right-2 text-[8px] bg-purple-900 text-white px-2 py-0.5 rounded uppercase font-black tracking-widest">Secret</span>'; }
                         if (isPersonal) { borderCol = 'border-teal-600'; badge = '<span class="absolute top-2 right-2 text-[8px] bg-teal-900 text-white px-2 py-0.5 rounded uppercase font-black tracking-widest">Personal</span>'; }
 
+                        let dmControls = '';
+                        if (activeRole === 'dm') {
+                            dmControls = `
+                                <div class="mt-4 pt-3 border-t border-[rgba(139,90,43,0.2)] flex gap-4">
+                                    <button onclick="event.stopPropagation(); document.getElementById('day-details-modal').classList.add('hidden'); window.openEventManager(); window.loadEditEvent('${e.id}');" class="text-gold hover:text-yellow-700 text-xs font-bold uppercase tracking-widest font-heading transition-colors"><i class="fa-solid fa-pen mr-1"></i> Edit</button>
+                                    <button onclick="event.stopPropagation(); window.deleteCalendarEvent('${e.id}', false);" class="text-blood hover:text-red-700 text-xs font-bold uppercase tracking-widest font-heading transition-colors"><i class="fa-solid fa-trash mr-1"></i> Erase</button>
+                                </div>
+                            `;
+                        }
+
                         contentDiv.innerHTML += `
                             <div class="bg-[rgba(255,255,255,0.5)] p-4 rounded border-l-4 ${borderCol} shadow-sm mb-3 relative cursor-pointer hover:bg-[rgba(255,255,255,0.8)] transition-colors" onclick="window.openEventExpanded('${e.id}')">
                                 ${badge}
                                 <div class="text-sm font-black text-ink uppercase font-heading pr-16">${e.title}</div>
-                                <div class="text-sm text-ink/80 italic font-serif mt-2 line-clamp-2">${e.desc}</div>
+                                <div class="text-sm text-ink/90 font-serif mt-2 whitespace-pre-wrap">${e.desc}</div>
+                                ${dmControls}
                             </div>
                         `;
                     }
@@ -1124,17 +1142,28 @@
 
             const editBtn = document.getElementById('expanded-edit-btn');
             const deleteBtn = document.getElementById('expanded-delete-btn');
+            const dmControlsLarge = document.getElementById('expanded-dm-controls');
+            const editBtnLarge = document.getElementById('expanded-edit-btn-large');
+            const deleteBtnLarge = document.getElementById('expanded-delete-btn-large');
             
             if (activeRole === 'dm' && !isHoliday) {
                 editBtn.classList.remove('hidden'); deleteBtn.classList.remove('hidden');
-                editBtn.onclick = () => {
+                dmControlsLarge.classList.remove('hidden'); dmControlsLarge.classList.add('flex');
+                
+                const editAction = () => {
                     document.getElementById('event-expanded-modal').classList.add('hidden');
                     window.openEventManager();
                     window.loadEditEvent(identifier);
                 };
-                deleteBtn.onclick = () => { window.deleteCalendarEvent(identifier, true); };
+                const deleteAction = () => { window.deleteCalendarEvent(identifier, true); };
+
+                editBtn.onclick = editAction;
+                editBtnLarge.onclick = editAction;
+                deleteBtn.onclick = deleteAction;
+                deleteBtnLarge.onclick = deleteAction;
             } else {
                 editBtn.classList.add('hidden'); deleteBtn.classList.add('hidden');
+                dmControlsLarge.classList.add('hidden'); dmControlsLarge.classList.remove('flex');
             }
 
             loadCommentsForEvent(identifier);
