@@ -30,7 +30,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -276,7 +276,6 @@
     </div>
 
     <!-- MODALS -->
-
     <!-- CREATE LOG MODAL -->
     <div id="create-modal" class="modal-overlay hidden z-[1000]">
         <div class="modal-container">
@@ -369,6 +368,25 @@
         </div>
     </div>
 
+    <!-- DAY DETAILS MODAL -->
+    <div id="day-details-modal" class="modal-overlay hidden z-[3500]">
+        <div class="modal-container !max-w-md">
+            <div class="border-b border-gold pb-2 mb-4 flex justify-between items-end">
+                <h3 id="day-details-title" class="font-heading text-xl font-black text-blood uppercase tracking-widest text-left">Day Details</h3>
+                <button onclick="document.getElementById('day-details-modal').classList.add('hidden')" class="text-ink hover:text-blood text-xl font-black transition-colors leading-none">✕</button>
+            </div>
+            
+            <div id="day-details-content" class="text-left font-serif space-y-4 mb-6 min-h-[100px] max-h-[60vh] overflow-y-auto scrollbar-hide">
+                <!-- Holidays and Events populated here -->
+            </div>
+
+            <div class="flex justify-center gap-3 font-heading border-t border-[rgba(139,90,43,0.3)] pt-4">
+                <button onclick="document.getElementById('day-details-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Close</button>
+                <button id="day-details-dm-btn" onclick="window.openEventManager()" class="hidden flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Manage Events</button>
+            </div>
+        </div>
+    </div>
+
     <!-- EVENT MANAGER MODAL -->
     <div id="event-modal" class="modal-overlay hidden z-[4000]">
         <div class="modal-container !max-w-md">
@@ -390,7 +408,7 @@
             </div>
             <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto scrollbar-hide text-left"></div>
             <div class="flex justify-between gap-3 font-heading">
-                <button onclick="document.getElementById('event-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="document.getElementById('event-modal').classList.add('hidden'); window.selectCalDay(selectedDay);" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Back</button>
                 <button onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Save Event</button>
             </div>
         </div>
@@ -684,6 +702,7 @@
         let viewMonth = 0;
         let calendarEvents = [];
         let isPickerMode = false;
+        let selectedDay = null;
 
         window.openCalendarModal = (pickerMode = false) => {
             isPickerMode = pickerMode;
@@ -720,6 +739,7 @@
         };
 
         window.selectCalDay = (d) => {
+            selectedDay = d;
             const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
             
             if (isPickerMode) {
@@ -729,27 +749,84 @@
                     window.saveLog(false); // Auto-save
                 }
                 window.closeCalendarModal();
-            } else if (activeRole === 'dm') {
-                // Open event manager for that day
-                document.getElementById('event-date-display').textContent = dateStr;
-                document.getElementById('new-event-title').value = '';
-                document.getElementById('new-event-desc').value = '';
+            } else {
+                // Open Day Details for everyone
+                document.getElementById('day-details-title').textContent = dateStr;
+                const contentDiv = document.getElementById('day-details-content');
+                contentDiv.innerHTML = '';
                 
-                const eventsList = document.getElementById('existing-events-list');
+                let hasContent = false;
+
+                // Check Holiday
+                const holiday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
+                if (holiday) {
+                    hasContent = true;
+                    contentDiv.innerHTML += `
+                        <div class="bg-[rgba(197,160,89,0.2)] p-4 rounded border border-gold shadow-sm mb-3">
+                            <div class="text-[10px] font-black text-blood uppercase tracking-widest font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> Holiday</div>
+                            <div class="font-bold text-ink text-sm">${holiday}</div>
+                        </div>
+                    `;
+                }
+
+                // Check Events
                 const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
-                
-                eventsList.innerHTML = dayEvents.map(e => `
-                    <div class="bg-black/10 p-3 rounded border-l-2 ${e.vis === 'secret' ? 'border-purple-500' : 'border-blood'} relative shadow-sm">
-                        <div class="text-[10px] font-black text-ink uppercase font-heading">${e.title}</div>
-                        <div class="text-[11px] text-ink/70 italic font-serif mt-1">${e.desc}</div>
-                        <button onclick="window.deleteCalendarEvent('${e.id}')" class="absolute top-2 right-2 text-blood hover:text-red-700 text-xs transition-colors"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                `).join('');
-                
-                // Store selected day temporarily on the save button
-                document.getElementById('event-modal').dataset.day = d;
-                document.getElementById('event-modal').classList.remove('hidden');
+                const visibleEvents = dayEvents.filter(e => e.vis === 'public' || activeRole === 'dm');
+
+                if (visibleEvents.length > 0) {
+                    hasContent = true;
+                    visibleEvents.forEach(e => {
+                        const isSecret = e.vis === 'secret';
+                        contentDiv.innerHTML += `
+                            <div class="bg-[rgba(255,255,255,0.5)] p-4 rounded border-l-4 ${isSecret ? 'border-purple-600' : 'border-blood'} shadow-sm mb-3 relative">
+                                ${isSecret ? '<span class="absolute top-2 right-2 text-[8px] bg-purple-900 text-white px-2 py-0.5 rounded uppercase font-black tracking-widest">Secret</span>' : ''}
+                                <div class="text-sm font-black text-ink uppercase font-heading pr-12">${e.title}</div>
+                                <div class="text-sm text-ink/80 italic font-serif mt-2 whitespace-pre-wrap">${e.desc}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (!hasContent) {
+                    contentDiv.innerHTML = `<div class="text-center italic text-ink/60 py-8 text-sm">No events recorded for this day.</div>`;
+                }
+
+                // Show DM button if DM
+                const dmBtn = document.getElementById('day-details-dm-btn');
+                if (activeRole === 'dm') {
+                    dmBtn.classList.remove('hidden');
+                } else {
+                    dmBtn.classList.add('hidden');
+                }
+
+                document.getElementById('day-details-modal').classList.remove('hidden');
             }
+        };
+
+        window.openEventManager = () => {
+            const d = selectedDay;
+            if (!d || activeRole !== 'dm') return;
+            const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
+            
+            document.getElementById('event-date-display').textContent = dateStr;
+            document.getElementById('new-event-title').value = '';
+            document.getElementById('new-event-desc').value = '';
+            
+            const eventsList = document.getElementById('existing-events-list');
+            const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
+            
+            eventsList.innerHTML = dayEvents.map(e => `
+                <div class="bg-black/10 p-3 rounded border-l-2 ${e.vis === 'secret' ? 'border-purple-500' : 'border-blood'} relative shadow-sm">
+                    <div class="text-[10px] font-black text-ink uppercase font-heading pr-6">${e.title}</div>
+                    <div class="text-[11px] text-ink/70 italic font-serif mt-1">${e.desc}</div>
+                    <button onclick="window.deleteCalendarEvent('${e.id}')" class="absolute top-2 right-2 text-blood hover:text-red-700 text-xs transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `).join('');
+            
+            document.getElementById('event-modal').dataset.day = d;
+            
+            document.getElementById('day-details-modal').classList.add('hidden');
+            document.getElementById('event-modal').classList.remove('hidden');
         };
 
         function getOrdinal(n) {
@@ -869,14 +946,26 @@
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
                     events: updatedEvents
                 }, {merge: true});
-                document.getElementById('event-modal').classList.add('hidden');
+                
                 window.showToast("Event Inscribed");
+                calendarEvents = updatedEvents; // Update local state for immediate re-render
+                window.openEventManager(); // Refresh list inside the modal
+                window.renderCalendar(); // Refresh calendar dots
             } catch(e) { window.showToast("Failed to save event."); }
         };
 
+        let pendingDeleteId = null;
         window.deleteCalendarEvent = async (eventId) => {
             if (activeRole !== 'dm') return;
-            if(!confirm("Erase this event from history?")) return;
+            
+            // Replaced the system-breaking browser confirm() dialog with an immersive click-to-confirm pattern
+            if (pendingDeleteId !== eventId) {
+                pendingDeleteId = eventId;
+                window.showToast("Click the delete icon again to confirm erasure.");
+                setTimeout(() => { pendingDeleteId = null; }, 3000);
+                return;
+            }
+            pendingDeleteId = null;
             
             const updatedEvents = calendarEvents.filter(e => e.id !== eventId);
             try {
@@ -884,7 +973,9 @@
                     events: updatedEvents
                 }, {merge: true});
                 window.showToast("Event Erased");
-                document.getElementById('event-modal').classList.add('hidden');
+                calendarEvents = updatedEvents; // Update local state for immediate re-render
+                window.openEventManager(); // Refresh list inside the modal
+                window.renderCalendar(); // Refresh calendar dots
             } catch(e) { window.showToast("Failed to delete event."); }
         };
 
