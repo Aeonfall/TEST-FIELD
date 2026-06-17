@@ -30,7 +30,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -69,7 +69,6 @@
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .hidden-view { display: none !important; }
 
-        /* SHEET TYPOGRAPHY & LAYOUT */
         .chronicle-header { font-family: 'Cinzel', serif; font-weight: 900; color: #7a1b1b; text-transform: uppercase; letter-spacing: 2px; }
         .chronicle-input { background: transparent; border: none; outline: none; border-bottom: 1px dashed rgba(139, 90, 43, 0.4); font-family: 'Lora', serif; color: #2c1e16; width: 100%; padding: 2px 0; transition: border-color 0.2s; }
         .chronicle-input:focus { border-bottom-color: #7a1b1b; }
@@ -87,17 +86,14 @@
         .dm-overlay-input { background: white; border: 1px solid #e5dccb; border-radius: 4px; padding: 12px; width: 100%; font-family: 'Lora', serif; font-size: 14px; outline: none; resize: vertical; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: border-color 0.2s; }
         .dm-overlay-input:focus { border-color: #c5a059; }
 
-        /* FANTASY CALENDAR MODAL STYLES */
         .aeon-cal-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 20px; backdrop-filter: blur(4px); }
         .aeon-cal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 6px; width: 100%; max-width: 600px; padding: 30px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); }
         .aeon-cal-title { font-family: 'Cinzel', serif; font-size: 28px; color: #7a1b1b; font-weight: 900; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; }
-        .aeon-cal-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60%; height: 2px; background: linear-gradient(90deg, #7a1b1b, transparent); }
-        
         .aeon-tab-container { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; font-family: 'Cinzel', serif; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 8px;}
         .aeon-tab { flex: 1; padding: 6px 0; text-align: center; font-size: 14px; color: #a3886b; transition: 0.2s; cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;}
         .aeon-tab.active { color: #7a1b1b; text-shadow: 0 0 10px rgba(122,27,27,0.2); }
         
-        .aeon-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 16px; }
+        .aeon-grid { display: grid; gap: 6px; margin-top: 16px; }
         .aeon-day-header { font-family: 'Cinzel', serif; font-size: 11px; text-transform: uppercase; color: #8b5a2b; text-align: center; letter-spacing: 1px; margin-bottom: 8px; font-weight: 900; border-bottom: 1px solid rgba(139, 90, 43, 0.2); padding-bottom: 4px;}
         .aeon-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Lora', serif; font-size: 16px; color: #2c1e16; border-radius: 4px; cursor: pointer; transition: 0.2s; position: relative; border: 1px solid rgba(139,90,43,0.1); background: rgba(255,255,255,0.4); font-weight: 600; box-shadow: inset 0 0 5px rgba(255,255,255,0.5);}
         .aeon-cell:hover:not(.empty) { border-color: #c5a059; background: rgba(197, 160, 89, 0.2); transform: scale(1.05); z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
@@ -108,49 +104,58 @@
         .aeon-btn-icon { color: #8b5a2b; transition: 0.2s; cursor: pointer; background: transparent; border: none; font-size: 16px; padding: 4px 8px; }
         .aeon-btn-icon:hover { color: #7a1b1b; }
 
-        /* TORN PAPER STYLES FOR EVENTS */
-        .scrap-paper {
-            background-color: #f9f6ef;
-            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: 2px 4px 10px rgba(0,0,0,0.3), inset 0 0 20px rgba(139,90,43,0.05);
-            border-radius: 2px 20px 3px 15px / 25px 3px 15px 4px;
-            position: relative;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            border: 1px solid #e0d7c6;
-            border-left-width: 6px;
-            color: #2c1e16;
-            transform: rotate(-1deg);
-            transition: transform 0.2s, box-shadow 0.2s;
+        /* TORN PAPER UI STYLES */
+        .torn-edge {
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
         }
-        .scrap-paper:nth-child(even) {
-            transform: rotate(1deg);
-            border-radius: 15px 2px 20px 3px / 4px 15px 3px 25px;
+        .torn-edge-inner {
+            background-color: #f1e5c5;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+            clip-path: polygon(
+                1% 5%, 0% 8%, 2% 12%, 0% 15%, 1% 18%, 0% 22%, 2% 25%, 0% 28%, 1% 32%, 0% 35%, 2% 38%, 0% 42%, 1% 45%, 0% 48%, 2% 52%, 0% 55%, 1% 58%, 0% 62%, 2% 65%, 0% 68%, 1% 72%, 0% 75%, 2% 78%, 0% 82%, 1% 85%, 0% 88%, 2% 92%, 0% 95%, 1% 98%,
+                5% 99%, 8% 100%, 12% 98%, 15% 100%, 18% 99%, 22% 100%, 25% 98%, 28% 100%, 32% 99%, 35% 100%, 38% 98%, 42% 100%, 45% 99%, 48% 100%, 52% 98%, 55% 100%, 58% 99%, 62% 100%, 65% 98%, 68% 100%, 72% 99%, 75% 100%, 78% 98%, 82% 100%, 85% 99%, 88% 100%, 92% 98%, 95% 100%, 98% 99%,
+                100% 95%, 98% 92%, 100% 88%, 99% 85%, 100% 82%, 98% 78%, 100% 75%, 99% 72%, 100% 68%, 98% 65%, 100% 62%, 99% 58%, 100% 55%, 98% 52%, 100% 48%, 99% 45%, 100% 42%, 98% 38%, 100% 35%, 99% 32%, 100% 28%, 98% 25%, 100% 22%, 99% 18%, 100% 15%, 98% 12%, 100% 8%, 99% 5%,
+                95% 0%, 92% 2%, 88% 0%, 85% 1%, 82% 0%, 78% 2%, 75% 0%, 72% 1%, 68% 0%, 65% 2%, 62% 0%, 58% 1%, 55% 0%, 52% 2%, 48% 0%, 45% 1%, 42% 0%, 38% 2%, 35% 0%, 32% 1%, 28% 0%, 25% 2%, 22% 0%, 18% 1%, 15% 0%, 12% 2%, 8% 0%, 5% 1%
+            );
         }
-        .scrap-paper:hover {
-            transform: scale(1.02) rotate(0deg);
-            box-shadow: 4px 8px 15px rgba(0,0,0,0.3), inset 0 0 20px rgba(139,90,43,0.05);
-            z-index: 10;
+
+        /* EVENT EXPANDED ANIMATIONS & MATERIALS */
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes heavenlyFloat { 0% { opacity: 0; transform: translateY(20px); filter: drop-shadow(0 0 0 rgba(197, 160, 89, 0)); } 100% { opacity: 1; transform: translateY(0); filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.4)); } }
+        @keyframes slideHeavy { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes slamDown { 0% { opacity: 0; transform: scale(1.1) translateY(-20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .anim-general { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .anim-belief { animation: heavenlyFloat 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .anim-secular { animation: slideHeavy 0.4s ease-out forwards; }
+        .anim-historical { animation: slamDown 0.5s cubic-bezier(0.5, 0, 0.1, 1) forwards; }
+
+        .material-general {
+            /* Inherits default torn-edge-inner */
         }
         
-        .scrap-border-none { border-left-color: #8b5a2b; }
-        .scrap-border-belief { border-left-color: #c5a059; }
-        .scrap-border-secular { border-left-color: #4a5d23; }
-        .scrap-border-historical { border-left-color: #7a1b1b; }
-        .scrap-border-personal { border-left-color: #0f766e; border-right: 2px dashed #0f766e; }
-        .scrap-border-secret { border-left-color: #6b21a8; border-right: 2px dashed #6b21a8; }
-
-        .torn-edge { filter: drop-shadow(0 15px 25px rgba(0,0,0,0.9)); padding: 20px; }
-        .torn-edge-inner {
-            background-color: #eeddbb; 
-            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 60px rgba(139, 69, 19, 0.4), inset 0 0 20px rgba(40, 15, 5, 0.7), inset 0 0 5px rgba(0, 0, 0, 0.9);       
-            clip-path: polygon(
-                0% 1%, 2% 0%, 4% 2%, 6% 0%, 8% 1%, 10% 0%, 12% 2%, 14% 0%, 16% 1%, 18% 0%, 20% 2%, 22% 0%, 24% 1%, 26% 0%, 28% 2%, 30% 0%, 32% 1%, 34% 0%, 36% 2%, 38% 0%, 40% 1%, 42% 0%, 44% 2%, 46% 0%, 48% 1%, 50% 0%, 52% 2%, 54% 0%, 56% 1%, 58% 0%, 60% 2%, 62% 0%, 64% 1%, 66% 0%, 68% 2%, 70% 0%, 72% 1%, 74% 0%, 76% 2%, 78% 0%, 80% 1%, 82% 0%, 84% 2%, 86% 0%, 88% 1%, 90% 0%, 92% 2%, 94% 0%, 96% 1%, 98% 0%, 100% 2%,
-                99% 5%, 100% 8%, 98% 12%, 100% 15%, 99% 18%, 100% 22%, 98% 25%, 100% 28%, 99% 32%, 100% 35%, 98% 38%, 100% 42%, 99% 45%, 100% 48%, 98% 52%, 100% 55%, 99% 58%, 100% 62%, 98% 65%, 100% 68%, 99% 72%, 100% 75%, 98% 78%, 100% 82%, 99% 85%, 100% 88%, 98% 92%, 100% 95%, 99% 98%,
-                100% 100%, 98% 99%, 96% 100%, 94% 98%, 92% 100%, 90% 99%, 88% 100%, 86% 98%, 84% 100%, 82% 99%, 80% 100%, 78% 98%, 76% 100%, 74% 99%, 72% 100%, 70% 98%, 68% 100%, 66% 99%, 64% 100%, 62% 98%, 60% 100%, 58% 99%, 56% 100%, 54% 98%, 52% 100%, 50% 99%, 48% 100%, 46% 98%, 44% 100%, 42% 99%, 40% 100%, 38% 98%, 36% 100%, 34% 99%, 32% 100%, 30% 98%, 28% 100%, 26% 99%, 24% 100%, 22% 98%, 20% 100%, 18% 99%, 16% 100%, 14% 98%, 12% 100%, 10% 99%, 8% 100%, 6% 98%, 4% 100%, 2% 99%, 0% 100%,
-                1% 95%, 0% 92%, 2% 88%, 0% 85%, 1% 82%, 0% 78%, 2% 75%, 0% 72%, 1% 68%, 0% 65%, 2% 62%, 0% 58%, 1% 55%, 0% 52%, 2% 48%, 0% 45%, 1% 42%, 0% 38%, 2% 35%, 0% 32%, 1% 28%, 0% 25%, 2% 22%, 0% 18%, 1% 15%, 0% 12%, 2% 8%, 0% 5%
-            );
+        .material-belief {
+            background-color: #fdfbf7 !important;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(197, 160, 89, 0.03) 10px, rgba(197, 160, 89, 0.03) 20px),
+                url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E") !important;
+            box-shadow: inset 0 0 40px rgba(197, 160, 89, 0.2), inset 0 0 10px rgba(197, 160, 89, 0.5) !important;
+        }
+        
+        .material-secular {
+            background-color: #d4c4a8 !important;
+            background-image: 
+                linear-gradient(90deg, rgba(0,0,0,0.03) 50%, transparent 50%),
+                linear-gradient(0deg, rgba(0,0,0,0.03) 50%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.08' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E") !important;
+            background-size: 4px 4px, 4px 4px, 200px 200px !important;
+            box-shadow: inset 0 0 80px rgba(85, 60, 30, 0.6), inset 0 0 20px rgba(40, 20, 5, 0.8) !important;
+        }
+        
+        .material-historical {
+            background-color: #c4b59d !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E") !important;
+            box-shadow: inset 0 0 100px rgba(90, 17, 17, 0.5), inset 0 0 30px rgba(40, 10, 5, 0.9), inset 0 0 5px rgba(0, 0, 0, 1) !important;
         }
     </style>
 </head>
@@ -168,12 +173,12 @@
     <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden-view w-full">
         <div class="max-w-6xl mx-auto">
             <!-- HEADER & NAVIGATION -->
-            <header class="flex flex-col items-center md:items-start md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative">
+            <header class="flex flex-col md:flex-row justify-between mb-8 border-b border-gray-700 pb-6 gap-6 relative items-center md:items-start">
                 <div class="absolute -bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
                 
                 <div class="text-center md:text-left w-full md:w-auto">
                     <h1 id="main-campaign-title" class="text-4xl md:text-5xl text-gray-400 font-bold mb-1 font-heading tracking-tight leading-none drop-shadow-md">Chronicles</h1>
-                    <div class="flex flex-col md:flex-row items-center gap-3 mt-2">
+                    <div class="flex flex-col md:flex-row items-center gap-3 mt-2 justify-center md:justify-start">
                         <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">History & Timekeeping</p>
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
@@ -320,8 +325,6 @@
         </div>
     </div>
 
-    <!-- MODALS -->
-
     <!-- CREATE LOG MODAL -->
     <div id="create-modal" class="modal-overlay hidden z-[1000]">
         <div class="modal-container">
@@ -348,27 +351,20 @@
                 <button onclick="window.closeCalendarModal()" class="text-ink hover:text-blood text-2xl font-black mb-2 transition-colors">✕</button>
             </div>
 
-            <div class="aeon-tab-container">
-                <div class="aeon-tab opacity-50 cursor-not-allowed">Week</div>
-                <div class="aeon-tab active font-black">Month</div>
-                <div class="aeon-tab opacity-50 cursor-not-allowed">Year</div>
-            </div>
-
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-[rgba(139,90,43,0.3)] pb-6">
                 <div>
-                    <div class="text-3xl md:text-4xl font-heading font-black mb-1"><span id="cal-month-display" class="text-blood tracking-wider uppercase">Virell</span> <span id="cal-year-display" class="text-ink font-bold">836</span></div>
-                    <div class="text-ink text-sm md:text-base font-bold font-serif opacity-80 italic">Year <span id="cal-sub-year">836</span></div>
+                    <div class="text-3xl md:text-4xl font-heading font-black mb-1"><span id="cal-month-display" class="text-blood tracking-wider uppercase">Month</span> <span id="cal-year-display" class="text-ink font-bold">1</span></div>
+                    <div class="text-ink text-sm md:text-base font-bold font-serif opacity-80 italic">Year <span id="cal-sub-year">1</span></div>
                 </div>
                 <div class="flex items-center gap-3 md:gap-5 text-[#8b5a2b] text-sm tracking-widest uppercase font-black bg-[rgba(255,255,255,0.4)] p-2 rounded border border-[rgba(139,90,43,0.3)] font-heading shadow-inner">
                     <button onclick="window.changeCalMonth(-1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-left"></i></button>
                     <button onclick="window.goToCurrentDate()" class="hover:text-blood transition-colors">TODAY</button>
                     <button onclick="window.changeCalMonth(1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-right"></i></button>
-                    <button onclick="window.openCalSettings()" class="aeon-btn-icon" id="cal-dm-gear"><i class="fa-solid fa-gear"></i></button>
                 </div>
             </div>
 
-            <div class="aeon-grid" id="cal-days-header-grid">
-                <!-- Headers populated by JS -->
+            <div id="cal-days-header" class="aeon-grid">
+                <!-- Days of week populated by JS -->
             </div>
             
             <div id="cal-days-grid" class="aeon-grid mb-6">
@@ -376,84 +372,76 @@
             </div>
 
             <div class="flex justify-between items-center text-[10px] text-[#8b5a2b] uppercase tracking-widest font-heading font-bold pt-4 mt-2 border-t border-[rgba(139,90,43,0.3)]">
-                <div class="flex gap-3 md:gap-4 flex-wrap" id="cal-footer-legend">
-                    <!-- Legend populated by JS -->
+                <div id="cal-moons-legend" class="flex gap-3 md:gap-4 flex-wrap">
+                    <!-- Moons populated by JS -->
                 </div>
-                <button id="cal-lore-btn" onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="hover:text-[#7a1b1b] transition-colors whitespace-nowrap ml-2"><i class="fa-solid fa-book mr-1"></i> Lore</button>
+                <div class="flex gap-3 items-center">
+                    <button onclick="window.openCalSettings()" class="hover:text-[#7a1b1b] transition-colors" id="cal-dm-gear"><i class="fa-solid fa-gear mr-1"></i> Forge</button>
+                    <button onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="hover:text-[#7a1b1b] transition-colors"><i class="fa-solid fa-book mr-1"></i> Lore</button>
+                </div>
             </div>
 
         </div>
     </div>
 
-    <!-- CALENDAR DM CONTROLS MODAL -->
+    <!-- CALENDAR DM CONTROLS MODAL (WORLD FORGE) -->
     <div id="cal-settings-modal" class="modal-overlay hidden z-[4000]">
-        <div class="modal-container">
-            <h3 class="font-heading text-xl font-black text-blood uppercase mb-4 border-b border-gold pb-2">Calendar Settings</h3>
-            <div class="space-y-4 text-left">
-                <button onclick="window.setAsCurrentDate()" class="w-full bg-[rgba(197,160,89,0.2)] hover:bg-[rgba(197,160,89,0.4)] text-ink border border-gold py-3 rounded font-heading font-black uppercase text-xs tracking-wider transition-colors shadow">Set Visible Month as "Today"</button>
-                <div class="border-t border-[rgba(139,90,43,0.3)] pt-4 mt-4">
-                    <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-2 font-heading">Adjust Year</label>
-                    <div class="flex gap-2 font-heading">
+        <div class="modal-container !max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide text-left">
+            <h3 class="font-heading text-xl font-black text-blood uppercase mb-4 border-b border-gold pb-2 sticky top-0 bg-[#f1e5c5] z-10 pt-2">Calendar Forge</h3>
+            
+            <div class="space-y-6">
+                <!-- Quick Set Today -->
+                <div class="bg-[rgba(197,160,89,0.1)] p-4 rounded border border-gold/50">
+                    <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-2 font-heading">Time Control</label>
+                    <div class="flex gap-2 font-heading items-center mb-4">
                         <button onclick="window.changeCalYear(-1)" class="bg-[#1a110b] px-4 py-2 rounded text-gold border border-gold font-bold hover:bg-[#2c1e16] transition-colors">-</button>
                         <input type="number" id="manual-year-input" class="bg-[rgba(255,255,255,0.5)] border border-gold text-ink font-bold text-center w-full rounded outline-none" readonly>
                         <button onclick="window.changeCalYear(1)" class="bg-[#1a110b] px-4 py-2 rounded text-gold border border-gold font-bold hover:bg-[#2c1e16] transition-colors">+</button>
                     </div>
-                </div>
-            </div>
-            <div class="mt-8 pt-4 border-t border-[rgba(139,90,43,0.3)] text-center flex justify-between gap-4">
-                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="flex-1 text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-ink font-heading transition-colors py-2">Close</button>
-                <button onclick="window.openCalConfig()" class="flex-1 text-xs font-black text-blood border border-blood uppercase tracking-widest hover:bg-blood hover:text-white font-heading transition-colors py-2 rounded">World Forge</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CALENDAR CONFIG / WORLD FORGE MODAL -->
-    <div id="cal-config-modal" class="modal-overlay hidden z-[5000]">
-        <div class="modal-container !max-w-2xl flex flex-col h-[85vh] !p-0">
-            <div class="flex justify-between items-center border-b-[3px] border-blood p-6 pb-4 shrink-0 bg-[#f4eee1]">
-                <h3 class="font-heading font-black text-2xl text-blood tracking-widest uppercase">World Calendar Forge</h3>
-                <button onclick="document.getElementById('cal-config-modal').classList.add('hidden')" class="text-ink hover:text-blood text-2xl font-black transition-colors leading-none">✕</button>
-            </div>
-            
-            <div class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-left bg-transparent">
-                <p class="italic text-ink/70 font-bold mb-4">Shape the flow of time and the celestial bodies above your world. Commas separate entries.</p>
-                
-                <div>
-                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Months of the Year</label>
-                    <textarea id="config-months" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] font-bold" placeholder="Luminar, Terralis, Hydrath..."></textarea>
-                </div>
-                
-                <div>
-                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Days of the Week</label>
-                    <textarea id="config-days" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] font-bold" placeholder="Miresen, Veysen, Thalsen..."></textarea>
+                    <button onclick="window.setAsCurrentDate()" class="w-full bg-[rgba(197,160,89,0.2)] hover:bg-[rgba(197,160,89,0.4)] text-ink border border-gold py-2 rounded font-heading font-black uppercase text-xs tracking-wider transition-colors shadow">Set Visible Month & Year as "Current Time"</button>
                 </div>
 
-                <div>
-                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Celestial Bodies / Moons</label>
-                    <p class="text-[10px] italic text-ink/60 mb-2">Format: Name, Emoji, Cycle Length (Days), Full Moon Offset (Day of Cycle). One per line.</p>
-                    <textarea id="config-moons" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[80px] font-bold whitespace-pre" placeholder="Selura, 🌕, 30, 15&#10;Veythar, 🌔, 15, 7"></textarea>
-                </div>
+                <!-- World Structure Configuration -->
+                <div class="border-t border-[rgba(139,90,43,0.3)] pt-4">
+                    <h4 class="font-heading font-black text-sm text-ink uppercase mb-3">World Structure Configuration</h4>
+                    
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-1 font-heading">Months (Comma separated)</label>
+                        <textarea id="forge-months" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood font-serif min-h-[60px]" placeholder="Luminar, Terralis, Hydrath..."></textarea>
+                        <p class="text-[10px] text-ink/70 italic mt-1">Note: All months are assumed to have 30 days in this engine.</p>
+                    </div>
 
-                <div class="bg-black/5 p-4 rounded border border-gold/40">
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" id="config-use-default-holidays" class="w-4 h-4 accent-blood">
-                        <span class="font-heading font-bold text-ink uppercase tracking-widest text-xs">Use Default Aeonfall Holidays & Lore</span>
-                    </label>
-                </div>
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-1 font-heading">Days of the Week (Comma separated)</label>
+                        <input type="text" id="forge-days" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood font-serif" placeholder="Miresen, Veysen, Thalsen...">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-1 font-heading">Moons (JSON Format)</label>
+                        <textarea id="forge-moons" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood font-serif min-h-[80px]" placeholder='[{"name":"Selura", "icon":"🌕", "cycle":30}, ...]'></textarea>
+                        <p class="text-[10px] text-ink/70 italic mt-1">Specify full moon intervals. E.g., cycle 15 means it's full on the 15th and 30th.</p>
+                    </div>
 
-                <div>
-                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Custom World Lore</label>
-                    <textarea id="config-lore" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[120px] font-serif italic" placeholder="Write your own explanation of the calendar, eras, and astronomy..."></textarea>
+                    <div class="flex items-center gap-2 mb-4">
+                        <input type="checkbox" id="forge-use-default-holidays" class="accent-blood">
+                        <label for="forge-use-default-holidays" class="text-xs font-bold text-ink uppercase font-heading tracking-wider cursor-pointer">Use Default Aeonfall Holidays</label>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-1 font-heading">Custom Calendar Lore (HTML allowed)</label>
+                        <textarea id="forge-lore" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood font-serif min-h-[120px]" placeholder="Lore about your calendar system..."></textarea>
+                    </div>
                 </div>
             </div>
 
-            <div class="p-6 border-t-[3px] border-blood bg-[#f4eee1] flex justify-end shrink-0">
-                <button onclick="window.saveCalConfig()" class="fantasy-btn text-white font-bold uppercase text-xs rounded px-8 py-3 shadow">Forge World Data</button>
+            <div class="mt-8 pt-4 border-t border-[rgba(139,90,43,0.3)] flex justify-between font-heading">
+                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50 mr-2">Cancel</button>
+                <button onclick="window.saveWorldForge()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow ml-2">Save Forge Settings</button>
             </div>
         </div>
     </div>
 
-    <!-- DAY DETAILS MODAL (Paper Scraps) -->
+    <!-- DAY DETAILS MODAL -->
     <div id="day-details-modal" class="modal-overlay hidden z-[3500]">
         <div class="modal-container !max-w-md">
             <div class="border-b border-gold pb-2 mb-4 flex justify-between items-end">
@@ -462,7 +450,7 @@
             </div>
             
             <div id="day-details-content" class="text-left font-serif space-y-4 mb-6 min-h-[100px] max-h-[60vh] overflow-y-auto scrollbar-hide">
-                <!-- Scraps injected here via JS -->
+                <!-- Holidays and Events populated here -->
             </div>
 
             <div class="flex justify-center gap-3 font-heading border-t border-[rgba(139,90,43,0.3)] pt-4">
@@ -472,20 +460,18 @@
         </div>
     </div>
 
-    <!-- EVENT MANAGER MODAL (Form) -->
+    <!-- EVENT MANAGER MODAL -->
     <div id="event-modal" class="modal-overlay hidden z-[4000]">
         <div class="modal-container !max-w-md">
-            <h3 id="event-modal-title" class="font-heading text-xl font-black text-blood uppercase mb-2 border-b border-gold pb-2">Log Calendar Event</h3>
+            <h3 id="event-manager-title" class="font-heading text-xl font-black text-blood uppercase mb-2 border-b border-gold pb-2">Log Calendar Event</h3>
             <p id="event-date-display" class="text-[10px] text-ink font-black uppercase tracking-widest mb-4 font-heading italic"></p>
-            <div class="space-y-4 text-left font-serif mb-6">
+            
+            <div class="space-y-4 text-left font-serif mb-6 bg-[rgba(197,160,89,0.1)] p-4 rounded border border-gold/50">
                 <div>
-                    <input type="text" id="new-event-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-sm font-bold" placeholder="Event Title (e.g. Festival, Battle)">
+                    <input type="text" id="new-event-title" class="w-full bg-[rgba(255,255,255,0.8)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-sm font-bold" placeholder="Event Title (e.g. Festival, Battle)">
                 </div>
                 <div>
-                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] resize-y text-sm italic" placeholder="Description..."></textarea>
-                </div>
-                <div>
-                    <select id="new-event-type" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer">
+                    <select id="new-event-type" class="w-full bg-[rgba(255,255,255,0.8)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer">
                         <option value="none">General Event</option>
                         <option value="belief">Belief/Cultural Holiday</option>
                         <option value="secular">Secular Holiday</option>
@@ -493,23 +479,28 @@
                     </select>
                 </div>
                 <div>
-                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer" onchange="document.getElementById('tied-to-container').classList.toggle('hidden', this.value !== 'personal')">
+                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.8)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[80px] resize-y text-sm italic" placeholder="Detailed description..."></textarea>
+                </div>
+                
+                <div class="border-t border-gold/30 pt-3">
+                    <label class="block text-[10px] font-black text-ink uppercase tracking-widest mb-1 font-heading">Visibility Control</label>
+                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.8)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer mb-2" onchange="document.getElementById('personal-tie-wrapper').style.display = this.value === 'personal' ? 'block' : 'none'">
                         <option value="public">Public Knowledge</option>
                         <option value="secret">DM Secret</option>
-                        <option value="personal">Personal Tie</option>
+                        <option value="personal">Personal Tie (Specific Player)</option>
                     </select>
-                </div>
-                <div id="tied-to-container" class="hidden">
-                    <input type="text" id="new-event-tied" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-sm font-bold" placeholder="Character/Username (e.g. Elara)">
-                    <p class="text-[9px] italic text-ink/60 mt-1">Only the DM and this user will see this event.</p>
+                    <div id="personal-tie-wrapper" style="display:none;">
+                        <input type="text" id="new-event-personal-tie" class="w-full bg-[rgba(255,255,255,0.8)] border border-purple-400 rounded p-2 text-ink outline-none focus:border-purple-600 text-xs font-bold" placeholder="Player Username(s)...">
+                        <p class="text-[9px] text-ink/70 italic mt-1 leading-tight">Only players with matching usernames and the DM will see this event.</p>
+                    </div>
                 </div>
             </div>
-            
-            <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto scrollbar-hide text-left"></div>
+
+            <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto scrollbar-hide text-left border-t border-[rgba(139,90,43,0.3)] pt-4"></div>
             
             <div class="flex justify-between gap-3 font-heading">
-                <button onclick="document.getElementById('event-modal').classList.add('hidden'); if(selectedDay) window.selectCalDay(selectedDay);" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Cancel</button>
-                <button id="event-save-btn" onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Save Event</button>
+                <button onclick="document.getElementById('event-modal').classList.add('hidden'); document.getElementById('event-modal').dataset.eventId = ''; window.selectCalDay(selectedDay);" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Back</button>
+                <button onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow" id="save-event-btn">Save Event</button>
             </div>
         </div>
     </div>
@@ -519,29 +510,36 @@
         <div class="torn-edge max-w-2xl w-full relative">
             <button onclick="window.closeEventExpanded()" class="absolute top-8 right-8 text-[#7a1b1b] hover:text-red-500 text-2xl font-black z-10 transition-colors bg-white/50 w-8 h-8 rounded-full flex items-center justify-center shadow">✕</button>
             
-            <div class="torn-edge-inner p-8 md:p-12 relative text-[#2c1e16] text-left">
-                <div class="flex justify-between items-start mb-2 border-b-2 border-[rgba(139,90,43,0.3)] pb-2">
+            <div class="torn-edge-inner p-8 md:p-12 relative text-[#2c1e16] text-left min-h-[400px] flex flex-col">
+                <div class="flex justify-between items-start mb-2 border-b-2 border-[rgba(139,90,43,0.3)] pb-2 shrink-0">
                     <div class="flex items-center gap-3 w-full pr-8">
                         <h2 id="expanded-event-title" class="font-heading text-3xl md:text-4xl font-black text-[#2c1e16]">Event Title</h2>
                         <button id="expanded-edit-btn" class="text-gold hover:text-blood transition-colors hidden text-xl" title="Edit Log"><i class="fa-solid fa-pen"></i></button>
+                        <button id="expanded-delete-btn" class="text-ink hover:text-blood transition-colors hidden text-xl ml-1" title="Erase Log"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
                 
-                <div id="expanded-event-type" class="text-[10px] font-black text-blood/80 uppercase tracking-[0.2em] font-heading mb-6">Type</div>
+                <div id="expanded-event-type" class="text-[10px] font-black text-blood/80 uppercase tracking-[0.2em] font-heading mb-6 shrink-0">Type</div>
                 
-                <div id="expanded-event-desc" class="font-serif text-sm md:text-base leading-relaxed whitespace-pre-wrap mb-8 min-h-[100px]">Description goes here...</div>
+                <div id="expanded-event-desc" class="font-serif text-sm md:text-base leading-relaxed whitespace-pre-wrap mb-8 flex-grow">
+                    Description goes here...
+                </div>
 
-                <div class="border-t-2 border-dashed border-[rgba(139,90,43,0.3)] pt-6 mt-6">
-                    <h3 class="font-heading text-lg font-black text-[#2c1e16] mb-4">Archival Notes</h3>
-                    <div id="expanded-comments-list" class="space-y-3 mb-4 max-h-[30vh] overflow-y-auto scrollbar-hide pr-2">
-                        <!-- Comments injected here -->
+                <!-- Comments Section -->
+                <div class="mt-auto border-t border-[rgba(139,90,43,0.3)] pt-6 shrink-0">
+                    <h3 class="font-heading text-lg font-black text-ink uppercase tracking-widest mb-4">Addendums & Notes:</h3>
+                    
+                    <div id="expanded-comments-list" class="space-y-3 mb-4 max-h-[150px] overflow-y-auto scrollbar-hide">
+                        <!-- Comments populated via JS -->
+                        <div class="text-xs italic text-ink/60">No notes inscribed yet...</div>
                     </div>
                     
                     <div class="flex gap-2">
-                        <input type="text" id="new-comment-input" class="w-full bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.4)] rounded p-2 text-ink outline-none focus:border-blood text-sm font-serif italic shadow-inner" placeholder="Add an observation...">
-                        <button onclick="window.submitEventComment()" class="fantasy-btn px-4 py-2 rounded text-xs font-bold uppercase shadow"><i class="fa-solid fa-feather-pointed"></i></button>
+                        <input type="text" id="new-comment-input" class="w-full bg-[rgba(255,255,255,0.4)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-serif" placeholder="Inscribe a note...">
+                        <button onclick="window.submitEventComment()" class="bg-blood hover:bg-red-800 text-parchment px-4 rounded font-heading font-bold text-[10px] uppercase tracking-widest transition-colors shadow">Post</button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -550,12 +548,12 @@
     <div id="cal-lore-modal" class="modal-overlay hidden z-[5000]">
         <div class="modal-container !max-w-2xl flex flex-col max-h-[85vh] !p-0 overflow-hidden text-left">
             <div class="flex justify-between items-center border-b-[3px] border-blood p-6 pb-4 shrink-0 bg-[#f4eee1]">
-                <h3 class="font-heading font-black text-2xl text-blood tracking-widest uppercase">Calendar Lore</h3>
+                <h3 class="font-heading font-black text-2xl text-blood tracking-widest uppercase">Lore of the Calendar</h3>
                 <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="text-ink hover:text-blood text-2xl font-black transition-colors leading-none">✕</button>
             </div>
             
-            <div id="cal-lore-content" class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-ink bg-transparent whitespace-pre-wrap">
-                <!-- Lore injected here -->
+            <div id="lore-content-container" class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-ink bg-transparent">
+                <!-- Lore populated dynamically -->
             </div>
         </div>
     </div>
@@ -572,12 +570,12 @@
         </div>
     </div>
 
-    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+        // --- CORE UI FUNCTIONS ---
         window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
 
         window.routeTo = (page) => {
@@ -588,11 +586,10 @@
                 } else {
                     window.location.href = page;
                 }
-            } catch(e) {
-                window.showToast("Redirects disabled in preview window.");
-            }
+            } catch(e) { window.showToast("Redirects disabled in preview window."); }
         };
 
+        // --- FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
             authDomain: "dndcampaigns-f3d48.firebaseapp.com",
@@ -605,6 +602,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- CAMPAIGN & PAGE SCOPING ---
         const urlParams = new URLSearchParams(window.location.search);
         let appId = urlParams.get('id') || urlParams.get('campaignId');
         const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -615,9 +613,11 @@
         }
 
         const DB_COLLECTION = `sessionLogs_${appId}`;
+
         let logs = [], activeLogId = null, activeRole = 'player', currentUser = null; 
         let autoSaveTimer = null;
 
+        // --- STREAMING_CHUNK:Implementing Dashboard and Sheet Logic... ---
         window.renderDashboard = () => {
             const grid = document.getElementById('grid-logs');
             if(!grid) return;
@@ -703,6 +703,7 @@
             if (m) window.showToast("Log Synced to Archives");
         };
 
+        // --- DM ACTIONS (LOGS) ---
         window.openNewLogModal = () => {
             document.getElementById('new-log-num').value = logs.length + 1;
             document.getElementById('create-modal').classList.remove('hidden');
@@ -714,19 +715,8 @@
 
             try {
                 const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
-                    visibility: 'unpublished', 
-                    sessionNum: num,
-                    date: "",
-                    location: "",
-                    summary: "",
-                    sceneOpening: "",
-                    sceneGoals: "",
-                    sceneChallenges: "",
-                    sceneSecrets: "",
-                    sceneClosing: "",
-                    dmGoals: "",
-                    dmNotes: "",
-                    createdAt: Date.now()
+                    visibility: 'unpublished', sessionNum: num, date: "", location: "", summary: "",
+                    sceneOpening: "", sceneGoals: "", sceneChallenges: "", sceneSecrets: "", sceneClosing: "", dmGoals: "", dmNotes: "", createdAt: Date.now()
                 });
                 document.getElementById('create-modal').classList.add('hidden');
                 window.openSheet(ref.id);
@@ -750,66 +740,50 @@
             window.showToast("Log Erased from History.");
         };
 
-        const DEFAULT_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
-        const DEFAULT_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
-        const DEFAULT_MOONS = [
-            { name: 'Selura', icon: '🌕', cycle: 30, offset: 15 },
-            { name: 'Veythar', icon: '🌔', cycle: 15, offset: 7 }
-        ];
+        // --- STREAMING_CHUNK:Implementing Calendar Engine and World Forge... ---
+        
+        // Default Config
+        let CALENDAR_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
+        let CALENDAR_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
+        let CALENDAR_MOONS = [{name:"Selura", icon:"🌕", cycle:30}, {name:"Veythar", icon:"🌔", cycle:15}];
+        let USE_DEFAULT_HOLIDAYS = true;
+        let LORE_TEXT = "";
 
-        const CALENDAR_HOLIDAYS = {
+        const DEFAULT_HOLIDAYS = {
             '0-1': 'Prime Day', '2-15': 'Dawnsreach', '4-10': 'Forge Day', '5-15': 'Solflare',
             '8-15': 'Duskfall', '9-30': 'Ashlight', '11-15': 'Nightvein', '11-30': 'Veilwake'
         };
-
         const HOLIDAY_DESCRIPTIONS = {
-            '0-1': "Prime Day is a celebration of trade, family, and community connection. After the harvest and preparation for colder months, settlements and enclaves hold fairs, marketplaces, and communal gatherings. It is a time to strengthen social bonds, exchange goods, and honor family ties.\n\nTraditions & Activities:\n• Market Fairs: Vendors and scavengers trade goods, tools, relics, and stories.\n• Family Feasts: Communities gather to share meals and honor elders and children.\n• Gift-Giving: Tokens of appreciation, small crafted items, or seeds for the next year are exchanged.\n• Games & Competitions: Archery contests, scavenger hunts, or mechanical challenges inspired by Aeon relics.\n• Lantern Lighting: Some settlements release lanterns symbolizing connection, prosperity, and hope.\n\nCultural Significance:\n• Strengthens community bonds in a fractured world.\n• Marks a pause from survival and conflict, even in dangerous areas.\n• In Aeonfall, Prime Day is secular, open to all, regardless of belief in the Eternal Heart or Founders.",
-            '2-15': "The Balance of Dawnsreach marks the exact point where daylight overtakes the dark. It is traditionally a day of cleansing, new beginnings, and planting early crops.",
-            '4-10': "Forge Day honors the craftsmen, artificers, and salvagers who maintain the vital machinery of survival. Forges burn bright, and masterworks are often revealed to the community.",
-            '5-15': "Solflare represents the peak of heat and light. It is a time of intense labor, long travel, and scouting far reaches before the days shorten once more.",
-            '8-15': "The Balance of Duskfall represents the retreat of light. Communities prepare storage, repair defenses, and begin focusing inward as the nights grow longer.",
-            '9-30': "The Ashlight Commemoration is a somber day of remembrance for the Sundering. Fires are kept low, and stories of the old world are shared to preserve history.",
-            '11-15': "Nightvein is the longest night of the year. A time of endurance, quiet reflection, and vigilance against the dangers that thrive in the dark.",
-            '11-30': "Veilwake closes the calendar year. It is a dual observance of mourning those lost to the wastes over the past year, and celebrating the resilience of those who survived to see a new cycle."
-        };
-        
-        const DEFAULT_LORE = `Time did not stop when the world fractured. It adapted. The Aeonfall Calendar is a reconstructed system derived from pre-collapse records, Custodian archives, and long-standing cultural consensus.`;
-
-        let activeCalConfig = {
-            days: [...DEFAULT_DAYS],
-            months: [...DEFAULT_MONTHS],
-            moons: [...DEFAULT_MOONS],
-            useDefaultHolidays: true,
-            customLore: DEFAULT_LORE
+            '0-1': 'A celebration of trade, family, and community connection.',
+            '2-15': 'Balance of light and dark. Days begin to grow longer.',
+            '4-10': 'A day honoring industry, craftsmanship, and the Custodians.',
+            '5-15': 'The longest day. Peak heat, labor, and travel.',
+            '8-15': 'Balance returns. Nights begin to lengthen.',
+            '9-30': 'Remembrance of the Sundering.',
+            '11-15': 'The longest night. A time of endurance and reflection.',
+            '11-30': 'Reflection on loss and survival.'
         };
 
-        let currentDNDYear = 836; 
-        let currentDNDMonth = 0;
-        let currentDNDDay = 1;
-        let viewYear = 836; 
-        let viewMonth = 0;
+        let currentDNDYear = 836; let currentDNDMonth = 0; let currentDNDDay = 1;
+        let viewYear = 836; let viewMonth = 0;
         let calendarEvents = [];
         let isPickerMode = false;
         let selectedDay = null;
+        let hasBootedCal = false;
 
         window.openCalendarModal = (pickerMode = false) => {
             isPickerMode = pickerMode;
-            viewYear = currentDNDYear;
-            viewMonth = currentDNDMonth;
-            
+            viewYear = currentDNDYear; viewMonth = currentDNDMonth;
             document.getElementById('cal-dm-gear').classList.toggle('hidden', activeRole !== 'dm');
             document.getElementById('aeon-cal-modal').classList.remove('hidden');
             window.renderCalendar();
         };
-
-        window.closeCalendarModal = () => {
-            document.getElementById('aeon-cal-modal').classList.add('hidden');
-        };
+        window.closeCalendarModal = () => { document.getElementById('aeon-cal-modal').classList.add('hidden'); };
 
         window.changeCalMonth = (dir) => {
             viewMonth += dir;
-            if (viewMonth >= activeCalConfig.months.length) { viewMonth = 0; viewYear++; }
-            if (viewMonth < 0) { viewMonth = activeCalConfig.months.length - 1; viewYear--; }
+            if (viewMonth >= CALENDAR_MONTHS.length) { viewMonth = 0; viewYear++; }
+            if (viewMonth < 0) { viewMonth = CALENDAR_MONTHS.length - 1; viewYear--; }
             window.renderCalendar();
         };
 
@@ -821,391 +795,209 @@
         };
 
         window.goToCurrentDate = () => {
-            viewYear = currentDNDYear;
-            viewMonth = currentDNDMonth;
+            viewYear = currentDNDYear; viewMonth = currentDNDMonth;
             window.renderCalendar();
         };
 
         function getOrdinal(n) {
-            const s = ["th", "st", "nd", "rd"];
-            const v = n % 100;
+            const s = ["th", "st", "nd", "rd"]; const v = n % 100;
             return s[(v - 20) % 10] || s[v] || s[0];
         }
 
         window.renderCalendar = () => {
-            if (viewMonth >= activeCalConfig.months.length) viewMonth = activeCalConfig.months.length - 1;
-            if (viewMonth < 0) viewMonth = 0;
-
-            document.getElementById('cal-month-display').textContent = activeCalConfig.months[viewMonth];
+            document.getElementById('cal-month-display').textContent = CALENDAR_MONTHS[viewMonth];
             document.getElementById('cal-year-display').textContent = viewYear;
             document.getElementById('cal-sub-year').textContent = viewYear;
             document.getElementById('manual-year-input').value = viewYear;
 
-            const loreContent = document.getElementById('cal-lore-content');
-            if (activeCalConfig.useDefaultHolidays !== false && activeCalConfig.customLore === DEFAULT_LORE) {
-                loreContent.innerHTML = `<div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner mb-4 italic text-ink/80">${activeCalConfig.customLore}</div>`;
-            } else {
-                loreContent.innerHTML = activeCalConfig.customLore ? `<div class="whitespace-pre-wrap">${activeCalConfig.customLore}</div>` : `<div class="italic text-ink/50">The archives are silent on the history of this calendar.</div>`;
-            }
-
-            const daysHeaderGrid = document.getElementById('cal-days-header-grid');
-            daysHeaderGrid.style.gridTemplateColumns = `repeat(${activeCalConfig.days.length}, 1fr)`;
-            daysHeaderGrid.innerHTML = activeCalConfig.days.map(d => `<div class="aeon-day-header">${d.substring(0,3).toUpperCase()}</div>`).join('');
-
-            const legend = document.getElementById('cal-footer-legend');
-            let legendHtml = activeCalConfig.moons.map(m => `<span class="flex items-center gap-1" title="Cycle: ${m.cycle} days"><span class="opacity-50">${m.icon}</span> ${m.name}</span>`).join('');
-            legendHtml += `<span class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-[#7a1b1b]"></div> Event</span>`;
-            legend.innerHTML = legendHtml;
+            // Render Days Header dynamically based on config
+            const headerGrid = document.getElementById('cal-days-header');
+            headerGrid.style.gridTemplateColumns = `repeat(${CALENDAR_DAYS.length}, 1fr)`;
+            headerGrid.innerHTML = CALENDAR_DAYS.map(d => `<div class="aeon-day-header">${d.substring(0,3)}</div>`).join('');
 
             const grid = document.getElementById('cal-days-grid');
-            if(!grid) return;
+            grid.style.gridTemplateColumns = `repeat(${CALENDAR_DAYS.length}, 1fr)`;
             grid.innerHTML = '';
-            grid.style.gridTemplateColumns = `repeat(${activeCalConfig.days.length}, 1fr)`;
 
-            const totalDaysPerYear = activeCalConfig.months.length * 30;
-            const absoluteDaysPassed = ((viewYear - 1) * totalDaysPerYear) + (viewMonth * 30);
-            const startPad = absoluteDaysPassed % activeCalConfig.days.length;
+            const daysInWeek = CALENDAR_DAYS.length;
+            const totalDaysBeforeMonth = (viewYear - 1) * (CALENDAR_MONTHS.length * 30) + (viewMonth * 30);
+            const startPad = totalDaysBeforeMonth % daysInWeek;
 
-            const prevMonthDays = 30;
-            for(let i = startPad - 1; i >= 0; i--) {
-                grid.innerHTML += `<div class="aeon-cell empty">${prevMonthDays - i}</div>`;
-            }
-
-            const currentUsername = (currentUser?.username || '').toLowerCase();
+            for(let i = startPad - 1; i >= 0; i--) { grid.innerHTML += `<div class="aeon-cell empty">${30 - i}</div>`; }
 
             for(let d = 1; d <= 30; d++) {
                 const isCurrent = (viewYear === currentDNDYear && viewMonth === currentDNDMonth && d === currentDNDDay);
-                
                 let classes = "aeon-cell";
                 if (isCurrent) classes += " active-day today-glow";
 
-                let iconsHtml = `<div class="absolute inset-0 flex justify-between p-1 pointer-events-none opacity-40 text-[9px] leading-none">`;
-                
-                activeCalConfig.moons.forEach(moon => {
-                    const absDayOfWorld = absoluteDaysPassed + d;
-                    if ((absDayOfWorld + moon.offset) % moon.cycle === 0) {
-                        iconsHtml += `<span title="${moon.name} Full">${moon.icon}</span>`;
-                    } else {
-                        iconsHtml += `<span></span>`; 
-                    }
+                // Moons
+                let iconsHtml = `<div class="absolute inset-0 flex justify-between p-1 pointer-events-none opacity-30 text-[8px] leading-none">`;
+                CALENDAR_MOONS.forEach(moon => {
+                    if (d % moon.cycle === 0) iconsHtml += `<span title="Full ${moon.name}">${moon.icon}</span>`;
                 });
                 iconsHtml += `</div>`;
 
+                // Events
                 let dotsHtml = `<div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">`;
+                const isHoliday = USE_DEFAULT_HOLIDAYS && DEFAULT_HOLIDAYS[`${viewMonth}-${d}`];
                 
-                const isHoliday = activeCalConfig.useDefaultHolidays !== false ? CALENDAR_HOLIDAYS[`${viewMonth}-${d}`] : null;
-                const hasCustomEvents = calendarEvents.some(e => 
-                    e.y === viewYear && e.m === viewMonth && e.d === d && 
-                    (activeRole === 'dm' || e.vis === 'public' || (e.vis === 'personal' && e.tiedTo && e.tiedTo.toLowerCase().includes(currentUsername)))
-                );
+                const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
+                const hasVisibleEvents = dayEvents.some(e => {
+                    if (activeRole === 'dm') return true;
+                    if (e.vis === 'public') return true;
+                    if (e.vis === 'personal') {
+                        const ties = (e.personalTies || "").split(',').map(s=>s.trim().toLowerCase());
+                        return ties.includes(currentUser.username.toLowerCase());
+                    }
+                    return false;
+                });
 
-                if (isHoliday || hasCustomEvents) {
+                if (isHoliday || hasVisibleEvents) {
                     dotsHtml += `<div class="w-1.5 h-1.5 rounded-full bg-blood shadow-sm" title="Event/Holiday"></div>`;
                     if (isCurrent) classes += " !border-blood"; 
                 }
                 dotsHtml += `</div>`;
 
-                grid.innerHTML += `
-                    <div class="${classes}" onclick="window.selectCalDay(${d})">
-                        ${iconsHtml}
-                        <span class="relative z-10 mt-1">${d}</span>
-                        ${dotsHtml}
-                    </div>
-                `;
+                grid.innerHTML += `<div class="${classes}" onclick="window.selectCalDay(${d})">${iconsHtml}<span class="relative z-10 mt-1">${d}</span>${dotsHtml}</div>`;
             }
 
             const totalCells = startPad + 30;
-            const endPad = (activeCalConfig.days.length - (totalCells % activeCalConfig.days.length)) % activeCalConfig.days.length;
-            for(let i = 1; i <= endPad; i++) {
-                grid.innerHTML += `<div class="aeon-cell empty">${i}</div>`;
-            }
+            const endPad = (daysInWeek - (totalCells % daysInWeek)) % daysInWeek;
+            for(let i = 1; i <= endPad; i++) { grid.innerHTML += `<div class="aeon-cell empty">${i}</div>`; }
+
+            // Render Legend
+            document.getElementById('cal-moons-legend').innerHTML = CALENDAR_MOONS.map(m => 
+                `<span class="flex items-center gap-1"><span class="opacity-50">${m.icon}</span> ${m.name}</span>`
+            ).join('') + `<span class="flex items-center gap-1 ml-2"><div class="w-1.5 h-1.5 rounded-full bg-[#7a1b1b]"></div> Event</span>`;
         };
 
+        // --- STREAMING_CHUNK:Event Creation, Editing, & Day Selection... ---
         window.selectCalDay = (d) => {
             selectedDay = d;
-            const activeMonthName = activeCalConfig.months[viewMonth] || `Month ${viewMonth + 1}`;
-            const dateStr = `${d}${getOrdinal(d)} of ${activeMonthName}, ${viewYear}`;
+            const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
             
             if (isPickerMode) {
                 const dateInput = document.getElementById('log-date-input');
-                if (dateInput && !dateInput.disabled) {
-                    dateInput.value = dateStr;
-                    window.saveLog(false);
-                }
+                if (dateInput && !dateInput.disabled) { dateInput.value = dateStr; window.saveLog(false); }
                 window.closeCalendarModal();
             } else {
                 document.getElementById('day-details-title').textContent = dateStr;
                 const contentDiv = document.getElementById('day-details-content');
                 contentDiv.innerHTML = '';
-                
                 let hasContent = false;
 
-                const holiday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
-                if (holiday && activeCalConfig.useDefaultHolidays !== false) {
-                    hasContent = true;
-                    let holType = 'belief';
-                    if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein', 'Prime Day'].includes(holiday)) holType = 'secular';
-
-                    contentDiv.innerHTML += `
-                        <div class="scrap-paper scrap-border-${holType} cursor-pointer" onclick="window.openEventExpanded('hol-${viewMonth}-${d}')">
-                            <div class="absolute inset-0 bg-gold/0 hover:bg-gold/10 transition-colors pointer-events-none rounded"></div>
-                            <div class="text-[9px] font-black text-blood/80 uppercase tracking-[0.2em] font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> World Observance</div>
-                            <div class="font-black text-ink text-xl font-heading uppercase tracking-wide">${holiday}</div>
-                            <div class="text-[10px] text-ink/60 uppercase font-heading tracking-widest mt-1">${holType === 'secular' ? 'Secular Holiday' : 'Belief/Cultural Holiday'}</div>
-                            <div class="text-[10px] font-bold text-blood uppercase tracking-widest mt-3 flex items-center gap-1"><i class="fa-solid fa-expand"></i> Unfurl Notes</div>
-                        </div>
-                    `;
-                }
-
-                const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
-                const currentUsername = (currentUser?.username || '').toLowerCase();
-                const visibleEvents = dayEvents.filter(e => 
-                    activeRole === 'dm' || 
-                    e.vis === 'public' || 
-                    (e.vis === 'personal' && e.tiedTo && e.tiedTo.toLowerCase().includes(currentUsername))
-                );
-
-                if (visibleEvents.length > 0) {
-                    hasContent = true;
-                    visibleEvents.forEach(e => {
-                        const isSecret = e.vis === 'secret';
-                        const isPersonal = e.vis === 'personal';
-                        const typeBorder = isSecret ? 'secret' : (isPersonal ? 'personal' : (e.type || 'none'));
-                        
-                        let typeLabel = "General Event";
-                        if(e.type === 'belief') typeLabel = "Belief/Cultural Holiday";
-                        if(e.type === 'secular') typeLabel = "Secular Holiday";
-                        if(e.type === 'historical') typeLabel = "Historical Milestone";
-                        if(isSecret) typeLabel = "DM Secret Log";
-                        if(isPersonal) typeLabel = "Personal Tie";
-
+                // Holiday Logic
+                if (USE_DEFAULT_HOLIDAYS) {
+                    const holiday = DEFAULT_HOLIDAYS[`${viewMonth}-${d}`];
+                    if (holiday) {
+                        hasContent = true;
                         contentDiv.innerHTML += `
-                            <div class="scrap-paper scrap-border-${typeBorder} cursor-pointer" onclick="window.openEventExpanded('${e.id}')">
-                                <div class="absolute inset-0 bg-gold/0 hover:bg-gold/10 transition-colors pointer-events-none rounded"></div>
-                                ${isSecret ? '<span class="absolute top-3 right-3 text-[8px] bg-purple-900 text-white px-2 py-1 rounded uppercase font-black tracking-widest shadow">Secret</span>' : ''}
-                                ${isPersonal ? `<span class="absolute top-3 right-3 text-[8px] bg-[#0f766e] text-white px-2 py-1 rounded uppercase font-black tracking-widest shadow" title="Tied to: ${e.tiedTo || 'Unknown'}">Personal</span>` : ''}
-                                <div class="text-[9px] font-black ${isSecret ? 'text-purple-800' : (isPersonal ? 'text-[#0f766e]' : 'text-ink/60')} uppercase tracking-[0.2em] font-heading mb-1">${typeLabel}</div>
-                                <div class="text-xl font-black text-ink uppercase font-heading pr-14 leading-tight line-clamp-1">${e.title}</div>
-                                <div class="text-sm text-ink/90 font-serif mt-2 whitespace-pre-wrap leading-relaxed line-clamp-2">${e.desc}</div>
-                                <div class="text-[10px] font-bold text-blood uppercase tracking-widest mt-3 flex items-center gap-1"><i class="fa-solid fa-expand"></i> Unfurl Notes</div>
+                            <div class="bg-[rgba(197,160,89,0.2)] p-4 rounded border border-gold shadow-sm mb-3 cursor-pointer hover:bg-[rgba(197,160,89,0.3)] transition-colors" onclick="window.openEventExpanded('hol-${viewMonth}-${d}')">
+                                <div class="text-[10px] font-black text-blood uppercase tracking-widest font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> World Holiday</div>
+                                <div class="font-bold text-ink text-sm">${holiday}</div>
                             </div>
                         `;
-                    });
+                    }
                 }
 
-                if (!hasContent) {
-                    contentDiv.innerHTML = `<div class="text-center italic text-ink/60 py-8 text-sm">No events recorded for this day.</div>`;
-                }
+                // Custom Events
+                const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
+                dayEvents.forEach(e => {
+                    let isVisible = false;
+                    if (activeRole === 'dm') isVisible = true;
+                    else if (e.vis === 'public') isVisible = true;
+                    else if (e.vis === 'personal') {
+                        const ties = (e.personalTies || "").split(',').map(s=>s.trim().toLowerCase());
+                        if (ties.includes(currentUser.username.toLowerCase())) isVisible = true;
+                    }
 
-                const dmBtn = document.getElementById('day-details-dm-btn');
-                if (activeRole === 'dm') dmBtn.classList.remove('hidden');
-                else dmBtn.classList.add('hidden');
+                    if (isVisible) {
+                        hasContent = true;
+                        const isSecret = e.vis === 'secret';
+                        const isPersonal = e.vis === 'personal';
+                        
+                        let borderCol = 'border-blood'; let badge = '';
+                        if (isSecret) { borderCol = 'border-purple-600'; badge = '<span class="absolute top-2 right-2 text-[8px] bg-purple-900 text-white px-2 py-0.5 rounded uppercase font-black tracking-widest">Secret</span>'; }
+                        if (isPersonal) { borderCol = 'border-teal-600'; badge = '<span class="absolute top-2 right-2 text-[8px] bg-teal-900 text-white px-2 py-0.5 rounded uppercase font-black tracking-widest">Personal</span>'; }
 
+                        contentDiv.innerHTML += `
+                            <div class="bg-[rgba(255,255,255,0.5)] p-4 rounded border-l-4 ${borderCol} shadow-sm mb-3 relative cursor-pointer hover:bg-[rgba(255,255,255,0.8)] transition-colors" onclick="window.openEventExpanded('${e.id}')">
+                                ${badge}
+                                <div class="text-sm font-black text-ink uppercase font-heading pr-16">${e.title}</div>
+                                <div class="text-sm text-ink/80 italic font-serif mt-2 line-clamp-2">${e.desc}</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (!hasContent) contentDiv.innerHTML = `<div class="text-center italic text-ink/60 py-8 text-sm">No events recorded for this day.</div>`;
+                
+                document.getElementById('day-details-dm-btn').classList.toggle('hidden', activeRole !== 'dm');
                 document.getElementById('day-details-modal').classList.remove('hidden');
             }
-        };
-
-        let currentExpandedEventId = null;
-        let commentsUnsubscribe = null;
-
-        window.openEventExpanded = (identifier) => {
-            currentExpandedEventId = identifier;
-            let title, desc, type, vis;
-            let isHoliday = identifier.startsWith('hol-');
-
-            if (isHoliday) {
-                const key = identifier.replace('hol-', '');
-                title = CALENDAR_HOLIDAYS[key];
-                desc = HOLIDAY_DESCRIPTIONS[key] || "A standard day of observance in this world.";
-                type = "holiday";
-                vis = "public";
-            } else {
-                const ev = calendarEvents.find(e => e.id === identifier);
-                if(!ev) return;
-                title = ev.title;
-                desc = ev.desc;
-                type = ev.type;
-                vis = ev.vis;
-            }
-
-            document.getElementById('day-details-modal').classList.add('hidden');
-            document.getElementById('event-expanded-modal').classList.remove('hidden');
-            
-            document.getElementById('expanded-event-title').textContent = title;
-            document.getElementById('expanded-event-desc').textContent = desc;
-            
-            let typeLabel = "General Event";
-            if(isHoliday) {
-                if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein', 'Prime Day'].includes(title)) typeLabel = "Secular Holiday";
-                else typeLabel = "Belief/Cultural Holiday";
-            } else {
-                if(type === 'belief') typeLabel = "Belief/Cultural Holiday";
-                if(type === 'secular') typeLabel = "Secular Holiday";
-                if(type === 'historical') typeLabel = "Historical Milestone";
-                if(vis === 'secret') typeLabel = "DM Secret Log";
-                if(vis === 'personal') typeLabel = "Personal Tie";
-            }
-            document.getElementById('expanded-event-type').textContent = typeLabel;
-
-            const editBtn = document.getElementById('expanded-edit-btn');
-            if (activeRole === 'dm' && !isHoliday) {
-                editBtn.classList.remove('hidden');
-                editBtn.onclick = () => {
-                    document.getElementById('event-expanded-modal').classList.add('hidden');
-                    window.loadEditEvent(identifier);
-                    document.getElementById('event-modal').dataset.day = selectedDay;
-                    document.getElementById('event-modal').classList.remove('hidden');
-                };
-            } else {
-                editBtn.classList.add('hidden');
-            }
-
-            loadCommentsForEvent(identifier);
-        };
-
-        window.closeEventExpanded = () => {
-            document.getElementById('event-expanded-modal').classList.add('hidden');
-            if (commentsUnsubscribe) { commentsUnsubscribe(); commentsUnsubscribe = null; }
-            if(selectedDay) window.selectCalDay(selectedDay);
-        };
-
-        window.openCalSettings = () => {
-            if (activeRole !== 'dm') return;
-            document.getElementById('cal-settings-modal').classList.remove('hidden');
-        };
-
-        window.setAsCurrentDate = async () => {
-            if (activeRole !== 'dm') return;
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
-                    currentYear: viewYear,
-                    currentMonth: viewMonth,
-                    currentDay: 1 
-                }, {merge: true});
-                document.getElementById('cal-settings-modal').classList.add('hidden');
-                window.showToast("Current Month Set");
-            } catch(e) { window.showToast("Failed to set date."); }
-        };
-
-        window.openCalConfig = () => {
-            if (activeRole !== 'dm') return;
-            document.getElementById('config-months').value = activeCalConfig.months.join(', ');
-            document.getElementById('config-days').value = activeCalConfig.days.join(', ');
-            
-            const moonStr = activeCalConfig.moons.map(m => `${m.name}, ${m.icon}, ${m.cycle}, ${m.offset}`).join('\n');
-            document.getElementById('config-moons').value = moonStr;
-            
-            document.getElementById('config-use-default-holidays').checked = activeCalConfig.useDefaultHolidays !== false;
-            document.getElementById('config-lore').value = activeCalConfig.customLore || "";
-            
-            document.getElementById('cal-settings-modal').classList.add('hidden');
-            document.getElementById('cal-config-modal').classList.remove('hidden');
-        };
-
-        window.saveCalConfig = async () => {
-            if (activeRole !== 'dm') return;
-            
-            const parseCsv = (str) => str.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            
-            const newMonths = parseCsv(document.getElementById('config-months').value);
-            const newDays = parseCsv(document.getElementById('config-days').value);
-            
-            if (newMonths.length === 0) newMonths.push("Month 1");
-            if (newDays.length === 0) newDays.push("Day 1");
-
-            const moonsInput = document.getElementById('config-moons').value.split('\n');
-            const newMoons = [];
-            moonsInput.forEach(line => {
-                const parts = line.split(',').map(p => p.trim());
-                if(parts.length >= 4) {
-                    newMoons.push({
-                        name: parts[0],
-                        icon: parts[1],
-                        cycle: parseInt(parts[2]) || 30,
-                        offset: parseInt(parts[3]) || 0
-                    });
-                }
-            });
-
-            const useDef = document.getElementById('config-use-default-holidays').checked;
-            const lore = document.getElementById('config-lore').value.trim();
-
-            const updatedConfig = { days: newDays, months: newMonths, moons: newMoons, useDefaultHolidays: useDef, customLore: lore };
-
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
-                    config: updatedConfig
-                }, {merge: true});
-                
-                window.showToast("World Calendar Reforged");
-                document.getElementById('cal-config-modal').classList.add('hidden');
-            } catch(e) { window.showToast("Failed to save world config."); }
         };
 
         window.openEventManager = () => {
             const d = selectedDay;
             if (!d || activeRole !== 'dm') return;
+            const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
             
-            const activeMonthName = activeCalConfig.months[viewMonth] || `Month ${viewMonth + 1}`;
-            const dateStr = `${d}${getOrdinal(d)} of ${activeMonthName}, ${viewYear}`;
-            
+            document.getElementById('event-manager-title').textContent = "Log Calendar Event";
             document.getElementById('event-date-display').textContent = dateStr;
             document.getElementById('new-event-title').value = '';
             document.getElementById('new-event-desc').value = '';
             document.getElementById('new-event-type').value = 'none';
             document.getElementById('new-event-vis').value = 'public';
-            document.getElementById('new-event-tied').value = '';
-            document.getElementById('tied-to-container').classList.add('hidden');
-            
-            document.getElementById('event-modal-title').textContent = "Log Calendar Event";
-            document.getElementById('event-save-btn').textContent = "Save Event";
-            delete document.getElementById('event-modal').dataset.editId;
-            
-            const eventsList = document.getElementById('existing-events-list');
-            const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
-            
-            if(dayEvents.length > 0) {
-                eventsList.innerHTML = `<div class="text-[10px] font-black text-ink/60 uppercase tracking-widest mb-2 font-heading">Existing Logs</div>` + dayEvents.map(e => {
-                    let borderClass = 'border-blood';
-                    if(e.vis === 'secret') borderClass = 'border-purple-500';
-                    if(e.vis === 'personal') borderClass = 'border-[#0f766e]';
-                    
-                    return `
-                    <div class="bg-black/10 p-3 rounded border-l-2 ${borderClass} relative shadow-sm hover:bg-black/20 transition-colors">
-                        <div class="text-[10px] font-black text-ink uppercase font-heading pr-12">${e.title}</div>
-                        <div class="text-[9px] text-ink/60 uppercase tracking-widest font-heading mb-1">${e.type || 'none'} ${e.vis === 'personal' ? `(${e.tiedTo})` : ''}</div>
-                        <div class="text-[11px] text-ink/70 italic font-serif line-clamp-1">${e.desc}</div>
-                        <div class="absolute top-2 right-2 flex gap-2">
-                            <button onclick="window.loadEditEvent('${e.id}')" class="text-gold hover:text-yellow-700 text-xs transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="window.deleteCalendarEvent('${e.id}')" class="text-blood hover:text-red-700 text-xs transition-colors" title="Erase"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-                `}).join('');
-            } else {
-                eventsList.innerHTML = "";
-            }
-            
-            document.getElementById('event-modal').dataset.day = d;
+            document.getElementById('new-event-personal-tie').value = '';
+            document.getElementById('personal-tie-wrapper').style.display = 'none';
+            document.getElementById('event-modal').dataset.eventId = ""; // Clear edit ID
+            document.getElementById('save-event-btn').textContent = "Save Event";
+
+            renderExistingEventsList(d);
             
             document.getElementById('day-details-modal').classList.add('hidden');
             document.getElementById('event-modal').classList.remove('hidden');
         };
 
+        function renderExistingEventsList(d) {
+            const eventsList = document.getElementById('existing-events-list');
+            const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
+            eventsList.innerHTML = dayEvents.map(e => {
+                let border = 'border-blood';
+                if(e.vis === 'secret') border = 'border-purple-500';
+                if(e.vis === 'personal') border = 'border-teal-500';
+                
+                return `
+                <div class="bg-black/10 p-3 rounded border-l-2 ${border} relative shadow-sm">
+                    <div class="text-[10px] font-black text-ink uppercase font-heading pr-12">${e.title}</div>
+                    <div class="text-[11px] text-ink/70 italic font-serif mt-1 line-clamp-1">${e.desc}</div>
+                    <div class="absolute top-2 right-2 flex gap-2">
+                        <button onclick="window.loadEditEvent('${e.id}')" class="text-gold hover:text-yellow-600 text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="window.deleteCalendarEvent('${e.id}')" class="text-blood hover:text-red-700 text-xs transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
         window.loadEditEvent = (id) => {
-            if (activeRole !== 'dm') return;
-            const e = calendarEvents.find(ev => ev.id === id);
-            if (!e) return;
+            const ev = calendarEvents.find(e => e.id === id);
+            if(!ev) return;
             
-            document.getElementById('new-event-title').value = e.title;
-            document.getElementById('new-event-desc').value = e.desc;
-            document.getElementById('new-event-type').value = e.type || 'none';
-            document.getElementById('new-event-vis').value = e.vis || 'public';
-            document.getElementById('new-event-tied').value = e.tiedTo || '';
-            document.getElementById('tied-to-container').classList.toggle('hidden', e.vis !== 'personal');
+            document.getElementById('event-manager-title').textContent = "Edit Event";
+            document.getElementById('new-event-title').value = ev.title;
+            document.getElementById('new-event-desc').value = ev.desc;
+            document.getElementById('new-event-type').value = ev.type || 'none';
+            document.getElementById('new-event-vis').value = ev.vis;
             
-            document.getElementById('event-modal-title').textContent = "Edit Event";
-            document.getElementById('event-save-btn').textContent = "Update Event";
-            document.getElementById('event-modal').dataset.editId = id;
+            if(ev.vis === 'personal') {
+                document.getElementById('personal-tie-wrapper').style.display = 'block';
+                document.getElementById('new-event-personal-tie').value = ev.personalTies || '';
+            } else {
+                document.getElementById('personal-tie-wrapper').style.display = 'none';
+            }
+            
+            document.getElementById('event-modal').dataset.eventId = id;
+            document.getElementById('save-event-btn').textContent = "Update Event";
         };
 
         window.saveCalendarEvent = async () => {
@@ -1214,54 +1006,43 @@
             const desc = document.getElementById('new-event-desc').value.trim();
             const type = document.getElementById('new-event-type').value;
             const vis = document.getElementById('new-event-vis').value;
+            const ties = document.getElementById('new-event-personal-tie').value.trim();
             const day = parseInt(document.getElementById('event-modal').dataset.day);
-            const editId = document.getElementById('event-modal').dataset.editId;
-            
-            const tiedTo = vis === 'personal' ? document.getElementById('new-event-tied').value.trim() : '';
+            const editId = document.getElementById('event-modal').dataset.eventId;
 
             if (!title) return window.showToast("Event needs a title.");
-            if (vis === 'personal' && !tiedTo) return window.showToast("Personal events require a username.");
 
-            let updatedEvents = [];
+            let updatedEvents = [...calendarEvents];
             
             if (editId) {
-                updatedEvents = calendarEvents.map(e => {
-                    if (e.id === editId) {
-                        return { ...e, title, desc, type, vis, tiedTo };
-                    }
-                    return e;
-                });
+                const idx = updatedEvents.findIndex(e => e.id === editId);
+                if(idx !== -1) {
+                    updatedEvents[idx] = { ...updatedEvents[idx], title, desc, type, vis, personalTies: ties };
+                }
             } else {
-                const newEvent = {
-                    id: crypto.randomUUID(),
-                    y: viewYear,
-                    m: viewMonth,
-                    d: day,
-                    title: title,
-                    desc: desc,
-                    type: type,
-                    vis: vis,
-                    tiedTo: tiedTo
-                };
-                updatedEvents = [...calendarEvents, newEvent];
+                updatedEvents.push({ id: crypto.randomUUID(), y: viewYear, m: viewMonth, d: day, title, desc, type, vis, personalTies: ties });
             }
 
             try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
-                    events: updatedEvents
-                }, {merge: true});
-                
-                window.showToast(editId ? "Event Updated" : "Event Inscribed");
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), { events: updatedEvents }, {merge: true});
+                window.showToast("Event Saved");
                 calendarEvents = updatedEvents; 
-                window.openEventManager(); 
-                window.renderCalendar(); 
+                renderExistingEventsList(day);
+                
+                // Reset form to create mode after save
+                document.getElementById('event-modal').dataset.eventId = "";
+                document.getElementById('new-event-title').value = '';
+                document.getElementById('new-event-desc').value = '';
+                document.getElementById('event-manager-title').textContent = "Log Calendar Event";
+                document.getElementById('save-event-btn').textContent = "Save Event";
+                
+                window.renderCalendar();
             } catch(e) { window.showToast("Failed to save event."); }
         };
 
         let pendingDeleteId = null;
-        window.deleteCalendarEvent = async (eventId) => {
+        window.deleteCalendarEvent = async (eventId, fromExpanded = false) => {
             if (activeRole !== 'dm') return;
-            
             if (pendingDeleteId !== eventId) {
                 pendingDeleteId = eventId;
                 window.showToast("Click the erase icon again to confirm.");
@@ -1272,84 +1053,219 @@
             
             const updatedEvents = calendarEvents.filter(e => e.id !== eventId);
             try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
-                    events: updatedEvents
-                }, {merge: true});
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), { events: updatedEvents }, {merge: true});
                 window.showToast("Event Erased");
                 calendarEvents = updatedEvents;
-                window.openEventManager();
+                if(fromExpanded) {
+                    window.closeEventExpanded();
+                    window.selectCalDay(selectedDay); // reopen day details
+                } else {
+                    renderExistingEventsList(selectedDay);
+                }
                 window.renderCalendar();
             } catch(e) { window.showToast("Failed to delete event."); }
         };
 
-        function loadCommentsForEvent(eventId) {
-            const commentsList = document.getElementById('expanded-comments-list');
-            commentsList.innerHTML = `<div class="text-ink/50 italic text-sm text-center py-4">Reading archival notes...</div>`;
-            
-            if (commentsUnsubscribe) commentsUnsubscribe();
+        // --- STREAMING_CHUNK:Expanded View (Torn Paper) & Comments... ---
+        let currentExpandedEventId = null;
+        let commentsUnsubscribe = null;
 
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', eventId);
-            commentsUnsubscribe = onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists() && docSnap.data().comments && docSnap.data().comments.length > 0) {
-                    const comments = docSnap.data().comments;
-                    commentsList.innerHTML = comments.map(c => `
-                        <div class="bg-[rgba(0,0,0,0.05)] p-4 rounded border-l-4 border-[#8b5a2b] shadow-sm relative group mb-3">
-                            <div class="flex justify-between items-baseline mb-2">
-                                <span class="font-heading font-black text-xs text-[#7a1b1b] uppercase tracking-wider">${c.author}</span>
-                                <span class="text-[9px] text-ink/60 uppercase tracking-widest font-heading">${new Date(c.timestamp).toLocaleDateString()}</span>
-                            </div>
-                            <div class="text-sm font-serif text-ink/90 leading-relaxed whitespace-pre-wrap">${c.text}</div>
-                            ${(activeRole === 'dm' || c.uid === currentUser?.uid) ? `<button onclick="window.deleteEventComment('${eventId}', '${c.id}')" class="absolute top-2 right-2 text-ink/30 hover:text-blood transition-colors text-xs hidden group-hover:block" title="Erase Note"><i class="fa-solid fa-trash"></i></button>` : ''}
-                        </div>
-                    `).join('');
-                } else {
-                    commentsList.innerHTML = `<div class="text-ink/60 italic text-sm">No notes appended to this record yet... Maybe you'll be the first?</div>`;
+        window.openEventExpanded = (identifier) => {
+            currentExpandedEventId = identifier;
+            let title, desc, type, vis;
+            let isHoliday = identifier.startsWith('hol-');
+
+            if (isHoliday) {
+                const key = identifier.replace('hol-', '');
+                title = DEFAULT_HOLIDAYS[key];
+                desc = HOLIDAY_DESCRIPTIONS[key] || "A standard day of observance in this world.";
+                
+                if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein', 'Prime Day'].includes(title)) type = "secular";
+                else type = "belief";
+                vis = "public";
+            } else {
+                const ev = calendarEvents.find(e => e.id === identifier);
+                if(!ev) return;
+                title = ev.title; desc = ev.desc; type = ev.type || 'none'; vis = ev.vis;
+            }
+
+            const tornEdge = document.querySelector('#event-expanded-modal .torn-edge');
+            const tornEdgeInner = document.querySelector('#event-expanded-modal .torn-edge-inner');
+            
+            // Reset classes
+            tornEdge.className = 'torn-edge max-w-2xl w-full relative';
+            tornEdgeInner.className = 'torn-edge-inner p-8 md:p-12 relative text-[#2c1e16] text-left min-h-[400px] flex flex-col';
+            
+            // Apply thematic animations & materials
+            if (type === 'belief') { tornEdge.classList.add('anim-belief'); tornEdgeInner.classList.add('material-belief'); }
+            else if (type === 'secular') { tornEdge.classList.add('anim-secular'); tornEdgeInner.classList.add('material-secular'); }
+            else if (type === 'historical') { tornEdge.classList.add('anim-historical'); tornEdgeInner.classList.add('material-historical'); }
+            else { tornEdge.classList.add('anim-general'); tornEdgeInner.classList.add('material-general'); }
+
+            document.getElementById('day-details-modal').classList.add('hidden');
+            document.getElementById('event-expanded-modal').classList.remove('hidden');
+            
+            document.getElementById('expanded-event-title').textContent = title;
+            document.getElementById('expanded-event-desc').textContent = desc;
+            
+            let typeLabel = "General Event";
+            if(type === 'belief') typeLabel = "Belief/Cultural Holiday";
+            if(type === 'secular') typeLabel = "Secular Holiday";
+            if(type === 'historical') typeLabel = "Historical Milestone";
+            if(vis === 'secret') typeLabel = "DM Secret Log";
+            if(vis === 'personal') typeLabel = "Personal Tie";
+            
+            document.getElementById('expanded-event-type').textContent = typeLabel;
+
+            const editBtn = document.getElementById('expanded-edit-btn');
+            const deleteBtn = document.getElementById('expanded-delete-btn');
+            
+            if (activeRole === 'dm' && !isHoliday) {
+                editBtn.classList.remove('hidden'); deleteBtn.classList.remove('hidden');
+                editBtn.onclick = () => {
+                    document.getElementById('event-expanded-modal').classList.add('hidden');
+                    window.openEventManager();
+                    window.loadEditEvent(identifier);
+                };
+                deleteBtn.onclick = () => { window.deleteCalendarEvent(identifier, true); };
+            } else {
+                editBtn.classList.add('hidden'); deleteBtn.classList.add('hidden');
+            }
+
+            loadCommentsForEvent(identifier);
+        };
+
+        window.closeEventExpanded = () => {
+            document.getElementById('event-expanded-modal').classList.add('hidden');
+            if(commentsUnsubscribe) { commentsUnsubscribe(); commentsUnsubscribe = null; }
+        };
+
+        function loadCommentsForEvent(eventId) {
+            const list = document.getElementById('expanded-comments-list');
+            list.innerHTML = `<div class="text-xs italic text-ink/60">Deciphering notes...</div>`;
+            
+            if(commentsUnsubscribe) commentsUnsubscribe();
+            
+            const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'calendarComments', eventId, 'msgs'), orderBy('timestamp', 'asc'));
+            
+            commentsUnsubscribe = onSnapshot(q, (snap) => {
+                if(snap.empty) {
+                    list.innerHTML = `<div class="text-xs italic text-ink/60">No notes inscribed yet... Maybe you'll be the first?</div>`;
+                    return;
                 }
+                list.innerHTML = snap.docs.map(docSnap => {
+                    const c = docSnap.data();
+                    const isOwn = c.userId === currentUser.uid;
+                    const isDM = c.role === 'dm';
+                    return `
+                        <div class="bg-[rgba(255,255,255,0.4)] p-3 rounded border ${isDM ? 'border-blood' : 'border-gold'} relative group">
+                            <div class="text-[9px] font-black uppercase tracking-widest ${isDM ? 'text-blood' : 'text-ink'} mb-1 font-heading">${c.username}</div>
+                            <div class="text-sm font-serif leading-snug">${c.text}</div>
+                            ${(isOwn || activeRole === 'dm') ? `<button onclick="window.deleteComment('${eventId}', '${docSnap.id}')" class="absolute top-2 right-2 text-ink/40 hover:text-blood text-[10px] hidden group-hover:block transition-colors"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
+                    `;
+                }).join('');
+                list.scrollTop = list.scrollHeight;
             });
         }
 
         window.submitEventComment = async () => {
-            if (!currentExpandedEventId) return;
             const input = document.getElementById('new-comment-input');
             const text = input.value.trim();
-            if (!text) return window.showToast("Cannot inscribe an empty note.");
+            if(!text || !currentExpandedEventId) return;
 
-            const newComment = {
-                id: crypto.randomUUID(),
-                uid: currentUser?.uid || 'guest',
-                author: currentUser?.username || 'Traveler',
-                text: text,
-                timestamp: Date.now()
-            };
-
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', currentExpandedEventId);
             try {
-                const docSnap = await getDoc(docRef);
-                let existingComments = [];
-                if (docSnap.exists() && docSnap.data().comments) existingComments = docSnap.data().comments;
-                
-                await setDoc(docRef, { comments: [...existingComments, newComment] }, { merge: true });
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'calendarComments', currentExpandedEventId, 'msgs'), {
+                    userId: currentUser.uid, username: currentUser.username, role: activeRole, text: text, timestamp: Date.now()
+                });
                 input.value = '';
-                window.showToast("Note inscribed in the archives.");
-            } catch (e) {
-                console.error(e);
-                window.showToast("Failed to append note.");
-            }
-        };
-        
-        window.deleteEventComment = async (eventId, commentId) => {
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', eventId);
-            try {
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists() && docSnap.data().comments) {
-                    const updatedComments = docSnap.data().comments.filter(c => c.id !== commentId);
-                    await setDoc(docRef, { comments: updatedComments }, { merge: true });
-                }
-            } catch(e) {
-                window.showToast("Failed to erase note.");
-            }
+            } catch(e) { window.showToast("Failed to scribe note."); }
         };
 
+        window.deleteComment = async (eventId, commentId) => {
+            if(!confirm("Erase this note?")) return;
+            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', eventId, 'msgs', commentId)); } 
+            catch(e) { window.showToast("Failed to erase note."); }
+        };
+
+        // --- STREAMING_CHUNK:World Forge Configuration & Lore... ---
+        window.openCalSettings = () => {
+            if (activeRole !== 'dm') return;
+            document.getElementById('forge-months').value = CALENDAR_MONTHS.join(', ');
+            document.getElementById('forge-days').value = CALENDAR_DAYS.join(', ');
+            document.getElementById('forge-moons').value = JSON.stringify(CALENDAR_MOONS);
+            document.getElementById('forge-use-default-holidays').checked = USE_DEFAULT_HOLIDAYS;
+            document.getElementById('forge-lore').value = LORE_TEXT;
+            document.getElementById('cal-settings-modal').classList.remove('hidden');
+        };
+
+        window.saveWorldForge = async () => {
+            if (activeRole !== 'dm') return;
+            try {
+                const monthsStr = document.getElementById('forge-months').value;
+                const daysStr = document.getElementById('forge-days').value;
+                const moonsStr = document.getElementById('forge-moons').value;
+                const useDefaults = document.getElementById('forge-use-default-holidays').checked;
+                const lore = document.getElementById('forge-lore').value;
+
+                const newMonths = monthsStr.split(',').map(s=>s.trim()).filter(s=>s);
+                const newDays = daysStr.split(',').map(s=>s.trim()).filter(s=>s);
+                let newMoons = [];
+                try { newMoons = JSON.parse(moonsStr); } catch(e) { return window.showToast("Moons JSON is invalid."); }
+
+                if(newMonths.length===0 || newDays.length===0) return window.showToast("Must have at least 1 month and day.");
+
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendarConfig'), {
+                    months: newMonths, days: newDays, moons: newMoons, useDefaultHolidays: useDefaults, lore: lore
+                });
+
+                window.showToast("World Forge Updated");
+                document.getElementById('cal-settings-modal').classList.add('hidden');
+            } catch(e) { window.showToast("Failed to save Forge settings."); }
+        };
+
+        window.setAsCurrentDate = async () => {
+            if (activeRole !== 'dm') return;
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), { currentYear: viewYear, currentMonth: viewMonth, currentDay: 1 }, {merge: true});
+                document.getElementById('cal-settings-modal').classList.add('hidden');
+                window.showToast("Current Month Set");
+            } catch(e) { window.showToast("Failed to set date."); }
+        };
+
+        function renderLore() {
+            const container = document.getElementById('lore-content-container');
+            if (LORE_TEXT) {
+                container.innerHTML = `<div class="prose prose-invert max-w-none text-ink">${LORE_TEXT}</div>`;
+            } else {
+                container.innerHTML = `
+                    <p class="italic font-bold text-[#8b5a2b] border-b border-gold/40 pb-4">How Time Endures After the World Broke.</p>
+                    <p>Time did not stop when the world fractured. It adapted. The Aeonfall Calendar is a reconstructed system derived from pre-collapse records, Custodian archives, and long-standing cultural consensus.</p>
+                    <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
+                        <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Time Structure</h4>
+                        <ul class="list-disc pl-5 space-y-1 font-bold">
+                            <li><b>Year:</b> 360 days</li><li><b>Months:</b> 12 months, 30 days each</li><li><b>Week:</b> 7 days</li>
+                        </ul>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gold/40">
+                        <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
+                            <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Months (30 Days)</h4>
+                            <ol class="list-decimal pl-5 text-[11px] space-y-1 font-bold text-ink font-heading">
+                                <li>Luminar</li><li>Terralis</li><li>Hydrath</li><li>Ignivar</li><li>Metallon</li><li>Virell</li><li>Nocthyr</li><li>Cognalis</li><li>Cragthorn</li><li>Ashveil</li><li>Fallowen</li><li>Heartveil</li>
+                            </ol>
+                        </div>
+                        <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
+                            <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Days of the Week</h4>
+                            <ol class="list-decimal pl-5 text-[11px] space-y-1 font-bold text-ink font-heading">
+                                <li>Miresen</li><li>Veysen</li><li>Thalsen</li><li>Kaelsen</li><li>Dravesen</li><li>Lursen</li><li>Sorvsen</li>
+                            </ol>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- STREAMING_CHUNK:Firebase Auth & Init Listeners... ---
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 try { window.location.href = "index.html"; } catch(e) {
@@ -1359,15 +1275,11 @@
             }
             
             try {
-                if (user.isAnonymous) {
-                    currentUser = { uid: user.uid, username: "Guest Traveler", role: 'player' };
-                } else {
+                if (user.isAnonymous) currentUser = { uid: user.uid, username: "Guest Traveler", role: 'player' };
+                else {
                     const userDoc = await getDoc(doc(db, 'users', user.uid));
-                    if (userDoc.exists()) {
-                        currentUser = { uid: user.uid, ...userDoc.data() };
-                    } else {
-                        currentUser = { uid: user.uid, username: user.displayName || 'Traveler', role: 'player' };
-                    }
+                    if (userDoc.exists()) currentUser = { uid: user.uid, ...userDoc.data() };
+                    else currentUser = { uid: user.uid, username: user.displayName || 'Traveler', role: 'player' };
                 }
 
                 activeRole = currentUser.role || 'player';
@@ -1394,32 +1306,41 @@
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden-view');
 
+                // Session Logs
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), (snap) => {
                     logs = snap.docs.map(d => ({id: d.id, ...d.data()}));
                     window.renderDashboard();
                     if (activeLogId) syncSheetData();
                 });
 
+                // Calendar Config (World Forge)
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendarConfig'), (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if(data.months) CALENDAR_MONTHS = data.months;
+                        if(data.days) CALENDAR_DAYS = data.days;
+                        if(data.moons) CALENDAR_MOONS = data.moons;
+                        USE_DEFAULT_HOLIDAYS = data.useDefaultHolidays !== false;
+                        LORE_TEXT = data.lore || "";
+                    }
+                    renderLore();
+                    if(!document.getElementById('aeon-cal-modal').classList.contains('hidden')) window.renderCalendar();
+                });
+
+                // Calendar State & Events
                 onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
-                        currentDNDYear = data.currentYear || 836;
-                        currentDNDMonth = data.currentMonth || 0;
-                        currentDNDDay = data.currentDay || 1;
+                        currentDNDYear = data.currentYear || 836; currentDNDMonth = data.currentMonth || 0; currentDNDDay = data.currentDay || 1;
                         calendarEvents = data.events || [];
                         
-                        if (data.config) {
-                            activeCalConfig = { ...activeCalConfig, ...data.config };
-                        }
-                        
-                        if (!window.hasBootedCal) {
-                            viewYear = currentDNDYear;
-                            viewMonth = currentDNDMonth;
-                            window.hasBootedCal = true;
-                        }
+                        if (!hasBootedCal) { viewYear = currentDNDYear; viewMonth = currentDNDMonth; hasBootedCal = true; }
                     }
-                    if(!document.getElementById('aeon-cal-modal').classList.contains('hidden')) {
-                        window.renderCalendar();
+                    if(!document.getElementById('aeon-cal-modal').classList.contains('hidden')) window.renderCalendar();
+                    
+                    // Refresh existing events list if modal is open
+                    if(!document.getElementById('event-modal').classList.contains('hidden') && selectedDay) {
+                        renderExistingEventsList(selectedDay);
                     }
                 });
 
@@ -1429,6 +1350,7 @@
             }
         });
 
+        // Auto-save when DM types
         document.addEventListener('input', (e) => { 
             if (e.target.dataset.key && activeRole === 'dm') { 
                 if (autoSaveTimer) clearTimeout(autoSaveTimer); 
