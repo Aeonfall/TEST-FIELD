@@ -358,7 +358,7 @@
                 <!-- Registration Only Fields -->
                 <div id="register-fields" class="hidden space-y-5">
                     <div>
-                        <label class="block font-heading font-bold text-ink mb-1">Display Name</label>
+                        <label class="block font-heading font-bold text-ink mb-1">Username</label>
                         <input type="text" id="auth-reg-username" class="fantasy-input w-full p-3 rounded" placeholder="E.g. Gandalf">
                     </div>
                     <div>
@@ -460,7 +460,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -485,17 +485,28 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        window.logoutAuth = () => {
+            signOut(auth).then(() => window.location.reload());
+        };
+
         // --- AUTHENTICATION STATE OBSERVER ---
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
                     window.location.href = "campaigns.html";
                 } catch(e) {
+                    let display = user.displayName || "Traveler";
+                    try {
+                        const snap = await getDoc(doc(db, 'users', user.uid));
+                        if(snap.exists() && snap.data().username) display = snap.data().username;
+                    } catch(err) {}
+
                     document.getElementById('initial-loading').classList.add('hidden');
                     document.getElementById('auth-view').innerHTML = `
                         <div class="parchment-bg p-10 text-center shadow-2xl border-2 border-gold rounded-lg max-w-sm">
-                            <h2 class="text-blood font-heading text-2xl mb-4 font-bold">Already Logged In!</h2>
+                            <h2 class="text-blood font-heading text-2xl mb-4 font-bold">Welcome Back, ${display}!</h2>
                             <p class="text-ink font-serif text-sm">Because you are viewing this in a preview window, automatic redirects are disabled.<br><br>Please manually open <b>campaigns.html</b> to continue.</p>
+                            <button onclick="window.logoutAuth()" class="mt-6 text-xs text-blood font-bold uppercase tracking-widest hover:underline font-heading">Switch Account / Log Out</button>
                         </div>
                     `;
                     document.getElementById('auth-view').classList.remove('hidden');
@@ -564,6 +575,8 @@
 
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
+                    
+                    await updateProfile(user, { displayName: username });
 
                     await setDoc(doc(db, 'users', user.uid), {
                         username: username,
