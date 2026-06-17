@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -468,21 +468,32 @@
                     currentUser.joinedCampaigns = [];
                 }
 
-                // Update UI based on Role
-                document.getElementById('user-display-name').innerText = currentUser.username;
-                const roleBadge = document.getElementById('user-role-badge');
-                roleBadge.classList.remove('hidden');
+                // Safely apply the username, falling back to Firebase Display Name, or 'Unknown Traveler'
+                const displayUser = currentUser.username || u.displayName || 'Unknown Traveler';
+                document.getElementById('user-display-name').innerText = displayUser;
                 
+                // Safeguard to show the role badge if it exists in your current HTML
+                const roleBadge = document.getElementById('user-role-badge');
+                if (roleBadge) {
+                    roleBadge.classList.remove('hidden');
+                    if (currentUser.role === 'dm') {
+                        roleBadge.innerText = 'DM';
+                        roleBadge.classList.add('bg-blood', 'text-white');
+                    } else {
+                        roleBadge.innerText = 'Player';
+                        roleBadge.classList.add('bg-gray-700', 'text-gray-300');
+                    }
+                }
+
                 if (currentUser.role === 'dm') {
-                    roleBadge.innerText = 'DM';
-                    roleBadge.classList.add('bg-blood', 'text-white');
-                    document.getElementById('dm-actions').classList.remove('hidden');
-                    document.getElementById('dm-actions').classList.add('flex');
+                    const btnCreate = document.getElementById('btn-create-campaign');
+                    if(btnCreate) btnCreate.classList.remove('hidden');
+                    
+                    const dmActions = document.getElementById('dm-actions');
+                    if(dmActions) dmActions.classList.replace('hidden', 'flex');
                 } else {
-                    roleBadge.innerText = 'Player';
-                    roleBadge.classList.add('bg-gray-700', 'text-gray-300');
-                    document.getElementById('player-actions').classList.remove('hidden');
-                    document.getElementById('player-actions').classList.add('flex');
+                    const playerActions = document.getElementById('player-actions');
+                    if(playerActions) playerActions.classList.replace('hidden', 'flex');
                 }
 
                 document.getElementById('initial-loading').classList.add('hidden');
@@ -494,11 +505,13 @@
                     renderCampaigns();
                 });
 
-                // Listen for User Profile updates
+                // Listen for User Profile updates to dynamically inject the username
                 onSnapshot(userDocRef, (userSnap) => {
                     if (userSnap.exists()) {
                         currentUser = { uid: u.uid, ...userSnap.data() };
                         if (!currentUser.joinedCampaigns) currentUser.joinedCampaigns = [];
+                        
+                        document.getElementById('user-display-name').innerText = currentUser.username || u.displayName || 'Unknown Traveler';
                         renderCampaigns();
                     }
                 });
