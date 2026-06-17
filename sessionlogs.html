@@ -136,6 +136,20 @@
         .scrap-border-historical { border-left-color: #7a1b1b; }
         .scrap-border-personal { border-left-color: #0f766e; border-right: 2px dashed #0f766e; }
         .scrap-border-secret { border-left-color: #6b21a8; border-right: 2px dashed #6b21a8; }
+
+        /* BURNT / TORN PAPER EFFECT */
+        .torn-edge { filter: drop-shadow(0 15px 25px rgba(0,0,0,0.9)); padding: 20px; }
+        .torn-edge-inner {
+            background-color: #eeddbb; 
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 60px rgba(139, 69, 19, 0.4), inset 0 0 20px rgba(40, 15, 5, 0.7), inset 0 0 5px rgba(0, 0, 0, 0.9);       
+            clip-path: polygon(
+                0% 1%, 2% 0%, 4% 2%, 6% 0%, 8% 1%, 10% 0%, 12% 2%, 14% 0%, 16% 1%, 18% 0%, 20% 2%, 22% 0%, 24% 1%, 26% 0%, 28% 2%, 30% 0%, 32% 1%, 34% 0%, 36% 2%, 38% 0%, 40% 1%, 42% 0%, 44% 2%, 46% 0%, 48% 1%, 50% 0%, 52% 2%, 54% 0%, 56% 1%, 58% 0%, 60% 2%, 62% 0%, 64% 1%, 66% 0%, 68% 2%, 70% 0%, 72% 1%, 74% 0%, 76% 2%, 78% 0%, 80% 1%, 82% 0%, 84% 2%, 86% 0%, 88% 1%, 90% 0%, 92% 2%, 94% 0%, 96% 1%, 98% 0%, 100% 2%,
+                99% 5%, 100% 8%, 98% 12%, 100% 15%, 99% 18%, 100% 22%, 98% 25%, 100% 28%, 99% 32%, 100% 35%, 98% 38%, 100% 42%, 99% 45%, 100% 48%, 98% 52%, 100% 55%, 99% 58%, 100% 62%, 98% 65%, 100% 68%, 99% 72%, 100% 75%, 98% 78%, 100% 82%, 99% 85%, 100% 88%, 98% 92%, 100% 95%, 99% 98%,
+                100% 100%, 98% 99%, 96% 100%, 94% 98%, 92% 100%, 90% 99%, 88% 100%, 86% 98%, 84% 100%, 82% 99%, 80% 100%, 78% 98%, 76% 100%, 74% 99%, 72% 100%, 70% 98%, 68% 100%, 66% 99%, 64% 100%, 62% 98%, 60% 100%, 58% 99%, 56% 100%, 54% 98%, 52% 100%, 50% 99%, 48% 100%, 46% 98%, 44% 100%, 42% 99%, 40% 100%, 38% 98%, 36% 100%, 34% 99%, 32% 100%, 30% 98%, 28% 100%, 26% 99%, 24% 100%, 22% 98%, 20% 100%, 18% 99%, 16% 100%, 14% 98%, 12% 100%, 10% 99%, 8% 100%, 6% 98%, 4% 100%, 2% 99%, 0% 100%,
+                1% 95%, 0% 92%, 2% 88%, 0% 85%, 1% 82%, 0% 78%, 2% 75%, 0% 72%, 1% 68%, 0% 65%, 2% 62%, 0% 58%, 1% 55%, 0% 52%, 2% 48%, 0% 45%, 1% 42%, 0% 38%, 2% 35%, 0% 32%, 1% 28%, 0% 25%, 2% 22%, 0% 18%, 1% 15%, 0% 12%, 2% 8%, 0% 5%
+            );
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -392,67 +406,107 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-8 pt-4 border-t border-[rgba(139,90,43,0.3)] text-center">
-                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-ink font-heading transition-colors">Close</button>
+            <div class="mt-8 pt-4 border-t border-[rgba(139,90,43,0.3)] text-center flex justify-between gap-4">
+                <button onclick="document.getElementById('cal-settings-modal').classList.add('hidden')" class="flex-1 text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-ink font-heading transition-colors py-2">Close</button>
+                <button onclick="window.openCalConfig()" class="flex-1 text-xs font-black text-blood border border-blood uppercase tracking-widest hover:bg-blood hover:text-white font-heading transition-colors py-2 rounded">World Forge</button>
             </div>
         </div>
     </div>
 
-    <!-- DAY DETAILS MODAL -->
-    <div id="day-details-modal" class="modal-overlay hidden z-[3500]">
-        <div class="modal-container !max-w-md">
-            <div class="border-b border-gold pb-2 mb-4 flex justify-between items-end">
-                <h3 id="day-details-title" class="font-heading text-xl font-black text-blood uppercase tracking-widest text-left">Day Details</h3>
-                <button onclick="document.getElementById('day-details-modal').classList.add('hidden')" class="text-ink hover:text-blood text-xl font-black transition-colors leading-none">✕</button>
+    <!-- CALENDAR CONFIG / WORLD FORGE MODAL -->
+    <div id="cal-config-modal" class="modal-overlay hidden z-[5000]">
+        <div class="modal-container !max-w-2xl flex flex-col h-[85vh] !p-0">
+            <div class="flex justify-between items-center border-b-[3px] border-blood p-6 pb-4 shrink-0 bg-[#f4eee1]">
+                <h3 class="font-heading font-black text-2xl text-blood tracking-widest uppercase">World Calendar Forge</h3>
+                <button onclick="document.getElementById('cal-config-modal').classList.add('hidden')" class="text-ink hover:text-blood text-2xl font-black transition-colors leading-none">✕</button>
             </div>
             
-            <div id="day-details-content" class="text-left font-serif space-y-4 mb-6 min-h-[100px] max-h-[60vh] overflow-y-auto scrollbar-hide p-2">
-                <!-- Holidays and Events populated here -->
+            <div class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-left bg-transparent">
+                <p class="italic text-ink/70 font-bold mb-4">Shape the flow of time and the celestial bodies above your world. Commas separate entries.</p>
+                
+                <div>
+                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Months of the Year</label>
+                    <textarea id="config-months" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] font-bold" placeholder="Luminar, Terralis, Hydrath..."></textarea>
+                </div>
+                
+                <div>
+                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Days of the Week</label>
+                    <textarea id="config-days" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] font-bold" placeholder="Miresen, Veysen, Thalsen..."></textarea>
+                </div>
+
+                <div>
+                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Celestial Bodies / Moons</label>
+                    <p class="text-[10px] italic text-ink/60 mb-2">Format: Name, Emoji, Cycle Length (Days), Full Moon Offset (Day of Cycle). One per line.</p>
+                    <textarea id="config-moons" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[80px] font-bold whitespace-pre" placeholder="Selura, 🌕, 30, 15&#10;Veythar, 🌔, 15, 7"></textarea>
+                </div>
+
+                <div class="bg-black/5 p-4 rounded border border-gold/40">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="config-use-default-holidays" class="w-4 h-4 accent-blood">
+                        <span class="font-heading font-bold text-ink uppercase tracking-widest text-xs">Use Default Aeonfall Holidays & Lore</span>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="font-heading font-black text-blood uppercase tracking-widest text-[10px] block mb-1">Custom World Lore</label>
+                    <textarea id="config-lore" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[120px] font-serif italic" placeholder="Write your own explanation of the calendar, eras, and astronomy..."></textarea>
+                </div>
             </div>
 
-            <div class="flex justify-center gap-3 font-heading border-t border-[rgba(139,90,43,0.3)] pt-4">
-                <button onclick="document.getElementById('day-details-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Close</button>
-                <button id="day-details-dm-btn" onclick="window.openEventManager()" class="hidden flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Manage Events</button>
+            <div class="p-6 border-t-[3px] border-blood bg-[#f4eee1] flex justify-end shrink-0">
+                <button onclick="window.saveCalConfig()" class="fantasy-btn text-white font-bold uppercase text-xs rounded px-8 py-3 shadow">Forge World Data</button>
             </div>
         </div>
     </div>
 
     <!-- EVENT MANAGER MODAL -->
-    <div id="event-modal" class="modal-overlay hidden z-[4000]">
-        <div class="modal-container !max-w-md">
-            <h3 id="event-modal-title" class="font-heading text-xl font-black text-blood uppercase mb-2 border-b border-gold pb-2">Log Calendar Event</h3>
-            <p id="event-date-display" class="text-[10px] text-ink font-black uppercase tracking-widest mb-4 font-heading italic"></p>
-            <div class="space-y-4 text-left font-serif mb-6">
+            <div class="aeon-tab-container">
+                <div class="aeon-tab opacity-50 cursor-not-allowed">Week</div>
+                <div class="aeon-tab active font-black">Month</div>
+                <div class="aeon-tab opacity-50 cursor-not-allowed">Year</div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-[rgba(139,90,43,0.3)] pb-6">
                 <div>
-                    <input type="text" id="new-event-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-sm font-bold" placeholder="Event Title (e.g. Festival, Battle)">
+                    <div class="text-3xl md:text-4xl font-heading font-black mb-1"><span id="cal-month-display" class="text-blood tracking-wider uppercase">Virell</span> <span id="cal-year-display" class="text-ink font-bold">836</span></div>
+                    <div class="text-ink text-sm md:text-base font-bold font-serif opacity-80 italic">Year <span id="cal-sub-year">836</span></div>
                 </div>
-                <div>
-                    <select id="new-event-type" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer">
-                        <option value="none">None (Standard Event)</option>
-                        <option value="belief">Belief/Cultural Holidays</option>
-                        <option value="secular">Secular Holidays</option>
-                        <option value="historical">Historical Milestone</option>
-                    </select>
-                </div>
-                <div>
-                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[100px] resize-y text-sm leading-relaxed" placeholder="Description..."></textarea>
-                </div>
-                <div>
-                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer" onchange="document.getElementById('tied-to-container').classList.toggle('hidden', this.value !== 'personal')">
-                        <option value="public">Public Knowledge</option>
-                        <option value="secret">DM Secret</option>
-                        <option value="personal">Personal Tie (Specific Players)</option>
-                    </select>
-                </div>
-                <div id="tied-to-container" class="hidden">
-                    <input type="text" id="new-event-tied" class="w-full bg-[rgba(255,255,255,0.5)] border border-[#0f766e] rounded p-2 text-ink outline-none focus:border-[#0f766e] text-xs font-bold" placeholder="Player Username(s) e.g. 'Traveler'">
-                    <p class="text-[9px] text-ink/60 mt-1 italic font-serif">Only players whose usernames contain this text will see this event.</p>
+                <div class="flex items-center gap-3 md:gap-5 text-[#8b5a2b] text-sm tracking-widest uppercase font-black bg-[rgba(255,255,255,0.4)] p-2 rounded border border-[rgba(139,90,43,0.3)] font-heading shadow-inner">
+                    <button onclick="window.changeCalMonth(-1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="window.goToCurrentDate()" class="hover:text-blood transition-colors">TODAY</button>
+                    <button onclick="window.changeCalMonth(1)" class="aeon-btn-icon"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button onclick="window.openCalSettings()" class="aeon-btn-icon" id="cal-dm-gear"><i class="fa-solid fa-gear"></i></button>
                 </div>
             </div>
-            <div id="existing-events-list" class="mb-6 space-y-2 max-h-40 overflow-y-auto scrollbar-hide text-left border-t border-[rgba(139,90,43,0.3)] pt-4"></div>
-            <div class="flex justify-between gap-3 font-heading">
-                <button onclick="document.getElementById('event-modal').classList.add('hidden'); window.selectCalDay(selectedDay);" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Back</button>
-                <button id="event-save-btn" onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Save Event</button>
+
+            <div class="aeon-grid" id="cal-days-header-grid">
+                <!-- Headers populated by JS -->
+            </div>
+            
+            <div id="cal-days-grid" class="aeon-grid mb-6">
+                <!-- Days populated by JS -->
+            </div>
+
+            <div class="flex justify-between items-center text-[10px] text-[#8b5a2b] uppercase tracking-widest font-heading font-bold pt-4 mt-2 border-t border-[rgba(139,90,43,0.3)]">
+                <div class="flex gap-3 md:gap-4 flex-wrap" id="cal-footer-legend">
+                    <!-- Legend populated by JS -->
+                </div>
+                <button id="cal-lore-btn" onclick="document.getElementById('cal-lore-modal').classList.remove('hidden')" class="hover:text-[#7a1b1b] transition-colors whitespace-nowrap ml-2"><i class="fa-solid fa-book mr-1"></i> Lore</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CALENDAR LORE MODAL -->
+    <div id="cal-lore-modal" class="modal-overlay hidden z-[5000]">
+        <div class="modal-container !max-w-2xl flex flex-col max-h-[85vh] !p-0 overflow-hidden text-left">
+            <div class="flex justify-between items-center border-b-[3px] border-blood p-6 pb-4 shrink-0 bg-[#f4eee1]">
+                <h3 class="font-heading font-black text-2xl text-blood tracking-widest uppercase">Calendar Lore</h3>
+                <button onclick="document.getElementById('cal-lore-modal').classList.add('hidden')" class="text-ink hover:text-blood text-2xl font-black transition-colors leading-none">✕</button>
+            </div>
+            
+            <div id="cal-lore-content" class="flex-grow overflow-y-auto p-6 space-y-6 font-serif text-sm leading-relaxed scrollbar-hide text-ink bg-transparent whitespace-pre-wrap">
+                <!-- Lore injected here -->
             </div>
         </div>
     </div>
@@ -731,13 +785,38 @@
             window.showToast("Log Erased from History.");
         };
 
-        // --- STREAMING_CHUNK:Calendar state and display logic... ---
-        // --- AEONFALL CALENDAR SYSTEM ---
-        const CALENDAR_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
-        const CALENDAR_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
+        // --- AEONFALL CALENDAR SYSTEM & DYNAMIC CONFIG ---
+        const DEFAULT_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
+        const DEFAULT_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
+        const DEFAULT_MOONS = [
+            { name: 'Selura', icon: '🌕', cycle: 30, offset: 15 },
+            { name: 'Veythar', icon: '🌔', cycle: 15, offset: 7 }
+        ];
+
         const CALENDAR_HOLIDAYS = {
             '0-1': 'Prime Day', '2-15': 'Dawnsreach', '4-10': 'Forge Day', '5-15': 'Solflare',
             '8-15': 'Duskfall', '9-30': 'Ashlight', '11-15': 'Nightvein', '11-30': 'Veilwake'
+        };
+
+        const HOLIDAY_DESCRIPTIONS = {
+            '0-1': "Prime Day is a celebration of trade, family, and community connection. After the harvest and preparation for colder months, settlements and enclaves hold fairs, marketplaces, and communal gatherings. It is a time to strengthen social bonds, exchange goods, and honor family ties.\n\nTraditions & Activities:\n• Market Fairs: Vendors and scavengers trade goods, tools, relics, and stories.\n• Family Feasts: Communities gather to share meals and honor elders and children.\n• Gift-Giving: Tokens of appreciation, small crafted items, or seeds for the next year are exchanged.\n• Games & Competitions: Archery contests, scavenger hunts, or mechanical challenges inspired by Aeon relics.\n• Lantern Lighting: Some settlements release lanterns symbolizing connection, prosperity, and hope.\n\nCultural Significance:\n• Strengthens community bonds in a fractured world.\n• Marks a pause from survival and conflict, even in dangerous areas.\n• In Aeonfall, Prime Day is secular, open to all, regardless of belief in the Eternal Heart or Founders.",
+            '2-15': "The Balance of Dawnsreach marks the exact point where daylight overtakes the dark. It is traditionally a day of cleansing, new beginnings, and planting early crops.",
+            '4-10': "Forge Day honors the craftsmen, artificers, and salvagers who maintain the vital machinery of survival. Forges burn bright, and masterworks are often revealed to the community.",
+            '5-15': "Solflare represents the peak of heat and light. It is a time of intense labor, long travel, and scouting far reaches before the days shorten once more.",
+            '8-15': "The Balance of Duskfall represents the retreat of light. Communities prepare storage, repair defenses, and begin focusing inward as the nights grow longer.",
+            '9-30': "The Ashlight Commemoration is a somber day of remembrance for the Sundering. Fires are kept low, and stories of the old world are shared to preserve history.",
+            '11-15': "Nightvein is the longest night of the year. A time of endurance, quiet reflection, and vigilance against the dangers that thrive in the dark.",
+            '11-30': "Veilwake closes the calendar year. It is a dual observance of mourning those lost to the wastes over the past year, and celebrating the resilience of those who survived to see a new cycle."
+        };
+        
+        const DEFAULT_LORE = `Time did not stop when the world fractured. It adapted. The Aeonfall Calendar is a reconstructed system derived from pre-collapse records, Custodian archives, and long-standing cultural consensus.`;
+
+        let activeCalConfig = {
+            days: [...DEFAULT_DAYS],
+            months: [...DEFAULT_MONTHS],
+            moons: [...DEFAULT_MOONS],
+            useDefaultHolidays: true,
+            customLore: DEFAULT_LORE
         };
 
         let currentDNDYear = 836; 
@@ -777,15 +856,73 @@
             window.renderCalendar();
         };
 
+        window.openCalConfig = () => {
+            if (activeRole !== 'dm') return;
+            document.getElementById('config-months').value = activeCalConfig.months.join(', ');
+            document.getElementById('config-days').value = activeCalConfig.days.join(', ');
+            
+            const moonStr = activeCalConfig.moons.map(m => `${m.name}, ${m.icon}, ${m.cycle}, ${m.offset}`).join('\n');
+            document.getElementById('config-moons').value = moonStr;
+            
+            document.getElementById('config-use-default-holidays').checked = activeCalConfig.useDefaultHolidays !== false;
+            document.getElementById('config-lore').value = activeCalConfig.customLore || "";
+            
+            document.getElementById('cal-settings-modal').classList.add('hidden');
+            document.getElementById('cal-config-modal').classList.remove('hidden');
+        };
+
+        window.saveCalConfig = async () => {
+            if (activeRole !== 'dm') return;
+            
+            const parseCsv = (str) => str.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            
+            const newMonths = parseCsv(document.getElementById('config-months').value);
+            const newDays = parseCsv(document.getElementById('config-days').value);
+            
+            if (newMonths.length === 0) newMonths.push("Month 1");
+            if (newDays.length === 0) newDays.push("Day 1");
+
+            const moonsInput = document.getElementById('config-moons').value.split('\n');
+            const newMoons = [];
+            moonsInput.forEach(line => {
+                const parts = line.split(',').map(p => p.trim());
+                if(parts.length >= 4) {
+                    newMoons.push({
+                        name: parts[0],
+                        icon: parts[1],
+                        cycle: parseInt(parts[2]) || 30,
+                        offset: parseInt(parts[3]) || 0
+                    });
+                }
+            });
+
+            const useDef = document.getElementById('config-use-default-holidays').checked;
+            const lore = document.getElementById('config-lore').value.trim();
+
+            const updatedConfig = { days: newDays, months: newMonths, moons: newMoons, useDefaultHolidays: useDef, customLore: lore };
+
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
+                    config: updatedConfig
+                }, {merge: true});
+                
+                window.showToast("World Calendar Reforged");
+                document.getElementById('cal-config-modal').classList.add('hidden');
+            } catch(e) { window.showToast("Failed to save world config."); }
+        };
+
         window.goToCurrentDate = () => {
             viewYear = currentDNDYear;
             viewMonth = currentDNDMonth;
             window.renderCalendar();
         };
 
+        // --- STREAMING_CHUNK:Selecting a day on the calendar... ---
         window.selectCalDay = (d) => {
             selectedDay = d;
-            const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
+            
+            const activeMonthName = activeCalConfig.months[viewMonth] || `Month ${viewMonth + 1}`;
+            const dateStr = `${d}${getOrdinal(d)} of ${activeMonthName}, ${viewYear}`;
             
             if (isPickerMode) {
                 const dateInput = document.getElementById('log-date-input');
@@ -803,17 +940,19 @@
 
                 // Check Holiday
                 const holiday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
-                if (holiday) {
+                if (holiday && activeCalConfig.useDefaultHolidays !== false) {
                     hasContent = true;
                     // Intelligently assign border types to standard holidays
                     let holType = 'belief';
-                    if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein'].includes(holiday)) holType = 'secular';
+                    if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein', 'Prime Day'].includes(holiday)) holType = 'secular';
 
                     contentDiv.innerHTML += `
-                        <div class="scrap-paper scrap-border-${holType}">
+                        <div class="scrap-paper scrap-border-${holType} cursor-pointer" onclick="window.openEventExpanded('hol-${viewMonth}-${d}')">
+                            <div class="absolute inset-0 bg-gold/0 hover:bg-gold/10 transition-colors pointer-events-none rounded"></div>
                             <div class="text-[9px] font-black text-blood/80 uppercase tracking-[0.2em] font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> World Observance</div>
                             <div class="font-black text-ink text-xl font-heading uppercase tracking-wide">${holiday}</div>
                             <div class="text-[10px] text-ink/60 uppercase font-heading tracking-widest mt-1">${holType === 'secular' ? 'Secular Holiday' : 'Belief/Cultural Holiday'}</div>
+                            <div class="text-[10px] font-bold text-blood uppercase tracking-widest mt-3 flex items-center gap-1"><i class="fa-solid fa-expand"></i> Unfurl Notes</div>
                         </div>
                     `;
                 }
@@ -844,12 +983,14 @@
                         if(isPersonal) typeLabel = "Personal Tie";
 
                         contentDiv.innerHTML += `
-                            <div class="scrap-paper scrap-border-${typeBorder}">
+                            <div class="scrap-paper scrap-border-${typeBorder} cursor-pointer" onclick="window.openEventExpanded('${e.id}')">
+                                <div class="absolute inset-0 bg-gold/0 hover:bg-gold/10 transition-colors pointer-events-none rounded"></div>
                                 ${isSecret ? '<span class="absolute top-3 right-3 text-[8px] bg-purple-900 text-white px-2 py-1 rounded uppercase font-black tracking-widest shadow">Secret</span>' : ''}
                                 ${isPersonal ? `<span class="absolute top-3 right-3 text-[8px] bg-[#0f766e] text-white px-2 py-1 rounded uppercase font-black tracking-widest shadow" title="Tied to: ${e.tiedTo || 'Unknown'}">Personal</span>` : ''}
                                 <div class="text-[9px] font-black ${isSecret ? 'text-purple-800' : (isPersonal ? 'text-[#0f766e]' : 'text-ink/60')} uppercase tracking-[0.2em] font-heading mb-1">${typeLabel}</div>
-                                <div class="text-xl font-black text-ink uppercase font-heading pr-14 leading-tight">${e.title}</div>
-                                <div class="text-sm text-ink/90 font-serif mt-3 whitespace-pre-wrap leading-relaxed">${e.desc}</div>
+                                <div class="text-xl font-black text-ink uppercase font-heading pr-14 leading-tight line-clamp-1">${e.title}</div>
+                                <div class="text-sm text-ink/90 font-serif mt-2 whitespace-pre-wrap leading-relaxed line-clamp-2">${e.desc}</div>
+                                <div class="text-[10px] font-bold text-blood uppercase tracking-widest mt-3 flex items-center gap-1"><i class="fa-solid fa-expand"></i> Unfurl Notes</div>
                             </div>
                         `;
                     });
@@ -871,10 +1012,150 @@
             }
         };
 
+        // --- STREAMING_CHUNK:Expanded Event View & Comments Logic... ---
+        let currentExpandedEventId = null;
+        let commentsUnsubscribe = null;
+
+        window.openEventExpanded = (identifier) => {
+            currentExpandedEventId = identifier;
+            let title, desc, type, vis;
+            let isHoliday = identifier.startsWith('hol-');
+
+            if (isHoliday) {
+                const key = identifier.replace('hol-', '');
+                title = CALENDAR_HOLIDAYS[key];
+                desc = HOLIDAY_DESCRIPTIONS[key] || "A standard day of observance in this world.";
+                type = "holiday";
+                vis = "public";
+            } else {
+                const ev = calendarEvents.find(e => e.id === identifier);
+                if(!ev) return;
+                title = ev.title;
+                desc = ev.desc;
+                type = ev.type;
+                vis = ev.vis;
+            }
+
+            // Hide Day Details modal, show Expanded Modal
+            document.getElementById('day-details-modal').classList.add('hidden');
+            document.getElementById('event-expanded-modal').classList.remove('hidden');
+            
+            // Set content
+            document.getElementById('expanded-event-title').textContent = title;
+            document.getElementById('expanded-event-desc').textContent = desc;
+            
+            let typeLabel = "General Event";
+            if(isHoliday) {
+                if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein', 'Prime Day'].includes(title)) typeLabel = "Secular Holiday";
+                else typeLabel = "Belief/Cultural Holiday";
+            } else {
+                if(type === 'belief') typeLabel = "Belief/Cultural Holiday";
+                if(type === 'secular') typeLabel = "Secular Holiday";
+                if(type === 'historical') typeLabel = "Historical Milestone";
+                if(vis === 'secret') typeLabel = "DM Secret Log";
+                if(vis === 'personal') typeLabel = "Personal Tie";
+            }
+            document.getElementById('expanded-event-type').textContent = typeLabel;
+
+            // Show/hide edit button
+            const editBtn = document.getElementById('expanded-edit-btn');
+            if (activeRole === 'dm' && !isHoliday) {
+                editBtn.classList.remove('hidden');
+                editBtn.onclick = () => {
+                    document.getElementById('event-expanded-modal').classList.add('hidden');
+                    window.loadEditEvent(identifier);
+                    document.getElementById('event-modal').dataset.day = selectedDay;
+                    document.getElementById('event-modal').classList.remove('hidden');
+                };
+            } else {
+                editBtn.classList.add('hidden');
+            }
+
+            // Load comments
+            loadCommentsForEvent(identifier);
+        };
+
+        window.closeEventExpanded = () => {
+            document.getElementById('event-expanded-modal').classList.add('hidden');
+            if (commentsUnsubscribe) { commentsUnsubscribe(); commentsUnsubscribe = null; }
+            // Re-open Day Details since we came from there
+            if(selectedDay) window.selectCalDay(selectedDay);
+        };
+
+        function loadCommentsForEvent(eventId) {
+            const commentsList = document.getElementById('expanded-comments-list');
+            commentsList.innerHTML = `<div class="text-ink/50 italic text-sm text-center py-4">Reading archival notes...</div>`;
+            
+            if (commentsUnsubscribe) commentsUnsubscribe();
+
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', eventId);
+            commentsUnsubscribe = onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists() && docSnap.data().comments && docSnap.data().comments.length > 0) {
+                    const comments = docSnap.data().comments;
+                    commentsList.innerHTML = comments.map(c => `
+                        <div class="bg-[rgba(0,0,0,0.05)] p-4 rounded border-l-4 border-[#8b5a2b] shadow-sm relative group mb-3">
+                            <div class="flex justify-between items-baseline mb-2">
+                                <span class="font-heading font-black text-xs text-[#7a1b1b] uppercase tracking-wider">${c.author}</span>
+                                <span class="text-[9px] text-ink/60 uppercase tracking-widest font-heading">${new Date(c.timestamp).toLocaleDateString()}</span>
+                            </div>
+                            <div class="text-sm font-serif text-ink/90 leading-relaxed whitespace-pre-wrap">${c.text}</div>
+                            ${(activeRole === 'dm' || c.uid === currentUser?.uid) ? `<button onclick="window.deleteEventComment('${eventId}', '${c.id}')" class="absolute top-2 right-2 text-ink/30 hover:text-blood transition-colors text-xs hidden group-hover:block" title="Erase Note"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    commentsList.innerHTML = `<div class="text-ink/60 italic text-sm">No notes appended to this record yet... Maybe you'll be the first?</div>`;
+                }
+            });
+        }
+
+        window.submitEventComment = async () => {
+            if (!currentExpandedEventId) return;
+            const input = document.getElementById('new-comment-input');
+            const text = input.value.trim();
+            if (!text) return window.showToast("Cannot inscribe an empty note.");
+
+            const newComment = {
+                id: crypto.randomUUID(),
+                uid: currentUser?.uid || 'guest',
+                author: currentUser?.username || 'Traveler',
+                text: text,
+                timestamp: Date.now()
+            };
+
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', currentExpandedEventId);
+            try {
+                const docSnap = await getDoc(docRef);
+                let existingComments = [];
+                if (docSnap.exists() && docSnap.data().comments) existingComments = docSnap.data().comments;
+                
+                await setDoc(docRef, { comments: [...existingComments, newComment] }, { merge: true });
+                input.value = '';
+                window.showToast("Note inscribed in the archives.");
+            } catch (e) {
+                console.error(e);
+                window.showToast("Failed to append note.");
+            }
+        };
+        
+        window.deleteEventComment = async (eventId, commentId) => {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'calendarComments', eventId);
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().comments) {
+                    const updatedComments = docSnap.data().comments.filter(c => c.id !== commentId);
+                    await setDoc(docRef, { comments: updatedComments }, { merge: true });
+                }
+            } catch(e) {
+                window.showToast("Failed to erase note.");
+            }
+        };
+
         window.openEventManager = () => {
             const d = selectedDay;
             if (!d || activeRole !== 'dm') return;
-            const dateStr = `${d}${getOrdinal(d)} of ${CALENDAR_MONTHS[viewMonth]}, ${viewYear} P.D.`;
+            
+            const activeMonthName = activeCalConfig.months[viewMonth] || `Month ${viewMonth + 1}`;
+            const dateStr = `${d}${getOrdinal(d)} of ${activeMonthName}, ${viewYear}`;
             
             document.getElementById('event-date-display').textContent = dateStr;
             document.getElementById('new-event-title').value = '';
@@ -941,20 +1222,50 @@
             return s[(v - 20) % 10] || s[v] || s[0];
         }
 
-        // --- STREAMING_CHUNK:Rendering calendar grids... ---
         window.renderCalendar = () => {
-            document.getElementById('cal-month-display').textContent = CALENDAR_MONTHS[viewMonth];
+            // Cap viewMonth if array shrank
+            if (viewMonth >= activeCalConfig.months.length) viewMonth = activeCalConfig.months.length - 1;
+            if (viewMonth < 0) viewMonth = 0;
+
+            document.getElementById('cal-month-display').textContent = activeCalConfig.months[viewMonth];
             document.getElementById('cal-year-display').textContent = viewYear;
             document.getElementById('cal-sub-year').textContent = viewYear;
             document.getElementById('manual-year-input').value = viewYear;
 
+            // Render Lore logic
+            const loreBtn = document.getElementById('cal-lore-btn');
+            const loreContent = document.getElementById('cal-lore-content');
+            
+            if (activeCalConfig.useDefaultHolidays !== false && activeCalConfig.customLore === DEFAULT_LORE) {
+                // We could render the complex HTML default lore here, but for now we'll just inject the text.
+                // To keep the rich HTML, you'd conditionally load it. Since the user can now edit it, 
+                // we treat all lore as text/HTML blocks.
+                loreContent.innerHTML = `<div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner mb-4 italic text-ink/80">${activeCalConfig.customLore}</div>`;
+            } else {
+                loreContent.innerHTML = activeCalConfig.customLore ? `<div class="whitespace-pre-wrap">${activeCalConfig.customLore}</div>` : `<div class="italic text-ink/50">The archives are silent on the history of this calendar.</div>`;
+            }
+
+            // Render Days of Week Headers
+            const daysHeaderGrid = document.getElementById('cal-days-header-grid');
+            daysHeaderGrid.style.gridTemplateColumns = `repeat(${activeCalConfig.days.length}, 1fr)`;
+            daysHeaderGrid.innerHTML = activeCalConfig.days.map(d => `<div class="aeon-day-header">${d.substring(0,3).toUpperCase()}</div>`).join('');
+
+            // Render Legend Footer
+            const legend = document.getElementById('cal-footer-legend');
+            let legendHtml = activeCalConfig.moons.map(m => `<span class="flex items-center gap-1" title="Cycle: ${m.cycle} days"><span class="opacity-50">${m.icon}</span> ${m.name}</span>`).join('');
+            legendHtml += `<span class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-[#7a1b1b]"></div> Event</span>`;
+            legend.innerHTML = legendHtml;
+
             const grid = document.getElementById('cal-days-grid');
             if(!grid) return;
             grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(${activeCalConfig.days.length}, 1fr)`;
 
-            // Calculate start padding (0 to 6)
-            const totalDaysBeforeMonth = (viewYear - 1) * 360 + (viewMonth * 30);
-            const startPad = totalDaysBeforeMonth % 7;
+            // Math for padding: Assume every month has exactly 30 days for mathematical simplicity 
+            // regardless of the number of months in a year.
+            const totalDaysPerYear = activeCalConfig.months.length * 30;
+            const absoluteDaysPassed = ((viewYear - 1) * totalDaysPerYear) + (viewMonth * 30);
+            const startPad = absoluteDaysPassed % activeCalConfig.days.length;
 
             // Render Previous Month's empty cells
             const prevMonthDays = 30;
@@ -971,20 +1282,24 @@
                 let classes = "aeon-cell";
                 if (isCurrent) classes += " active-day today-glow";
 
-                // Moons logic
-                const hasSelura = d === 15;
-                const hasVeythar = (d === 7 || d === 22);
-
-                let contentHtml = `<span class="relative z-10 mt-1">${d}</span>`;
-                let iconsHtml = `<div class="absolute inset-0 flex justify-between p-1 pointer-events-none opacity-30 text-[8px] leading-none">`;
-                if(hasSelura) iconsHtml += `<span title="Full Selura">🌕</span>`; else iconsHtml += `<span></span>`;
-                if(hasVeythar) iconsHtml += `<span title="Full Veythar">🌔</span>`; else iconsHtml += `<span></span>`;
+                // Moons logic based on dynamic config
+                let iconsHtml = `<div class="absolute inset-0 flex justify-between p-1 pointer-events-none opacity-40 text-[9px] leading-none">`;
+                
+                activeCalConfig.moons.forEach(moon => {
+                    const absDayOfWorld = absoluteDaysPassed + d;
+                    // If the absolute day matches the offset frequency, it's a "full moon"
+                    if ((absDayOfWorld + moon.offset) % moon.cycle === 0) {
+                        iconsHtml += `<span title="${moon.name} Full">${moon.icon}</span>`;
+                    } else {
+                        iconsHtml += `<span></span>`; // Spacer to keep icons on edges
+                    }
+                });
                 iconsHtml += `</div>`;
 
                 let dotsHtml = `<div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">`;
                 
                 // Events & Holidays
-                const isHoliday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
+                const isHoliday = activeCalConfig.useDefaultHolidays !== false ? CALENDAR_HOLIDAYS[`${viewMonth}-${d}`] : null;
                 const hasCustomEvents = calendarEvents.some(e => 
                     e.y === viewYear && e.m === viewMonth && e.d === d && 
                     (activeRole === 'dm' || e.vis === 'public' || (e.vis === 'personal' && e.tiedTo && e.tiedTo.toLowerCase().includes(currentUsername)))
@@ -999,7 +1314,7 @@
                 grid.innerHTML += `
                     <div class="${classes}" onclick="window.selectCalDay(${d})">
                         ${iconsHtml}
-                        ${contentHtml}
+                        <span class="relative z-10 mt-1">${d}</span>
                         ${dotsHtml}
                     </div>
                 `;
@@ -1007,7 +1322,7 @@
 
             // End padding
             const totalCells = startPad + 30;
-            const endPad = (7 - (totalCells % 7)) % 7;
+            const endPad = (activeCalConfig.days.length - (totalCells % activeCalConfig.days.length)) % activeCalConfig.days.length;
             for(let i = 1; i <= endPad; i++) {
                 grid.innerHTML += `<div class="aeon-cell empty">${i}</div>`;
             }
@@ -1172,6 +1487,10 @@
                         currentDNDMonth = data.currentMonth || 0;
                         currentDNDDay = data.currentDay || 1;
                         calendarEvents = data.events || [];
+                        
+                        if (data.config) {
+                            activeCalConfig = { ...activeCalConfig, ...data.config };
+                        }
                         
                         if (!window.hasBootedCal) {
                             viewYear = currentDNDYear;
