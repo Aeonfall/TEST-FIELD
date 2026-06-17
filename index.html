@@ -358,10 +358,6 @@
                 <!-- Registration Only Fields -->
                 <div id="register-fields" class="hidden space-y-5">
                     <div>
-                        <label class="block font-heading font-bold text-ink mb-1">Username</label>
-                        <input type="text" id="auth-reg-username" class="fantasy-input w-full p-3 rounded" placeholder="E.g. Gandalf">
-                    </div>
-                    <div>
                         <label class="block font-heading font-bold text-ink mb-2">Choose Your Path</label>
                         <div class="grid grid-cols-2 gap-4">
                             <label class="cursor-pointer">
@@ -557,13 +553,6 @@
 
             try {
                 if (window.currentAuthMode === 'register') {
-                    const username = document.getElementById('auth-reg-username').value.trim();
-                    if(!username) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = "Forge Account";
-                        return window.showModal("Hold!", "You must choose a display name.");
-                    }
-
                     const role = document.querySelector('input[name="auth-role"]:checked').value;
                     const dmSecret = document.getElementById('auth-dm-secret').value.trim();
                     
@@ -575,11 +564,9 @@
 
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
-                    
-                    await updateProfile(user, { displayName: username });
 
                     await setDoc(doc(db, 'users', user.uid), {
-                        username: username,
+                        username: '',
                         email: email,
                         role: role,
                         dmSecret: role === 'dm' ? dmSecret : null,
