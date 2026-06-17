@@ -763,11 +763,10 @@
         let LORE_TEXT = "";
 
         const DEFAULT_HOLIDAYS = {
-            '0-1': 'Prime Day', '2-15': 'Dawnsreach', '4-10': 'Forge Day', '5-15': 'Solflare',
+            '2-15': 'Dawnsreach', '4-10': 'Forge Day', '5-15': 'Solflare',
             '8-15': 'Duskfall', '9-30': 'Ashlight', '11-15': 'Nightvein', '11-30': 'Veilwake'
         };
         const HOLIDAY_DESCRIPTIONS = {
-            '0-1': 'A celebration of trade, family, and community connection. After the harvest and preparation for colder months, settlements and enclaves hold fairs, marketplaces, and communal gatherings. It is a time to strengthen social bonds, exchange goods, and honor family ties.\n\nTraditions & Activities:\n• Market Fairs: Vendors and scavengers trade goods, tools, relics, and stories.\n• Family Feasts: Communities gather to share meals and honor elders and children.\n• Gift-Giving: Tokens of appreciation, small crafted items, or seeds for the next year are exchanged.\n• Games & Competitions: Archery contests, scavenger hunts, or mechanical challenges inspired by Aeon relics.\n• Lantern Lighting: Some settlements release lanterns symbolizing connection, prosperity, and hope.\n\nCultural Significance:\n• Strengthens community bonds in a fractured world.\n• Marks a pause from survival and conflict, even in dangerous areas.\n• In Aeonfall, Prime Day is secular, open to all, regardless of belief in the Eternal Heart or Founders.',
             '2-15': 'Balance of light and dark. Days begin to grow longer.',
             '4-10': 'A day honoring industry, craftsmanship, and the Custodians.',
             '5-15': 'The longest day. Peak heat, labor, and travel.',
@@ -1110,7 +1109,7 @@
                 title = DEFAULT_HOLIDAYS[key];
                 desc = HOLIDAY_DESCRIPTIONS[key] || "A standard day of observance in this world.";
                 
-                if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein', 'Prime Day'].includes(title)) type = "secular";
+                if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein'].includes(title)) type = "secular";
                 else type = "belief";
                 vis = "public";
             } else {
@@ -1311,17 +1310,17 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gold/40">
                         <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
-                            <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Months (30 Days)</h4>
-                            <ol class="list-decimal pl-5 text-[11px] space-y-1 font-bold text-ink font-heading">
-                                <li>Luminar</li><li>Terralis</li><li>Hydrath</li><li>Ignivar</li><li>Metallon</li><li>Virell</li><li>Nocthyr</li><li>Cognalis</li><li>Cragthorn</li><li>Ashveil</li><li>Fallowen</li><li>Heartveil</li>
-                            </ol>
-                        </div>
-                        <div class="bg-[rgba(255,255,255,0.4)] p-4 rounded border border-gold shadow-inner">
-                            <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Days of the Week</h4>
-                            <ol class="list-decimal pl-5 text-[11px] space-y-1 font-bold text-ink font-heading">
-                                <li>Miresen</li><li>Veysen</li><li>Thalsen</li><li>Kaelsen</li><li>Dravesen</li><li>Lursen</li><li>Sorvsen</li>
-                            </ol>
-                        </div>
+                    <div class="pt-4 border-t border-gold/40">
+                        <h4 class="font-heading font-black text-blood uppercase tracking-widest border-b border-gold/50 pb-1 mb-3 text-[10px]">Seasonal Markers & Observances</h4>
+                        <ul class="space-y-3 text-xs">
+                            <li><strong class="text-black font-heading text-[10px] uppercase block">Dawnsreach:</strong> Balance of light and dark. Days begin to grow longer.</li>
+                            <li><strong class="text-black font-heading text-[10px] uppercase block">Solflare:</strong> Longest day. Peak heat, labor, and travel.</li>
+                            <li><strong class="text-black font-heading text-[10px] uppercase block">Duskfall:</strong> Balance returns. Nights begin to lengthen.</li>
+                            <li><strong class="text-black font-heading text-[10px] uppercase block">Nightvein:</strong> Longest night. A time of endurance and reflection.</li>
+                            <li class="mt-4 pt-2 border-t border-dashed border-gold/50 text-blood font-bold"><b>Forge Day:</b> Industry, craftsmanship. (10th of Metallon)</li>
+                            <li class="text-blood font-bold"><b>Ashlight Commemoration:</b> Remembrance of the Sundering. (30th of Ashveil)</li>
+                            <li class="text-blood font-bold"><b>Veilwake:</b> Reflection on loss and survival. (30th of Heartveil)</li>
+                        </ul>
                     </div>
                 `;
             }
