@@ -50,6 +50,9 @@
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
                             <span id="user-role-badge" class="bg-gray-600 text-white px-2 py-0.5 rounded text-[10px] uppercase tracking-widest font-heading font-black shadow-md">...</span>
                             <span id="user-display-name" class="text-[12px] font-black text-gray-300 uppercase tracking-widest font-heading">Traveler</span>
+                            <button onclick="window.openUsernameModal()" class="text-gray-500 hover:text-gold transition-colors ml-1" title="Change Display Name">
+                                <i class="fa-solid fa-pen text-[10px]"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -90,9 +93,10 @@
 
     <!-- UPDATE USERNAME MODAL (For old accounts) -->
     <div id="username-prompt-modal" class="modal-overlay hidden z-[900]">
-        <div class="parchment-bg rounded-lg max-w-sm w-full p-8 shadow-2xl border-2 border-blood text-center">
+        <div class="parchment-bg rounded-lg max-w-sm w-full p-8 shadow-2xl border-2 border-blood text-center relative">
+            <button id="close-username-modal" onclick="document.getElementById('username-prompt-modal').classList.add('hidden')" class="absolute top-2 right-3 text-gray-500 hover:text-blood text-xl hidden"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="font-heading text-2xl font-bold text-blood mb-2">Declare Thyself!</h2>
-            <p class="text-sm font-serif text-ink mb-6 italic">The archives hold no record of your name, traveler. By what title shall the realm know you?</p>
+            <p id="username-modal-desc" class="text-sm font-serif text-ink mb-6 italic">The archives hold no record of your name, traveler. By what title shall the realm know you?</p>
             
             <input type="text" id="missing-username-input" class="w-full bg-transparent border-b-2 border-gray-400 focus:border-blood text-ink py-2 text-lg font-serif outline-none placeholder-gray-500 mb-6 text-center" placeholder="e.g. Gandalf, Elara...">
             
@@ -291,6 +295,17 @@
         }
 
         // --- ACTIONS ---
+
+        // Open Username Modal
+        window.openUsernameModal = () => {
+            const isForced = !currentUser.username || currentUser.username.trim() === '';
+            document.getElementById('missing-username-input').value = currentUser.username || '';
+            document.getElementById('close-username-modal').classList.toggle('hidden', isForced);
+            document.getElementById('username-modal-desc').innerText = isForced 
+                ? "The archives hold no record of your name, traveler. By what title shall the realm know you?"
+                : "By what new title shall the realm know you?";
+            document.getElementById('username-prompt-modal').classList.remove('hidden');
+        };
 
         // Fix missing username
         window.setUsername = async () => {
@@ -500,7 +515,7 @@
                 
                 // 1. If username is literally empty (old account), trigger the prompt
                 if (!currentUser.username || currentUser.username.trim() === '') {
-                    document.getElementById('username-prompt-modal').classList.remove('hidden');
+                    window.openUsernameModal();
                 }
 
                 // 2. Set display text. If empty, fallback to email prefix so it doesn't just say "Traveler"
