@@ -30,7 +30,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -69,7 +69,6 @@
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .hidden-view { display: none !important; }
 
-        /* SHEET TYPOGRAPHY & LAYOUT */
         .chronicle-header { font-family: 'Cinzel', serif; font-weight: 900; color: #7a1b1b; text-transform: uppercase; letter-spacing: 2px; }
         .chronicle-input { background: transparent; border: none; outline: none; border-bottom: 1px dashed rgba(139, 90, 43, 0.4); font-family: 'Lora', serif; color: #2c1e16; width: 100%; padding: 2px 0; transition: border-color 0.2s; }
         .chronicle-input:focus { border-bottom-color: #7a1b1b; }
@@ -87,7 +86,6 @@
         .dm-overlay-input { background: white; border: 1px solid #e5dccb; border-radius: 4px; padding: 12px; width: 100%; font-family: 'Lora', serif; font-size: 14px; outline: none; resize: vertical; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: border-color 0.2s; }
         .dm-overlay-input:focus { border-color: #c5a059; }
 
-        /* FANTASY CALENDAR MODAL STYLES */
         .aeon-cal-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 20px; backdrop-filter: blur(4px); }
         .aeon-cal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 6px; width: 100%; max-width: 600px; padding: 30px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); }
         .aeon-cal-title { font-family: 'Cinzel', serif; font-size: 28px; color: #7a1b1b; font-weight: 900; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; }
@@ -107,6 +105,37 @@
 
         .aeon-btn-icon { color: #8b5a2b; transition: 0.2s; cursor: pointer; background: transparent; border: none; font-size: 16px; padding: 4px 8px; }
         .aeon-btn-icon:hover { color: #7a1b1b; }
+        
+        .scrap-paper {
+            background-color: #f9f6ef;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.3), inset 0 0 20px rgba(139,90,43,0.05);
+            border-radius: 2px 20px 3px 15px / 25px 3px 15px 4px;
+            position: relative;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0d7c6;
+            border-left-width: 6px;
+            color: #2c1e16;
+            transform: rotate(-1deg);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .scrap-paper:nth-child(even) {
+            transform: rotate(1deg);
+            border-radius: 15px 2px 20px 3px / 4px 15px 3px 25px;
+        }
+        .scrap-paper:hover {
+            transform: scale(1.02) rotate(0deg);
+            box-shadow: 4px 8px 15px rgba(0,0,0,0.3), inset 0 0 20px rgba(139,90,43,0.05);
+            z-index: 10;
+        }
+        
+        .scrap-border-none { border-left-color: #8b5a2b; }
+        .scrap-border-belief { border-left-color: #c5a059; }
+        .scrap-border-secular { border-left-color: #4a5d23; }
+        .scrap-border-historical { border-left-color: #7a1b1b; }
+        .scrap-border-personal { border-left-color: #0f766e; border-right: 2px dashed #0f766e; }
+        .scrap-border-secret { border-left-color: #6b21a8; border-right: 2px dashed #6b21a8; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -276,6 +305,7 @@
     </div>
 
     <!-- MODALS -->
+
     <!-- CREATE LOG MODAL -->
     <div id="create-modal" class="modal-overlay hidden z-[1000]">
         <div class="modal-container">
@@ -376,7 +406,7 @@
                 <button onclick="document.getElementById('day-details-modal').classList.add('hidden')" class="text-ink hover:text-blood text-xl font-black transition-colors leading-none">✕</button>
             </div>
             
-            <div id="day-details-content" class="text-left font-serif space-y-4 mb-6 min-h-[100px] max-h-[60vh] overflow-y-auto scrollbar-hide">
+            <div id="day-details-content" class="text-left font-serif space-y-4 mb-6 min-h-[100px] max-h-[60vh] overflow-y-auto scrollbar-hide p-2">
                 <!-- Holidays and Events populated here -->
             </div>
 
@@ -390,26 +420,39 @@
     <!-- EVENT MANAGER MODAL -->
     <div id="event-modal" class="modal-overlay hidden z-[4000]">
         <div class="modal-container !max-w-md">
-            <h3 class="font-heading text-xl font-black text-blood uppercase mb-2 border-b border-gold pb-2">Log Calendar Event</h3>
+            <h3 id="event-modal-title" class="font-heading text-xl font-black text-blood uppercase mb-2 border-b border-gold pb-2">Log Calendar Event</h3>
             <p id="event-date-display" class="text-[10px] text-ink font-black uppercase tracking-widest mb-4 font-heading italic"></p>
             <div class="space-y-4 text-left font-serif mb-6">
                 <div>
                     <input type="text" id="new-event-title" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-sm font-bold" placeholder="Event Title (e.g. Festival, Battle)">
                 </div>
                 <div>
-                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[60px] resize-y text-sm italic" placeholder="Description..."></textarea>
-                </div>
-                <div>
-                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer">
-                        <option value="public">Public Knowledge</option>
-                        <option value="secret">DM Secret</option>
+                    <select id="new-event-type" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer">
+                        <option value="none">None (Standard Event)</option>
+                        <option value="belief">Belief/Cultural Holidays</option>
+                        <option value="secular">Secular Holidays</option>
+                        <option value="historical">Historical Milestone</option>
                     </select>
                 </div>
+                <div>
+                    <textarea id="new-event-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood min-h-[100px] resize-y text-sm leading-relaxed" placeholder="Description..."></textarea>
+                </div>
+                <div>
+                    <select id="new-event-vis" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink outline-none focus:border-blood text-xs font-black uppercase font-heading cursor-pointer" onchange="document.getElementById('tied-to-container').classList.toggle('hidden', this.value !== 'personal')">
+                        <option value="public">Public Knowledge</option>
+                        <option value="secret">DM Secret</option>
+                        <option value="personal">Personal Tie (Specific Players)</option>
+                    </select>
+                </div>
+                <div id="tied-to-container" class="hidden">
+                    <input type="text" id="new-event-tied" class="w-full bg-[rgba(255,255,255,0.5)] border border-[#0f766e] rounded p-2 text-ink outline-none focus:border-[#0f766e] text-xs font-bold" placeholder="Player Username(s) e.g. 'Traveler'">
+                    <p class="text-[9px] text-ink/60 mt-1 italic font-serif">Only players whose usernames contain this text will see this event.</p>
+                </div>
             </div>
-            <div id="existing-events-list" class="mb-6 space-y-2 max-h-32 overflow-y-auto scrollbar-hide text-left"></div>
+            <div id="existing-events-list" class="mb-6 space-y-2 max-h-40 overflow-y-auto scrollbar-hide text-left border-t border-[rgba(139,90,43,0.3)] pt-4"></div>
             <div class="flex justify-between gap-3 font-heading">
                 <button onclick="document.getElementById('event-modal').classList.add('hidden'); window.selectCalDay(selectedDay);" class="flex-1 text-gray-600 font-bold uppercase text-xs border border-gray-400 rounded py-2 hover:bg-gray-200 transition-colors bg-white/50">Back</button>
-                <button onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Save Event</button>
+                <button id="event-save-btn" onclick="window.saveCalendarEvent()" class="flex-1 fantasy-btn text-white font-bold uppercase text-xs rounded py-2 transition-colors shadow">Save Event</button>
             </div>
         </div>
     </div>
@@ -590,6 +633,7 @@
             });
         };
 
+        // --- STREAMING_CHUNK:Session log detailed logic... ---
         // --- SHEET (LOG DETAILS) ---
         window.openSheet = (id) => { 
             activeLogId = id; 
@@ -687,6 +731,7 @@
             window.showToast("Log Erased from History.");
         };
 
+        // --- STREAMING_CHUNK:Calendar state and display logic... ---
         // --- AEONFALL CALENDAR SYSTEM ---
         const CALENDAR_DAYS = ['Miresen', 'Veysen', 'Thalsen', 'Kaelsen', 'Dravesen', 'Lursen', 'Sorvsen'];
         const CALENDAR_MONTHS = ['Luminar', 'Terralis', 'Hydrath', 'Ignivar', 'Metallon', 'Virell', 'Nocthyr', 'Cognalis', 'Cragthorn', 'Ashveil', 'Fallowen', 'Heartveil'];
@@ -750,7 +795,6 @@
                 }
                 window.closeCalendarModal();
             } else {
-                // Open Day Details for everyone
                 document.getElementById('day-details-title').textContent = dateStr;
                 const contentDiv = document.getElementById('day-details-content');
                 contentDiv.innerHTML = '';
@@ -761,27 +805,51 @@
                 const holiday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
                 if (holiday) {
                     hasContent = true;
+                    // Intelligently assign border types to standard holidays
+                    let holType = 'belief';
+                    if(['Dawnsreach', 'Solflare', 'Duskfall', 'Nightvein'].includes(holiday)) holType = 'secular';
+
                     contentDiv.innerHTML += `
-                        <div class="bg-[rgba(197,160,89,0.2)] p-4 rounded border border-gold shadow-sm mb-3">
-                            <div class="text-[10px] font-black text-blood uppercase tracking-widest font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> Holiday</div>
-                            <div class="font-bold text-ink text-sm">${holiday}</div>
+                        <div class="scrap-paper scrap-border-${holType}">
+                            <div class="text-[9px] font-black text-blood/80 uppercase tracking-[0.2em] font-heading mb-1 flex items-center gap-2"><i class="fa-solid fa-star"></i> World Observance</div>
+                            <div class="font-black text-ink text-xl font-heading uppercase tracking-wide">${holiday}</div>
+                            <div class="text-[10px] text-ink/60 uppercase font-heading tracking-widest mt-1">${holType === 'secular' ? 'Secular Holiday' : 'Belief/Cultural Holiday'}</div>
                         </div>
                     `;
                 }
 
                 // Check Events
                 const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
-                const visibleEvents = dayEvents.filter(e => e.vis === 'public' || activeRole === 'dm');
+                
+                // Visibility Logic: DM sees all. Players see 'public' or 'personal' if their username is tagged
+                const currentUsername = (currentUser?.username || '').toLowerCase();
+                const visibleEvents = dayEvents.filter(e => 
+                    activeRole === 'dm' || 
+                    e.vis === 'public' || 
+                    (e.vis === 'personal' && e.tiedTo && e.tiedTo.toLowerCase().includes(currentUsername))
+                );
 
                 if (visibleEvents.length > 0) {
                     hasContent = true;
                     visibleEvents.forEach(e => {
                         const isSecret = e.vis === 'secret';
+                        const isPersonal = e.vis === 'personal';
+                        const typeBorder = isSecret ? 'secret' : (isPersonal ? 'personal' : (e.type || 'none'));
+                        
+                        let typeLabel = "General Event";
+                        if(e.type === 'belief') typeLabel = "Belief/Cultural Holiday";
+                        if(e.type === 'secular') typeLabel = "Secular Holiday";
+                        if(e.type === 'historical') typeLabel = "Historical Milestone";
+                        if(isSecret) typeLabel = "DM Secret Log";
+                        if(isPersonal) typeLabel = "Personal Tie";
+
                         contentDiv.innerHTML += `
-                            <div class="bg-[rgba(255,255,255,0.5)] p-4 rounded border-l-4 ${isSecret ? 'border-purple-600' : 'border-blood'} shadow-sm mb-3 relative">
-                                ${isSecret ? '<span class="absolute top-2 right-2 text-[8px] bg-purple-900 text-white px-2 py-0.5 rounded uppercase font-black tracking-widest">Secret</span>' : ''}
-                                <div class="text-sm font-black text-ink uppercase font-heading pr-12">${e.title}</div>
-                                <div class="text-sm text-ink/80 italic font-serif mt-2 whitespace-pre-wrap">${e.desc}</div>
+                            <div class="scrap-paper scrap-border-${typeBorder}">
+                                ${isSecret ? '<span class="absolute top-3 right-3 text-[8px] bg-purple-900 text-white px-2 py-1 rounded uppercase font-black tracking-widest shadow">Secret</span>' : ''}
+                                ${isPersonal ? `<span class="absolute top-3 right-3 text-[8px] bg-[#0f766e] text-white px-2 py-1 rounded uppercase font-black tracking-widest shadow" title="Tied to: ${e.tiedTo || 'Unknown'}">Personal</span>` : ''}
+                                <div class="text-[9px] font-black ${isSecret ? 'text-purple-800' : (isPersonal ? 'text-[#0f766e]' : 'text-ink/60')} uppercase tracking-[0.2em] font-heading mb-1">${typeLabel}</div>
+                                <div class="text-xl font-black text-ink uppercase font-heading pr-14 leading-tight">${e.title}</div>
+                                <div class="text-sm text-ink/90 font-serif mt-3 whitespace-pre-wrap leading-relaxed">${e.desc}</div>
                             </div>
                         `;
                     });
@@ -811,22 +879,60 @@
             document.getElementById('event-date-display').textContent = dateStr;
             document.getElementById('new-event-title').value = '';
             document.getElementById('new-event-desc').value = '';
+            document.getElementById('new-event-type').value = 'none';
+            document.getElementById('new-event-vis').value = 'public';
+            document.getElementById('new-event-tied').value = '';
+            document.getElementById('tied-to-container').classList.add('hidden');
+            
+            document.getElementById('event-modal-title').textContent = "Log Calendar Event";
+            document.getElementById('event-save-btn').textContent = "Save Event";
+            delete document.getElementById('event-modal').dataset.editId;
             
             const eventsList = document.getElementById('existing-events-list');
             const dayEvents = calendarEvents.filter(e => e.y === viewYear && e.m === viewMonth && e.d === d);
             
-            eventsList.innerHTML = dayEvents.map(e => `
-                <div class="bg-black/10 p-3 rounded border-l-2 ${e.vis === 'secret' ? 'border-purple-500' : 'border-blood'} relative shadow-sm">
-                    <div class="text-[10px] font-black text-ink uppercase font-heading pr-6">${e.title}</div>
-                    <div class="text-[11px] text-ink/70 italic font-serif mt-1">${e.desc}</div>
-                    <button onclick="window.deleteCalendarEvent('${e.id}')" class="absolute top-2 right-2 text-blood hover:text-red-700 text-xs transition-colors"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            `).join('');
+            if(dayEvents.length > 0) {
+                eventsList.innerHTML = `<div class="text-[10px] font-black text-ink/60 uppercase tracking-widest mb-2 font-heading">Existing Logs</div>` + dayEvents.map(e => {
+                    let borderClass = 'border-blood';
+                    if(e.vis === 'secret') borderClass = 'border-purple-500';
+                    if(e.vis === 'personal') borderClass = 'border-[#0f766e]';
+                    
+                    return `
+                    <div class="bg-black/10 p-3 rounded border-l-2 ${borderClass} relative shadow-sm hover:bg-black/20 transition-colors">
+                        <div class="text-[10px] font-black text-ink uppercase font-heading pr-12">${e.title}</div>
+                        <div class="text-[9px] text-ink/60 uppercase tracking-widest font-heading mb-1">${e.type || 'none'} ${e.vis === 'personal' ? `(${e.tiedTo})` : ''}</div>
+                        <div class="text-[11px] text-ink/70 italic font-serif line-clamp-1">${e.desc}</div>
+                        <div class="absolute top-2 right-2 flex gap-2">
+                            <button onclick="window.loadEditEvent('${e.id}')" class="text-gold hover:text-yellow-700 text-xs transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="window.deleteCalendarEvent('${e.id}')" class="text-blood hover:text-red-700 text-xs transition-colors" title="Erase"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                `}).join('');
+            } else {
+                eventsList.innerHTML = "";
+            }
             
             document.getElementById('event-modal').dataset.day = d;
             
             document.getElementById('day-details-modal').classList.add('hidden');
             document.getElementById('event-modal').classList.remove('hidden');
+        };
+
+        window.loadEditEvent = (id) => {
+            if (activeRole !== 'dm') return;
+            const e = calendarEvents.find(ev => ev.id === id);
+            if (!e) return;
+            
+            document.getElementById('new-event-title').value = e.title;
+            document.getElementById('new-event-desc').value = e.desc;
+            document.getElementById('new-event-type').value = e.type || 'none';
+            document.getElementById('new-event-vis').value = e.vis || 'public';
+            document.getElementById('new-event-tied').value = e.tiedTo || '';
+            document.getElementById('tied-to-container').classList.toggle('hidden', e.vis !== 'personal');
+            
+            document.getElementById('event-modal-title').textContent = "Edit Event";
+            document.getElementById('event-save-btn').textContent = "Update Event";
+            document.getElementById('event-modal').dataset.editId = id;
         };
 
         function getOrdinal(n) {
@@ -835,6 +941,7 @@
             return s[(v - 20) % 10] || s[v] || s[0];
         }
 
+        // --- STREAMING_CHUNK:Rendering calendar grids... ---
         window.renderCalendar = () => {
             document.getElementById('cal-month-display').textContent = CALENDAR_MONTHS[viewMonth];
             document.getElementById('cal-year-display').textContent = viewYear;
@@ -854,6 +961,8 @@
             for(let i = startPad - 1; i >= 0; i--) {
                 grid.innerHTML += `<div class="aeon-cell empty">${prevMonthDays - i}</div>`;
             }
+
+            const currentUsername = (currentUser?.username || '').toLowerCase();
 
             // Render Current Month Days
             for(let d = 1; d <= 30; d++) {
@@ -876,7 +985,10 @@
                 
                 // Events & Holidays
                 const isHoliday = CALENDAR_HOLIDAYS[`${viewMonth}-${d}`];
-                const hasCustomEvents = calendarEvents.some(e => e.y === viewYear && e.m === viewMonth && e.d === d && (e.vis === 'public' || activeRole === 'dm'));
+                const hasCustomEvents = calendarEvents.some(e => 
+                    e.y === viewYear && e.m === viewMonth && e.d === d && 
+                    (activeRole === 'dm' || e.vis === 'public' || (e.vis === 'personal' && e.tiedTo && e.tiedTo.toLowerCase().includes(currentUsername)))
+                );
 
                 if (isHoliday || hasCustomEvents) {
                     dotsHtml += `<div class="w-1.5 h-1.5 rounded-full bg-blood shadow-sm" title="Event/Holiday"></div>`;
@@ -925,32 +1037,51 @@
             if (activeRole !== 'dm') return;
             const title = document.getElementById('new-event-title').value.trim();
             const desc = document.getElementById('new-event-desc').value.trim();
+            const type = document.getElementById('new-event-type').value;
             const vis = document.getElementById('new-event-vis').value;
             const day = parseInt(document.getElementById('event-modal').dataset.day);
+            const editId = document.getElementById('event-modal').dataset.editId;
+            
+            const tiedTo = vis === 'personal' ? document.getElementById('new-event-tied').value.trim() : '';
 
             if (!title) return window.showToast("Event needs a title.");
+            if (vis === 'personal' && !tiedTo) return window.showToast("Personal events require a username.");
 
-            const newEvent = {
-                id: crypto.randomUUID(),
-                y: viewYear,
-                m: viewMonth,
-                d: day,
-                title: title,
-                desc: desc,
-                vis: vis
-            };
-
-            const updatedEvents = [...calendarEvents, newEvent];
+            let updatedEvents = [];
+            
+            if (editId) {
+                // Updating existing
+                updatedEvents = calendarEvents.map(e => {
+                    if (e.id === editId) {
+                        return { ...e, title, desc, type, vis, tiedTo };
+                    }
+                    return e;
+                });
+            } else {
+                // Creating new
+                const newEvent = {
+                    id: crypto.randomUUID(),
+                    y: viewYear,
+                    m: viewMonth,
+                    d: day,
+                    title: title,
+                    desc: desc,
+                    type: type,
+                    vis: vis,
+                    tiedTo: tiedTo
+                };
+                updatedEvents = [...calendarEvents, newEvent];
+            }
 
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), {
                     events: updatedEvents
                 }, {merge: true});
                 
-                window.showToast("Event Inscribed");
-                calendarEvents = updatedEvents; // Update local state for immediate re-render
-                window.openEventManager(); // Refresh list inside the modal
-                window.renderCalendar(); // Refresh calendar dots
+                window.showToast(editId ? "Event Updated" : "Event Inscribed");
+                calendarEvents = updatedEvents; 
+                window.openEventManager(); 
+                window.renderCalendar(); 
             } catch(e) { window.showToast("Failed to save event."); }
         };
 
@@ -961,7 +1092,7 @@
             // Replaced the system-breaking browser confirm() dialog with an immersive click-to-confirm pattern
             if (pendingDeleteId !== eventId) {
                 pendingDeleteId = eventId;
-                window.showToast("Click the delete icon again to confirm erasure.");
+                window.showToast("Click the erase icon again to confirm.");
                 setTimeout(() => { pendingDeleteId = null; }, 3000);
                 return;
             }
@@ -979,6 +1110,7 @@
             } catch(e) { window.showToast("Failed to delete event."); }
         };
 
+        // --- STREAMING_CHUNK:Running Authentication setup... ---
         // --- AUTH & INIT ---
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
