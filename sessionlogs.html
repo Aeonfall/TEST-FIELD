@@ -951,6 +951,7 @@
             document.getElementById('new-event-personal-tie').value = '';
             document.getElementById('personal-tie-wrapper').style.display = 'none';
             document.getElementById('event-modal').dataset.eventId = ""; // Clear edit ID
+            document.getElementById('event-modal').dataset.day = d; // FIX: Lock to current day
             document.getElementById('save-event-btn').textContent = "Save Event";
 
             renderExistingEventsList(d);
@@ -1007,7 +1008,7 @@
             const type = document.getElementById('new-event-type').value;
             const vis = document.getElementById('new-event-vis').value;
             const ties = document.getElementById('new-event-personal-tie').value.trim();
-            const day = parseInt(document.getElementById('event-modal').dataset.day);
+            const day = parseInt(document.getElementById('event-modal').dataset.day) || selectedDay;
             const editId = document.getElementById('event-modal').dataset.eventId;
 
             if (!title) return window.showToast("Event needs a title.");
@@ -1033,6 +1034,10 @@
                 document.getElementById('event-modal').dataset.eventId = "";
                 document.getElementById('new-event-title').value = '';
                 document.getElementById('new-event-desc').value = '';
+                document.getElementById('new-event-type').value = 'none';
+                document.getElementById('new-event-vis').value = 'public';
+                document.getElementById('new-event-personal-tie').value = '';
+                document.getElementById('personal-tie-wrapper').style.display = 'none';
                 document.getElementById('event-manager-title').textContent = "Log Calendar Event";
                 document.getElementById('save-event-btn').textContent = "Save Event";
                 
