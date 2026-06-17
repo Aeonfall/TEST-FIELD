@@ -31,7 +31,7 @@
     <div id="toast" class="toast">Message</div>
 
     <!-- Initial Loading State -->
-    <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
+    <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center z-50 bg-wood">
         <i class="fa-solid fa-compass fa-spin text-6xl text-gray-500 mb-6"></i>
         <h2 class="font-heading text-2xl text-parchment animate-pulse">Charting the Realms...</h2>
     </div>
@@ -48,29 +48,24 @@
                     <div class="flex items-center justify-center md:justify-start gap-3 mt-2">
                         <p class="text-gray-500 text-xs uppercase tracking-[0.2em] font-bold font-heading">Campaign Nexus</p>
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
-                            <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Traveler</span>
-                            <span id="user-role-badge" class="ml-1 px-1.5 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading font-black hidden"></span>
+                            <span id="user-role-badge" class="bg-gray-600 text-white px-2 py-0.5 rounded text-[10px] uppercase tracking-widest font-heading font-black shadow-md">...</span>
+                            <span id="user-display-name" class="text-[12px] font-black text-gray-300 uppercase tracking-widest font-heading">Traveler</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-center">
-                    <!-- PLAYER ACTIONS -->
-                    <div id="player-actions" class="hidden items-center bg-black bg-opacity-50 border border-gray-700 rounded overflow-hidden">
-                        <input type="text" id="invite-code-input" class="bg-transparent border-none text-gray-300 px-4 py-2 text-sm font-heading focus:outline-none w-32 sm:w-40" placeholder="Invite Code...">
+                    <!-- JOIN BY CODE (PLAYER ONLY) -->
+                    <div id="player-actions" class="flex items-center bg-black bg-opacity-50 border border-gray-700 rounded overflow-hidden hidden">
+                        <input type="text" id="invite-code-input" class="bg-transparent border-none text-gray-300 px-4 py-2 text-sm font-heading focus:outline-none w-40" placeholder="Invite Code...">
                         <button onclick="window.joinByCode()" class="bg-gray-800 hover:bg-gray-700 text-gold px-4 py-2 text-xs font-bold uppercase tracking-widest font-heading transition-colors border-l border-gray-700">Join</button>
                     </div>
-                    
-                    <!-- DM ACTIONS -->
-                    <div id="dm-actions" class="hidden items-center">
-                        <button onclick="document.getElementById('create-campaign-modal').classList.remove('hidden')" class="fantasy-btn px-6 py-2 rounded text-xs">
-                            <i class="fa-solid fa-plus mr-2"></i>New Realm
-                        </button>
-                    </div>
-
+                    <!-- CREATE CAMPAIGN (DM ONLY) -->
+                    <button id="btn-create-campaign" onclick="document.getElementById('create-campaign-modal').classList.remove('hidden')" class="fantasy-btn px-6 py-2 rounded text-xs hidden">
+                        <i class="fa-solid fa-plus mr-2"></i>New Realm
+                    </button>
                     <!-- LOGOUT -->
-                    <button onclick="window.logout()" class="text-[10px] font-black text-gray-500 hover:text-red-500 uppercase tracking-widest transition-colors font-heading ml-2">Logout</button>
+                    <button onclick="window.logout()" class="text-[10px] font-black text-gray-500 hover:text-red-500 uppercase tracking-widest transition-colors font-heading ml-2 border border-gray-700 px-3 py-2 rounded bg-black bg-opacity-40"><i class="fa-solid fa-power-off mr-1"></i> Logout</button>
                 </div>
             </header>
 
@@ -90,6 +85,18 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- UPDATE USERNAME MODAL (For old accounts) -->
+    <div id="username-prompt-modal" class="modal-overlay hidden z-[900]">
+        <div class="parchment-bg rounded-lg max-w-sm w-full p-8 shadow-2xl border-2 border-blood text-center">
+            <h2 class="font-heading text-2xl font-bold text-blood mb-2">Declare Thyself!</h2>
+            <p class="text-sm font-serif text-ink mb-6 italic">The archives hold no record of your name, traveler. By what title shall the realm know you?</p>
+            
+            <input type="text" id="missing-username-input" class="w-full bg-transparent border-b-2 border-gray-400 focus:border-blood text-ink py-2 text-lg font-serif outline-none placeholder-gray-500 mb-6 text-center" placeholder="e.g. Gandalf, Elara...">
+            
+            <button onclick="window.setUsername()" class="fantasy-btn w-full py-3 rounded text-sm font-bold">Save Identity</button>
         </div>
     </div>
 
@@ -164,7 +171,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // IMPORT arrayRemove to allow players to safely leave a campaign!
         import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc, addDoc, query, where, getDocs, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
@@ -198,19 +204,22 @@
         // Generate Card HTML
         function createCampaignCard(camp, isMine) {
             const d = document.createElement('div');
-            d.className = "bg-black bg-opacity-60 rounded-lg card p-5 flex flex-col justify-between";
+            d.className = "bg-black bg-opacity-60 rounded-lg card p-5 flex flex-col justify-between group";
+            
+            const isDM = currentUser && camp.dmId === currentUser.uid;
+            
+            // Interaction logic based on Role
             d.onclick = () => {
                 if (isMine) {
                     try { window.location.href = `characters.html?id=${camp.id}`; } 
                     catch(e) { window.showToast("Redirects disabled in preview window."); }
-                } else if (currentUser && currentUser.role === 'player') {
+                } else if (currentUser.role === 'player' && camp.visibility === 'public') {
                     window.joinPublicCampaign(camp.id, camp.name);
-                } else {
-                    window.showToast("Dungeon Masters only manage their own created realms.");
+                } else if (currentUser.role === 'dm' && !isMine) {
+                    window.showToast("Dungeon Masters only manage their own realms.");
                 }
             };
 
-            const isDM = currentUser && camp.dmId === currentUser.uid;
             let badges = '';
             
             if (isDM) badges += `<span class="bg-blood text-white px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading font-black shadow-md">DM</span>`;
@@ -223,8 +232,13 @@
             const deleteBtn = isDM ? `<button onclick="event.stopPropagation(); window.deleteCampaign('${camp.id}', '${camp.name.replace(/'/g, "\\'")}')" class="text-blood hover:text-red-400 transition-colors ml-3" title="Delete Realm"><i class="fa-solid fa-trash-can"></i></button>` : '';
             const leaveBtn = (!isDM && isMine) ? `<button onclick="event.stopPropagation(); window.leaveCampaign('${camp.id}', '${camp.name.replace(/'/g, "\\'")}')" class="text-gray-400 hover:text-parchment transition-colors ml-3" title="Leave Realm"><i class="fa-solid fa-right-from-bracket"></i></button>` : '';
 
-            // Optional description display
             const descText = camp.description ? `<p class="text-xs text-gray-400 font-serif mb-4 line-clamp-2">${camp.description}</p>` : '';
+
+            // Footer Text logic
+            let footerText = 'Click to enter realm';
+            if (isDM) footerText = `Code: <span class="text-white bg-gray-800 px-1 rounded">${camp.inviteCode}</span>`;
+            else if (!isMine && currentUser.role === 'player') footerText = '<span class="text-gold group-hover:text-yellow-300 transition-colors"><i class="fa-solid fa-door-open mr-1"></i> Click to Join Realm</span>';
+            else if (!isMine && currentUser.role === 'dm') footerText = '<span class="text-gray-600">Locked to other DMs</span>';
 
             d.innerHTML = `
                 <div>
@@ -241,10 +255,8 @@
                     ${descText}
                 </div>
                 <div class="border-t border-gray-700 pt-3 flex justify-between items-center mt-2">
-                    <span class="text-[9px] text-gray-500 uppercase font-heading tracking-widest">
-                        ${isDM ? `Invite Code: <span class="text-white bg-gray-800 px-1 rounded">${camp.inviteCode}</span>` : (isMine ? 'Click to enter realm' : 'Click to join public realm')}
-                    </span>
-                    <i class="fa-solid fa-chevron-right text-gray-600 text-xs"></i>
+                    <span class="text-[9px] text-gray-500 uppercase font-heading tracking-widest">${footerText}</span>
+                    <i class="fa-solid fa-chevron-right ${!isMine && currentUser.role === 'dm' ? 'text-gray-800' : 'text-gray-600 group-hover:text-gold transition-colors'} text-xs"></i>
                 </div>
             `;
             return d;
@@ -280,20 +292,22 @@
 
         // --- ACTIONS ---
 
-        window.joinPublicCampaign = async (id, name) => {
-            if (!currentUser || currentUser.role !== 'player') return;
+        // Fix missing username
+        window.setUsername = async () => {
+            const newName = document.getElementById('missing-username-input').value.trim();
+            if (!newName) return window.showToast("Please enter a name.");
+            
             try {
                 await updateDoc(doc(db, 'users', currentUser.uid), {
-                    joinedCampaigns: arrayUnion(id)
+                    username: newName
                 });
-                window.showToast(`Joined ${name}!`);
-                setTimeout(() => {
-                    try { window.location.href = `characters.html?id=${id}`; } 
-                    catch(e) { window.showToast("Redirect disabled in preview."); }
-                }, 1000);
+                currentUser.username = newName;
+                document.getElementById('user-display-name').innerText = newName;
+                document.getElementById('username-prompt-modal').classList.add('hidden');
+                window.showToast("Identity updated!");
             } catch (err) {
                 console.error(err);
-                window.showToast("Failed to join public realm.");
+                window.showToast("Failed to save name.");
             }
         };
 
@@ -328,6 +342,20 @@
             } catch (err) {
                 console.error(err);
                 window.showToast("Error joining campaign.");
+            }
+        };
+
+        // Quick join for public campaigns
+        window.joinPublicCampaign = async (id, name) => {
+            if (!currentUser || currentUser.role !== 'player') return;
+            try {
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    joinedCampaigns: arrayUnion(id)
+                });
+                window.showToast(`Joined the realm of ${name}!`);
+            } catch(e) {
+                console.error(e);
+                window.showToast("Failed to join realm.");
             }
         };
 
@@ -457,7 +485,7 @@
                 } else {
                     currentUser = { 
                         uid: u.uid, 
-                        username: u.displayName || 'Traveler', 
+                        username: u.displayName || '', 
                         role: 'player',
                         joinedCampaigns: []
                     };
@@ -468,36 +496,40 @@
                     currentUser.joinedCampaigns = [];
                 }
 
-                // FETCH THE USERNAME (Fallback to Auth Profile, then 'Traveler')
-                const displayUser = currentUser.username || u.displayName || 'Traveler';
-                document.getElementById('user-display-name').innerText = displayUser;
+                // --- SMART USERNAME RESOLUTION & UI ENFORCEMENT ---
                 
-                // SHOW ROLE BADGE
+                // 1. If username is literally empty (old account), trigger the prompt
+                if (!currentUser.username || currentUser.username.trim() === '') {
+                    document.getElementById('username-prompt-modal').classList.remove('hidden');
+                }
+
+                // 2. Set display text. If empty, fallback to email prefix so it doesn't just say "Traveler"
+                let display = currentUser.username;
+                if (!display && u.email) {
+                    display = u.email.split('@')[0]; // Grabs 'rub.wa00'
+                } else if (!display) {
+                    display = 'Traveler';
+                }
+                document.getElementById('user-display-name').innerText = display;
+
+                // 3. UI Toggles based on Role
                 const roleBadge = document.getElementById('user-role-badge');
-                if (roleBadge) {
-                    roleBadge.classList.remove('hidden');
-                    roleBadge.className = 'ml-1 px-1.5 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading font-black';
-                    if (currentUser.role === 'dm') {
-                        roleBadge.innerText = 'DM';
-                        roleBadge.classList.add('bg-blood', 'text-white');
-                    } else {
-                        roleBadge.innerText = 'PLAYER';
-                        roleBadge.classList.add('bg-gray-700', 'text-gray-300');
-                    }
-                }
-
-                // TOGGLE UI BASED ON ROLE
-                const dmActions = document.getElementById('dm-actions');
+                const createBtn = document.getElementById('btn-create-campaign');
                 const playerActions = document.getElementById('player-actions');
-                
+
                 if (currentUser.role === 'dm') {
-                    if(dmActions) { dmActions.classList.remove('hidden'); dmActions.classList.add('flex'); }
-                    if(playerActions) { playerActions.classList.remove('flex'); playerActions.classList.add('hidden'); }
+                    roleBadge.innerText = 'DM';
+                    roleBadge.className = 'bg-blood text-white px-2 py-0.5 rounded text-[10px] uppercase tracking-widest font-heading font-black shadow-md';
+                    createBtn.classList.remove('hidden');
+                    playerActions.classList.add('hidden');
                 } else {
-                    if(playerActions) { playerActions.classList.remove('hidden'); playerActions.classList.add('flex'); }
-                    if(dmActions) { dmActions.classList.remove('flex'); dmActions.classList.add('hidden'); }
+                    roleBadge.innerText = 'PLAYER';
+                    roleBadge.className = 'bg-gray-600 text-white px-2 py-0.5 rounded text-[10px] uppercase tracking-widest font-heading font-black shadow-md';
+                    createBtn.classList.add('hidden');
+                    playerActions.classList.remove('hidden');
                 }
 
+                // Hide loading overlay
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
 
@@ -507,13 +539,16 @@
                     renderCampaigns();
                 });
 
-                // Listen for User Profile updates to dynamically inject the username
+                // Listen for User Profile updates
                 onSnapshot(userDocRef, (userSnap) => {
                     if (userSnap.exists()) {
                         currentUser = { uid: u.uid, ...userSnap.data() };
                         if (!currentUser.joinedCampaigns) currentUser.joinedCampaigns = [];
                         
-                        document.getElementById('user-display-name').innerText = currentUser.username || u.displayName || 'Traveler';
+                        // Keep display name actively updated in case they just saved it in the modal
+                        let updatedDisplay = currentUser.username || (u.email ? u.email.split('@')[0] : 'Traveler');
+                        document.getElementById('user-display-name').innerText = updatedDisplay;
+                        
                         renderCampaigns();
                     }
                 });
