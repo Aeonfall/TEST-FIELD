@@ -432,6 +432,13 @@
                         <textarea id="forge-lore" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold rounded p-2 text-ink text-sm outline-none focus:border-blood font-serif min-h-[120px]" placeholder="Lore about your calendar system..."></textarea>
                     </div>
                 </div>
+
+                <!-- Danger Zone (Mass Delete) -->
+                <div class="border-t border-blood/30 pt-4 mt-6">
+                    <h4 class="font-heading font-black text-sm text-blood uppercase mb-3"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Danger Zone</h4>
+                    <button onclick="window.clearAllCalendarEvents()" class="w-full bg-transparent border border-blood text-blood hover:bg-blood hover:text-white py-2 rounded font-heading font-black uppercase text-xs tracking-wider transition-colors shadow">Erase All Calendar Events</button>
+                    <p class="text-[9px] text-blood/80 italic mt-2 text-center font-bold">This will permanently delete all custom events from the timeline.</p>
+                </div>
             </div>
 
             <div class="mt-8 pt-4 border-t border-[rgba(139,90,43,0.3)] flex justify-between font-heading">
@@ -1265,6 +1272,27 @@
                 document.getElementById('cal-settings-modal').classList.add('hidden');
                 window.showToast("Current Month Set");
             } catch(e) { window.showToast("Failed to set date."); }
+        };
+
+        let pendingClearAll = false;
+        window.clearAllCalendarEvents = async () => {
+            if (activeRole !== 'dm') return;
+            
+            if (!pendingClearAll) {
+                pendingClearAll = true;
+                window.showToast("Click 'Erase All' again to confirm total erasure.");
+                setTimeout(() => { pendingClearAll = false; }, 3000);
+                return;
+            }
+            pendingClearAll = false;
+            
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignState', 'calendar'), { events: [] }, {merge: true});
+                window.showToast("All timeline events erased.");
+                calendarEvents = [];
+                window.renderCalendar();
+                document.getElementById('cal-settings-modal').classList.add('hidden');
+            } catch(e) { window.showToast("Failed to erase events."); }
         };
 
         function renderLore() {
