@@ -532,12 +532,6 @@
                     Description goes here...
                 </div>
 
-                <!-- NEW DM CONTROLS UNDER DESCRIPTION -->
-                <div id="expanded-dm-controls" class="hidden gap-4 mb-6 pt-4 border-t border-[rgba(139,90,43,0.3)] shrink-0">
-                    <button id="expanded-edit-btn-large" class="fantasy-btn px-6 py-2 text-[10px] rounded"><i class="fa-solid fa-pen mr-1"></i> Edit Event</button>
-                    <button id="expanded-delete-btn-large" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-white px-6 py-2 text-[10px] rounded font-bold uppercase font-heading tracking-widest transition-colors"><i class="fa-solid fa-trash mr-1"></i> Erase Event</button>
-                </div>
-
                 <!-- Comments Section -->
                 <div class="mt-auto border-t border-[rgba(139,90,43,0.3)] pt-6 shrink-0">
                     <h3 class="font-heading text-lg font-black text-ink uppercase tracking-widest mb-4">Addendums & Notes:</h3>
@@ -1148,13 +1142,9 @@
 
             const editBtn = document.getElementById('expanded-edit-btn');
             const deleteBtn = document.getElementById('expanded-delete-btn');
-            const dmControlsLarge = document.getElementById('expanded-dm-controls');
-            const editBtnLarge = document.getElementById('expanded-edit-btn-large');
-            const deleteBtnLarge = document.getElementById('expanded-delete-btn-large');
             
             if (activeRole === 'dm' && !isHoliday) {
                 editBtn.classList.remove('hidden'); deleteBtn.classList.remove('hidden');
-                dmControlsLarge.classList.remove('hidden'); dmControlsLarge.classList.add('flex');
                 
                 const editAction = () => {
                     document.getElementById('event-expanded-modal').classList.add('hidden');
@@ -1164,12 +1154,9 @@
                 const deleteAction = () => { window.deleteCalendarEvent(identifier, true); };
 
                 editBtn.onclick = editAction;
-                editBtnLarge.onclick = editAction;
                 deleteBtn.onclick = deleteAction;
-                deleteBtnLarge.onclick = deleteAction;
             } else {
                 editBtn.classList.add('hidden'); deleteBtn.classList.add('hidden');
-                dmControlsLarge.classList.add('hidden'); dmControlsLarge.classList.remove('flex');
             }
 
             loadCommentsForEvent(identifier);
