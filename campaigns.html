@@ -468,32 +468,34 @@
                     currentUser.joinedCampaigns = [];
                 }
 
-                // Strictly use the Firestore username, fallback to 'Traveler' if completely blank
-                const displayUser = currentUser.username || 'Traveler';
+                // FETCH THE USERNAME (Fallback to Auth Profile, then 'Traveler')
+                const displayUser = currentUser.username || u.displayName || 'Traveler';
                 document.getElementById('user-display-name').innerText = displayUser;
                 
-                // Safeguard to show the role badge if it exists in your current HTML
+                // SHOW ROLE BADGE
                 const roleBadge = document.getElementById('user-role-badge');
                 if (roleBadge) {
                     roleBadge.classList.remove('hidden');
+                    roleBadge.className = 'ml-1 px-1.5 py-0.5 rounded text-[8px] uppercase tracking-widest font-heading font-black';
                     if (currentUser.role === 'dm') {
                         roleBadge.innerText = 'DM';
                         roleBadge.classList.add('bg-blood', 'text-white');
                     } else {
-                        roleBadge.innerText = 'Player';
+                        roleBadge.innerText = 'PLAYER';
                         roleBadge.classList.add('bg-gray-700', 'text-gray-300');
                     }
                 }
 
+                // TOGGLE UI BASED ON ROLE
+                const dmActions = document.getElementById('dm-actions');
+                const playerActions = document.getElementById('player-actions');
+                
                 if (currentUser.role === 'dm') {
-                    const btnCreate = document.getElementById('btn-create-campaign');
-                    if(btnCreate) btnCreate.classList.remove('hidden');
-                    
-                    const dmActions = document.getElementById('dm-actions');
-                    if(dmActions) dmActions.classList.replace('hidden', 'flex');
+                    if(dmActions) { dmActions.classList.remove('hidden'); dmActions.classList.add('flex'); }
+                    if(playerActions) { playerActions.classList.remove('flex'); playerActions.classList.add('hidden'); }
                 } else {
-                    const playerActions = document.getElementById('player-actions');
-                    if(playerActions) playerActions.classList.replace('hidden', 'flex');
+                    if(playerActions) { playerActions.classList.remove('hidden'); playerActions.classList.add('flex'); }
+                    if(dmActions) { dmActions.classList.remove('flex'); dmActions.classList.add('hidden'); }
                 }
 
                 document.getElementById('initial-loading').classList.add('hidden');
@@ -511,7 +513,7 @@
                         currentUser = { uid: u.uid, ...userSnap.data() };
                         if (!currentUser.joinedCampaigns) currentUser.joinedCampaigns = [];
                         
-                        document.getElementById('user-display-name').innerText = currentUser.username || 'Traveler';
+                        document.getElementById('user-display-name').innerText = currentUser.username || u.displayName || 'Traveler';
                         renderCampaigns();
                     }
                 });
