@@ -253,14 +253,21 @@
         import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
         import { getFirestore, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
-            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
-            projectId: "dndcampaigns-f3d48",
-            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
-            messagingSenderId: "1074491536795",
-            appId: "1:1074491536795:web:56211729489be776d79d3e"
-        };
+        let firebaseConfig;
+        if (typeof __firebase_config !== 'undefined') {
+            firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+            firebaseConfig = {
+                apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+                authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+                databaseURL: "https://dndcampaigns-f3d48-default-rtdb.firebaseio.com",
+                projectId: "dndcampaigns-f3d48",
+                storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+                messagingSenderId: "1074491536795",
+                appId: "1:1074491536795:web:56211729489be776d79d3e",
+                measurementId: "G-71DW54NTWV"
+            };
+        }
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -271,7 +278,8 @@
         const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         
         if (!appId) {
-            if (isPreviewEnv) { appId = "demo_campaign"; } 
+            if (typeof __app_id !== 'undefined') { appId = __app_id; }
+            else if (isPreviewEnv) { appId = "demo_campaign"; } 
             else { try { window.location.href = "campaigns.html"; } catch(e) {} }
         }
 
@@ -618,7 +626,12 @@
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch (tokenErr) {
+                        console.warn("Custom token failed, falling back to anonymous auth:", tokenErr);
+                        await signInAnonymously(auth);
+                    }
                 } else {
                     await signInAnonymously(auth);
                 }
