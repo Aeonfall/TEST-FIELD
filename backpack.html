@@ -758,33 +758,33 @@
             document.getElementById('transfer-modal').classList.add('hidden');
         };
 
-        // --- AUTH & INIT ---
+        // --- GLOBAL AUTHENTICATION SYNC ---
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (e) {
-                    console.warn("Auth failed, falling back to anonymous", e);
-                    await signInAnonymously(auth);
+                try { window.location.href = "index.html"; } catch(e) {
+                    document.getElementById('initial-loading').innerHTML = `<div class="flex flex-col items-center"><i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood mb-4">Authentication Required</h2><button onclick="window.location.href='index.html'" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button></div>`;
                 }
-                return; // Wait for the triggered sign-in to fire onAuthStateChanged again
+                return;
             }
             
             try {
                 if (u.isAnonymous) {
                     currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
                 } else {
-                    // Pull from the Auth profile directly to avoid database permission issues
-                    currentUser = { uid: u.uid, username: u.displayName || (u.email ? u.email.split('@')[0] : 'Traveler'), role: 'player' };
+                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    if (userDoc.exists()) {
+                        currentUser = { uid: u.uid, ...userDoc.data() };
+                        if (!currentUser.username) {
+                            currentUser.username = u.displayName || 'Traveler';
+                        }
+                    } else {
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                    }
                 }
 
                 activeRole = currentUser.role || 'player';
 
-                if (appId && appId !== "demo_campaign") {
+                if (appId !== "demo_campaign") {
                     try {
                         const campDoc = await getDoc(doc(db, 'campaigns', appId));
                         if (campDoc.exists() && campDoc.data().name) {
@@ -792,8 +792,8 @@
                             titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
                             document.title = `${campDoc.data().name} - Party Cache`;
                         }
-                    } catch (e) {
-                        console.warn("Could not load root campaign data due to rules, continuing...");
+                    } catch (err) {
+                        console.warn("Could not read campaign info:", err);
                     }
                 }
 
@@ -809,8 +809,12 @@
                 }
 
                 // Initialize Database Connections
-                const snap = await getDoc(backpackDocRef);
-                if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
+                try {
+                    const snap = await getDoc(backpackDocRef);
+                    if (!snap.exists()) await setDoc(backpackDocRef, backpackData);
+                } catch (err) {
+                    console.warn("Initialization error for backpack:", err);
+                }
                 
                 let previousItemCount = null;
 
@@ -825,11 +829,17 @@
                         
                         backpackData = newData; 
                         window.renderBackpack(); 
+                        if (typeof currentViewedMapIndex !== 'undefined' && currentViewedMapIndex !== null) window.renderPins();
                     } 
+                }, (error) => {
+                    console.error("Backpack sync error:", error);
+                    window.showToast("Database Access Denied: Cannot sync cache.");
                 });
                 
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
                     allCharacters = s.docs.map(d => ({id: d.id, ...d.data()}));
+                }, (error) => {
+                    console.error("Character sync error:", error);
                 });
 
             } catch (error) {
