@@ -250,7 +250,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
         import { getFirestore, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -615,6 +615,19 @@
         };
 
         // --- AUTH & INIT ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) {
+                console.error("Auth init error:", e);
+            }
+        };
+        initAuth();
+
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
                 document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
@@ -625,8 +638,7 @@
                 if (u.isAnonymous) {
                     currentUser = { uid: u.uid, username: "Guest", role: 'player' };
                 } else {
-                    const userDoc = await getDoc(doc(db, 'users', u.uid));
-                    currentUser = userDoc.exists() ? { uid: u.uid, ...userDoc.data() } : { uid: u.uid, username: u.displayName || 'Guest', role: 'player' };
+                    currentUser = { uid: u.uid, username: u.displayName || 'Guest', role: 'player' };
                 }
                 activeRole = currentUser.role || 'player';
 
@@ -634,15 +646,6 @@
                 if (activeRole === 'dm') {
                     document.getElementById('dm-map-controls').classList.remove('hidden');
                     document.getElementById('btn-pin-mode').classList.remove('hidden');
-                }
-
-                // Title update
-                if (appId !== "demo_campaign") {
-                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                    if (campDoc.exists() && campDoc.data().name) {
-                        document.getElementById('main-campaign-title').innerText = campDoc.data().name;
-                        document.title = `${campDoc.data().name} - Cartography`;
-                    }
                 }
 
                 document.getElementById('initial-loading').classList.add('hidden');
