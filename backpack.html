@@ -759,40 +759,32 @@
         };
 
         // --- AUTH & INIT ---
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    try {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } catch (tokenErr) {
-                        console.warn("Custom token failed, falling back to anonymous auth:", tokenErr);
-                        await signInAnonymously(auth);
-                    }
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (e) {
-                console.error("Auth init error:", e);
-            }
-        };
-        initAuth();
-
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
-                return;
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (e) {
+                    console.warn("Auth failed, falling back to anonymous", e);
+                    await signInAnonymously(auth);
+                }
+                return; // Wait for the triggered sign-in to fire onAuthStateChanged again
             }
             
             try {
                 if (u.isAnonymous) {
                     currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
                 } else {
-                    currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                    // Pull from the Auth profile directly to avoid database permission issues
+                    currentUser = { uid: u.uid, username: u.displayName || (u.email ? u.email.split('@')[0] : 'Traveler'), role: 'player' };
                 }
 
                 activeRole = currentUser.role || 'player';
 
-                if (appId !== "demo_campaign") {
+                if (appId && appId !== "demo_campaign") {
                     try {
                         const campDoc = await getDoc(doc(db, 'campaigns', appId));
                         if (campDoc.exists() && campDoc.data().name) {
