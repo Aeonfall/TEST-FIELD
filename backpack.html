@@ -178,7 +178,6 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <!-- IMPORTANT FIX: Removed 'hidden-view' and just use 'hidden' so JS logic matches correctly -->
     <div id="dashboard-screen" class="min-h-screen dashboard-bg p-4 md:p-8 hidden w-full">
         <div class="max-w-7xl mx-auto">
             
@@ -223,6 +222,7 @@
                 <!-- LEFT SIDE: Inventory -->
                 <div class="lg:col-span-8">
                     <div id="backpack-main-container" class="backpack-container bag-theme-satchel p-5 md:p-10 min-h-[400px] md:min-h-[600px]">
+                        
                         <!-- Visual structural elements for Bags -->
                         <div id="bag-visuals" class="absolute inset-0 pointer-events-none z-0 overflow-hidden rounded-[inherit]">
                             <div class="bag-decor"></div>
@@ -233,58 +233,72 @@
 
                         <!-- Main Bag Content -->
                         <div class="relative z-10 pt-10">
+                            <!-- Title & Capacity -->
                             <div class="flex justify-between items-end mb-4">
                                 <div>
-                                    <span class="text-xs font-black text-gold font-serif" id="capacity-text">0/30 lbs</span>
+                                    <h2 class="text-xl md:text-3xl font-heading font-black uppercase text-gold drop-shadow-md flex items-center gap-2">
+                                        <span id="bag-icon"><i class="fa-solid fa-briefcase"></i></span>
+                                        <span id="bag-title">The Cache</span>
+                                    </h2>
+                                    <p class="text-[10px] text-gray-400 font-heading tracking-widest uppercase mt-1" id="designated-user-label">Unassigned</p>
+                                </div>
+                                <div class="flex gap-2 md:gap-3 items-center">
+                                    <button id="btn-open-vote" onclick="window.handleVoteClick()" class="fantasy-btn px-4 py-1.5 rounded text-[10px] shadow-lg animate-pulse">Vote</button>
+                                    <div class="h-6 w-px bg-gold/50"></div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-black text-gold font-serif" id="capacity-text">0/30 lbs</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="capacity-bar-bg mb-6">
-                            <div id="capacity-fill" class="capacity-bar-fill bg-gradient-to-r from-gold to-blood" style="width: 0%"></div>
-                        </div>
+                            <div class="capacity-bar-bg mb-6">
+                                <div id="capacity-fill" class="capacity-bar-fill bg-gradient-to-r from-gold to-blood" style="width: 0%"></div>
+                            </div>
 
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest font-heading border-b border-gold/30 pb-1">Shared Assets</h3>
-                            <button id="btn-distribute-funds" onclick="window.openDistributionModal()" class="hidden fantasy-btn px-3 py-1 rounded text-[8px] shadow-md">Distribute</button>
-                        </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest font-heading border-b border-gold/30 pb-1">Shared Assets</h3>
+                                <button id="btn-distribute-funds" onclick="window.openDistributionModal()" class="hidden fantasy-btn px-3 py-1 rounded text-[8px] shadow-md">Distribute</button>
+                            </div>
                         
-                        <div class="flex flex-col sm:flex-row gap-4 md:gap-6 mb-8 items-center bg-black/40 p-4 rounded border border-gold/30 shadow-inner relative z-20">
-                            <div class="flex flex-col items-center gap-2 pr-4 border-r border-gold/30">
-                                <button onclick="window.routeTo('maps.html')" class="w-16 h-16 rounded-full bg-[#1a110b] border-2 border-gold flex flex-col items-center justify-center text-gold hover:bg-[#3d2a1f] hover:text-[#f1e5c5] transition-all shadow-lg hover:scale-105 group relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-parchment/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                    <i class="fa-solid fa-map-location-dot text-xl mb-1 relative z-10"></i>
-                                    <span class="text-[7px] font-black uppercase tracking-widest font-heading relative z-10">Maps</span>
-                                </button>
-                                <span class="text-[8px] font-black text-gold/70 uppercase font-heading tracking-widest">Cartography</span>
+                            <div class="flex flex-col sm:flex-row gap-4 md:gap-6 mb-8 items-center bg-black/40 p-4 rounded border border-gold/30 shadow-inner relative z-20">
+                                
+                                <div class="flex flex-col items-center gap-2 pr-4 border-r border-gold/30">
+                                    <button onclick="window.routeTo('maps.html')" class="w-16 h-16 rounded-full bg-[#1a110b] border-2 border-gold flex flex-col items-center justify-center text-gold hover:bg-[#3d2a1f] hover:text-[#f1e5c5] transition-all shadow-lg hover:scale-105 group relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-parchment/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <i class="fa-solid fa-map-location-dot text-xl mb-1 relative z-10"></i>
+                                        <span class="text-[7px] font-black uppercase tracking-widest font-heading relative z-10">Maps</span>
+                                    </button>
+                                    <span class="text-[8px] font-black text-gold/70 uppercase font-heading tracking-widest">Cartography</span>
+                                </div>
+
+                                <div class="grid grid-cols-4 gap-2 md:gap-4 flex-grow w-full">
+                                    <div class="currency-box">
+                                        <input type="number" id="cur-VT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('VT', this.value)">
+                                        <span class="currency-label">VT</span>
+                                    </div>
+                                    <div class="currency-box">
+                                        <input type="number" id="cur-BYT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('BYT', this.value)">
+                                        <span class="currency-label">BYT</span>
+                                    </div>
+                                    <div class="currency-box">
+                                        <input type="number" id="cur-CR" min="0" class="currency-input" value="0" onchange="window.updateCurrency('CR', this.value)">
+                                        <span class="currency-label">CR</span>
+                                    </div>
+                                    <div class="currency-box">
+                                        <input type="number" id="cur-SC" min="0" class="currency-input" value="0" onchange="window.updateCurrency('SC', this.value)">
+                                        <span class="currency-label">SC</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="grid grid-cols-4 gap-2 md:gap-4 flex-grow w-full">
-                                <div class="currency-box">
-                                    <input type="number" id="cur-VT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('VT', this.value)">
-                                    <span class="currency-label">VT</span>
-                                </div>
-                                <div class="currency-box">
-                                    <input type="number" id="cur-BYT" min="0" class="currency-input" value="0" onchange="window.updateCurrency('BYT', this.value)">
-                                    <span class="currency-label">BYT</span>
-                                </div>
-                                <div class="currency-box">
-                                    <input type="number" id="cur-CR" min="0" class="currency-input" value="0" onchange="window.updateCurrency('CR', this.value)">
-                                    <span class="currency-label">CR</span>
-                                </div>
-                                <div class="currency-box">
-                                    <input type="number" id="cur-SC" min="0" class="currency-input" value="0" onchange="window.updateCurrency('SC', this.value)">
-                                    <span class="currency-label">SC</span>
-                                </div>
+                            <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest border-b border-gold/30 pb-1 mb-4 font-heading">Stored Items</h3>
+                            <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 relative z-20"></div>
+                            
+                            <div id="empty-state" class="flex flex-col items-center justify-center h-48 md:h-64 text-gray-500 opacity-50 relative z-20">
+                                <span class="text-4xl md:text-5xl mb-3"><i class="fa-solid fa-box-open"></i></span>
+                                <p class="font-serif italic text-sm">The cache is empty...</p>
                             </div>
-                        </div>
 
-                        <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest border-b border-gold/30 pb-1 mb-4 font-heading">Stored Items</h3>
-                        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 relative z-20"></div>
-                        <div id="empty-state" class="flex flex-col items-center justify-center h-48 md:h-64 text-gray-500 opacity-50 relative z-20">
-                            <span class="text-4xl md:text-5xl mb-3"><i class="fa-solid fa-box-open"></i></span>
-                            <p class="font-serif italic text-sm">The cache is empty...</p>
-                        </div>
                         </div> <!-- End internal relative content wrapper -->
                     </div>
                 </div>
@@ -343,85 +357,6 @@
                         <div id="log-container" class="flex-grow overflow-y-auto pr-1 scrollbar-hide"></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAP LIST MODAL -->
-    <div id="map-list-modal" class="fixed inset-0 z-[4000] flex items-center justify-center p-4 hidden">
-        <div class="modal-overlay absolute inset-0" onclick="document.getElementById('map-list-modal').classList.add('hidden')"></div>
-        <div class="modal-container !max-w-lg relative z-10">
-            <h3 class="modal-header">Cartography Archives</h3>
-            <div id="map-list-content" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2 scrollbar-hide">
-                <!-- Map list populated here -->
-            </div>
-            <div class="flex justify-center mt-6">
-                <button onclick="document.getElementById('map-list-modal').classList.add('hidden')" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink font-heading px-4">Close Drawer</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAP VIEWER MODAL -->
-    <div id="map-modal" class="fixed inset-0 z-[5000] flex items-center justify-center p-2 md:p-4 hidden transition-all">
-        <div class="modal-overlay absolute inset-0" onclick="window.closeMap()"></div>
-        <div class="map-viewer-parchment shadow-[0_0_80px_rgba(0,0,0,0.9)]" onclick="event.stopPropagation()">
-            <div class="p-4 border-b-2 border-[#8b7355] flex justify-between items-center bg-[#1a110b] shrink-0 shadow-lg relative z-[60]">
-                <span class="font-heading font-black uppercase text-gold tracking-widest text-lg md:text-xl drop-shadow-md">World Codex</span>
-                <button onclick="window.closeMap()" class="text-gray-400 hover:text-white transition-colors font-black text-2xl leading-none">✕</button>
-            </div>
-            
-            <div id="map-viewport" class="map-viewport">
-                <div id="map-canvas-container" class="absolute top-0 left-0 origin-top-left transition-transform duration-75 ease-out">
-                    <img id="map-image-display" src="" class="block shadow-2xl max-w-none hidden pointer-events-auto" onclick="window.handleMapClick(event)">
-                    <div id="map-pins-container" class="absolute inset-0 pointer-events-none"></div>
-                </div>
-                <div id="map-empty-view" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[40]">
-                    <span class="text-5xl md:text-7xl mb-4 opacity-50 grayscale">🗺️</span>
-                    <p class="font-serif italic text-gray-700 text-sm">Archives Empty</p>
-                </div>
-                <div class="map-controls">
-                    <button class="map-btn text-[12px]" id="btn-pin-mode" onclick="window.togglePinMode()" title="Drop Landmark Pin"><i class="fa-solid fa-location-dot"></i></button>
-                    <button class="map-btn" onclick="window.zoomMap(1.2)"><i class="fa-solid fa-plus"></i></button>
-                    <button class="map-btn" onclick="window.zoomMap(0.8)"><i class="fa-solid fa-minus"></i></button>
-                    <button class="map-btn text-[8px] tracking-widest" onclick="window.resetMap()">RST</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- NEW PIN MODAL -->
-    <div id="new-pin-modal" class="modal-overlay hidden z-[5500]">
-        <div class="modal-container">
-            <h3 class="modal-header">Mark Location</h3>
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="tiny-label">Landmark Name</label>
-                    <input type="text" id="new-pin-name" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded font-bold text-ink uppercase tracking-widest mb-2 font-heading" placeholder="E.g., Ruined Tower">
-                </div>
-                <div>
-                    <label class="tiny-label">Discovery Notes</label>
-                    <textarea id="new-pin-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded font-serif text-ink h-24 resize-none outline-none focus:border-blood" placeholder="What did you find here?"></textarea>
-                </div>
-            </div>
-            <div class="flex gap-3 font-heading mt-6">
-                <button onclick="window.cancelPin()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                <button onclick="window.savePin()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Plant Pin</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- VIEW PIN MODAL -->
-    <div id="view-pin-modal" class="modal-overlay hidden z-[5500]">
-        <div class="modal-container">
-            <h3 class="font-heading text-2xl font-black text-blood uppercase tracking-widest mb-1 border-b border-gold pb-2" id="view-pin-name">Landmark</h3>
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 font-heading" id="view-pin-author">Discovered by: Unknown</p>
-            <div class="text-sm font-serif text-ink text-left bg-[rgba(139,90,43,0.1)] p-4 rounded border border-gold/50 mb-8 min-h-[60px]" id="view-pin-desc">
-                Description goes here...
-            </div>
-            
-            <div class="flex gap-3 font-heading">
-                <button id="btn-delete-pin" class="hidden flex-1 bg-transparent text-blood font-bold uppercase text-[10px] border border-blood rounded py-3 hover:bg-red-50 transition-colors" onclick="window.deletePin()">Remove Pin</button>
-                <button onclick="document.getElementById('view-pin-modal').classList.add('hidden')" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Close Log</button>
             </div>
         </div>
     </div>
@@ -497,14 +432,21 @@
         import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
         import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
-            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
-            projectId: "dndcampaigns-f3d48",
-            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
-            messagingSenderId: "1074491536795",
-            appId: "1:1074491536795:web:56211729489be776d79d3e"
-        };
+        let firebaseConfig;
+        if (typeof __firebase_config !== 'undefined') {
+            firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+            firebaseConfig = {
+                apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+                authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+                databaseURL: "https://dndcampaigns-f3d48-default-rtdb.firebaseio.com",
+                projectId: "dndcampaigns-f3d48",
+                storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+                messagingSenderId: "1074491536795",
+                appId: "1:1074491536795:web:56211729489be776d79d3e",
+                measurementId: "G-71DW54NTWV"
+            };
+        }
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -515,7 +457,8 @@
         const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         
         if (!appId) {
-            if (isPreviewEnv) { appId = "demo_campaign"; } 
+            if (typeof __app_id !== 'undefined') { appId = __app_id; } 
+            else if (isPreviewEnv) { appId = "demo_campaign"; } 
             else { try { window.location.href = "campaigns.html"; } catch(e) {} }
         }
 
@@ -530,8 +473,6 @@
             votes: {}, 
             log: [], 
             currencyVT: 0, currencyBYT: 0, currencyCR: 0, currencySC: 0, 
-            mapSrc: "",
-            maps: [],
             bagType: "satchel" 
         };
         
@@ -562,10 +503,9 @@
         window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
 
         window.routeTo = (page) => {
-            const currentId = new URLSearchParams(window.location.search).get('id') || new URLSearchParams(window.location.search).get('campaignId');
             try {
-                if (currentId && currentId !== "demo_campaign") {
-                    window.location.href = `${page}?id=${currentId}`;
+                if (appId && appId !== "demo_campaign") {
+                    window.location.href = `${page}?id=${appId}`;
                 } else {
                     window.location.href = page;
                 }
@@ -581,8 +521,6 @@
             window.renderBackpack();
         };
 
-        // Cartography & Map functionality has been migrated entirely to maps.html
-        
         // --- BACKPACK CURRENCY LOGIC ---
         const unitsToSC = (vt, byt, cr, sc) => (parseInt(vt) || 0) * 1000 + (parseInt(byt) || 0) * 100 + (parseInt(cr) || 0) * 10 + (parseInt(sc) || 0);
         const scToUnits = (total) => ({ VT: Math.floor(total / 1000), BYT: Math.floor((total % 1000) / 100), CR: Math.floor((total % 100) / 10), SC: total % 10 });
@@ -821,11 +759,27 @@
         };
 
         // --- AUTH & INIT ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch (tokenErr) {
+                        console.warn("Custom token failed, falling back to anonymous auth:", tokenErr);
+                        await signInAnonymously(auth);
+                    }
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) {
+                console.error("Auth init error:", e);
+            }
+        };
+        initAuth();
+
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                try { window.location.href = "index.html"; } catch(e) {
-                    document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
-                }
+                document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
                 return;
             }
             
@@ -833,22 +787,21 @@
                 if (u.isAnonymous) {
                     currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
                 } else {
-                    const userDoc = await getDoc(doc(db, 'users', u.uid));
-                    if (userDoc.exists()) {
-                        currentUser = { uid: u.uid, ...userDoc.data() };
-                    } else {
-                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
-                    }
+                    currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
                 }
 
                 activeRole = currentUser.role || 'player';
 
                 if (appId !== "demo_campaign") {
-                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                    if (campDoc.exists() && campDoc.data().name) {
-                        const titleEls = [document.getElementById('main-campaign-title')];
-                        titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                        document.title = `${campDoc.data().name} - Party Cache`;
+                    try {
+                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                        if (campDoc.exists() && campDoc.data().name) {
+                            const titleEls = [document.getElementById('main-campaign-title')];
+                            titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
+                            document.title = `${campDoc.data().name} - Party Cache`;
+                        }
+                    } catch (e) {
+                        console.warn("Could not load root campaign data due to rules, continuing...");
                     }
                 }
 
