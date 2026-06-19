@@ -1164,6 +1164,18 @@
             }
         }
 
+        window.routeTo = (page) => {
+            try {
+                let targetUrl = page;
+                if (appId && appId !== "demo_campaign") {
+                    targetUrl += `?id=${appId}`;
+                }
+                window.location.href = targetUrl;
+            } catch (e) {
+                window.showToast("Navigation blocked in preview.");
+            }
+        };
+
         let characters = [], parties = [], currentUser = null, activeCharId = null, activeRole = 'player', rollMode = 'normal';
         let autoSaveTimer = null, lastGeneratedScores = [], sessionRerollUsed = false;
         let activeManagePartyId = null, activeMoveLvl = null, editingMoveIndex = null;
