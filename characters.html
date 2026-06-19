@@ -1129,6 +1129,7 @@
                     });
                 }
             }
+            window.renderMovesGrid();
         };
 
         window.showToast = (m) => { 
@@ -1721,7 +1722,23 @@
 
         window.renderMovesGrid = () => { 
             const s = document.getElementById('moves-selector'); if (!s) return; const t = s.value, g = document.getElementById('features-lvl-grid'); if (!g) return; g.innerHTML = '';
-            const char = characters.find(c => c.id === activeCharId); const moves = char?.moves || []; let levels = (t === 'features') ? Array.from({length: 20}, (_, i) => `Level ${i + 1}`) : ['Tricks (0)', ...Array.from({length: 9}, (_, i) => `Level ${i + 1}`)];
+            const char = characters.find(c => c.id === activeCharId); const moves = char?.moves || []; 
+            let levels = [];
+            if (t === 'features') {
+                levels = Array.from({length: 20}, (_, i) => `Level ${i + 1}`);
+            } else {
+                const cls = window.currentRenderedClass;
+                if (['vanguard', 'warrior', 'peacekeeper', 'scavenger'].includes(cls)) {
+                    g.innerHTML = '<div class="col-span-full text-center py-8 text-555 font-heading text-xs uppercase tracking-widest border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)]">This vocation does not utilize scripts.</div>';
+                    return;
+                } else if (['heartbound', 'nomad'].includes(cls)) {
+                    levels = Array.from({length: 5}, (_, i) => `Level ${i + 1}`);
+                } else if (cls === 'fabricator') {
+                    levels = ['Tricks (0)', ...Array.from({length: 5}, (_, i) => `Level ${i + 1}`)];
+                } else {
+                    levels = ['Tricks (0)', ...Array.from({length: 9}, (_, i) => `Level ${i + 1}`)];
+                }
+            }
             const canEdit = (currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm';
             levels.forEach(lvl => { 
                 const card = document.createElement('div'); card.className = "lvl-card"; const filtered = moves.filter(m => m.lvl === lvl && m.type === t); let html = `<div class="lvl-header">${lvl.toUpperCase()}</div><div class="flex-grow space-y-1">`;
