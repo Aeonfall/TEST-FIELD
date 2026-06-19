@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -986,19 +986,21 @@
             } 
              
             try { 
-                if (u.isAnonymous) { 
-                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' }; 
-                } else { 
-                    const userDoc = await getDoc(doc(db, 'users', u.uid)); 
-                    if (userDoc.exists()) { 
-                        currentUser = { uid: u.uid, ...userDoc.data() }; 
-                        if (!currentUser.username) { 
-                            currentUser.username = u.displayName || 'Traveler'; 
-                        } 
-                    } else { 
-                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' }; 
-                    } 
-                } 
+                // Directly mirror campaigns.html logic for consistency
+                const userDocRef = doc(db, 'users', u.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (userDocSnap.exists()) {
+                    currentUser = { uid: u.uid, ...userDocSnap.data() };
+                    if (!currentUser.username) currentUser.username = u.displayName || 'Traveler';
+                } else {
+                    currentUser = { 
+                        uid: u.uid, 
+                        username: u.displayName || 'Traveler', 
+                        role: 'player'
+                    };
+                    try { await setDoc(userDocRef, currentUser); } catch(e) { console.warn("Could not create user stub:", e); }
+                }
 
                 activeRole = currentUser.role || 'player'; 
 
@@ -1034,7 +1036,7 @@
                 // Initialize Database Connections 
                 try { 
                     const snap = await getDoc(cacheDocRef); 
-                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }); 
+                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }).catch(e => console.warn("Init error:", e)); 
                 } catch (err) { 
                     console.warn("Initialization error for maps:", err); 
                 } 
