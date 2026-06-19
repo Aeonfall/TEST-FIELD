@@ -75,32 +75,51 @@
         
         /* 1. Default Satchel (Worn Leather & Stitching) */
         .bag-theme-satchel {
-            background-color: #3e2723;
-            background-image: 
-                radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%),
+            background-color: #5c3a21;
+            background-image:
+                radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%),
                 url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
-            border: 4px solid #27140f;
+            border: 4px solid #3e2723;
             box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
-            border-radius: 12px;
+            border-radius: 12px 12px 40px 40px;
         }
-        .bag-theme-satchel::before {
-            content: ''; position: absolute; inset: 4px; border: 1.5px dashed rgba(0,0,0,0.4); pointer-events: none; border-radius: 8px;
+        .bag-theme-satchel .bag-decor {
+            position: absolute; top: -4px; left: -4px; right: -4px; height: 80px;
+            background: #4a2e1a; border-bottom: 4px solid #27140f; border-radius: 12px 12px 50% 50%;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.6);
         }
-        .bag-theme-satchel .item-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(0,0,0,0.5); border-left-width: 4px; border-left-color: #8b5a2b; border-radius: 4px; }
-        .bag-theme-satchel .item-card:hover { border-left-color: #c5a059; background: rgba(0,0,0,0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .bag-theme-satchel .bag-decor::after {
+            content: ''; position: absolute; left: 50%; bottom: -30px; transform: translateX(-50%);
+            width: 40px; height: 60px; background: #27140f; border: 4px solid #c5a059; border-radius: 6px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+        .bag-theme-satchel .item-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(0,0,0,0.6); border-left-width: 4px; border-left-color: #8b5a2b; border-radius: 4px; }
+        .bag-theme-satchel .item-card:hover { border-left-color: #c5a059; background: rgba(0,0,0,0.5); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         
         /* 2. Handy Haversack (Rugged Canvas & Brass) */
         .bag-theme-haversack {
-            background-color: #2e3b19; 
+            background-color: #3e4a2e; 
             background-image: 
                 linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0.15)),
                 linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0.15));
             background-size: 4px 4px;
             background-position: 0 0, 2px 2px;
-            border: 3px solid #a38851;
+            border: 3px solid #1a240d;
             box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
-            border-radius: 8px;
+            border-radius: 20px 20px 10px 10px;
         }
+        .bag-theme-haversack .bag-decor {
+            position: absolute; top: -3px; left: 10%; right: 10%; height: 50px;
+            background: #2e3b19; border-bottom: 3px solid #1a240d; border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+        }
+        .bag-theme-haversack .bag-pocket {
+            position: absolute; top: 100px; bottom: 40px; width: 40px;
+            background: #2e3b19; border: 2px solid #1a240d;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 5px 10px 20px rgba(0,0,0,0.6);
+        }
+        .bag-theme-haversack .bag-pocket.left { left: 0; border-radius: 0 15px 15px 0; border-left: none; }
+        .bag-theme-haversack .bag-pocket.right { right: 0; border-radius: 15px 0 0 15px; border-right: none; }
         .bag-theme-haversack .item-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(163, 136, 81, 0.2); border-top: 3px solid #6b5c3e; border-radius: 4px; }
         .bag-theme-haversack .item-card:hover { border-top-color: #c5a059; background: rgba(0,0,0,0.6); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
@@ -113,8 +132,17 @@
                 url("data:image/svg+xml,%3Csvg width='150' height='150' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='15' cy='15' r='1.5' fill='%23fff' opacity='0.6'/%3E%3Ccircle cx='80' cy='40' r='2.5' fill='%23a855f7' opacity='0.7'/%3E%3Ccircle cx='120' cy='110' r='1' fill='%23fff' opacity='0.4'/%3E%3Ccircle cx='40' cy='130' r='2' fill='%233b82f6' opacity='0.6'/%3E%3Ccircle cx='60' cy='80' r='1.5' fill='%23fff' opacity='0.3'/%3E%3Ccircle cx='140' cy='20' r='1' fill='%23fff' opacity='0.5'/%3E%3C/svg%3E");
             border: 2px solid #a855f7;
             box-shadow: inset 0 0 80px rgba(107, 33, 168, 0.7), 0 0 30px rgba(107, 33, 168, 0.3);
-            border-radius: 20px;
+            border-radius: 50% 50% 30% 30% / 15px 15px 30% 30%;
         }
+        .bag-theme-holding .bag-portal {
+            position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+            width: 80%; height: 60px; border-radius: 50%;
+            background: radial-gradient(circle, #000 30%, #4c1d95 80%, #a855f7 100%);
+            box-shadow: 0 0 30px #a855f7, inset 0 0 20px #000;
+            border: 2px solid #d8b4fe; opacity: 0.8;
+            animation: pulse-portal 4s infinite alternate;
+        }
+        @keyframes pulse-portal { from { box-shadow: 0 0 20px #a855f7, inset 0 0 20px #000; opacity: 0.7; } to { box-shadow: 0 0 40px #d8b4fe, inset 0 0 40px #000; opacity: 1; } }
         .bag-theme-holding .item-card { background: rgba(107, 33, 168, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); backdrop-filter: blur(4px); border-radius: 8px; }
         .bag-theme-holding .item-card:hover { border-color: #d8b4fe; background: rgba(107, 33, 168, 0.3); box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
 
@@ -137,62 +165,6 @@
 
         .char-select-btn { border: 1px solid #c5a059; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 4px; text-align: left; font-size: 11px; cursor: pointer; transition: all 0.2s; font-family: 'Cinzel', serif; font-weight: bold; color: #1a110b; }
         .char-select-btn.selected { border-color: #7a1b1b; background: #7a1b1b; color: #f1e5c5; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        
-        /* Map Interaction Styles */
-        .map-rolled {
-            width: 70px; height: 36px;
-            background: #d4c4a8;
-            border: 2px solid #8b7355;
-            border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .map-rolled::before, .map-rolled::after { content: ''; position: absolute; width: 6px; height: 100%; background: #8b7355; }
-        .map-rolled::before { left: 6px; } .map-rolled::after { right: 6px; }
-
-        .map-viewer-parchment {
-            background-color: #f1e5c5;
-            background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-            border: 8px solid #1a110b;
-            outline: 2px solid #c5a059;
-            outline-offset: -6px;
-            width: 95vw; height: 85vh;
-            position: relative;
-            box-shadow: 0 0 100px rgba(0,0,0,0.9);
-            transform: scale(0.8);
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; flex-direction: column;
-            overflow: hidden;
-            border-radius: 4px;
-        }
-        .active-map .map-viewer-parchment { transform: scale(1); opacity: 1; }
-        
-        .map-viewport { flex-grow: 1; overflow: hidden; position: relative; cursor: grab; background: #d8cba7; touch-action: none; }
-        .pin-mode-active { cursor: crosshair !important; }
-        
-        .map-pin { position: absolute; pointer-events: auto; z-index: 20; width: 0; height: 0; }
-        .map-pin-inner { position: absolute; bottom: 0; left: -16px; width: 32px; text-align: center; color: #dc2626; font-size: 32px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); cursor: pointer; transform-origin: bottom center; transition: color 0.2s; }
-        .map-pin-inner:hover { color: #f87171; }
-
-        .map-controls {
-            position: absolute; bottom: 20px; right: 20px;
-            display: flex; flex-direction: column; gap: 8px;
-            z-index: 50;
-        }
-        .map-btn {
-            width: 40px; height: 40px; background: #1a110b; border: 2px solid #c5a059; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center; font-weight: 900; color: #c5a059;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5); cursor: pointer; transition: 0.2s; font-family: 'Cinzel', serif;
-        }
-        .map-btn:hover { background: #3d2a1f; color: #f1e5c5; }
-        .map-btn.active-tool { background: #7a1b1b; color: white; border-color: white; }
-
-        .dm-map-trigger { border: 2px dashed #c5a059; padding: 10px; border-radius: 4px; cursor: pointer; transition: background 0.2s; position: relative; overflow: hidden; background: rgba(255,255,255,0.05); }
-        .dm-map-trigger:hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -235,6 +207,7 @@
                         <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
                         <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
                         <a href="#" class="nav-link active">Backpack</a>
+                        <a href="#" onclick="window.routeTo('maps.html'); return false;" class="nav-link">Maps</a>
                         <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link">Handbook</a>
                         <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
                     </nav>
@@ -250,18 +223,18 @@
                 <!-- LEFT SIDE: Inventory -->
                 <div class="lg:col-span-8">
                     <div id="backpack-main-container" class="backpack-container bag-theme-satchel p-5 md:p-10 min-h-[400px] md:min-h-[600px]">
-                        <div class="flex justify-between items-end mb-4">
-                            <div>
-                                <h2 class="text-xl md:text-3xl font-heading font-black uppercase text-gold drop-shadow-md flex items-center gap-2">
-                                    <span id="bag-icon"><i class="fa-solid fa-briefcase"></i></span>
-                                    <span id="bag-title">The Cache</span>
-                                </h2>
-                                <p class="text-[10px] text-gray-400 font-heading tracking-widest uppercase mt-1" id="designated-user-label">Unassigned</p>
-                            </div>
-                            <div class="flex gap-2 md:gap-3 items-center">
-                                <button id="btn-open-vote" onclick="window.handleVoteClick()" class="fantasy-btn px-4 py-1.5 rounded text-[10px] shadow-lg animate-pulse">Vote</button>
-                                <div class="h-6 w-px bg-gold/50"></div>
-                                <div class="text-right">
+                        <!-- Visual structural elements for Bags -->
+                        <div id="bag-visuals" class="absolute inset-0 pointer-events-none z-0 overflow-hidden rounded-[inherit]">
+                            <div class="bag-decor"></div>
+                            <div class="bag-pocket left hidden"></div>
+                            <div class="bag-pocket right hidden"></div>
+                            <div class="bag-portal hidden"></div>
+                        </div>
+
+                        <!-- Main Bag Content -->
+                        <div class="relative z-10 pt-10">
+                            <div class="flex justify-between items-end mb-4">
+                                <div>
                                     <span class="text-xs font-black text-gold font-serif" id="capacity-text">0/30 lbs</span>
                                 </div>
                             </div>
@@ -276,11 +249,13 @@
                             <button id="btn-distribute-funds" onclick="window.openDistributionModal()" class="hidden fantasy-btn px-3 py-1 rounded text-[8px] shadow-md">Distribute</button>
                         </div>
                         
-                        <div class="flex flex-col sm:flex-row gap-4 md:gap-6 mb-8 items-center bg-black/40 p-4 rounded border border-gold/30 shadow-inner">
+                        <div class="flex flex-col sm:flex-row gap-4 md:gap-6 mb-8 items-center bg-black/40 p-4 rounded border border-gold/30 shadow-inner relative z-20">
                             <div class="flex flex-col items-center gap-2 pr-4 border-r border-gold/30">
-                                <div class="map-rolled" onclick="window.openMapList()">
-                                    <span class="text-[9px] font-black text-[#1a110b] uppercase tracking-tighter">MAPS</span>
-                                </div>
+                                <button onclick="window.routeTo('maps.html')" class="w-16 h-16 rounded-full bg-[#1a110b] border-2 border-gold flex flex-col items-center justify-center text-gold hover:bg-[#3d2a1f] hover:text-[#f1e5c5] transition-all shadow-lg hover:scale-105 group relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-parchment/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <i class="fa-solid fa-map-location-dot text-xl mb-1 relative z-10"></i>
+                                    <span class="text-[7px] font-black uppercase tracking-widest font-heading relative z-10">Maps</span>
+                                </button>
                                 <span class="text-[8px] font-black text-gold/70 uppercase font-heading tracking-widest">Cartography</span>
                             </div>
 
@@ -305,11 +280,12 @@
                         </div>
 
                         <h3 class="text-[10px] font-black uppercase text-gold/70 tracking-widest border-b border-gold/30 pb-1 mb-4 font-heading">Stored Items</h3>
-                        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4"></div>
-                        <div id="empty-state" class="flex flex-col items-center justify-center h-48 md:h-64 text-gray-500 opacity-50">
+                        <div id="item-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 relative z-20"></div>
+                        <div id="empty-state" class="flex flex-col items-center justify-center h-48 md:h-64 text-gray-500 opacity-50 relative z-20">
                             <span class="text-4xl md:text-5xl mb-3"><i class="fa-solid fa-box-open"></i></span>
                             <p class="font-serif italic text-sm">The cache is empty...</p>
                         </div>
+                        </div> <!-- End internal relative content wrapper -->
                     </div>
                 </div>
 
@@ -335,17 +311,6 @@
                     <div id="dm-designation-panel" class="hidden dm-panel">
                         <h3 class="text-[10px] font-black uppercase text-gold mb-4 font-heading tracking-widest border-b border-gold/50 pb-1">DM Controls</h3>
                         
-                        <div class="mb-6 pb-4 border-b border-gold/30">
-                            <h4 class="text-[9px] font-black uppercase text-gray-400 mb-2 font-heading tracking-widest">Cartography Update</h4>
-                            <div class="flex flex-col gap-2">
-                                <input type="text" id="dm-map-name-in" class="bg-black/40 p-2 rounded text-[10px] border border-gray-700 w-full outline-none focus:border-gold font-serif text-white mb-1" placeholder="Map Name (e.g. Faerun)">
-                                <label class="dm-map-trigger text-center">
-                                    <span class="text-[9px] font-bold uppercase text-gold font-heading tracking-widest">Choose Map File</span>
-                                    <input type="file" id="dm-map-input-file" accept="image/*" class="hidden" onchange="window.handleMapUpload(event)">
-                                </label>
-                            </div>
-                        </div>
-
                         <input type="text" id="target-owner-in" class="bg-black/50 p-3 rounded text-[10px] mb-3 border border-gray-700 w-full outline-none focus:border-gold font-serif text-white" placeholder="Username...">
                         <button onclick="window.assignBackpackOwner()" class="w-full fantasy-btn-alt py-2.5 rounded text-[9px]">Assign Owner</button>
                         <button onclick="window.startNewElection()" class="w-full fantasy-btn py-2.5 rounded text-[9px] mt-3">Trigger Vote</button>
@@ -616,277 +581,8 @@
             window.renderBackpack();
         };
 
-        // --- MAP LOGIC ---
-        let mapScale = 1, mapPosX = 0, mapPosY = 0, isPanning = false, startX = 0, startY = 0;
-        let dragDist = 0, lastMouseX = 0, lastMouseY = 0;
-        let currentViewedMapIndex = null;
-        let isPinMode = false;
-        let pendingPinCoords = null;
-        let viewingPinIndex = null;
-
-        window.openMapList = () => {
-            let maps = backpackData.maps || [];
-            if (backpackData.mapSrc && maps.length === 0) {
-                maps = [{ name: 'World Map', src: backpackData.mapSrc }];
-            }
-            
-            const container = document.getElementById('map-list-content');
-            if (maps.length === 0) {
-                container.innerHTML = '<div class="text-center italic opacity-60 text-sm py-4 font-serif text-ink">No maps have been stored in the scroll case.</div>';
-            } else {
-                container.innerHTML = maps.map((m, i) => `
-                    <div class="bg-[#3e2723] border border-gold/40 p-4 rounded flex justify-between items-center group hover:border-gold transition-colors shadow-inner">
-                        <span class="font-heading font-black text-gold text-sm truncate pr-4 drop-shadow-md">${m.name}</span>
-                        <div class="flex items-center gap-3 shrink-0">
-                            <button onclick="window.viewSpecificMap(${i})" class="fantasy-btn px-5 py-2 rounded text-[10px] shadow-lg">Unfurl</button>
-                            ${activeRole === 'dm' ? `<button onclick="window.deleteMap(${i})" class="text-blood hover:text-red-400 bg-black/40 px-3 py-2 rounded transition-colors" title="Burn Map"><i class="fa-solid fa-fire"></i></button>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('map-list-modal').classList.remove('hidden');
-        };
-
-        window.viewSpecificMap = (idx) => {
-            let maps = backpackData.maps || [];
-            if (backpackData.mapSrc && maps.length === 0) {
-                maps = [{ name: 'World Map', src: backpackData.mapSrc }];
-            }
-            const m = maps[idx];
-            if (!m) return;
-            
-            currentViewedMapIndex = idx;
-            document.getElementById('map-list-modal').classList.add('hidden');
-            
-            const modal = document.getElementById('map-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.add('active-map'), 10);
-            
-            const img = document.getElementById('map-image-display');
-            img.src = m.src; 
-            img.classList.remove('hidden'); 
-            document.getElementById('map-empty-view').classList.add('hidden'); 
-            
-            window.resetMap(); 
-            window.renderPins();
-        };
-
-        window.deleteMap = async (idx) => {
-            if (activeRole !== 'dm') return;
-            if (!confirm("Burn this map from the archives forever?")) return;
-            
-            let maps = backpackData.maps || [];
-            if (backpackData.mapSrc && maps.length === 0) {
-                maps = [{ name: 'World Map', src: backpackData.mapSrc }];
-            }
-            
-            const mapName = maps[idx].name;
-            maps.splice(idx, 1);
-            
-            await updateDoc(backpackDocRef, { maps: maps, mapSrc: null });
-            addLog(`burned map: ${mapName}`);
-            window.openMapList(); 
-        };
-
-        window.closeMap = () => {
-            const modal = document.getElementById('map-modal');
-            modal.classList.remove('active-map');
-            if (isPinMode) window.togglePinMode();
-            setTimeout(() => modal.classList.add('hidden'), 400);
-        };
-
-        window.resetMap = () => { mapScale = 1; mapPosX = 0; mapPosY = 0; updateMapTransform(); };
-        window.zoomMap = (factor) => { mapScale = Math.min(10, Math.max(0.3, mapScale * factor)); updateMapTransform(); };
+        // Cartography & Map functionality has been migrated entirely to maps.html
         
-        function updateMapTransform() { 
-            const container = document.getElementById('map-canvas-container');
-            if (container) container.style.transform = `translate(${mapPosX}px, ${mapPosY}px) scale(${mapScale})`; 
-            
-            document.querySelectorAll('.map-pin-inner').forEach(p => {
-                p.style.transform = `scale(${1/mapScale})`;
-            });
-        }
-
-        const viewport = document.getElementById('map-viewport');
-        if (viewport) {
-            viewport.onmousedown = (e) => { 
-                if (e.target.closest('.map-controls') || e.target.closest('.map-pin')) return;
-                isPanning = true; dragDist = 0; 
-                startX = e.clientX - mapPosX; startY = e.clientY - mapPosY; 
-                lastMouseX = e.clientX; lastMouseY = e.clientY;
-            };
-            viewport.ontouchstart = (e) => { 
-                if (e.target.closest('.map-controls') || e.target.closest('.map-pin')) return;
-                isPanning = true; dragDist = 0; 
-                const t = e.touches[0]; startX = t.clientX - mapPosX; startY = t.clientY - mapPosY; 
-                lastMouseX = t.clientX; lastMouseY = t.clientY;
-            };
-            window.onmousemove = (e) => { 
-                if (!isPanning) return; 
-                dragDist += Math.abs(e.clientX - lastMouseX) + Math.abs(e.clientY - lastMouseY);
-                lastMouseX = e.clientX; lastMouseY = e.clientY;
-                mapPosX = e.clientX - startX; mapPosY = e.clientY - startY; 
-                updateMapTransform(); 
-            };
-            window.ontouchmove = (e) => { 
-                if (!isPanning) return; 
-                const t = e.touches[0]; 
-                dragDist += Math.abs(t.clientX - lastMouseX) + Math.abs(t.clientY - lastMouseY);
-                lastMouseX = t.clientX; lastMouseY = t.clientY;
-                mapPosX = t.clientX - startX; mapPosY = t.clientY - startY; 
-                updateMapTransform(); 
-            };
-            window.onmouseup = window.ontouchend = () => isPanning = false;
-        }
-
-        // --- MAP PINS LOGIC ---
-        window.togglePinMode = () => {
-            isPinMode = !isPinMode;
-            document.getElementById('btn-pin-mode').classList.toggle('active-tool', isPinMode);
-            document.getElementById('map-viewport').classList.toggle('pin-mode-active', isPinMode);
-            if (isPinMode) window.showToast("Click anywhere on the map to drop a pin.");
-        };
-
-        window.handleMapClick = (e) => {
-            if (dragDist > 10 || !isPinMode || currentViewedMapIndex === null) return;
-            const img = e.target;
-            
-            const xPct = (e.offsetX / img.offsetWidth) * 100;
-            const yPct = (e.offsetY / img.offsetHeight) * 100;
-            
-            pendingPinCoords = { x: xPct, y: yPct };
-            document.getElementById('new-pin-name').value = '';
-            document.getElementById('new-pin-desc').value = '';
-            document.getElementById('new-pin-modal').classList.remove('hidden');
-            window.togglePinMode(); 
-        };
-
-        window.cancelPin = () => {
-            pendingPinCoords = null;
-            document.getElementById('new-pin-modal').classList.add('hidden');
-        };
-
-        window.savePin = async () => {
-            const name = document.getElementById('new-pin-name').value.trim();
-            const desc = document.getElementById('new-pin-desc').value.trim();
-            if (!name || !pendingPinCoords) return window.showToast("Landmark needs a name.");
-
-            let maps = backpackData.maps || [];
-            if (!maps[currentViewedMapIndex].pins) maps[currentViewedMapIndex].pins = [];
-            
-            maps[currentViewedMapIndex].pins.push({
-                x: pendingPinCoords.x,
-                y: pendingPinCoords.y,
-                name: name,
-                desc: desc,
-                author: currentUser.username,
-                id: crypto.randomUUID()
-            });
-
-            await updateDoc(backpackDocRef, { maps });
-            await addLog(`marked landmark [${name}] on the map`);
-            
-            document.getElementById('new-pin-modal').classList.add('hidden');
-            pendingPinCoords = null;
-            window.renderPins();
-        };
-
-        window.renderPins = () => {
-            const container = document.getElementById('map-pins-container');
-            if (!container || currentViewedMapIndex === null) return;
-            container.innerHTML = '';
-            
-            let maps = backpackData.maps || [];
-            const currentMap = maps[currentViewedMapIndex];
-            if (!currentMap || !currentMap.pins) return;
-
-            currentMap.pins.forEach((pin, idx) => {
-                const pEl = document.createElement('div');
-                pEl.className = 'map-pin';
-                pEl.style.left = `${pin.x}%`;
-                pEl.style.top = `${pin.y}%`;
-                
-                pEl.innerHTML = `
-                    <div class="map-pin-inner" style="transform: scale(${1/mapScale})" onclick="event.stopPropagation(); if(window.dragDist<10) window.openPinDetails(${idx})">
-                        <i class="fa-solid fa-location-dot"></i>
-                    </div>
-                `;
-                container.appendChild(pEl);
-            });
-        };
-
-        window.openPinDetails = (idx) => {
-            let maps = backpackData.maps || [];
-            const pin = maps[currentViewedMapIndex].pins[idx];
-            if (!pin) return;
-            
-            viewingPinIndex = idx;
-            document.getElementById('view-pin-name').textContent = pin.name;
-            document.getElementById('view-pin-author').textContent = `Discovered by: ${pin.author || 'Unknown'}`;
-            document.getElementById('view-pin-desc').innerHTML = (pin.desc || 'No notes left.').replace(/\n/g, '<br>');
-            
-            const isDM = activeRole === 'dm';
-            const isAuthor = pin.author === currentUser.username;
-            document.getElementById('btn-delete-pin').classList.toggle('hidden', !(isDM || isAuthor));
-            
-            document.getElementById('view-pin-modal').classList.remove('hidden');
-        };
-
-        window.deletePin = async () => {
-            if (viewingPinIndex === null || currentViewedMapIndex === null) return;
-            if (!confirm("Remove this landmark from the map?")) return;
-            
-            let maps = backpackData.maps || [];
-            const pinName = maps[currentViewedMapIndex].pins[viewingPinIndex].name;
-            maps[currentViewedMapIndex].pins.splice(viewingPinIndex, 1);
-            
-            await updateDoc(backpackDocRef, { maps });
-            await addLog(`erased landmark [${pinName}]`);
-            
-            document.getElementById('view-pin-modal').classList.add('hidden');
-            viewingPinIndex = null;
-            window.renderPins();
-        };
-
-        window.handleMapUpload = (e) => {
-            if (activeRole !== 'dm') return window.showToast("Only DMs can ink maps.");
-            const nameInput = document.getElementById('dm-map-name-in').value.trim();
-            const mapName = nameInput || `Map Archive ${Date.now().toString().slice(-4)}`;
-
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const maxDim = 2000;
-                    let w = img.width, h = img.height;
-                    if (w > maxDim || h > maxDim) { const r = maxDim / Math.max(w, h); w *= r; h *= r; }
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    
-                    const newMap = {
-                        id: crypto.randomUUID(),
-                        name: mapName,
-                        src: canvas.toDataURL('image/jpeg', 0.8),
-                        pins: []
-                    };
-                    
-                    let maps = backpackData.maps || [];
-                    if (backpackData.mapSrc && maps.length === 0) {
-                        maps = [{ name: 'World Map', src: backpackData.mapSrc }];
-                    }
-                    maps.push(newMap);
-
-                    updateDoc(backpackDocRef, { maps: maps, mapSrc: null }); 
-                    addLog(`stored new map: ${mapName}`);
-                    document.getElementById('dm-map-name-in').value = ''; 
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
         // --- BACKPACK CURRENCY LOGIC ---
         const unitsToSC = (vt, byt, cr, sc) => (parseInt(vt) || 0) * 1000 + (parseInt(byt) || 0) * 100 + (parseInt(cr) || 0) * 10 + (parseInt(sc) || 0);
         const scToUnits = (total) => ({ VT: Math.floor(total / 1000), BYT: Math.floor((total % 1000) / 100), CR: Math.floor((total % 100) / 10), SC: total % 10 });
@@ -896,9 +592,16 @@
             
             const bType = backpackData.bagType || 'satchel';
             const bCont = document.getElementById('backpack-main-container');
-            if (bCont) {
+            const visuals = document.getElementById('bag-visuals');
+            
+            if (bCont && visuals) {
                 bCont.classList.remove('bag-theme-satchel', 'bag-theme-haversack', 'bag-theme-holding');
                 bCont.classList.add(`bag-theme-${bType}`);
+                
+                // Toggle proper visual elements based on theme
+                visuals.querySelector('.bag-decor').classList.toggle('hidden', bType === 'holding');
+                visuals.querySelectorAll('.bag-pocket').forEach(el => el.classList.toggle('hidden', bType !== 'haversack'));
+                visuals.querySelector('.bag-portal').classList.toggle('hidden', bType !== 'holding');
                 
                 const titleEl = document.getElementById('bag-title');
                 const iconEl = document.getElementById('bag-icon');
@@ -1177,7 +880,6 @@
                         
                         backpackData = newData; 
                         window.renderBackpack(); 
-                        if (currentViewedMapIndex !== null) window.renderPins();
                     } 
                 });
                 
