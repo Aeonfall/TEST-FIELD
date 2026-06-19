@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -143,7 +143,7 @@
     </header>
 
     <!-- MAIN APP AREA -->
-    <main class="flex-grow flex flex-col md:flex-row relative overflow-hidden">
+    <main class="flex-grow flex flex-col md:flex-row relative overflow-hidden" id="dashboard-screen">
         
         <!-- LEFT: Map Viewer -->
         <section class="flex-grow relative map-viewport" id="map-viewport">
@@ -976,66 +976,72 @@
         };
         initAuth();
 
-        // --- GLOBAL AUTHENTICATION SYNC ---
-        onAuthStateChanged(auth, async (u) => {
-            if (!u) {
-                try { window.location.href = "index.html"; } catch(e) {
-                    document.getElementById('initial-loading').innerHTML = `<div class="flex flex-col items-center"><i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood mb-4">Authentication Required</h2><button onclick="window.location.href='index.html'" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button></div>`;
-                }
-                return;
-            }
-            
-            try {
-                if (u.isAnonymous) {
-                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
-                } else {
-                    const userDoc = await getDoc(doc(db, 'users', u.uid));
-                    if (userDoc.exists()) {
-                        currentUser = { uid: u.uid, ...userDoc.data() };
-                        if (!currentUser.username) {
-                            currentUser.username = u.displayName || 'Traveler';
-                        }
-                    } else {
-                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
-                    }
-                }
+        // --- GLOBAL AUTHENTICATION SYNC --- 
+        onAuthStateChanged(auth, async (u) => { 
+            if (!u) { 
+                try { window.location.href = "index.html"; } catch(e) { 
+                    document.getElementById('initial-loading').innerHTML = `<div class="flex flex-col items-center"><i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood mb-4">Authentication Required</h2><button onclick="window.location.href='index.html'" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button></div>`; 
+                } 
+                return; 
+            } 
+             
+            try { 
+                if (u.isAnonymous) { 
+                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' }; 
+                } else { 
+                    const userDoc = await getDoc(doc(db, 'users', u.uid)); 
+                    if (userDoc.exists()) { 
+                        currentUser = { uid: u.uid, ...userDoc.data() }; 
+                        if (!currentUser.username) { 
+                            currentUser.username = u.displayName || 'Traveler'; 
+                        } 
+                    } else { 
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' }; 
+                    } 
+                } 
 
-                activeRole = currentUser.role || 'player';
+                activeRole = currentUser.role || 'player'; 
 
-                if (appId !== "demo_campaign") {
-                    try {
-                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                        if (campDoc.exists() && campDoc.data().name) {
-                            const titleEls = [document.getElementById('main-campaign-title')];
-                            titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                            document.title = `${campDoc.data().name} - Cartography`;
-                        }
-                    } catch (err) {
-                        console.warn("Could not read campaign info:", err);
-                    }
-                }
+                if (appId !== "demo_campaign") { 
+                    try { 
+                        const campDoc = await getDoc(doc(db, 'campaigns', appId)); 
+                        if (campDoc.exists() && campDoc.data().name) { 
+                            const titleEls = [document.getElementById('main-campaign-title')]; 
+                            titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; }); 
+                            document.title = `${campDoc.data().name} - Cartography`; 
+                        } 
+                    } catch (err) { 
+                        console.warn("Could not read campaign info:", err); 
+                    } 
+                } 
 
-                document.getElementById('user-display-name').innerText = currentUser.username;
+                document.getElementById('user-display-name').innerText = currentUser.username; 
                 
                 // DM UI Features specific to MAPS
                 if (activeRole === 'dm') {
                     document.getElementById('dm-map-controls').classList.remove('hidden');
                     document.getElementById('btn-pin-mode').classList.remove('hidden');
-                }
+                } 
 
-                document.getElementById('initial-loading').classList.add('hidden');
+                document.getElementById('initial-loading').classList.add('hidden'); 
+                 
+                // Show the dashboard! 
+                const dashboard = document.getElementById('dashboard-screen'); 
+                if(dashboard) { 
+                    dashboard.classList.remove('hidden', 'hidden-view'); 
+                } 
 
-                // Initialize Database Connections for MAPS
-                try {
-                    const snap = await getDoc(cacheDocRef);
-                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" });
-                } catch (err) {
-                    console.warn("Initialization error for maps:", err);
-                }
-
+                // Initialize Database Connections 
+                try { 
+                    const snap = await getDoc(cacheDocRef); 
+                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }); 
+                } catch (err) { 
+                    console.warn("Initialization error for maps:", err); 
+                } 
+                 
                 // Data listener for MAPS
-                onSnapshot(cacheDocRef, (d) => { 
-                    if (d.exists()) { 
+                onSnapshot(cacheDocRef, (d) => {  
+                    if (d.exists()) {  
                         const data = d.data();
                         
                         // Handle legacy Map format if present
@@ -1072,9 +1078,9 @@
                         } else {
                             window.clearMapDisplay();
                         }
-                    } 
-                }, (error) => {
-                    console.error("Map sync error:", error);
+                    }  
+                }, (error) => { 
+                    console.error("Map sync error:", error); 
                     document.getElementById('initial-loading').innerHTML = `
                         <div class="flex flex-col items-center text-center px-4 bg-wood p-8 rounded-lg border-2 border-blood shadow-2xl max-w-md mx-auto relative z-[9999]">
                             <i class="fa-solid fa-lock text-6xl text-blood mb-6"></i>
@@ -1082,14 +1088,14 @@
                             <p class="text-parchment font-serif text-sm mb-4">Firebase is blocking access. Please update your Firestore Security Rules.</p>
                         </div>
                     `;
-                    document.getElementById('initial-loading').classList.remove('hidden');
-                });
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
-            }
-        });
-    </script>
-</body>
+                    document.getElementById('initial-loading').classList.remove('hidden'); 
+                }); 
+                 
+            } catch (error) { 
+                console.error(error); 
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`; 
+            } 
+        }); 
+    </script> 
+</body> 
 </html>
