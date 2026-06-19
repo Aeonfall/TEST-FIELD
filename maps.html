@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
             box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
         }
         .map-viewport:active { cursor: grabbing; }
-        .pin-mode-active { cursor: crosshair !important; }
+        .pin-mode-active, .shroud-mode-active { cursor: crosshair !important; }
         
         .map-pin { position: absolute; pointer-events: auto; z-index: 20; width: 0; height: 0; }
         .map-pin-inner { 
@@ -110,6 +110,31 @@
         select.fantasy-input:focus, input.fantasy-input:focus, textarea.fantasy-input:focus {
             background-color: rgba(255,255,255,0.8); border-color: #7a1b1b;
         }
+
+        .map-type-badge { font-family: 'Cinzel', serif; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: white; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .type-World { background: linear-gradient(to bottom, #ca8a04, #854d0e); }
+        .type-Continent { background: linear-gradient(to bottom, #2563eb, #1e3a8a); }
+        .type-Region { background: linear-gradient(to bottom, #16a34a, #14532d); }
+        .type-City, .type-Town, .type-Village, .type-Settlement { background: linear-gradient(to bottom, #9333ea, #581c87); }
+        .type-Dungeon, .type-Battlemap { background: linear-gradient(to bottom, #dc2626, #7f1d1d); }
+
+        .player-tag { display: inline-block; padding: 2px 8px; background: rgba(0,0,0,0.1); border: 1px solid #c5a059; border-radius: 12px; font-size: 9px; font-family: 'Cinzel', serif; cursor: pointer; transition: 0.2s; margin-right: 4px; margin-bottom: 4px;}
+        .player-tag.selected { background: #7a1b1b; color: white; border-color: #7a1b1b; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+        /* Fog Shroud Styling */
+        .fog-shroud {
+            position: absolute; border-radius: 50%; pointer-events: none; z-index: 10;
+            transform: translate(-50%, -50%); transition: all 0.3s;
+        }
+        .fog-shroud.active-shroud {
+            background-color: #1a110b; backdrop-filter: blur(15px) contrast(0.6) brightness(0.4);
+            box-shadow: 0 0 60px 30px #1a110b; opacity: 0.95;
+        }
+        .fog-shroud.dm-shroud {
+            pointer-events: auto; cursor: pointer; border: 2px dashed #c5a059; 
+            background-color: rgba(26, 17, 11, 0.3); box-shadow: inset 0 0 20px rgba(197, 160, 89, 0.2);
+        }
+        .fog-shroud.dm-shroud:hover { background-color: rgba(197, 160, 89, 0.2); border-style: solid; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col h-screen overflow-hidden">
@@ -150,6 +175,7 @@
             <!-- Canvas layer -->
             <div id="map-canvas-container" class="absolute top-0 left-0 origin-top-left transition-transform duration-75 ease-out">
                 <img id="map-image-display" src="" class="block shadow-2xl max-w-none hidden pointer-events-auto">
+                <div id="map-shrouds-container" class="absolute inset-0 pointer-events-none"></div>
                 <div id="map-pins-container" class="absolute inset-0 pointer-events-none"></div>
             </div>
             
@@ -162,6 +188,7 @@
 
             <!-- On-map controls -->
             <div class="map-controls">
+                <button class="map-btn text-[12px] hidden" id="btn-fog-mode" onclick="window.toggleFogMode()" title="Draw Fog of War (DM Only)"><i class="fa-solid fa-cloud"></i></button>
                 <button class="map-btn text-[12px] hidden" id="btn-pin-mode" onclick="window.togglePinMode()" title="Drop Landmark Pin (DM Only)"><i class="fa-solid fa-location-dot"></i></button>
                 <button class="map-btn" onclick="window.zoomMap(1.2)"><i class="fa-solid fa-plus"></i></button>
                 <button class="map-btn" onclick="window.zoomMap(0.8)"><i class="fa-solid fa-minus"></i></button>
@@ -173,7 +200,7 @@
         <aside class="w-full md:w-80 lg:w-96 legend-panel flex flex-col shrink-0 h-64 md:h-auto overflow-hidden relative z-[50]">
             <!-- Map Selector -->
             <div class="p-4 border-b border-gold/30 bg-black/40">
-                <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1 block font-heading">Current Map</label>
+                <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1 block font-heading">Current View</label>
                 <select id="map-selector" onchange="window.selectMap(this.value)" class="w-full bg-ink border border-gold rounded p-2 text-sm text-parchment font-serif outline-none focus:border-blood shadow-inner">
                     <option value="">-- No Maps Found --</option>
                 </select>
@@ -183,7 +210,10 @@
             <div class="flex-grow overflow-y-auto p-4 scrollbar-hide flex flex-col gap-6">
                 <!-- Map Info -->
                 <div id="active-map-info" class="hidden">
-                    <h2 id="legend-map-title" class="font-heading text-xl font-black text-gold uppercase tracking-widest drop-shadow mb-2 border-b border-gold/20 pb-2">Map Name</h2>
+                    <div class="flex items-center gap-2 mb-2 border-b border-gold/20 pb-2">
+                        <h2 id="legend-map-title" class="font-heading text-xl font-black text-gold uppercase tracking-widest drop-shadow">Map Name</h2>
+                        <span id="legend-map-type-badge" class="map-type-badge type-World hidden">World</span>
+                    </div>
                     <p id="legend-map-desc" class="text-xs font-serif text-gray-300 italic leading-relaxed">Map description goes here...</p>
                 </div>
 
@@ -220,26 +250,47 @@
                 </div>
                 <p id="detail-pin-author" class="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3 font-heading ml-11">Discovered by: Player</p>
                 <div class="bg-[rgba(139,90,43,0.1)] border border-gold/40 p-3 rounded shadow-inner mb-4">
-                    <div id="detail-pin-desc" class="text-xs font-serif text-ink max-h-32 overflow-y-auto leading-relaxed">
+                    <div id="detail-pin-desc" class="text-xs font-serif text-ink max-h-32 overflow-y-auto leading-relaxed whitespace-pre-wrap">
                         Description...
                     </div>
                 </div>
+
+                <!-- Linked Maps / Secret Toggles -->
+                <div id="linked-map-section" class="mb-4">
+                    <button id="btn-enter-location" class="hidden w-full fantasy-btn py-2 text-[10px] shadow-lg mb-2 flex items-center justify-center gap-2"><i class="fa-solid fa-map-location-dot"></i> Enter Location</button>
+                    
+                    <div id="dm-pin-controls" class="hidden flex flex-col gap-2 border-t border-blood/30 pt-3 mt-2">
+                        
+                        <div class="bg-white/40 p-2 rounded border border-blood/20 mb-1">
+                            <label class="text-[8px] font-black text-blood uppercase tracking-widest block mb-1">Visibility Access</label>
+                            <select id="pin-vis-select" onchange="window.updatePinAccessUI()" class="w-full fantasy-input p-1.5 text-[10px] rounded font-bold mb-1">
+                                <option value="public">Public (All Players)</option>
+                                <option value="restricted">Restricted / Secret</option>
+                            </select>
+                            <div id="pin-vis-players" class="hidden flex flex-wrap gap-1 mt-2 border-t border-gray-400/30 pt-2">
+                                <!-- Player checkboxes populated by JS -->
+                            </div>
+                            <button onclick="window.savePinVisibility()" class="w-full mt-2 bg-[#7a1b1b] text-white py-1 rounded text-[9px] font-bold font-heading uppercase tracking-widest">Update Visibility</button>
+                        </div>
+                        
+                        <div class="bg-white/40 p-2 rounded border border-blood/20">
+                            <label class="text-[8px] font-black text-blood uppercase tracking-widest block mb-1">Link to Sub-Map</label>
+                            <select id="pin-map-link-select" onchange="window.linkMapToPin(this.value)" class="w-full fantasy-input p-1.5 text-[10px] rounded font-bold"></select>
+                            <p class="text-[7px] text-gray-600 italic mt-1 leading-tight">Link this pin to another map to let players enter it.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <button id="btn-delete-pin" onclick="window.deleteActivePin()" class="hidden w-full bg-transparent border-2 border-blood text-blood font-bold uppercase text-[9px] py-2 rounded hover:bg-red-50 transition-colors font-heading tracking-widest">Destroy Record</button>
             </div>
 
-            <!-- DM Controls -->
+            <!-- DM Controls Sidebar -->
             <div id="dm-map-controls" class="p-4 border-t border-gold/30 bg-black/60 hidden shrink-0">
                 <h3 class="text-[9px] font-black uppercase text-gold mb-3 font-heading tracking-widest">Cartographer (DM)</h3>
                 <div class="flex flex-col gap-2">
+                    <button onclick="window.openNewMapModal()" class="w-full fantasy-btn-alt py-1.5 rounded text-[10px] font-bold tracking-widest uppercase">Forge New Map</button>
                     <div class="flex gap-2">
-                        <label class="relative block flex-1">
-                            <button class="w-full fantasy-btn-alt py-1.5 rounded text-[9px] pointer-events-none">File Upload</button>
-                            <input type="file" id="dm-map-input-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="window.handleMapUpload(event)">
-                        </label>
-                        <button onclick="window.handleMapUrlUpload()" class="flex-1 fantasy-btn-alt py-1.5 rounded text-[9px]" title="Provide a direct image URL">Link URL</button>
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="btn-edit-map-info" onclick="window.openEditMapModal()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-white hover:border-white transition-colors">Edit Details</button>
+                        <button id="btn-edit-map-info" onclick="window.openEditMapModal()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-white hover:border-white transition-colors">Edit Metadata</button>
                         <button id="btn-manage-legend" onclick="window.openLegendManager()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-gold hover:border-gold transition-colors">Map Key</button>
                     </div>
                 </div>
@@ -247,8 +298,100 @@
         </aside>
     </main>
 
+    <!-- DM: NEW MAP MODAL -->
+    <div id="new-map-modal" class="modal-overlay hidden z-[9000]">
+        <div class="modal-container text-center !max-w-lg">
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Forge Cartography</h3>
+            <div class="space-y-4 text-left">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Map Name</label>
+                        <input type="text" id="new-map-name" class="w-full fantasy-input p-2.5 rounded font-bold font-heading text-sm" placeholder="E.g. Sword Coast">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Map Classification</label>
+                        <select id="new-map-type" class="w-full fantasy-input p-2.5 rounded text-sm font-bold">
+                            <option value="World">World Map</option>
+                            <option value="Continent">Continent</option>
+                            <option value="Region">Region / Territory</option>
+                            <option value="City">City</option>
+                            <option value="Town">Town</option>
+                            <option value="Village">Village</option>
+                            <option value="Settlement">Settlement</option>
+                            <option value="Dungeon">Dungeon / Interior</option>
+                            <option value="Battlemap">Battlemap</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">General Description</label>
+                    <textarea id="new-map-desc" class="w-full fantasy-input p-3 rounded h-20 resize-none text-sm" placeholder="A brief description of this territory..."></textarea>
+                </div>
+
+                <div class="bg-[rgba(139,90,43,0.1)] p-3 border border-gold/50 rounded border-dashed">
+                    <label class="text-[10px] font-black text-blood uppercase font-heading tracking-widest block mb-2 border-b border-gold/30 pb-1">Image Source</label>
+                    
+                    <div class="mb-3">
+                        <label class="text-[9px] font-bold text-gray-700 uppercase tracking-widest block mb-1">Paste Web Image Link</label>
+                        <input type="text" id="new-map-url" class="w-full fantasy-input p-2 rounded text-sm" placeholder="https://example.com/map.jpg">
+                    </div>
+                    
+                    <div class="relative flex py-2 items-center">
+                        <div class="flex-grow border-t border-gold/40"></div>
+                        <span class="flex-shrink-0 mx-2 text-ink font-heading font-black text-[10px]">OR</span>
+                        <div class="flex-grow border-t border-gold/40"></div>
+                    </div>
+                    
+                    <div class="mt-2">
+                        <label class="text-[9px] font-bold text-gray-700 uppercase tracking-widest block mb-1">Upload Local File</label>
+                        <input type="file" id="new-map-file" accept="image/*" class="w-full text-xs text-ink file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-bold file:bg-blood file:text-white hover:file:bg-red-700 cursor-pointer">
+                    </div>
+                </div>
+
+            </div>
+            <div class="flex gap-3 font-heading mt-6">
+                <button onclick="document.getElementById('new-map-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.saveNewMap()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors" id="btn-save-new-map">Create Map</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DM: MANAGE FOG / SHROUD MODAL -->
+    <div id="shroud-manager-modal" class="modal-overlay hidden z-[9000]">
+        <div class="modal-container text-left">
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2 text-center">Manage Fog of War</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Shroud Radius (Coverage)</label>
+                    <input type="range" id="shroud-radius-slider" min="5" max="100" value="15" class="w-full accent-blood" oninput="window.previewShroudRadius()">
+                    <div class="text-center text-xs font-bold text-gray-600 mt-1" id="shroud-radius-val">15%</div>
+                </div>
+
+                <div class="bg-[rgba(139,90,43,0.1)] border border-gold/40 p-3 rounded">
+                    <label class="text-[10px] font-black text-blood uppercase tracking-widest block mb-2 border-b border-gold/30 pb-1">Granted Permissions</label>
+                    <p class="text-[9px] text-gray-600 font-serif italic mb-2 leading-tight">Select the players allowed to see through this fog (e.g. natives to the continent).</p>
+                    <div id="shroud-vis-players" class="flex flex-wrap gap-1">
+                        <!-- Player checkboxes populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 font-heading mt-6 flex-col sm:flex-row">
+                <button onclick="window.deleteActiveShroud()" class="w-full sm:w-auto bg-transparent border-2 border-blood text-blood font-bold uppercase text-[10px] py-3 px-4 rounded hover:bg-red-50 transition-colors mb-2 sm:mb-0">Clear Fog</button>
+                <div class="flex flex-1 gap-2">
+                    <button onclick="window.closeShroudModal()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                    <button onclick="window.saveActiveShroud()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save Shroud</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- NEW PIN MODAL -->
-    <div id="new-pin-modal" class="modal-overlay hidden z-[9000]" onclick="if(event.target===this) window.cancelPin()">
+    <div id="new-pin-modal" class="modal-overlay hidden z-[9000]">
         <div class="modal-container text-center">
             <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Mark Landmark</h3>
             <div class="space-y-4 text-left">
@@ -256,7 +399,7 @@
                     <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Landmark Name</label>
                     <input type="text" id="new-pin-name" class="w-full fantasy-input p-3 rounded font-bold uppercase tracking-widest mb-2 font-heading" placeholder="E.g., Ruined Tower">
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Symbol / Icon</label>
@@ -302,7 +445,7 @@
     </div>
 
     <!-- DM: MANAGE LEGEND / KEY MODAL -->
-    <div id="legend-manager-modal" class="modal-overlay hidden z-[9000]" onclick="if(event.target===this) this.classList.add('hidden')">
+    <div id="legend-manager-modal" class="modal-overlay hidden z-[9000]">
         <div class="modal-container text-left !max-w-2xl">
             <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2 text-center">Manage Map Key</h3>
             
@@ -350,14 +493,13 @@
                                 <option value="fa-solid fa-gem">&#xf3a5; Point of Interest</option>
                                 <option value="fa-solid fa-star">&#xf005; Capital</option>
                             </select>
-                            <p class="text-[8px] text-gray-500 italic mt-1 font-serif">Select an icon to represent locations.</p>
                         </div>
 
                         <div id="legend-input-color" class="hidden">
                             <label class="text-[9px] font-bold text-gray-600 uppercase font-heading tracking-widest block mb-1">Color Picker</label>
                             <div class="flex items-center gap-3">
                                 <input type="color" id="legend-add-color-val" class="w-12 h-10 cursor-pointer rounded border border-gray-400" value="#16a34a">
-                                <span class="text-xs font-serif italic text-gray-600">Choose terrain/region color</span>
+                                <span class="text-xs font-serif italic text-gray-600">Choose terrain color</span>
                             </div>
                         </div>
 
@@ -374,7 +516,7 @@
 
                         <div>
                             <label class="text-[9px] font-bold text-gray-600 uppercase font-heading tracking-widest block mb-1 mt-2">Definition / Label</label>
-                            <input type="text" id="legend-add-label" class="w-full fantasy-input p-2 rounded text-sm font-bold" placeholder="E.g., Elven Territory, Main Road, etc.">
+                            <input type="text" id="legend-add-label" class="w-full fantasy-input p-2 rounded text-sm font-bold" placeholder="E.g., Elven Territory, Main Road">
                         </div>
                     </div>
 
@@ -388,25 +530,41 @@
         </div>
     </div>
 
-    <!-- EDIT MAP MODAL -->
-    <div id="edit-map-modal" class="modal-overlay hidden z-[9000]" onclick="if(event.target===this) this.classList.add('hidden')">
+    <!-- EDIT MAP METADATA MODAL -->
+    <div id="edit-map-modal" class="modal-overlay hidden z-[9000]">
         <div class="modal-container text-center">
-            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Map Details</h3>
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Edit Map Metadata</h3>
             <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Region / Name</label>
-                    <input type="text" id="edit-map-name" class="w-full fantasy-input p-3 rounded font-bold font-heading mb-2">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Region / Name</label>
+                        <input type="text" id="edit-map-name" class="w-full fantasy-input p-2.5 rounded font-bold font-heading mb-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Map Classification</label>
+                        <select id="edit-map-type" class="w-full fantasy-input p-2.5 rounded text-sm font-bold">
+                            <option value="World">World Map</option>
+                            <option value="Continent">Continent</option>
+                            <option value="Region">Region / Territory</option>
+                            <option value="City">City</option>
+                            <option value="Town">Town</option>
+                            <option value="Village">Village</option>
+                            <option value="Settlement">Settlement</option>
+                            <option value="Dungeon">Dungeon / Interior</option>
+                            <option value="Battlemap">Battlemap</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">General Description</label>
-                    <textarea id="edit-map-desc" class="w-full fantasy-input p-3 rounded h-24 resize-none" placeholder="General description of the region..."></textarea>
+                    <textarea id="edit-map-desc" class="w-full fantasy-input p-3 rounded h-24 resize-none text-sm" placeholder="General description of the region..."></textarea>
                 </div>
             </div>
             <div class="flex gap-3 font-heading mt-6 flex-col sm:flex-row">
                 <button onclick="window.deleteCurrentMap()" class="w-full sm:w-auto bg-transparent border-2 border-blood text-blood font-bold uppercase text-[10px] py-3 px-4 rounded hover:bg-red-50 transition-colors mb-2 sm:mb-0">Burn Map</button>
                 <div class="flex flex-1 gap-2">
                     <button onclick="document.getElementById('edit-map-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                    <button id="btn-save-map-details" onclick="window.saveMapDetails()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save</button>
+                    <button onclick="window.saveMapDetails()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save Details</button>
                 </div>
             </div>
         </div>
@@ -415,7 +573,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         let firebaseConfig;
         if (typeof __firebase_config !== 'undefined') {
@@ -450,30 +608,32 @@
         let currentUser = null;
         let activeRole = 'player';
         
-        // Maps are stored alongside backpack for unified artifact syncing
         const cacheDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'backpacks', 'party-cache');
         
         let allMaps = [];
+        let allPlayerNames = new Set();
+        
         let currentMapIndex = null;
         let activePinIndex = null;
         
         let mapScale = 1, mapPosX = 0, mapPosY = 0, isPanning = false, startX = 0, startY = 0;
         let dragDist = 0, lastMouseX = 0, lastMouseY = 0;
+        
         let isPinMode = false;
+        let isFogMode = false;
         let pendingPinCoords = null;
+        
+        let activeShroudIndex = null;
+        let selectedShroudPlayers = new Set();
+        let selectedPinPlayers = new Set();
 
         // Ensure FontAwesome renders correctly in dynamic selects
-        document.getElementById('new-pin-color').addEventListener('change', function() {
-            this.style.color = this.value;
-        });
+        document.getElementById('new-pin-color').addEventListener('change', function() { this.style.color = this.value; });
 
         window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
-        window.routeTo = (page) => {
-            try { window.location.href = `${page}?id=${appId}`; } 
-            catch(e) { window.showToast("Redirects disabled in preview window."); }
-        };
+        window.routeTo = (page) => { try { window.location.href = `${page}?id=${appId}`; } catch(e) { window.showToast("Redirects disabled in preview window."); } };
 
-        // --- MAP RENDER LOGIC ---
+        // --- CORE RENDERING LOGIC ---
         window.selectMap = (idx) => {
             if (idx === "" || !allMaps[idx]) return window.clearMapDisplay();
             currentMapIndex = parseInt(idx);
@@ -489,7 +649,15 @@
             document.getElementById('legend-map-title').textContent = mapData.name || "Unknown Region";
             document.getElementById('legend-map-desc').textContent = mapData.description || "The edges of the map fade into uncharted territory...";
 
+            const typeBadge = document.getElementById('legend-map-type-badge');
+            if (mapData.type) {
+                typeBadge.textContent = mapData.type;
+                typeBadge.className = `map-type-badge type-${mapData.type.replace(/\s+/g, '')}`;
+                typeBadge.classList.remove('hidden');
+            } else { typeBadge.classList.add('hidden'); }
+
             window.resetMap();
+            window.renderShrouds();
             window.renderPins();
             window.renderMapKey();
             window.renderLandmarksList();
@@ -504,11 +672,11 @@
             document.getElementById('map-key-section').classList.add('hidden');
             document.getElementById('landmarks-section').classList.add('hidden');
             document.getElementById('map-pins-container').innerHTML = '';
+            document.getElementById('map-shrouds-container').innerHTML = '';
             document.getElementById('legend-pins-list').innerHTML = '';
             window.closePinDetails();
         };
 
-        // --- RENDER MAP KEY & LEGEND ---
         window.renderMapKey = () => {
             const mapData = allMaps[currentMapIndex];
             if (!mapData) return;
@@ -516,73 +684,66 @@
             const scaleEl = document.getElementById('map-scale-display');
             const keySection = document.getElementById('map-key-section');
             const keyList = document.getElementById('map-key-list');
-            
             keyList.innerHTML = '';
             
-            // Render Scale
             if (mapData.scale) {
                 scaleEl.innerHTML = `<i class="fa-solid fa-ruler-horizontal mr-2 text-gold"></i> Scale: ${mapData.scale}`;
                 scaleEl.classList.remove('hidden');
-            } else {
-                scaleEl.classList.add('hidden');
-            }
+            } else { scaleEl.classList.add('hidden'); }
 
-            // Render Legend Items
             const items = mapData.legendItems || [];
-            
             if (items.length > 0 || mapData.scale) {
                 keySection.classList.remove('hidden');
-                
                 items.forEach(item => {
-                    const el = document.createElement('div');
-                    el.className = "map-key-item";
-                    
+                    const el = document.createElement('div'); el.className = "map-key-item";
                     let visual = '';
-                    if (item.type === 'icon') {
-                        visual = `<div class="key-icon"><i class="${item.value} text-gold"></i></div>`;
-                    } else if (item.type === 'color') {
-                        visual = `<div class="key-swatch" style="background-color: ${item.value}"></div>`;
-                    } else if (item.type === 'line') {
+                    if (item.type === 'icon') visual = `<div class="key-icon"><i class="${item.value} text-gold"></i></div>`;
+                    else if (item.type === 'color') visual = `<div class="key-swatch" style="background-color: ${item.value}"></div>`;
+                    else if (item.type === 'line') {
                         const style = item.isDashed ? 'dashed' : 'solid';
                         visual = `<div class="key-line" style="border-top-color: ${item.value}; border-top-style: ${style};"></div>`;
                     }
-                    
                     el.innerHTML = `${visual} <span class="font-bold text-gray-300 drop-shadow-sm">${item.label}</span>`;
                     keyList.appendChild(el);
                 });
-                
-                if (items.length === 0) {
-                    keyList.innerHTML = `<p class="text-[9px] text-gray-500 italic font-serif">No symbols defined by DM.</p>`;
-                }
-            } else {
-                keySection.classList.add('hidden');
-            }
+                if (items.length === 0) keyList.innerHTML = `<p class="text-[9px] text-gray-500 italic font-serif">No symbols defined by DM.</p>`;
+            } else { keySection.classList.add('hidden'); }
         };
 
-        // --- RENDER SIDEBAR PINS LIST ---
         window.renderLandmarksList = () => {
             const list = document.getElementById('legend-pins-list');
             list.innerHTML = '';
             if (currentMapIndex === null) return;
             
             const pins = allMaps[currentMapIndex].pins || [];
-            if (pins.length === 0) {
-                list.innerHTML = '<p class="text-[10px] text-gray-500 italic font-serif p-2">No landmarks recorded.</p>';
+            
+            // Filter pins based on user permissions
+            const visiblePins = pins.map((p, i) => ({...p, originalIndex: i})).filter(p => {
+                if (activeRole === 'dm') return true;
+                if (!p.allowedUsers) return true; // public
+                if (p.allowedUsers.length === 0) return false; // purely secret
+                return p.allowedUsers.includes(currentUser.username);
+            });
+
+            if (visiblePins.length === 0) {
+                list.innerHTML = '<p class="text-[10px] text-gray-500 italic font-serif p-2">No landmarks discovered yet.</p>';
                 return;
             }
 
-            pins.forEach((pin, idx) => {
+            visiblePins.forEach((pin) => {
                 const iconClass = pin.icon || 'fa-solid fa-location-dot';
                 const pinColor = pin.color || '#dc2626';
+                const secretBadge = pin.allowedUsers ? `<i class="fa-solid fa-eye-slash text-gray-500 ml-2" title="Restricted Visibility"></i>` : '';
+                const opacityClass = pin.allowedUsers ? 'opacity-70' : '';
 
                 const el = document.createElement('div');
-                el.className = `legend-item p-3 rounded flex items-center gap-3 ${activePinIndex === idx ? 'active-item' : ''}`;
-                el.onclick = () => window.focusPin(idx);
+                el.className = `legend-item p-3 rounded flex items-center gap-3 ${activePinIndex === pin.originalIndex ? 'active-item' : ''} ${opacityClass}`;
+                el.onclick = () => window.focusPin(pin.originalIndex);
                 
                 el.innerHTML = `
                     <div class="text-xl w-6 text-center drop-shadow" style="color: ${pinColor};"><i class="${iconClass}"></i></div>
                     <div class="flex-grow">
-                        <h4 class="font-heading font-black text-[11px] text-gold uppercase tracking-widest m-0 leading-tight">${pin.name}</h4>
+                        <h4 class="font-heading font-black text-[11px] text-gold uppercase tracking-widest m-0 leading-tight">${pin.name} ${secretBadge}</h4>
                         <p class="text-[9px] text-gray-400 font-serif line-clamp-1 italic m-0">${pin.desc || 'No notes.'}</p>
                     </div>
                 `;
@@ -590,7 +751,7 @@
             });
         };
 
-        // --- RENDER PINS ON CANVAS ---
+        // --- INTERACTIVE MAP CANVAS LOGIC ---
         window.renderPins = () => {
             const container = document.getElementById('map-pins-container');
             container.innerHTML = '';
@@ -598,18 +759,25 @@
             
             const pins = allMaps[currentMapIndex].pins || [];
             pins.forEach((pin, idx) => {
+                // Filter permissions
+                if (activeRole !== 'dm') {
+                    if (pin.allowedUsers && !pin.allowedUsers.includes(currentUser.username)) return;
+                }
+
                 const iconClass = pin.icon || 'fa-solid fa-location-dot';
                 const pinColor = pin.color || '#dc2626';
+                const secretIndicator = pin.allowedUsers ? `<div class="absolute -top-2 -right-3 text-[8px] text-gray-600 bg-white/90 rounded-full w-4 h-4 flex items-center justify-center shadow"><i class="fa-solid fa-eye-slash"></i></div>` : '';
+                const secretStyle = pin.allowedUsers ? 'opacity: 0.8;' : '';
 
                 const pEl = document.createElement('div');
                 pEl.className = `map-pin ${activePinIndex === idx ? 'map-pin-active' : ''}`;
-                pEl.style.left = `${pin.x}%`;
-                pEl.style.top = `${pin.y}%`;
+                pEl.style.left = `${pin.x}%`; pEl.style.top = `${pin.y}%`;
                 pEl.id = `map-pin-${idx}`;
                 
                 pEl.innerHTML = `
-                    <div class="map-pin-inner" style="transform: scale(${1/mapScale}); color: ${pinColor};" onclick="event.stopPropagation(); if(window.dragDist<10) window.focusPin(${idx})">
+                    <div class="map-pin-inner" style="transform: scale(${1/mapScale}); color: ${pinColor}; ${secretStyle}" onclick="event.stopPropagation(); if(window.dragDist<10) window.focusPin(${idx})">
                         <i class="${iconClass}"></i>
+                        ${activeRole === 'dm' ? secretIndicator : ''}
                     </div>
                 `;
                 container.appendChild(pEl);
@@ -626,19 +794,16 @@
             const iconClass = pin.icon || 'fa-solid fa-location-dot';
             const pinColor = pin.color || '#dc2626';
             
-            // Pan to pin
             const container = document.getElementById('map-viewport');
             const img = document.getElementById('map-image-display');
             if (img && container) {
                 const targetX = (pin.x / 100) * img.offsetWidth;
                 const targetY = (pin.y / 100) * img.offsetHeight;
-                
                 mapPosX = (container.offsetWidth / 2) - (targetX * mapScale);
                 mapPosY = (container.offsetHeight / 2) - (targetY * mapScale);
                 window.updateMapTransform();
             }
 
-            // Show panel
             document.getElementById('detail-pin-name').textContent = pin.name;
             document.getElementById('detail-pin-author').textContent = `Discovered by: ${pin.author || 'Unknown'}`;
             document.getElementById('detail-pin-desc').innerHTML = (pin.desc || 'No detailed notes/lore available.').replace(/\n/g, '<br>');
@@ -649,6 +814,43 @@
             
             const canDelete = activeRole === 'dm' || pin.author === currentUser.username;
             document.getElementById('btn-delete-pin').classList.toggle('hidden', !canDelete);
+
+            // Sub-Map & Visibility Controls
+            const enterBtn = document.getElementById('btn-enter-location');
+            const dmControls = document.getElementById('dm-pin-controls');
+            const linkSelect = document.getElementById('pin-map-link-select');
+            const visSelect = document.getElementById('pin-vis-select');
+
+            if (pin.linkedMapId) {
+                const linkedIdx = allMaps.findIndex(m => m.id === pin.linkedMapId);
+                if (linkedIdx !== -1) {
+                    enterBtn.classList.remove('hidden');
+                    enterBtn.onclick = () => { window.closePinDetails(); window.selectMap(linkedIdx); };
+                } else { enterBtn.classList.add('hidden'); }
+            } else { enterBtn.classList.add('hidden'); }
+
+            if (activeRole === 'dm') {
+                dmControls.classList.remove('hidden');
+                
+                linkSelect.innerHTML = '<option value="">-- No Linked Map --</option>';
+                allMaps.forEach((m, i) => {
+                    if (i !== currentMapIndex) {
+                        const selected = m.id === pin.linkedMapId ? 'selected' : '';
+                        linkSelect.innerHTML += `<option value="${m.id}" ${selected}>[${m.type || 'Map'}] ${m.name}</option>`;
+                    }
+                });
+
+                // Load existing visibility
+                selectedPinPlayers.clear();
+                if (pin.allowedUsers) {
+                    visSelect.value = 'restricted';
+                    pin.allowedUsers.forEach(u => selectedPinPlayers.add(u));
+                } else {
+                    visSelect.value = 'public';
+                }
+                window.updatePinAccessUI();
+
+            } else { dmControls.classList.add('hidden'); }
             
             document.getElementById('pin-details-panel').classList.remove('translate-y-full');
         };
@@ -656,15 +858,117 @@
         window.closePinDetails = () => {
             activePinIndex = null;
             document.getElementById('pin-details-panel').classList.add('translate-y-full');
-            try {
-                window.renderPins();
-                window.renderLandmarksList();
-            } catch(e) {
-                console.error("Error clearing pin highlight:", e);
-            }
+            window.renderPins();
+            window.renderLandmarksList();
         };
 
-        // --- MAP INTERACTIONS ---
+        // --- FOG OF WAR (SHROUD) LOGIC ---
+        window.renderShrouds = () => {
+            const container = document.getElementById('map-shrouds-container');
+            container.innerHTML = '';
+            if (currentMapIndex === null) return;
+            
+            const shrouds = allMaps[currentMapIndex].shrouds || [];
+            shrouds.forEach((s, idx) => {
+                const hasAccess = activeRole === 'dm' || (s.allowedUsers && s.allowedUsers.includes(currentUser.username));
+                
+                if (!hasAccess) {
+                    // Render dense fog blocking player view
+                    const el = document.createElement('div');
+                    el.className = 'fog-shroud active-shroud';
+                    el.style.left = `${s.x}%`; el.style.top = `${s.y}%`;
+                    el.style.width = `${s.radius}vw`; el.style.height = `${s.radius}vw`; 
+                    container.appendChild(el);
+                } else if (activeRole === 'dm') {
+                    // Render DM interactive outline
+                    const el = document.createElement('div');
+                    el.className = 'fog-shroud dm-shroud';
+                    el.style.left = `${s.x}%`; el.style.top = `${s.y}%`;
+                    el.style.width = `${s.radius}vw`; el.style.height = `${s.radius}vw`;
+                    el.onclick = (e) => { e.stopPropagation(); window.openShroudEditor(idx); };
+                    container.appendChild(el);
+                }
+            });
+        };
+
+        window.toggleFogMode = () => {
+            isFogMode = !isFogMode;
+            if(isFogMode && isPinMode) window.togglePinMode();
+            document.getElementById('btn-fog-mode').classList.toggle('active-tool', isFogMode);
+            document.getElementById('map-viewport').classList.toggle('shroud-mode-active', isFogMode);
+            if (isFogMode) window.showToast("Click the map to drop a new Fog Shroud.");
+        };
+
+        window.openShroudEditor = (idx) => {
+            if (currentMapIndex === null) return;
+            activeShroudIndex = idx;
+            const shroud = allMaps[currentMapIndex].shrouds[idx];
+            
+            document.getElementById('shroud-radius-slider').value = shroud.radius;
+            document.getElementById('shroud-radius-val').innerText = `${shroud.radius}% Scale`;
+            
+            selectedShroudPlayers.clear();
+            (shroud.allowedUsers || []).forEach(u => selectedShroudPlayers.add(u));
+            window.renderShroudPlayerTags();
+
+            document.getElementById('shroud-manager-modal').classList.remove('hidden');
+        };
+
+        window.previewShroudRadius = () => {
+            const val = document.getElementById('shroud-radius-slider').value;
+            document.getElementById('shroud-radius-val').innerText = `${val}% Scale`;
+        };
+
+        window.renderShroudPlayerTags = () => {
+            const container = document.getElementById('shroud-vis-players');
+            container.innerHTML = '';
+            
+            if (allPlayerNames.size === 0) {
+                container.innerHTML = '<span class="text-[9px] text-gray-500 italic">No party members found.</span>';
+                return;
+            }
+
+            allPlayerNames.forEach(player => {
+                const el = document.createElement('div');
+                el.className = `player-tag ${selectedShroudPlayers.has(player) ? 'selected' : ''}`;
+                el.innerText = player;
+                el.onclick = () => {
+                    if (selectedShroudPlayers.has(player)) selectedShroudPlayers.delete(player);
+                    else selectedShroudPlayers.add(player);
+                    el.classList.toggle('selected');
+                };
+                container.appendChild(el);
+            });
+        };
+
+        window.saveActiveShroud = async () => {
+            if (activeShroudIndex === null || currentMapIndex === null) return;
+            
+            const radius = parseInt(document.getElementById('shroud-radius-slider').value);
+            const mapsCopy = [...allMaps];
+            
+            mapsCopy[currentMapIndex].shrouds[activeShroudIndex].radius = radius;
+            mapsCopy[currentMapIndex].shrouds[activeShroudIndex].allowedUsers = Array.from(selectedShroudPlayers);
+            
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            window.closeShroudModal();
+        };
+
+        window.deleteActiveShroud = async () => {
+            if (activeShroudIndex === null || currentMapIndex === null) return;
+            const mapsCopy = [...allMaps];
+            mapsCopy[currentMapIndex].shrouds.splice(activeShroudIndex, 1);
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            window.closeShroudModal();
+        };
+
+        window.closeShroudModal = () => {
+            activeShroudIndex = null;
+            document.getElementById('shroud-manager-modal').classList.add('hidden');
+            window.renderShrouds();
+        };
+
+        // --- MAP ZOOMING & PANNING ---
         window.resetMap = () => { mapScale = 1; mapPosX = 0; mapPosY = 0; window.updateMapTransform(); };
         window.zoomMap = (factor) => { mapScale = Math.min(10, Math.max(0.3, mapScale * factor)); window.updateMapTransform(); };
         
@@ -677,13 +981,13 @@
         const viewport = document.getElementById('map-viewport');
         if (viewport) {
             viewport.onmousedown = (e) => { 
-                if (e.target.closest('.map-controls') || e.target.closest('.map-pin')) return;
+                if (e.target.closest('.map-controls') || e.target.closest('.map-pin') || e.target.closest('.dm-shroud')) return;
                 isPanning = true; dragDist = 0; 
                 startX = e.clientX - mapPosX; startY = e.clientY - mapPosY; 
                 lastMouseX = e.clientX; lastMouseY = e.clientY;
             };
             viewport.ontouchstart = (e) => { 
-                if (e.target.closest('.map-controls') || e.target.closest('.map-pin')) return;
+                if (e.target.closest('.map-controls') || e.target.closest('.map-pin') || e.target.closest('.dm-shroud')) return;
                 isPanning = true; dragDist = 0; 
                 const t = e.touches[0]; startX = t.clientX - mapPosX; startY = t.clientY - mapPosY; 
                 lastMouseX = t.clientX; lastMouseY = t.clientY;
@@ -713,39 +1017,46 @@
             };
         }
 
-        // --- DM / ADDING PINS ---
+        // --- PIN CREATION LOGIC ---
         window.togglePinMode = () => {
             isPinMode = !isPinMode;
+            if(isPinMode && isFogMode) window.toggleFogMode();
             document.getElementById('btn-pin-mode').classList.toggle('active-tool', isPinMode);
             document.getElementById('map-viewport').classList.toggle('pin-mode-active', isPinMode);
             if (isPinMode) window.showToast("Click anywhere on the map to plant a landmark.");
         };
 
-        viewport.onclick = (e) => {
-            if (window.dragDist > 10 || !isPinMode || currentMapIndex === null) return;
+        viewport.onclick = async (e) => {
+            if (window.dragDist > 10 || currentMapIndex === null) return;
             const img = document.getElementById('map-image-display');
             if(e.target !== img) return;
             
             const xPct = (e.offsetX / img.offsetWidth) * 100;
             const yPct = (e.offsetY / img.offsetHeight) * 100;
             
-            pendingPinCoords = { x: xPct, y: yPct };
-            document.getElementById('new-pin-name').value = '';
-            document.getElementById('new-pin-desc').value = '';
-            
-            // Reset selects
-            document.getElementById('new-pin-icon').value = 'fa-solid fa-location-dot';
-            document.getElementById('new-pin-color').value = '#dc2626';
-            document.getElementById('new-pin-color').style.color = '#dc2626';
-
-            document.getElementById('new-pin-modal').classList.remove('hidden');
-            window.togglePinMode(); 
+            if (isPinMode) {
+                pendingPinCoords = { x: xPct, y: yPct };
+                document.getElementById('new-pin-name').value = '';
+                document.getElementById('new-pin-desc').value = '';
+                document.getElementById('new-pin-icon').value = 'fa-solid fa-location-dot';
+                document.getElementById('new-pin-color').value = '#dc2626';
+                document.getElementById('new-pin-color').style.color = '#dc2626';
+                document.getElementById('new-pin-modal').classList.remove('hidden');
+                window.togglePinMode(); 
+            } else if (isFogMode) {
+                const mapsCopy = [...allMaps];
+                if (!mapsCopy[currentMapIndex].shrouds) mapsCopy[currentMapIndex].shrouds = [];
+                
+                mapsCopy[currentMapIndex].shrouds.push({
+                    id: crypto.randomUUID(), x: xPct, y: yPct, radius: 15, allowedUsers: []
+                });
+                await updateDoc(cacheDocRef, { maps: mapsCopy });
+                window.toggleFogMode();
+                window.renderShrouds();
+            }
         };
 
-        window.cancelPin = () => {
-            pendingPinCoords = null;
-            document.getElementById('new-pin-modal').classList.add('hidden');
-        };
+        window.cancelPin = () => { pendingPinCoords = null; document.getElementById('new-pin-modal').classList.add('hidden'); };
 
         window.savePin = async () => {
             const name = document.getElementById('new-pin-name').value.trim();
@@ -759,50 +1070,73 @@
             if (!mapsCopy[currentMapIndex].pins) mapsCopy[currentMapIndex].pins = [];
             
             mapsCopy[currentMapIndex].pins.push({
-                x: pendingPinCoords.x,
-                y: pendingPinCoords.y,
-                name: name,
-                desc: desc,
-                icon: icon,
-                color: color,
+                x: pendingPinCoords.x, y: pendingPinCoords.y,
+                name: name, desc: desc, icon: icon, color: color,
                 author: currentUser.username,
-                id: crypto.randomUUID()
+                id: crypto.randomUUID(),
+                allowedUsers: null // null means public by default
             });
 
             await updateDoc(cacheDocRef, { maps: mapsCopy });
-            
-            const snap = await getDoc(cacheDocRef);
-            if (snap.exists()) {
-                const d = snap.data();
-                const logs = [...(d.log || [])].slice(-24);
-                logs.push({ text: `marked landmark [${name}] on ${mapsCopy[currentMapIndex].name}`, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
-                await updateDoc(cacheDocRef, { log: logs });
-            }
-
             document.getElementById('new-pin-modal').classList.add('hidden');
             pendingPinCoords = null;
         };
 
-        window.deleteActivePin = async () => {
-            if (activePinIndex === null || currentMapIndex === null) return;
-            if (!confirm("Destroy this landmark record forever?")) return;
+        // --- DM: PIN VISIBILITY MANAGER ---
+        window.updatePinAccessUI = () => {
+            const mode = document.getElementById('pin-vis-select').value;
+            const container = document.getElementById('pin-vis-players');
             
+            if (mode === 'public') {
+                container.classList.add('hidden');
+            } else {
+                container.classList.remove('hidden');
+                container.innerHTML = '';
+                if (allPlayerNames.size === 0) container.innerHTML = '<span class="text-[8px] text-gray-500 italic">No party members.</span>';
+                
+                allPlayerNames.forEach(player => {
+                    const el = document.createElement('div');
+                    el.className = `player-tag ${selectedPinPlayers.has(player) ? 'selected' : ''}`;
+                    el.innerText = player;
+                    el.onclick = () => {
+                        if (selectedPinPlayers.has(player)) selectedPinPlayers.delete(player);
+                        else selectedPinPlayers.add(player);
+                        el.classList.toggle('selected');
+                    };
+                    container.appendChild(el);
+                });
+            }
+        };
+
+        window.savePinVisibility = async () => {
+            if (activePinIndex === null || currentMapIndex === null) return;
+            const mode = document.getElementById('pin-vis-select').value;
             const mapsCopy = [...allMaps];
-            mapsCopy[currentMapIndex].pins.splice(activePinIndex, 1);
+            
+            if (mode === 'public') { mapsCopy[currentMapIndex].pins[activePinIndex].allowedUsers = null; } 
+            else { mapsCopy[currentMapIndex].pins[activePinIndex].allowedUsers = Array.from(selectedPinPlayers); }
             
             await updateDoc(cacheDocRef, { maps: mapsCopy });
-            window.closePinDetails();
+            window.showToast("Pin Visibility Updated.");
+            window.focusPin(activePinIndex); // Refresh view
+        };
+
+        window.linkMapToPin = async (mapId) => {
+            if (activePinIndex === null || currentMapIndex === null) return;
+            const mapsCopy = [...allMaps];
+            mapsCopy[currentMapIndex].pins[activePinIndex].linkedMapId = mapId;
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            window.showToast("Sub-map linked to landmark.");
+            window.focusPin(activePinIndex);
         };
 
         // --- DM: MAP KEY & LEGEND MANAGER ---
         window.openLegendManager = () => {
             if (currentMapIndex === null) return window.showToast("Select a map first.");
             const mapData = allMaps[currentMapIndex];
-            
             document.getElementById('dm-map-scale').value = mapData.scale || '';
             window.toggleLegendInputs();
             window.renderDMLegendList();
-            
             document.getElementById('legend-manager-modal').classList.remove('hidden');
         };
 
@@ -814,19 +1148,12 @@
         };
 
         window.renderDMLegendList = () => {
-            const list = document.getElementById('dm-legend-list');
-            list.innerHTML = '';
-            
+            const list = document.getElementById('dm-legend-list'); list.innerHTML = '';
             const items = allMaps[currentMapIndex].legendItems || [];
-            if (items.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-500 italic p-2 font-serif">No legend items configured.</p>`;
-                return;
-            }
-
+            if (items.length === 0) return list.innerHTML = `<p class="text-xs text-gray-500 italic p-2 font-serif">No legend items configured.</p>`;
+            
             items.forEach((item, idx) => {
-                const el = document.createElement('div');
-                el.className = "flex justify-between items-center bg-black/40 p-2 rounded border border-gray-600";
-                
+                const el = document.createElement('div'); el.className = "flex justify-between items-center bg-black/40 p-2 rounded border border-gray-600";
                 let visual = '';
                 if (item.type === 'icon') visual = `<i class="${item.value} text-gold w-6 text-center"></i>`;
                 if (item.type === 'color') visual = `<div class="w-4 h-4 rounded-sm border border-gray-400" style="background-color: ${item.value}"></div>`;
@@ -834,147 +1161,94 @@
                     const style = item.isDashed ? 'dashed' : 'solid';
                     visual = `<div class="w-6 h-0 border-t-[3px]" style="border-top-color: ${item.value}; border-top-style: ${style};"></div>`;
                 }
-
-                el.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        ${visual}
-                        <span class="text-xs font-bold text-gray-200">${item.label}</span>
-                    </div>
-                    <button onclick="window.deleteLegendItem(${idx})" class="text-blood hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
-                `;
+                el.innerHTML = `<div class="flex items-center gap-3">${visual}<span class="text-xs font-bold text-gray-200">${item.label}</span></div><button onclick="window.deleteLegendItem(${idx})" class="text-blood hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>`;
                 list.appendChild(el);
             });
         };
 
         window.saveMapScale = async () => {
             if (currentMapIndex === null) return;
-            const scale = document.getElementById('dm-map-scale').value.trim();
-            const mapsCopy = [...allMaps];
-            mapsCopy[currentMapIndex].scale = scale;
-            
-            await updateDoc(cacheDocRef, { maps: mapsCopy });
-            window.showToast("Map scale saved.");
+            const mapsCopy = [...allMaps]; mapsCopy[currentMapIndex].scale = document.getElementById('dm-map-scale').value.trim();
+            await updateDoc(cacheDocRef, { maps: mapsCopy }); window.showToast("Scale saved.");
         };
 
         window.addLegendItem = async () => {
             if (currentMapIndex === null) return;
             const label = document.getElementById('legend-add-label').value.trim();
             if (!label) return window.showToast("Legend entry requires a label.");
-
             const type = document.getElementById('legend-add-type').value;
-            let value = '';
-            let isDashed = false;
+            let value = ''; let isDashed = false;
 
             if (type === 'icon') value = document.getElementById('legend-add-icon-val').value;
             if (type === 'color') value = document.getElementById('legend-add-color-val').value;
-            if (type === 'line') {
-                value = document.getElementById('legend-add-line-color').value;
-                isDashed = document.getElementById('legend-add-line-dashed').checked;
-            }
+            if (type === 'line') { value = document.getElementById('legend-add-line-color').value; isDashed = document.getElementById('legend-add-line-dashed').checked; }
 
-            const newItem = { id: crypto.randomUUID(), type, value, label, isDashed };
-            
             const mapsCopy = [...allMaps];
             if (!mapsCopy[currentMapIndex].legendItems) mapsCopy[currentMapIndex].legendItems = [];
-            mapsCopy[currentMapIndex].legendItems.push(newItem);
+            mapsCopy[currentMapIndex].legendItems.push({ id: crypto.randomUUID(), type, value, label, isDashed });
 
             await updateDoc(cacheDocRef, { maps: mapsCopy });
-            document.getElementById('legend-add-label').value = ''; // Reset
-            window.renderDMLegendList(); // Update UI in modal instantly
+            document.getElementById('legend-add-label').value = ''; 
+            window.renderDMLegendList(); 
         };
 
         window.deleteLegendItem = async (idx) => {
             if (currentMapIndex === null) return;
-            const mapsCopy = [...allMaps];
-            mapsCopy[currentMapIndex].legendItems.splice(idx, 1);
-            
-            await updateDoc(cacheDocRef, { maps: mapsCopy });
-            window.renderDMLegendList();
+            const mapsCopy = [...allMaps]; mapsCopy[currentMapIndex].legendItems.splice(idx, 1);
+            await updateDoc(cacheDocRef, { maps: mapsCopy }); window.renderDMLegendList();
         };
 
-
-        // --- MAP MANAGEMENT (DM) ---
-
-        window.handleMapUrlUpload = async () => {
-            if (activeRole !== 'dm') return window.showToast("Only DMs can ink maps.");
-            const url = prompt("Enter the direct image URL for the map (e.g., from Discord, Imgur, etc.):");
-            if (!url) return;
-            
-            const mapName = prompt("Name this new region/map:", `Archive ${Date.now().toString().slice(-4)}`);
-            if(!mapName) return;
-
-            const newMap = {
-                id: crypto.randomUUID(),
-                name: mapName,
-                description: "Newly discovered territory.",
-                src: url,
-                pins: [],
-                legendItems: [],
-                scale: ""
-            };
-            
-            const mapsCopy = [...allMaps, newMap];
-            
-            try {
-                await updateDoc(cacheDocRef, { maps: mapsCopy }); 
-                
-                const snap = await getDoc(cacheDocRef);
-                if (snap.exists()) {
-                    const logs = [...(snap.data().log || [])].slice(-24);
-                    logs.push({ text: `stored a new linked map in the archives: ${mapName}`, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
-                    await updateDoc(cacheDocRef, { log: logs });
-                }
-                
-                window.showToast("Map Linked Successfully.");
-            } catch (e) {
-                console.error("Failed to link map:", e);
-                window.showToast("Failed to link map.");
-            }
+        // --- MAP CREATION & METADATA (DM) ---
+        window.openNewMapModal = () => {
+            document.getElementById('new-map-name').value = '';
+            document.getElementById('new-map-desc').value = '';
+            document.getElementById('new-map-type').value = 'Region';
+            document.getElementById('new-map-url').value = '';
+            document.getElementById('new-map-file').value = '';
+            document.getElementById('new-map-modal').classList.remove('hidden');
         };
 
-        window.handleMapUpload = (e) => {
-            if (activeRole !== 'dm') return window.showToast("Only DMs can ink maps.");
-            const file = e.target.files[0]; if (!file) return;
+        window.saveNewMap = async () => {
+            const btn = document.getElementById('btn-save-new-map');
+            const name = document.getElementById('new-map-name').value.trim();
+            const desc = document.getElementById('new-map-desc').value.trim();
+            const type = document.getElementById('new-map-type').value;
+            const url = document.getElementById('new-map-url').value.trim();
+            const fileInput = document.getElementById('new-map-file');
             
-            const mapName = prompt("Name this new region/map:", `Archive ${Date.now().toString().slice(-4)}`);
-            if(!mapName) return;
+            if (!name) return window.showToast("Map Name is required.");
 
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image();
-                img.onload = async () => {
-                    const canvas = document.createElement('canvas');
-                    const maxDim = 2000;
-                    let w = img.width, h = img.height;
-                    if (w > maxDim || h > maxDim) { const r = maxDim / Math.max(w, h); w *= r; h *= r; }
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    
-                    const newMap = {
-                        id: crypto.randomUUID(),
-                        name: mapName,
-                        description: "Newly discovered territory.",
-                        src: canvas.toDataURL('image/jpeg', 0.8),
-                        pins: [],
-                        legendItems: [],
-                        scale: ""
-                    };
-                    
-                    const mapsCopy = [...allMaps, newMap];
-                    await updateDoc(cacheDocRef, { maps: mapsCopy }); 
-                    
-                    const snap = await getDoc(cacheDocRef);
-                    if (snap.exists()) {
-                        const logs = [...(snap.data().log || [])].slice(-24);
-                        logs.push({ text: `stored a new map in the archives: ${mapName}`, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
-                        await updateDoc(cacheDocRef, { log: logs });
-                    }
-                    
-                    window.showToast("Map Stored.");
+            const finalizeSave = async (imgSrc) => {
+                btn.innerText = "Saving..."; btn.disabled = true;
+                const newMap = {
+                    id: crypto.randomUUID(), name: name, description: desc, type: type,
+                    src: imgSrc, pins: [], shrouds: [], legendItems: [], scale: ""
                 };
-                img.src = ev.target.result;
+                try {
+                    await updateDoc(cacheDocRef, { maps: [...allMaps, newMap] }); 
+                    window.showToast("Map Successfully Charted!");
+                    document.getElementById('new-map-modal').classList.add('hidden');
+                } catch (e) { window.showToast("Failed to save map."); } 
+                finally { btn.innerText = "Create Map"; btn.disabled = false; }
             };
-            reader.readAsDataURL(file);
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas'); const maxDim = 2000;
+                        let w = img.width, h = img.height;
+                        if (w > maxDim || h > maxDim) { const r = maxDim / Math.max(w, h); w *= r; h *= r; }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        finalizeSave(canvas.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else if (url) { finalizeSave(url); } 
+            else { window.showToast("You must provide an Image Link or Local File."); }
         };
 
         window.openEditMapModal = () => {
@@ -982,88 +1256,53 @@
             const m = allMaps[currentMapIndex];
             document.getElementById('edit-map-name').value = m.name || '';
             document.getElementById('edit-map-desc').value = m.description || '';
+            document.getElementById('edit-map-type').value = m.type || 'Region';
             document.getElementById('edit-map-modal').classList.remove('hidden');
         };
 
         window.saveMapDetails = async () => {
             if(currentMapIndex === null) return;
-            
-            const saveBtn = document.getElementById('btn-save-map-details');
-            if (saveBtn) { saveBtn.disabled = true; saveBtn.innerText = 'Saving...'; }
-
-            try {
-                const mapsCopy = [...allMaps];
-                mapsCopy[currentMapIndex].name = document.getElementById('edit-map-name').value.trim();
-                mapsCopy[currentMapIndex].description = document.getElementById('edit-map-desc').value.trim();
-                
-                await updateDoc(cacheDocRef, { maps: mapsCopy });
-                document.getElementById('edit-map-modal').classList.add('hidden');
-                window.showToast("Map details updated.");
-            } catch(e) {
-                console.error("Error saving map details:", e);
-                window.showToast("Error updating map.");
-            } finally {
-                if (saveBtn) { saveBtn.disabled = false; saveBtn.innerText = 'Save'; }
-            }
+            const mapsCopy = [...allMaps];
+            mapsCopy[currentMapIndex].name = document.getElementById('edit-map-name').value.trim();
+            mapsCopy[currentMapIndex].description = document.getElementById('edit-map-desc').value.trim();
+            mapsCopy[currentMapIndex].type = document.getElementById('edit-map-type').value;
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            document.getElementById('edit-map-modal').classList.add('hidden');
         };
 
         window.deleteCurrentMap = async () => {
             if(currentMapIndex === null) return;
             if (!confirm(`Burn the map "${allMaps[currentMapIndex].name}" to ashes? This cannot be undone.`)) return;
-            
-            try {
-                const mapsCopy = [...allMaps];
-                mapsCopy.splice(currentMapIndex, 1);
-                
-                await updateDoc(cacheDocRef, { maps: mapsCopy });
-                document.getElementById('edit-map-modal').classList.add('hidden');
-                window.clearMapDisplay();
-            } catch(e) {
-                console.error("Error deleting map:", e);
-                window.showToast("Failed to delete map.");
-            }
+            const mapsCopy = [...allMaps]; mapsCopy.splice(currentMapIndex, 1);
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            document.getElementById('edit-map-modal').classList.add('hidden');
+            window.clearMapDisplay();
         };
 
         // --- AUTH & INIT ---
         const initAuth = async () => {
-            // Only attempt custom token auth if injected by the preview environment.
-            // DO NOT force anonymous login here, as it overwrites real user sessions!
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                try {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } catch (tokenErr) {
-                    console.warn("Custom token failed:", tokenErr);
-                }
+                try { await signInWithCustomToken(auth, __initial_auth_token); } catch (e) {}
             }
         };
         initAuth();
 
-        // --- GLOBAL AUTHENTICATION SYNC --- 
         onAuthStateChanged(auth, async (u) => { 
             if (!u) { 
                 try { window.location.href = "index.html"; } catch(e) { 
                     document.getElementById('initial-loading').innerHTML = `<div class="flex flex-col items-center"><i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood mb-4">Authentication Required</h2><button onclick="window.location.href='index.html'" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button></div>`; 
-                } 
-                return; 
+                } return; 
             } 
              
             try { 
-                // Directly mirror campaigns.html logic for consistency
-                const userDocRef = doc(db, 'users', u.uid);
-                const userDocSnap = await getDoc(userDocRef);
-
-                if (userDocSnap.exists()) {
-                    currentUser = { uid: u.uid, ...userDocSnap.data() };
-                    if (!currentUser.username) currentUser.username = u.displayName || 'Traveler';
-                } else {
-                    currentUser = { 
-                        uid: u.uid, 
-                        username: u.displayName || 'Traveler', 
-                        role: 'player'
-                    };
-                    try { await setDoc(userDocRef, currentUser); } catch(e) { console.warn("Could not create user stub:", e); }
-                }
-
+                if (u.isAnonymous) { currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' }; } 
+                else { 
+                    const userDoc = await getDoc(doc(db, 'users', u.uid)); 
+                    if (userDoc.exists()) { 
+                        currentUser = { uid: u.uid, ...userDoc.data() }; 
+                        if (!currentUser.username) currentUser.username = u.displayName || 'Traveler'; 
+                    } else { currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' }; } 
+                } 
                 activeRole = currentUser.role || 'player'; 
 
                 if (appId !== "demo_campaign") { 
@@ -1074,64 +1313,62 @@
                             titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; }); 
                             document.title = `${campDoc.data().name} - Cartography`; 
                         } 
-                    } catch (err) { 
-                        console.warn("Could not read campaign info:", err); 
-                    } 
+                    } catch (err) {} 
                 } 
 
                 document.getElementById('user-display-name').innerText = currentUser.username; 
                 
-                // DM UI Features specific to MAPS
                 if (activeRole === 'dm') {
                     document.getElementById('dm-map-controls').classList.remove('hidden');
                     document.getElementById('btn-pin-mode').classList.remove('hidden');
+                    document.getElementById('btn-fog-mode').classList.remove('hidden');
                 } 
 
                 document.getElementById('initial-loading').classList.add('hidden'); 
-                 
-                // Show the dashboard! 
                 const dashboard = document.getElementById('dashboard-screen'); 
-                if(dashboard) { 
-                    dashboard.classList.remove('hidden', 'hidden-view'); 
-                } 
+                if(dashboard) dashboard.classList.remove('hidden', 'hidden-view'); 
 
-                // Initialize Database Connections 
+                // Pull Party Member names for permission checkboxes
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
+                    allPlayerNames.clear();
+                    s.docs.forEach(d => { const owner = d.data().owner; if (owner) allPlayerNames.add(owner); });
+                });
+
+                // Init Maps Sync
                 try { 
                     const snap = await getDoc(cacheDocRef); 
-                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }).catch(e => console.warn("Init error:", e)); 
-                } catch (err) { 
-                    console.warn("Initialization error for maps:", err); 
-                } 
+                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }); 
+                } catch (err) {} 
                  
-                // Data listener for MAPS
                 onSnapshot(cacheDocRef, (d) => {  
                     if (d.exists()) {  
                         const data = d.data();
-                        
-                        // Handle legacy Map format if present
-                        if(data.mapSrc && (!data.maps || data.maps.length === 0)) {
-                            allMaps = [{ name: 'World Map', src: data.mapSrc, pins: data.pins || [], legendItems: [], scale: "", id: 'legacy' }];
-                        } else {
-                            allMaps = data.maps || [];
-                        }
+                        if(data.mapSrc && (!data.maps || data.maps.length === 0)) allMaps = [{ name: 'World Map', src: data.mapSrc, pins: data.pins || [], legendItems: [], shrouds: [], scale: "", id: 'legacy' }];
+                        else allMaps = data.maps || [];
 
-                        // Populate selector
                         const selector = document.getElementById('map-selector');
                         selector.innerHTML = allMaps.length > 0 ? '' : '<option value="">-- No Maps Found --</option>';
                         allMaps.forEach((m, idx) => {
-                            selector.innerHTML += `<option value="${idx}">${m.name}</option>`;
+                            const badge = m.type ? `[${m.type}] ` : '';
+                            selector.innerHTML += `<option value="${idx}">${badge}${m.name}</option>`;
                         });
 
-                        // Maintain active map state
                         if (allMaps.length > 0) {
                             if (currentMapIndex === null || currentMapIndex >= allMaps.length) {
-                                selector.value = "0";
-                                window.selectMap("0");
+                                selector.value = "0"; window.selectMap("0");
                             } else {
                                 selector.value = currentMapIndex.toString();
-                                // Refresh visual data
                                 document.getElementById('legend-map-title').textContent = allMaps[currentMapIndex].name || "Unknown Region";
                                 document.getElementById('legend-map-desc').textContent = allMaps[currentMapIndex].description || "The edges of the map fade into uncharted territory...";
+                                
+                                const typeBadge = document.getElementById('legend-map-type-badge');
+                                if (allMaps[currentMapIndex].type) {
+                                    typeBadge.textContent = allMaps[currentMapIndex].type;
+                                    typeBadge.className = `map-type-badge type-${allMaps[currentMapIndex].type.replace(/\s+/g, '')}`;
+                                    typeBadge.classList.remove('hidden');
+                                } else { typeBadge.classList.add('hidden'); }
+
+                                window.renderShrouds();
                                 window.renderPins();
                                 window.renderMapKey();
                                 window.renderLandmarksList();
@@ -1139,24 +1376,20 @@
                                     window.closePinDetails();
                                 }
                             }
-                        } else {
-                            window.clearMapDisplay();
-                        }
+                        } else { window.clearMapDisplay(); }
                     }  
                 }, (error) => { 
-                    console.error("Map sync error:", error); 
                     document.getElementById('initial-loading').innerHTML = `
                         <div class="flex flex-col items-center text-center px-4 bg-wood p-8 rounded-lg border-2 border-blood shadow-2xl max-w-md mx-auto relative z-[9999]">
                             <i class="fa-solid fa-lock text-6xl text-blood mb-6"></i>
                             <h2 class="font-heading text-2xl text-blood mb-2">Database Locked</h2>
-                            <p class="text-parchment font-serif text-sm mb-4">Firebase is blocking access. Please update your Firestore Security Rules.</p>
+                            <p class="text-parchment font-serif text-sm mb-4">Firebase is blocking access.</p>
                         </div>
                     `;
                     document.getElementById('initial-loading').classList.remove('hidden'); 
                 }); 
                  
             } catch (error) { 
-                console.error(error); 
                 document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`; 
             } 
         }); 
