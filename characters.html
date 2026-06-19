@@ -241,7 +241,7 @@
     <a href="#" onclick="window.routeTo('characters.html'); return false;" id="nav-party" class="nav-link active dyn-term" data-term="nav_party">Party</a>
     <a href="#" onclick="window.routeTo('encounters.html'); return false;" id="nav-encounters" class="nav-link hidden !text-blood dyn-term" data-term="nav_encounters">Encounters</a>
     <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link dyn-term" data-term="nav_npcs">NPCs</a>
-    <a href="#" onclick="window.routeTo('companions.html'); return false;" id="nav-beasts" class="nav-link dyn-term" data-term="nav_beasts">Companions</a>
+    <a href="#" onclick="window.routeTo('beasts.html'); return false;" id="nav-beasts" class="nav-link dyn-term" data-term="nav_beasts">Bestiary</a>
     <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link dyn-term" data-term="nav_backpack">Backpack</a>
     <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link dyn-term" data-term="nav_handbook">Handbook</a>
     <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link dyn-term" data-term="nav_graveyard">Graveyard</a>
@@ -1563,18 +1563,20 @@
                                     <div class="text-center"><span class="block text-[9px] font-bold text-555 uppercase tracking-widest mb-1">HP</span><span class="text-xl font-black ${pet.hpCurrent < (pet.hpMax/2) ? 'text-blood' : 'text-green-800'}">${pet.hpCurrent}/${pet.hpMax}</span></div>
                                     <div class="text-center border-l border-r border-[rgba(139,90,43,0.3)] px-8"><span class="block text-[9px] font-bold text-555 uppercase tracking-widest mb-1">AC</span><span class="text-xl font-black text-ink">${pet.ac || 10}</span></div>
                                 </div>
-                                <p class="text-xs text-ink italic font-serif">Visit Companions Dashboard to manage tracking and interactions.</p>
+                                <p class="text-xs text-ink italic font-serif mb-4">Visit Companions Dashboard to manage tracking and interactions.</p>
+                                <button onclick="try { window.routeTo ? window.routeTo('companions.html') : window.location.href='companions.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn px-6 py-2 rounded text-[10px] font-bold uppercase tracking-widest">Manage Companions</button>
                             </div>
                         `;
                     } else {
-                        compTab.innerHTML = `<div class="text-center py-12 font-heading"><p class="text-blood font-bold mb-4 text-xs uppercase tracking-widest">Companion missing or deleted.</p></div>`;
+                        compTab.innerHTML = `<div class="text-center py-12 font-heading"><p class="text-blood font-bold mb-4 text-xs uppercase tracking-widest">Companion missing or deleted.</p><button onclick="try { window.routeTo ? window.routeTo('companions.html') : window.location.href='companions.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn px-6 py-2 rounded text-[10px] font-bold uppercase tracking-widest mt-2">View Companions</button></div>`;
                     }
                 } else {
                     compTab.innerHTML = `
                         <div class="text-center py-16 border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)] max-w-lg mx-auto mt-4 font-heading">
                             <div class="text-5xl mb-4 grayscale opacity-50">🐾</div>
                             <h4 class="text-sm font-bold text-ink uppercase tracking-[0.2em] mb-2">No Companion Linked</h4>
-                            <p class="text-xs text-555 mb-8 max-w-xs mx-auto font-serif italic">You travel alone. Head to the Companions menu to adopt.</p>
+                            <p class="text-xs text-555 mb-6 max-w-xs mx-auto font-serif italic">You travel alone. Head to the Companions menu to adopt.</p>
+                            <button onclick="try { window.routeTo ? window.routeTo('companions.html') : window.location.href='companions.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn px-6 py-2 rounded text-[10px] font-bold uppercase tracking-widest">Find a Companion</button>
                         </div>
                     `;
                 }
