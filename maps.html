@@ -623,35 +623,26 @@
         };
 
         // --- AUTH & INIT ---
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    try {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } catch (tokenErr) {
-                        console.warn("Custom token failed, falling back to anonymous auth:", tokenErr);
-                        await signInAnonymously(auth);
-                    }
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (e) {
-                console.error("Auth init error:", e);
-            }
-        };
-        initAuth();
-
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
-                return;
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (e) {
+                    console.warn("Auth failed, falling back to anonymous", e);
+                    await signInAnonymously(auth);
+                }
+                return; // Wait for the triggered sign-in to fire onAuthStateChanged again
             }
             
             try {
                 if (u.isAnonymous) {
                     currentUser = { uid: u.uid, username: "Guest", role: 'player' };
                 } else {
-                    currentUser = { uid: u.uid, username: u.displayName || 'Guest', role: 'player' };
+                    currentUser = { uid: u.uid, username: u.displayName || (u.email ? u.email.split('@')[0] : 'Guest'), role: 'player' };
                 }
                 activeRole = currentUser.role || 'player';
 
@@ -659,6 +650,19 @@
                 if (activeRole === 'dm') {
                     document.getElementById('dm-map-controls').classList.remove('hidden');
                     document.getElementById('btn-pin-mode').classList.remove('hidden');
+                }
+
+                // Title update
+                if (appId !== "demo_campaign") {
+                    try {
+                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                        if (campDoc.exists() && campDoc.data().name) {
+                            document.getElementById('main-campaign-title').innerText = campDoc.data().name;
+                            document.title = `${campDoc.data().name} - Cartography`;
+                        }
+                    } catch (e) {
+                        console.warn("Could not read root campaign data:", e);
+                    }
                 }
 
                 document.getElementById('initial-loading').classList.add('hidden');
