@@ -231,24 +231,9 @@
                 </div>
 
                 <!-- Tool: Decoration Stamps -->
-                <div class="relative">
-                    <button class="dm-tool-btn" id="tool-stamp" onclick="window.toggleSubTools('stamp-panel')" title="Place Decorative Stamps">
-                        <i class="fa-solid fa-stamp"></i>
-                    </button>
-                    <div id="stamp-panel" class="sub-tools-panel hidden">
-                        <div class="text-[8px] font-black uppercase text-gold font-heading tracking-widest mb-1 border-b border-gold/30 pb-1">Select Stamp</div>
-                        <div class="grid grid-cols-4 gap-1 p-1 w-56">
-                            <button onclick="window.setStampStyle('fa-tree', '#16a34a', 20)" class="hover:bg-black/50 p-2 rounded text-green-600 text-lg" title="Forest / Trees"><i class="fa-solid fa-tree"></i></button>
-                            <button onclick="window.setStampStyle('fa-mountain', '#57534e', 24)" class="hover:bg-black/50 p-2 rounded text-stone-500 text-lg" title="Mountains / Hills"><i class="fa-solid fa-mountain"></i></button>
-                            <button onclick="window.setStampStyle('fa-house', '#8b5a2b', 16)" class="hover:bg-black/50 p-2 rounded text-[#8b5a2b] text-lg" title="House / Village"><i class="fa-solid fa-house"></i></button>
-                            <button onclick="window.setStampStyle('fa-city', '#475569', 20)" class="hover:bg-black/50 p-2 rounded text-slate-600 text-lg" title="Structure / City"><i class="fa-solid fa-city"></i></button>
-                            <button onclick="window.setStampStyle('fa-dungeon', '#78716c', 22)" class="hover:bg-black/50 p-2 rounded text-stone-500 text-lg" title="Ruins / Dungeon"><i class="fa-solid fa-dungeon"></i></button>
-                            <button onclick="window.setStampStyle('fa-circle-question', '#c5a059', 22)" class="hover:bg-black/50 p-2 rounded text-gold text-lg" title="Unknown / To Be Discovered"><i class="fa-solid fa-circle-question"></i></button>
-                            <button onclick="window.setStampStyle('fa-brands fa-fly', '#93c5fd', 20)" class="hover:bg-black/50 p-2 rounded text-blue-300 text-lg" title="Floating Island"><i class="fa-brands fa-fly"></i></button>
-                            <button onclick="window.setStampStyle('fa-skull', '#dc2626', 18)" class="hover:bg-black/50 p-2 rounded text-red-600 text-lg" title="Danger / Monster"><i class="fa-solid fa-skull"></i></button>
-                        </div>
-                    </div>
-                </div>
+                <button class="dm-tool-btn" id="tool-stamp" onclick="window.setTool('stamp')" title="Place Decorative Stamps">
+                    <i class="fa-solid fa-stamp"></i>
+                </button>
             </div>
 
             <!-- Canvas layers container (Transforms on pan/zoom) -->
@@ -405,14 +390,7 @@
                         <button id="btn-edit-map-info" onclick="window.openEditMapModal()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-white hover:border-white transition-colors">Edit Metadata</button>
                         <button id="btn-manage-legend" onclick="window.openLegendManager()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-gold hover:border-gold transition-colors">Map Key</button>
                     </div>
-                </div>
-            </div>
-        </aside>
-    </main>
-
-    <!-- MODALS -->
-
-    <!-- DM: NEW MAP MODAL -->
+    <!-- NEW MAP MODAL -->
     <div id="new-map-modal" class="modal-overlay hidden z-[9000]">
         <div class="modal-container text-center !max-w-lg">
             <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Forge Cartography</h3>
@@ -447,15 +425,22 @@
                 <div class="bg-[rgba(139,90,43,0.1)] p-3 border border-gold/50 rounded border-dashed">
                     <label class="text-[10px] font-black text-blood uppercase font-heading tracking-widest block mb-2 border-b border-gold/30 pb-1">Image Source</label>
                     
-                    <div class="mb-3">
+                    <!-- NEW: Procedural Generation -->
+                    <div class="mb-3 p-3 bg-black/80 rounded border border-gold/40 text-center">
+                        <button type="button" id="btn-auto-gen" onclick="window.autoGenerateMap()" class="w-full fantasy-btn-alt py-2 rounded text-[10px] uppercase tracking-widest mb-2"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Auto-Generate Terrain</button>
+                        <p class="text-[8px] text-gray-400 font-serif italic">Creates a unique layout based on the Classification selected above.</p>
+                        <img id="generator-preview" class="hidden w-full h-32 object-cover rounded mt-3 border border-gold shadow-inner" src="">
+                    </div>
+
+                    <div class="relative flex py-1 items-center">
+                        <div class="flex-grow border-t border-gold/40"></div>
+                        <span class="flex-shrink-0 mx-2 text-ink font-heading font-black text-[10px]">OR PROVIDE YOUR OWN</span>
+                        <div class="flex-grow border-t border-gold/40"></div>
+                    </div>
+
+                    <div class="mt-2 mb-3">
                         <label class="text-[9px] font-bold text-gray-700 uppercase tracking-widest block mb-1">Paste Web Image Link</label>
                         <input type="text" id="new-map-url" class="w-full fantasy-input p-2 rounded text-sm" placeholder="https://example.com/map.jpg">
-                    </div>
-                    
-                    <div class="relative flex py-2 items-center">
-                        <div class="flex-grow border-t border-gold/40"></div>
-                        <span class="flex-shrink-0 mx-2 text-ink font-heading font-black text-[10px]">OR</span>
-                        <div class="flex-grow border-t border-gold/40"></div>
                     </div>
                     
                     <div class="mt-2">
@@ -499,6 +484,48 @@
                     <button onclick="window.closeShroudModal()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
                     <button onclick="window.saveActiveShroud()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save Shroud</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- STAMP MODAL -->
+    <div id="stamp-modal" class="modal-overlay hidden z-[9000]">
+        <div class="modal-container text-center">
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Place Stamp</h3>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Stamp Type</label>
+                    <select id="stamp-icon-select" class="w-full fantasy-input p-2.5 rounded text-sm font-bold" onchange="document.getElementById('custom-stamp-container').classList.toggle('hidden', this.value !== 'text')">
+                        <option value="fa-solid fa-tree">Forest / Tree</option>
+                        <option value="fa-solid fa-mountain">Mountain / Hills</option>
+                        <option value="fa-solid fa-house">Village / House</option>
+                        <option value="fa-solid fa-city">City / Castle</option>
+                        <option value="fa-solid fa-dungeon">Ruins / Dungeon</option>
+                        <option value="fa-brands fa-fly">Floating Island / Tech</option>
+                        <option value="fa-solid fa-skull">Danger / Skull</option>
+                        <option value="fa-solid fa-circle-question">Unknown / Question Mark</option>
+                        <option value="text">Custom Text / Emoji</option>
+                    </select>
+                </div>
+                <div id="custom-stamp-container" class="hidden">
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Custom Text / Emoji</label>
+                    <input type="text" id="stamp-custom-text" class="w-full fantasy-input p-2.5 rounded font-bold" placeholder="E.g., ⚔️ or 'The Whispering Woods'">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Color</label>
+                        <input type="color" id="stamp-color" class="w-full h-10 cursor-pointer rounded border border-gray-400" value="#16a34a">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Size</label>
+                        <input type="range" id="stamp-size" min="10" max="100" value="24" class="w-full accent-blood mt-2">
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3 font-heading mt-6">
+                <button onclick="window.cancelStamp()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.saveStamp()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Stamp Map</button>
             </div>
         </div>
     </div>
@@ -736,6 +763,7 @@
         // Tool State
         let currentTool = 'pan'; // pan, pin, shroud, stamp, draw
         let pendingPinCoords = null;
+        let pendingStampCoords = null;
         
         // Sub-tool settings
         let drawStyle = { type: 'road', color: '#8b5a2b', width: 3, dashed: true };
@@ -1021,13 +1049,12 @@
             const decors = allMaps[currentMapIndex].decorations || [];
             decors.forEach((dec, idx) => {
                 const el = document.createElement('div');
-                el.className = 'map-decor';
+                el.className = 'map-decor font-heading font-black drop-shadow-md';
                 el.style.left = `${dec.x}%`; el.style.top = `${dec.y}%`;
                 el.style.color = dec.color;
                 el.style.fontSize = `${dec.size}px`;
                 
                 // If DM, allow deletion on right click
-                let dmEvents = '';
                 if(activeRole === 'dm') {
                     el.style.pointerEvents = 'auto';
                     el.style.cursor = 'pointer';
@@ -1035,7 +1062,12 @@
                     el.title = "Right-click to remove";
                 }
                 
-                el.innerHTML = `<i class="${dec.icon}" style="transform: scale(${1/mapScale}); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8));"></i>`;
+                const innerTransform = `scale(${1/mapScale})`;
+                if (dec.icon === 'text') {
+                    el.innerHTML = `<div style="transform: ${innerTransform}; white-space: nowrap;">${dec.text}</div>`;
+                } else {
+                    el.innerHTML = `<i class="${dec.icon}" style="transform: ${innerTransform};"></i>`;
+                }
                 container.appendChild(el);
             });
         };
@@ -1183,12 +1215,30 @@
         };
 
         // --- MAP ZOOMING & PANNING ---
+        window.resetMap = () => { mapScale = 1; mapPosX = 0; mapPosY = 0; window.updateMapTransform(); };
+        
+        window.zoomMap = (factor) => { 
+            const newScale = Math.min(10, Math.max(0.3, mapScale * factor)); 
+            const viewport = document.getElementById('map-viewport');
+            if(!viewport) return;
+
+            // Zoom towards the center of the viewport
+            const cx = viewport.offsetWidth / 2;
+            const cy = viewport.offsetHeight / 2;
+            
+            mapPosX = cx - (cx - mapPosX) * (newScale / mapScale);
+            mapPosY = cy - (cy - mapPosY) * (newScale / mapScale);
+            mapScale = newScale;
+            
+            window.updateMapTransform(); 
+        };
+
         window.updateMapTransform = () => { 
             const container = document.getElementById('map-canvas-container');
             if (container) container.style.transform = `translate(${mapPosX}px, ${mapPosY}px) scale(${mapScale})`; 
             
             // Inverse scale pins and decor to keep them legible
-            document.querySelectorAll('.map-pin-inner, .map-decor i').forEach(p => { p.style.transform = `scale(${1/mapScale})`; });
+            document.querySelectorAll('.map-pin-inner, .map-decor > div, .map-decor > i').forEach(p => { p.style.transform = `scale(${1/mapScale})`; });
             
             // Adjust SVG stroke widths based on zoom
             document.querySelectorAll('.svg-path').forEach(p => {
@@ -1237,7 +1287,19 @@
             viewport.onwheel = (e) => {
                 if(e.ctrlKey || e.metaKey) {
                     e.preventDefault();
-                    window.zoomMap(e.deltaY < 0 ? 1.1 : 0.9);
+                    const factor = e.deltaY < 0 ? 1.1 : 0.9;
+                    const newScale = Math.min(10, Math.max(0.3, mapScale * factor));
+                    
+                    // Zoom towards the mouse pointer
+                    const rect = viewport.getBoundingClientRect();
+                    const mx = e.clientX - rect.left;
+                    const my = e.clientY - rect.top;
+                    
+                    mapPosX = mx - (mx - mapPosX) * (newScale / mapScale);
+                    mapPosY = my - (my - mapPosY) * (newScale / mapScale);
+                    mapScale = newScale;
+                    
+                    window.updateMapTransform();
                 }
             };
             
@@ -1285,7 +1347,6 @@
             
             // Close sub-panels if changing main tool
             document.getElementById('draw-panel').classList.add('hidden');
-            document.getElementById('stamp-panel').classList.add('hidden');
 
             // Handle drawing cancellation
             if (toolName !== 'draw' && isDrawing) {
@@ -1306,12 +1367,10 @@
             
             // Close all
             document.getElementById('draw-panel').classList.add('hidden');
-            document.getElementById('stamp-panel').classList.add('hidden');
             
             if (isHidden) {
                 panel.classList.remove('hidden');
                 if(panelId === 'draw-panel') window.setTool('draw');
-                if(panelId === 'stamp-panel') window.setTool('stamp');
             }
         };
 
@@ -1358,6 +1417,11 @@
                 document.getElementById('new-pin-modal').classList.remove('hidden');
                 window.setTool('pan'); 
             } 
+            else if (currentTool === 'stamp') {
+                pendingStampCoords = { x: xPct, y: yPct };
+                document.getElementById('stamp-custom-text').value = '';
+                document.getElementById('stamp-modal').classList.remove('hidden');
+            }
             else if (currentTool === 'shroud') {
                 if (!mapsCopy[currentMapIndex].shrouds) mapsCopy[currentMapIndex].shrouds = [];
                 mapsCopy[currentMapIndex].shrouds.push({ id: crypto.randomUUID(), x: xPct, y: yPct, radius: 15, allowedUsers: [] });
@@ -1430,6 +1494,42 @@
             mapsCopy[currentMapIndex].paths.splice(idx, 1);
             await updateDoc(cacheDocRef, { maps: mapsCopy });
             window.renderPaths();
+        };
+
+
+        // --- STAMP CREATION ---
+        window.cancelStamp = () => { 
+            pendingStampCoords = null; 
+            document.getElementById('stamp-modal').classList.add('hidden'); 
+        };
+
+        window.saveStamp = async () => {
+            if (!pendingStampCoords || currentMapIndex === null) return;
+            
+            const iconType = document.getElementById('stamp-icon-select').value;
+            const color = document.getElementById('stamp-color').value;
+            const size = parseInt(document.getElementById('stamp-size').value);
+            const text = document.getElementById('stamp-custom-text').value.trim();
+
+            if (iconType === 'text' && !text) return window.showToast("Custom text cannot be empty.");
+
+            const mapsCopy = [...allMaps];
+            if (!mapsCopy[currentMapIndex].decorations) mapsCopy[currentMapIndex].decorations = [];
+            
+            mapsCopy[currentMapIndex].decorations.push({
+                id: crypto.randomUUID(), 
+                x: pendingStampCoords.x, 
+                y: pendingStampCoords.y, 
+                icon: iconType, 
+                color: color, 
+                size: size,
+                text: iconType === 'text' ? text : null
+            });
+
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            document.getElementById('stamp-modal').classList.add('hidden');
+            pendingStampCoords = null;
+            window.renderDecorations();
         };
 
 
@@ -1666,6 +1766,131 @@
             document.getElementById('edit-map-desc').value = m.description || '';
             document.getElementById('edit-map-type').value = m.type || 'Region';
             document.getElementById('edit-map-modal').classList.remove('hidden');
+        };
+
+        // --- PROCEDURAL MAP GENERATOR ---
+        window.autoGenerateMap = async () => {
+            const btn = document.getElementById('btn-auto-gen');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Weaving Magic...';
+            btn.disabled = true;
+
+            // Yield to allow UI to show loading state
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            const type = document.getElementById('new-map-type').value;
+            const canvas = document.createElement('canvas');
+            const w = 1600; const h = 1200;
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+
+            const isTerrain = ['World', 'Continent', 'Region'].includes(type);
+            const isSettlement = ['City', 'Town', 'Village', 'Settlement'].includes(type);
+            const isDungeon = ['Dungeon', 'Battlemap'].includes(type);
+
+            if (isTerrain) {
+                // Cellular Automata for Landmass
+                const cols = 160, rows = 120; const cellW = w/cols, cellH = h/rows;
+                // Ocean Base
+                ctx.fillStyle = '#1e3a8a'; ctx.fillRect(0,0,w,h);
+                
+                let grid = Array(cols).fill().map(() => Array(rows).fill(0).map(() => Math.random() > (type==='World'? 0.58 : 0.52) ? 1 : 0));
+                
+                // Smooth Land
+                for (let iter=0; iter<6; iter++) {
+                    let next = Array(cols).fill().map(() => Array(rows).fill(0));
+                    for (let x=0; x<cols; x++) {
+                        for (let y=0; y<rows; y++) {
+                            let neighbors = 0;
+                            for (let i=-1; i<=1; i++) {
+                                for (let j=-1; j<=1; j++) {
+                                    if (i===0 && j===0) continue;
+                                    let nx = x+i, ny = y+j;
+                                    if (nx>=0 && nx<cols && ny>=0 && ny<rows) { neighbors += grid[nx][ny]; }
+                                }
+                            }
+                            if (grid[x][y] === 1) next[x][y] = neighbors >= 4 ? 1 : 0;
+                            else next[x][y] = neighbors >= 5 ? 1 : 0;
+                        }
+                    }
+                    grid = next;
+                }
+
+                // Render Land & Textures
+                for (let x=0; x<cols; x++) {
+                    for (let y=0; y<rows; y++) {
+                        if (grid[x][y]) {
+                            // Base land
+                            ctx.fillStyle = '#22c55e';
+                            ctx.fillRect(x*cellW, y*cellH, cellW+1, cellH+1);
+                            
+                            // Random Mountains/Forests inside land
+                            if (Math.random() > 0.85) { ctx.fillStyle = '#4b5563'; ctx.beginPath(); ctx.arc(x*cellW, y*cellH, cellW*1.5, 0, Math.PI*2); ctx.fill(); }
+                            else if (Math.random() > 0.7) { ctx.fillStyle = '#14532d'; ctx.beginPath(); ctx.arc(x*cellW, y*cellH, cellW*2, 0, Math.PI*2); ctx.fill(); }
+                        }
+                    }
+                }
+            } 
+            else if (isSettlement) {
+                // Grass Base
+                ctx.fillStyle = '#4d7c0f'; ctx.fillRect(0,0,w,h);
+                
+                // Draw a winding river
+                ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 60; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                ctx.beginPath(); ctx.moveTo(0, h * Math.random());
+                ctx.bezierCurveTo(w/3, h * Math.random(), w*0.6, h * Math.random(), w, h * Math.random()); ctx.stroke();
+
+                // Draw main roads
+                ctx.strokeStyle = '#a8a29e'; ctx.lineWidth = 30;
+                ctx.beginPath(); ctx.moveTo(w/2 + (Math.random()*200-100), 0); ctx.lineTo(w/2 + (Math.random()*200-100), h); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, h/2 + (Math.random()*200-100)); ctx.lineTo(w, h/2 + (Math.random()*200-100)); ctx.stroke();
+
+                // Scatter Buildings
+                const buildingCount = type === 'City' ? 600 : (type === 'Town' ? 200 : 50);
+                for(let i=0; i<buildingCount; i++) {
+                    // Bias towards center roads
+                    const bx = (w/2) + (Math.random()-0.5) * (Math.random() * w * 0.8);
+                    const by = (h/2) + (Math.random()-0.5) * (Math.random() * h * 0.8);
+                    const bw = Math.random() * 30 + 15; const bh = Math.random() * 30 + 15;
+                    ctx.fillStyle = Math.random() > 0.2 ? '#451a03' : '#7f1d1d'; // brown or red roofs
+                    ctx.fillRect(bx, by, bw, bh);
+                    ctx.strokeStyle = '#1c1917'; ctx.lineWidth = 2; ctx.strokeRect(bx, by, bw, bh);
+                }
+            }
+            else if (isDungeon) {
+                // Stone base
+                ctx.fillStyle = '#111827'; ctx.fillRect(0,0,w,h);
+                ctx.fillStyle = '#d1d5db'; ctx.strokeStyle = '#4b5563'; ctx.lineWidth = 8;
+                
+                // Random Rooms
+                let rooms = [];
+                for(let i=0; i<30; i++) {
+                    const rw = Math.random() * 200 + 100; const rh = Math.random() * 200 + 100;
+                    const rx = Math.random() * (w - rw - 40) + 20; const ry = Math.random() * (h - rh - 40) + 20;
+                    ctx.fillRect(rx, ry, rw, rh); ctx.strokeRect(rx, ry, rw, rh);
+                    rooms.push({x: rx+rw/2, y: ry+rh/2});
+                }
+                // Connect Rooms with corridors
+                ctx.beginPath(); ctx.strokeStyle = '#d1d5db'; ctx.lineWidth = 40;
+                for(let i=0; i<rooms.length-1; i++) {
+                    ctx.moveTo(rooms[i].x, rooms[i].y);
+                    // Draw L-shaped corridors
+                    if(Math.random() > 0.5) { ctx.lineTo(rooms[i+1].x, rooms[i].y); ctx.lineTo(rooms[i+1].x, rooms[i+1].y); }
+                    else { ctx.lineTo(rooms[i].x, rooms[i+1].y); ctx.lineTo(rooms[i+1].x, rooms[i+1].y); }
+                }
+                ctx.stroke();
+            }
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            document.getElementById('new-map-url').value = dataUrl;
+            document.getElementById('new-map-file').value = ''; // clear file
+            
+            const preview = document.getElementById('generator-preview');
+            preview.src = dataUrl;
+            preview.classList.remove('hidden');
+
+            btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Regenerate Terrain';
+            btn.disabled = false;
+            window.showToast("Procedural Map Generated!");
         };
 
         window.saveMapDetails = async () => {
