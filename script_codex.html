@@ -18,7 +18,9 @@
                         'blood': '#7a1b1b',
                         'gold': '#c5a059',
                         'wood': '#1a110b',
-                        'stone': '#e8e0cd'
+                        'stone': '#e8e0cd',
+                        'scifi-blue': '#2b7a7a',
+                        'scifi-dark': '#0b161a'
                     },
                     fontFamily: {
                         'serif': ['Lora', 'serif'],
@@ -81,6 +83,7 @@
         .script-higher b { font-weight: 700; border-bottom: 1px dotted rgba(139, 90, 43, 0.4); color: #1a1a1a; }
         .script-lists { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 900; color: #555; border-top: 1px solid rgba(139, 90, 43, 0.2); padding-top: 8px; margin-bottom: 16px;}
 
+        /* MODALS */
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 10000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
         .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 600px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); }
@@ -93,6 +96,16 @@
         .form-input { background: rgba(255,255,255,0.5); border: 1px solid rgba(139, 90, 43, 0.4); padding: 8px 12px; border-radius: 4px; transition: border-color 0.2s;}
         .form-input:focus { border-color: #7a1b1b; }
         .tiny-label { font-size: 9px; text-transform: uppercase; color: #555; font-weight: 900; display: block; margin-bottom: 2px; font-family: 'Cinzel', serif;}
+
+        /* COMPENDIUM SELECTION STYLES */
+        .compendium-card { border: 2px solid rgba(139, 90, 43, 0.3); border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+        .compendium-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .compendium-card.dnd { background: linear-gradient(135deg, rgba(122,27,27,0.1), rgba(197,160,89,0.1)); border-color: #7a1b1b; }
+        .compendium-card.dnd:hover { background: linear-gradient(135deg, rgba(122,27,27,0.2), rgba(197,160,89,0.2)); border-color: #c5a059; }
+        .compendium-card.starwars { background: linear-gradient(135deg, rgba(11,22,26,0.1), rgba(43,122,122,0.1)); border-color: #2b7a7a; }
+        .compendium-card.starwars:hover { background: linear-gradient(135deg, rgba(11,22,26,0.2), rgba(43,122,122,0.2)); border-color: #4dc4c4; }
+        .compendium-card.custom { background: linear-gradient(135deg, rgba(44,30,22,0.05), rgba(139,90,43,0.05)); border-color: #555; }
+        .compendium-card.custom:hover { background: linear-gradient(135deg, rgba(44,30,22,0.1), rgba(139,90,43,0.1)); border-color: #2c1e16; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -158,6 +171,10 @@
                     
                     <div class="flex items-center gap-3">
                         <button onclick="document.getElementById('definitions-modal').classList.remove('hidden')" class="fantasy-btn-alt px-4 py-2.5 rounded text-xs shadow-lg"><i class="fa-solid fa-book-open mr-2"></i>Definitions</button>
+                        
+                        <!-- NEW: IMPORT COMPENDIUM BUTTON FOR DMS -->
+                        <button id="btn-import-compendium" onclick="document.getElementById('import-modal').classList.remove('hidden')" class="hidden fantasy-btn-alt !border-gray-500 !text-gray-300 px-4 py-2.5 rounded text-xs shadow-lg hover:!text-white hover:!border-white"><i class="fa-solid fa-book-magic mr-2"></i>Import Setup</button>
+                        
                         <button id="btn-create-script" onclick="window.openScriptModal()" class="hidden fantasy-btn px-6 py-2.5 rounded text-xs shadow-lg"><i class="fa-solid fa-plus mr-2"></i>Inscribe Script</button>
                     </div>
                 </div>
@@ -166,6 +183,42 @@
             <!-- SCRIPTS GRID -->
             <div id="scripts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Cards populate here -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- IMPORT COMPENDIUM MODAL (DM ONLY) -->
+    <div id="import-modal" class="modal-overlay hidden z-[960]">
+        <div class="modal-container max-w-4xl text-center">
+            <h2 class="font-heading text-3xl font-black text-blood uppercase tracking-widest mb-2 border-b-2 border-gold pb-2">Codex Initialization</h2>
+            <p class="text-sm font-serif text-ink italic mb-8">Select a System Reference Document (SRD) to instantly populate your Codex with a starter pack of foundational abilities.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- D&D Option -->
+                <div onclick="window.executeImport('dnd')" class="compendium-card dnd group">
+                    <i class="fa-solid fa-dragon text-5xl text-blood mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-heading font-bold text-xl uppercase mb-2 text-blood">D&D 5e Ruleset</h3>
+                    <p class="text-xs font-serif text-ink/80 leading-relaxed">Imports iconic D&D 5e spells (Fireball, Magic Missile, Cure Wounds, etc.) classified by traditional Schools of Magic.</p>
+                </div>
+                
+                <!-- Star Wars Option -->
+                <div onclick="window.executeImport('sw5e')" class="compendium-card starwars group">
+                    <i class="fa-solid fa-jedi text-5xl text-scifi-blue mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-heading font-bold text-xl uppercase mb-2 text-scifi-blue">Star Wars 5e</h3>
+                    <p class="text-xs font-serif text-ink/80 leading-relaxed">Imports fundamental SW5e Force Powers (Force Push, Mind Trick, Force Lightning) classified by Force Alignment.</p>
+                </div>
+
+                <!-- Custom Option -->
+                <div onclick="document.getElementById('import-modal').classList.add('hidden')" class="compendium-card custom group">
+                    <i class="fa-solid fa-scroll text-5xl text-ink mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="font-heading font-bold text-xl uppercase mb-2 text-ink">Custom / Blank</h3>
+                    <p class="text-xs font-serif text-ink/80 leading-relaxed">Start from scratch. Manually inscribe every custom spell, hack, or ability entirely unique to your universe.</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <button onclick="document.getElementById('import-modal').classList.add('hidden')" class="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-ink">Cancel & Close</button>
             </div>
         </div>
     </div>
@@ -321,11 +374,10 @@
         </div>
     </div>
 
-    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, getDoc, getDocs, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         // --- CORE UI FUNCTIONS ---
         window.showToast = (m) => { 
@@ -375,19 +427,19 @@
 
         // --- STATE ---
         let scripts = [];
-        let characters = []; // For transfer feature
-        let vocationsData = []; // For vocation transfer
+        let characters = []; 
+        let vocationsData = []; 
         let currentUser = null;
         let activeRole = 'player';
         
         let currentLevelFilter = '0';
-        let currentVocationFilter = 'All'; // Uses the ID like 'class_heartbound'
+        let currentVocationFilter = 'All'; 
         
         let activeScriptId = null;
         let targetTransferScript = null;
         let campaignSettings = { terms: {} };
         let customDefinitions = null;
-        let materialComponents = []; // For checking component existence
+        let materialComponents = [];
 
         // --- VOCATION CONFIGURATION ---
         const VOC_KEYS = [
@@ -402,7 +454,34 @@
             { id: 'class_fabricator', default: 'Fabricator', min: 0, max: 5 }
         ];
 
-        // --- RENDER LOGIC ---
+        // --- COMPENDIUM SEED DATA (Starter Packs) ---
+        const DND_SPELLS = [
+            { name: "Fire Bolt", level: "0", school: "Evocation", activation: "1 Action", range: "120 feet", comp: "V, S", duration: "Instantaneous", desc: "You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn't being worn or carried.", scaling: "This spell's damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).", lists: "Sorcerer, Wizard, Artificer" },
+            { name: "Mage Hand", level: "0", school: "Conjuration", activation: "1 Action", range: "30 feet", comp: "V, S", duration: "1 Minute", desc: "A spectral, floating hand appears at a point you choose within range. The hand lasts for the duration or until you dismiss it as an action. The hand vanishes if it is ever more than 30 feet away from you or if you cast this spell again.\n\nYou can use your action to control the hand. You can use the hand to manipulate an object, open an unlocked door or container, stow or retrieve an item from an open container, or pour the contents out of a vial. You can move the hand up to 30 feet each time you use it.\n\nThe hand can't attack, activate magic items, or carry more than 10 pounds.", lists: "Bard, Sorcerer, Warlock, Wizard" },
+            { name: "Prestidigitation", level: "0", school: "Transmutation", activation: "1 Action", range: "10 feet", comp: "V, S", duration: "Up to 1 hour", desc: "This spell is a minor magical trick that novice spellcasters use for practice. You create one of the following magical effects within range:\n- You create an instantaneous, harmless sensory effect, such as a shower of sparks, a puff of wind, faint musical notes, or an odd odor.\n- You instantaneously light or snuff out a candle, a torch, or a small campfire.\n- You instantaneously clean or soil an object no larger than 1 cubic foot.\n- You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour.\n- You make a color, a small mark, or a symbol appear on an object or a surface for 1 hour.\n- You create a nonmagical trinket or an illusory image that can fit in your hand and that lasts until the end of your next turn.\n\nIf you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.", lists: "Bard, Sorcerer, Warlock, Wizard" },
+            { name: "Guidance", level: "0", school: "Divination", activation: "1 Action", range: "Touch", comp: "V, S", duration: "Concentration, up to 1 minute", desc: "You touch one willing creature. Once before the spell ends, the target can roll a d4 and add the number rolled to one ability check of its choice. It can roll the die before or after making the ability check. The spell then ends.", lists: "Cleric, Druid, Artificer" },
+            { name: "Magic Missile", level: "1", school: "Evocation", activation: "1 Action", range: "120 feet", comp: "V, S", duration: "Instantaneous", desc: "You create three glowing darts of magical force. Each dart hits a creature of your choice that you can see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously, and you can direct them to hit one creature or several.", scaling: "When you cast this spell using a spell slot of 2nd level or higher, the spell creates one more dart for each slot level above 1st.", lists: "Sorcerer, Wizard" },
+            { name: "Shield", level: "1", school: "Abjuration", activation: "1 Reaction", range: "Self", comp: "V, S", duration: "1 Round", desc: "Trigger: You are hit by an attack or targeted by the magic missile spell.\n\nAn invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile.", lists: "Sorcerer, Wizard" },
+            { name: "Cure Wounds", level: "1", school: "Evocation", activation: "1 Action", range: "Touch", comp: "V, S", duration: "Instantaneous", desc: "A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.", scaling: "When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.", lists: "Bard, Cleric, Druid, Paladin, Ranger" },
+            { name: "Invisibility", level: "2", school: "Illusion", activation: "1 Action", range: "Touch", comp: "V, S, M", duration: "Concentration, up to 1 hour", desc: "A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target's person. The spell ends for a target that attacks or casts a spell.", scaling: "When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.", lists: "Bard, Sorcerer, Warlock, Wizard" },
+            { name: "Misty Step", level: "2", school: "Conjuration", activation: "1 Bonus Action", range: "Self", comp: "V", duration: "Instantaneous", desc: "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.", lists: "Sorcerer, Warlock, Wizard" },
+            { name: "Fireball", level: "3", school: "Evocation", activation: "1 Action", range: "150 feet (20 ft radius)", comp: "V, S, M", duration: "Instantaneous", desc: "A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must make a Dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one. The fire spreads around corners. It ignites flammable objects in the area that aren't being worn or carried.", scaling: "When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.", lists: "Sorcerer, Wizard" },
+            { name: "Counterspell", level: "3", school: "Abjuration", activation: "1 Reaction", range: "60 feet", comp: "S", duration: "Instantaneous", desc: "Trigger: You see a creature within 60 feet of you casting a spell.\n\nYou attempt to interrupt a creature in the process of casting a spell. If the creature is casting a spell of 3rd level or lower, its spell fails and has no effect. If it is casting a spell of 4th level or higher, make an ability check using your spellcasting ability. The DC equals 10 + the spell's level. On a success, the creature's spell fails and has no effect.", scaling: "When you cast this spell using a spell slot of 4th level or higher, the interrupted spell has no effect if its level is less than or equal to the level of the spell slot you used.", lists: "Sorcerer, Warlock, Wizard" }
+        ];
+
+        const SW_POWERS = [
+            { name: "Force Push", level: "0", school: "Telekinetic", activation: "1 Action", range: "30 feet", comp: "S", duration: "Instantaneous", desc: "You push a creature or object away from you. A creature must make a Strength saving throw. On a failed save, the creature is pushed 10 feet away from you. This power has no effect on a creature larger than you.", scaling: "The distance pushed increases by 10 feet when you reach 5th level (20 feet), 11th level (30 feet), and 17th level (40 feet).", lists: "Universal" },
+            { name: "Mind Trick", level: "0", school: "Telepathic", activation: "1 Action", range: "30 feet", comp: "V", duration: "1 Minute", desc: "You attempt to briefly influence a creature's mind. Choose a target within range that can hear and understand you. They must succeed on a Wisdom saving throw or be charmed by you until the end of your next turn. While charmed, they are completely oblivious to their surroundings, though they can still hear you.", lists: "Light, Universal" },
+            { name: "Burst of Speed", level: "0", school: "Physical", activation: "1 Bonus Action", range: "Self", comp: "S", duration: "1 Round", desc: "You channel the Force to briefly increase your speed. Until the end of your turn, your walking speed increases by 10 feet, and moving through difficult terrain doesn't cost you extra movement.", scaling: "The speed increase grows to 15 feet at 5th level, 20 feet at 11th level, and 25 feet at 17th level.", lists: "Universal" },
+            { name: "Heal", level: "1", school: "Light", activation: "1 Action", range: "Touch", comp: "S", duration: "Instantaneous", desc: "A creature you touch regains a number of hit points equal to 1d8 + your forcecasting ability modifier. This power has no effect on droids or constructs.", scaling: "When you cast this power using a force slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.", lists: "Light" },
+            { name: "Force Jump", level: "1", school: "Physical", activation: "1 Bonus Action", range: "Self", comp: "S", duration: "1 Minute", desc: "Your jump distance is tripled for the duration.", lists: "Universal" },
+            { name: "Force Camouflage", level: "2", school: "Telepathic", activation: "1 Action", range: "Self", comp: "S", duration: "Concentration, up to 10 minutes", desc: "You wrap the Force around yourself, blending into your surroundings. You become invisible until the power ends. Anything you are wearing or carrying is invisible as long as it is on your person. The power ends if you attack or cast a power.", scaling: "When you cast this power using a force slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.", lists: "Universal" },
+            { name: "Dark Shear", level: "2", school: "Dark", activation: "1 Action", range: "Self", comp: "S", duration: "Concentration, up to 1 minute", desc: "You coalesce dark side energy into a solid blade in your free hand. The blade lasts for the duration. If you let go of the blade, it disappears, but you can evoke the blade again as a bonus action.\nYou can use your action to make a melee force attack with the blade. On a hit, the target takes 2d8 psychic damage.", scaling: "When you cast this power using a force slot of 3rd level or higher, the damage increases by 1d8 for each slot level above 2nd.", lists: "Dark" },
+            { name: "Force Lightning", level: "3", school: "Dark", activation: "1 Action", range: "100 feet", comp: "S", duration: "Instantaneous", desc: "A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you choose. Each creature in the line must make a Dexterity saving throw. A creature takes 8d6 lightning damage on a failed save, or half as much damage on a successful one.", scaling: "When you cast this power using a force slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.", lists: "Dark" },
+            { name: "Telekinesis", level: "3", school: "Telekinetic", activation: "1 Action", range: "60 feet", comp: "S", duration: "Concentration, up to 10 minutes", desc: "You gain the ability to move or manipulate creatures or objects by thought. When you cast the power, and as your action each round for the duration, you can exert your will on one creature or object that you can see within range, causing the appropriate effect below. You can affect the same target round after round, or choose a new one at any time. If you switch targets, the prior target is no longer affected by the power.", lists: "Universal" }
+        ];
+
+        // --- STREAMING_CHUNK:Render and Filter Logic... ---
         window.renderLevelTabs = () => {
             const container = document.getElementById('level-tabs-container');
             if (!container) return;
@@ -416,7 +495,6 @@
                 }
             }
 
-            // Ensure currentLevel is within the bounds of the newly selected vocation
             let currLvlInt = parseInt(currentLevelFilter) || 0;
             if (currLvlInt < min) currentLevelFilter = min.toString();
             if (currLvlInt > max) currentLevelFilter = max.toString();
@@ -484,7 +562,6 @@
             const cleanName = itemName.trim().toLowerCase();
             const exists = materialComponents.some(m => (m.name || '').toLowerCase() === cleanName);
             if (exists) {
-                // Safe routeTo call handling existing IDs
                 const cid = new URLSearchParams(window.location.search).get('id');
                 window.location.href = `gear_artifacts.html?targetItem=${encodeURIComponent(itemName.trim())}` + (cid ? `&id=${cid}` : '');
             } else {
@@ -492,7 +569,7 @@
             }
         };
 
-        // Viewing Script Modal Function
+        // --- STREAMING_CHUNK:View Modal Logic... ---
         window.viewScript = (id) => {
             const s = scripts.find(x => x.id === id);
             if (!s) return;
@@ -501,7 +578,6 @@
             let typeTxt = s.sType ? `[${s.sType}]` : '';
             let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
-            // Parse parentheses into Artifact Links for the view modal
             let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, (match, p1) => {
                 const safeStr = p1.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 return `(<a href="#" onclick="event.stopPropagation(); window.checkAndRouteMaterial('${safeStr}'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">${p1}</a>)`;
@@ -532,7 +608,6 @@
 
         window.closeViewModal = () => {
             document.getElementById('script-view-modal').classList.add('hidden');
-            // Remove targetScript from URL cleanly so it doesn't reopen on refresh
             if (window.history.replaceState) {
                 const url = new URL(window.location);
                 url.searchParams.delete('targetScript');
@@ -540,140 +615,28 @@
             }
         };
 
-        // --- DEFINITIONS SYSTEM ---
-        const DEFAULT_DEFINITIONS = `**Scriptcasting**
-The Eternal Heart saturates Aeonfall with unseen energies. Across the world, these energies can be shaped into precise patterns known as **Scripts**.
-
-This section provides the rules for Scriptcasting. Different Vocations access Scripts in different ways. Some learn them through study and experimentation, others through instinctive connection to the Heart, ancient relics, mutations, or forgotten Founder knowledge. Regardless of its source, all Scriptcasting follows the rules presented here.
-
-### What Is a Script?
-A Script is a structured expression of Heart-energy.
-
-When a Scriptcaster uses a Script, they shape the invisible currents of the Eternal Heart into a specific pattern that produces a desired effect. To outside observers, this may appear as glowing sigils, streams of energy, shifting runes, altered matter, summoned constructs, or impossible phenomena.
-
-Scripts can be used as tools, weapons, defenses, healing techniques, communication methods, and reality-altering effects. Some Scripts create energy, others manipulate matter, minds, life, or the environment itself.
-
-### Script Tier
-Every Script belongs to a **Tier** from 0 to 9. A Script's Tier represents the complexity and power required to shape Heart-energy into that effect.
-
-- **Tier 0:** Tricks
-- **Tier 1–3:** Basic Scripts
-- **Tier 4–6:** Advanced Scripts
-- **Tier 7–9:** Master Scripts
-
-Higher-Tier Scripts require greater mastery and cannot be used until a Scriptcaster gains sufficient experience. A character's level and a Script's Tier do not directly correspond. Most Scriptcasters cannot access Tier 9 Scripts until the highest levels of play.
-
-### Known and Prepared
-Before a Scriptcaster can use a Script, they must either:
-
-- Know the Script permanently.
-- Have it prepared.
-- Have access to it through a relic, archive, implant, or other special feature.
-
-Different Vocations manage Scripts differently. Some maintain a list of Scripts permanently fixed in memory. Others prepare a selection after rest, study, meditation, maintenance, or recalibration. The number available depends on level and class features.
-
-### Script Slots
-Shaping Heart-energy places strain on both body and mind. Each Scriptcaster possesses a limited number of **Script Slots**, representing how much energy they can safely channel before requiring rest.
-
-When a Script is used, a Script Slot of the Script's Tier or higher is expended. All expended Script Slots are restored after a Long Rest unless a feature states otherwise.
-
-*Using a Script at a Higher Tier*
-A Script can be executed using a higher-Tier Script Slot. When this occurs, the Script is treated as being cast at that higher Tier. Many Scripts become stronger when executed this way, gaining increased damage, range, duration, targets, or additional effects.
-
-### Focus & Armor
-*Scriptcasting Focus*
-Most Scriptcasters channel their abilities through a Scriptcasting Focus (e.g., Founder Relays, Signal Rods, Arc-Cores, Memory Shards, Resonance Totems, Script Tablets, Engraved Weapons, or Heart-Touched Relics). A Scriptcasting Focus replaces most material components unless a Script specifically requires a unique component with a cost.
-
-*Casting in Armor*
-Executing Scripts requires precise control and movement. You must be proficient with any armor you wear to use Scripts while wearing it. Otherwise, the armor interferes with the gestures, movements, and concentration required for Scriptcasting.
-
-### Tricks & Concord
-*Tricks (Tier 0)*
-Tricks are Tier 0 Scripts. A Trick can be used at will without expending a Script Slot and does not require preparation. Through constant repetition, the pattern becomes instinctive, allowing the Scriptcaster to execute it repeatedly with minimal effort.
-
-*Concord*
-Certain Scripts possess the **Concord** tag. A Concord Script can be executed through an extended and precise process known as entering Concord. Executing a Script through Concord takes **10 additional minutes** beyond its normal execution time and does not expend a Script Slot. To use Concord, you must possess a feature granting access to it.
-
-### Executing a Script
-Each Script contains the following information: Name, Tier, Discipline, Execution Time, Range, Components, and Duration. The remainder of the entry describes the Script's effects.
-
-*Execution Time*
-Most Scripts require one Action. Some require a Bonus Action, Reaction, or longer periods.
-- **Bonus Action:** Executed with exceptional speed. If you execute a Script as a Bonus Action, the only other Script you may use during that turn is a Trick with an Execution Time of one Action.
-- **Reaction:** Triggered in response to specific events. The description explains exactly when it may be used.
-- **Extended Execution:** Requires minutes or hours. You must continue focusing on the Script. If interrupted, the Script fails, but no Script Slot is expended.
-
-*Range & Targets*
-A Script's target must be within its listed Range. Scripts with a Range of *Self* affect only the Scriptcaster or originate from them. Once a Script takes effect, its results are not limited by Range unless stated otherwise.
-- **A Clear Path:** A target must have a clear path from the Scriptcaster. Total Cover blocks targeting unless stated otherwise.
-- **Targeting Yourself:** Unless specified, a Scriptcaster may target themselves with any Script capable of affecting a willing creature.
-
-*Components*
-Most Scripts require one or more of the following components:
-- **Vocal (V):** A spoken phrase, coded sequence, harmonic tone, or command word.
-- **Somatic (S):** Movements, gestures, or runic patterns. A free hand is required.
-- **Material (M):** Unique substances, relic fragments, or catalysts. Consumed components must be provided each time the Script is used.
-
-*Duration & Concentration*
-A Duration determines how long effects remain active. **Instantaneous** Scripts produce their effect and immediately conclude.
-
-**Concentration:** If concentration ends, the Script immediately ends as well. You may concentrate on only one Script at a time. Concentration ends if:
-- You begin concentrating on another Script.
-- You become Incapacitated or die.
-- You fail a Constitution saving throw after taking damage (DC = 10 or half the damage taken, whichever is higher).
-
-### Script Disciplines
-Script scholars classify all known Scripts into eight Disciplines, describing how a Script manipulates Heart-energy.
-- **Aegis:** Protection, barriers, wards, nullification, and defensive manipulation.
-- **Calling:** Summoning, transportation, creation, and relocation.
-- **Sight:** Information gathering, prediction, detection, and revelation.
-- **Dominion:** Mental influence, emotional manipulation, commands, and control.
-- **Ruin:** Energy projection, elemental force, destruction, and healing through Heart-energy.
-- **Veil:** Deception, concealment, sensory manipulation, and false perceptions.
-- **Mortis:** Life, death, vitality, decay, undeath, and soul manipulation.
-- **Forge:** Transformation, enhancement, adaptation, and alteration of matter.
-
-### Areas of Effect
-A Script’s effect expands in straight lines from the point of origin. Total Cover blocks the spread of an Area of Effect.
-- **Cone:** Extends in a direction you choose from its origin. Width at a given point equals that point’s distance from the origin. Origin is not included unless decided otherwise.
-- **Cube:** Origin lies anywhere on a face of the cubic effect. Size is expressed as the length of each side. Origin is not included unless decided otherwise.
-- **Cylinder:** Origin is the center of a circle. Energy expands in straight lines to the perimeter, then shoots up or down to the cylinder's height. Origin is included.
-- **Line:** Extends in a straight path up to its length and covers an area defined by its width. Origin is not included unless decided otherwise.
-- **Sphere:** Extends outward from the origin point. The size is expressed as a radius in feet. Origin is included.
-
-### Resistance Checks & Attacks
-Many Scripts force targets to make a saving throw to resist effects. The Script specifies which ability is used. 
-**Script Save DC = 8 + Proficiency + Ability Mod + Special**
-
-Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged attack rules (disadvantage if within 5 ft of a hostile). 
-**Script Attack = Proficiency + Ability Mod**
-
-*Combining Script Effects:* Different Scripts combine normally while their durations overlap. The same Script used multiple times does not stack with itself; only the most powerful version applies.`;
+        // --- STREAMING_CHUNK:Definitions System... ---
+        const DEFAULT_DEFINITIONS = `**Scriptcasting**\nThe Eternal Heart saturates Aeonfall with unseen energies. Across the world, these energies can be shaped into precise patterns known as **Scripts**.\n\nThis section provides the rules for Scriptcasting. Different Vocations access Scripts in different ways. Some learn them through study and experimentation, others through instinctive connection to the Heart, ancient relics, mutations, or forgotten Founder knowledge. Regardless of its source, all Scriptcasting follows the rules presented here.\n\n### What Is a Script?\nA Script is a structured expression of Heart-energy.\n\nWhen a Scriptcaster uses a Script, they shape the invisible currents of the Eternal Heart into a specific pattern that produces a desired effect. To outside observers, this may appear as glowing sigils, streams of energy, shifting runes, altered matter, summoned constructs, or impossible phenomena.\n\nScripts can be used as tools, weapons, defenses, healing techniques, communication methods, and reality-altering effects. Some Scripts create energy, others manipulate matter, minds, life, or the environment itself.\n\n### Script Tier\nEvery Script belongs to a **Tier** from 0 to 9. A Script's Tier represents the complexity and power required to shape Heart-energy into that effect.\n\n- **Tier 0:** Tricks\n- **Tier 1–3:** Basic Scripts\n- **Tier 4–6:** Advanced Scripts\n- **Tier 7–9:** Master Scripts\n\nHigher-Tier Scripts require greater mastery and cannot be used until a Scriptcaster gains sufficient experience. A character's level and a Script's Tier do not directly correspond. Most Scriptcasters cannot access Tier 9 Scripts until the highest levels of play.\n\n### Known and Prepared\nBefore a Scriptcaster can use a Script, they must either:\n\n- Know the Script permanently.\n- Have it prepared.\n- Have access to it through a relic, archive, implant, or other special feature.\n\nDifferent Vocations manage Scripts differently. Some maintain a list of Scripts permanently fixed in memory. Others prepare a selection after rest, study, meditation, maintenance, or recalibration. The number available depends on level and class features.\n\n### Script Slots\nShaping Heart-energy places strain on both body and mind. Each Scriptcaster possesses a limited number of **Script Slots**, representing how much energy they can safely channel before requiring rest.\n\nWhen a Script is used, a Script Slot of the Script's Tier or higher is expended. All expended Script Slots are restored after a Long Rest unless a feature states otherwise.\n\n*Using a Script at a Higher Tier*\nA Script can be executed using a higher-Tier Script Slot. When this occurs, the Script is treated as being cast at that higher Tier. Many Scripts become stronger when executed this way, gaining increased damage, range, duration, targets, or additional effects.\n\n### Focus & Armor\n*Scriptcasting Focus*\nMost Scriptcasters channel their abilities through a Scriptcasting Focus (e.g., Founder Relays, Signal Rods, Arc-Cores, Memory Shards, Resonance Totems, Script Tablets, Engraved Weapons, or Heart-Touched Relics). A Scriptcasting Focus replaces most material components unless a Script specifically requires a unique component with a cost.\n\n*Casting in Armor*\nExecuting Scripts requires precise control and movement. You must be proficient with any armor you wear to use Scripts while wearing it. Otherwise, the armor interferes with the gestures, movements, and concentration required for Scriptcasting.\n\n### Tricks & Concord\n*Tricks (Tier 0)*\nTricks are Tier 0 Scripts. A Trick can be used at will without expending a Script Slot and does not require preparation. Through constant repetition, the pattern becomes instinctive, allowing the Scriptcaster to execute it repeatedly with minimal effort.\n\n*Concord*\nCertain Scripts possess the **Concord** tag. A Concord Script can be executed through an extended and precise process known as entering Concord. Executing a Script through Concord takes **10 additional minutes** beyond its normal execution time and does not expend a Script Slot. To use Concord, you must possess a feature granting access to it.\n\n### Executing a Script\nEach Script contains the following information: Name, Tier, Discipline, Execution Time, Range, Components, and Duration. The remainder of the entry describes the Script's effects.\n\n*Execution Time*\nMost Scripts require one Action. Some require a Bonus Action, Reaction, or longer periods.\n- **Bonus Action:** Executed with exceptional speed. If you execute a Script as a Bonus Action, the only other Script you may use during that turn is a Trick with an Execution Time of one Action.\n- **Reaction:** Triggered in response to specific events. The description explains exactly when it may be used.\n- **Extended Execution:** Requires minutes or hours. You must continue focusing on the Script. If interrupted, the Script fails, but no Script Slot is expended.\n\n*Range & Targets*\nA Script's target must be within its listed Range. Scripts with a Range of *Self* affect only the Scriptcaster or originate from them. Once a Script takes effect, its results are not limited by Range unless stated otherwise.\n- **A Clear Path:** A target must have a clear path from the Scriptcaster. Total Cover blocks targeting unless stated otherwise.\n- **Targeting Yourself:** Unless specified, a Scriptcaster may target themselves with any Script capable of affecting a willing creature.\n\n*Components*\nMost Scripts require one or more of the following components:\n- **Vocal (V):** A spoken phrase, coded sequence, harmonic tone, or command word.\n- **Somatic (S):** Movements, gestures, or runic patterns. A free hand is required.\n- **Material (M):** Unique substances, relic fragments, or catalysts. Consumed components must be provided each time the Script is used.\n\n*Duration & Concentration*\nA Duration determines how long effects remain active. **Instantaneous** Scripts produce their effect and immediately conclude.\n\n**Concentration:** If concentration ends, the Script immediately ends as well. You may concentrate on only one Script at a time. Concentration ends if:\n- You begin concentrating on another Script.\n- You become Incapacitated or die.\n- You fail a Constitution saving throw after taking damage (DC = 10 or half the damage taken, whichever is higher).\n\n### Script Disciplines\nScript scholars classify all known Scripts into eight Disciplines, describing how a Script manipulates Heart-energy.\n- **Aegis:** Protection, barriers, wards, nullification, and defensive manipulation.\n- **Calling:** Summoning, transportation, creation, and relocation.\n- **Sight:** Information gathering, prediction, detection, and revelation.\n- **Dominion:** Mental influence, emotional manipulation, commands, and control.\n- **Ruin:** Energy projection, elemental force, destruction, and healing through Heart-energy.\n- **Veil:** Deception, concealment, sensory manipulation, and false perceptions.\n- **Mortis:** Life, death, vitality, decay, undeath, and soul manipulation.\n- **Forge:** Transformation, enhancement, adaptation, and alteration of matter.\n\n### Areas of Effect\nA Script’s effect expands in straight lines from the point of origin. Total Cover blocks the spread of an Area of Effect.\n- **Cone:** Extends in a direction you choose from its origin. Width at a given point equals that point’s distance from the origin. Origin is not included unless decided otherwise.\n- **Cube:** Origin lies anywhere on a face of the cubic effect. Size is expressed as the length of each side. Origin is not included unless decided otherwise.\n- **Cylinder:** Origin is the center of a circle. Energy expands in straight lines to the perimeter, then shoots up or down to the cylinder's height. Origin is included.\n- **Line:** Extends in a straight path up to its length and covers an area defined by its width. Origin is not included unless decided otherwise.\n- **Sphere:** Extends outward from the origin point. The size is expressed as a radius in feet. Origin is included.\n\n### Resistance Checks & Attacks\nMany Scripts force targets to make a saving throw to resist effects. The Script specifies which ability is used. \n**Script Save DC = 8 + Proficiency + Ability Mod + Special**\n\nSome Scripts require an attack roll. Ranged Script Attacks follow normal ranged attack rules (disadvantage if within 5 ft of a hostile). \n**Script Attack = Proficiency + Ability Mod**\n\n*Combining Script Effects:* Different Scripts combine normally while their durations overlap. The same Script used multiple times does not stack with itself; only the most powerful version applies.`;
 
         window.parseMarkdown = (text) => {
             if (!text) return '';
-            let html = text.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // Encode HTML tags
+            let html = text.replace(/</g, '&lt;').replace(/>/g, '&gt;'); 
             
-            // Headers
             html = html.replace(/^### (.*$)/gim, '<h3 class="font-heading text-xl font-bold text-blood uppercase tracking-wide border-b border-gold/50 mt-6 mb-2 pb-1">$1</h3>');
             html = html.replace(/^## (.*$)/gim, '<h2 class="font-heading text-2xl font-bold text-blood uppercase tracking-wide border-b-2 border-gold mt-8 mb-4 pb-2">$1</h2>');
             html = html.replace(/^# (.*$)/gim, '<h1 class="font-heading text-3xl font-black text-blood uppercase tracking-widest mt-8 mb-4">$1</h1>');
             
-            // Emphasis
             html = html.replace(/\*\*(.*?)\*\*/g, '<b class="font-bold text-ink">$1</b>');
             html = html.replace(/\*(.*?)\*/g, '<i class="italic text-ink/90">$1</i>');
             
-            // Lists
             html = html.replace(/^\- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>');
             
-            // Paragraphs
             let paragraphs = html.split(/\n\n+/);
             html = paragraphs.map(p => {
                 if(p.trim().startsWith('<h') || p.trim().startsWith('<li')) return p;
                 return `<p class="mb-3">${p.replace(/\n/g, '<br>')}</p>`;
             }).join('');
             
-            // Group List Items
             html = html.replace(/(<li[^>]*>[\s\S]*?<\/li>)/g, '<ul class="mb-4 space-y-1 ml-2">$1</ul>');
             html = html.replace(/<\/ul>\s*<ul class="mb-4 space-y-1 ml-2">/g, ''); 
             
@@ -723,12 +686,12 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
             }
         };
 
+        // --- STREAMING_CHUNK:Render Scripts Grid... ---
         window.renderScripts = () => {
             const isDM = activeRole === 'dm';
             const grid = document.getElementById('scripts-grid');
             if (!grid) return;
 
-            // Filter scripts by Level and Vocation search string
             let visibleScripts = scripts.filter(s => (s.level || '0') === currentLevelFilter);
             
             if (currentVocationFilter !== 'All') {
@@ -752,7 +715,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                 let typeTxt = s.sType ? `[${s.sType}]` : '';
                 let metaTxt = `${lvlTxt} — ${s.school || 'Universal'} ${typeTxt}`;
 
-                // --- Parse Parentheses into Artifact Links (Stop bubbling on click) ---
                 let compHtml = (s.comp || '--').replace(/\((.*?)\)/g, (match, p1) => {
                     const safeStr = p1.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                     return `(<a href="#" onclick="event.stopPropagation(); window.checkAndRouteMaterial('${safeStr}'); return false;" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="Search in Artifacts">${p1}</a>)`;
@@ -760,7 +722,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
 
                 let dmControls = isDM ? `<button onclick="event.stopPropagation(); window.openScriptModal('${s.id}')" class="absolute top-4 right-4 text-gold hover:text-white transition-colors z-10"><i class="fa-solid fa-pen"></i></button>` : '';
 
-                // Added cursor-pointer and onclick to view script
                 return `
                     <div class="script-card cursor-pointer" onclick="window.viewScript('${s.id}')">
                         ${dmControls}
@@ -790,7 +751,7 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
             }).join('');
         };
 
-        // --- DM ACTIONS ---
+        // --- STREAMING_CHUNK:DM Actions (Create, Delete, Import)... ---
         window.openScriptModal = (id = null) => {
             if (activeRole !== 'dm') return;
             activeScriptId = id;
@@ -824,7 +785,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                 document.getElementById('script-desc').value = '';
                 document.getElementById('script-scaling').value = '';
                 
-                // Pre-fill lists field if a specific vocation is selected
                 let listDefault = "";
                 if (currentVocationFilter !== 'All') {
                     const voc = VOC_KEYS.find(v => v.id === currentVocationFilter);
@@ -884,15 +844,56 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
             }
         };
 
-        // --- TRANSFER SYSTEM ---
+        // NEW: BATCH IMPORT LOGIC
+        window.executeImport = async (system) => {
+            if (activeRole !== 'dm') return;
+
+            document.getElementById('import-modal').classList.add('hidden');
+            
+            if (system === 'custom') {
+                window.showToast("Custom Selected. Manually inscribe spells to begin.");
+                return;
+            }
+
+            let seedData = [];
+            if (system === 'dnd') seedData = DND_SPELLS;
+            if (system === 'sw5e') seedData = SW_POWERS;
+
+            if (seedData.length === 0) return;
+
+            window.showToast(`Importing ${seedData.length} foundational abilities... Please wait.`);
+
+            try {
+                const batch = writeBatch(db);
+                const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION);
+                
+                seedData.forEach(item => {
+                    const docRef = doc(collectionRef);
+                    batch.set(docRef, {
+                        ...item,
+                        createdAt: Date.now(),
+                        updatedAt: Date.now()
+                    });
+                });
+
+                await batch.commit();
+                window.showToast("Import successful! The Codex has been populated.");
+                window.setLevelFilter('0'); // Reset view to level 0 to see new items
+            } catch (err) {
+                console.error("Batch Import Error:", err);
+                window.showToast("Failed to import Compendium. Check console.");
+            }
+        };
+
+
+        // --- STREAMING_CHUNK:Transfer System... ---
         window.openTransferModal = (scriptId) => {
             targetTransferScript = scripts.find(s => s.id === scriptId);
             if (!targetTransferScript) return;
             
             const charSelect = document.getElementById('transfer-char-select');
-            charSelect.innerHTML = '<option value="">Select Character...</option>';
+            charSelect.innerHTML = '<option value="">Select Target...</option>';
             
-            // Filter characters: DMs see all PCs, Players see only their own PCs
             const isDM = activeRole === 'dm';
             const validTargets = characters.filter(c => c.type === 'PC' && !c.isDeleted && (isDM || c.owner === currentUser.username));
             
@@ -904,7 +905,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                 });
             }
             
-            // Vocation Dropdown (DM Only)
             const vocSelect = document.getElementById('transfer-voc-select');
             const vocContainer = document.querySelector('.transfer-voc-container');
             const orDivider = document.querySelector('.transfer-or-divider');
@@ -936,7 +936,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
             if (!charId && !vocId) return window.showToast("Select a target first.");
             if (!targetTransferScript) return window.showToast("No script selected.");
 
-            // Format description for character ledger
             let fullDesc = `**Cast Time:** ${targetTransferScript.activation || '--'}\n**Range:** ${targetTransferScript.range || '--'}\n**Duration:** ${targetTransferScript.duration || '--'}\n**Components:** ${targetTransferScript.comp || '--'}\n\n${targetTransferScript.desc}`;
 
             try {
@@ -946,7 +945,7 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                     
                     const newMove = {
                         name: targetTransferScript.name,
-                        roll: "", // Scripts usually don't have a single hardcoded roll
+                        roll: "", 
                         desc: fullDesc,
                         lvl: targetTransferScript.level === '0' ? 'Tricks (0)' : `Level ${targetTransferScript.level}`,
                         type: "scriptcasting",
@@ -974,10 +973,8 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                     const targetLevelStr = targetTransferScript.level === '0' ? 'Tricks' : `Tier ${targetTransferScript.level}`;
                     let tiers = JSON.parse(voc.scriptTiers || '[]');
                     
-                    // Look for existing tier with matching level or create new
                     let tierIndex = tiers.findIndex(t => (t.title || '').toLowerCase().includes(targetLevelStr.toLowerCase()) || (t.title || '').toLowerCase().includes(`level ${targetTransferScript.level}`));
                     
-                    // Generate clickable HTML link string. Uses direct href to prevent double query strings from older routeTo functions.
                     const listEntry = `\n- <a href="#" onclick="event.preventDefault(); const cid = new URLSearchParams(window.location.search).get('id'); window.location.href = 'script_codex.html?targetScript=${targetTransferScript.id}' + (cid ? '&id=' + cid : '');" class="text-blood hover:text-red-700 underline font-bold transition-colors cursor-pointer" title="View Script" contenteditable="false">**${targetTransferScript.name.toUpperCase()}**</a> [${targetTransferScript.school || 'Universal'}]: ${targetTransferScript.activation}, ${targetTransferScript.range}, ${targetTransferScript.duration}`;
                     
                     if (tierIndex >= 0) {
@@ -995,7 +992,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                 document.getElementById('transfer-modal').classList.add('hidden');
                 targetTransferScript = null;
                 
-                // Clear dropdowns
                 document.getElementById('transfer-char-select').value = '';
                 if(document.getElementById('transfer-voc-select')) document.getElementById('transfer-voc-select').value = '';
                 
@@ -1005,7 +1001,7 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
             }
         };
 
-        // --- AUTH & INITIALIZATION ---
+        // --- STREAMING_CHUNK:Auth and Lifecycle... ---
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
                 try { window.location.href = "index.html"; } catch(e) {
@@ -1028,13 +1024,11 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
 
                 activeRole = currentUser.role || 'player';
 
-                // Fetch campaign name
                 if (appId !== "demo_campaign") {
                     const campDoc = await getDoc(doc(db, 'campaigns', appId));
                     if (campDoc.exists() && campDoc.data().name) {
                         const titleEl = document.getElementById('main-campaign-title-label');
                         if (titleEl) {
-                            // If they haven't renamed it, default to Campaign Name - Script Codex
                             if (titleEl.innerText === 'Script Codex') titleEl.innerText = `${campDoc.data().name} Codex`;
                         }
                         document.title = `${campDoc.data().name} - Scripts`;
@@ -1043,27 +1037,23 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
 
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 
-                // Toggle DM Features
                 const isDM = activeRole === 'dm';
                 document.getElementById('btn-create-script')?.classList.toggle('hidden', !isDM);
                 document.getElementById('btn-edit-definitions')?.classList.toggle('hidden', !isDM);
+                document.getElementById('btn-import-compendium')?.classList.toggle('hidden', !isDM);
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
 
-                // Initialize Tabs
                 window.renderVocationTabs();
                 window.renderLevelTabs();
                 window.setLevelFilter(currentLevelFilter);
-                
-                // --- DATABASE LISTENERS ---
                 
                 // 1. Listen for Terminology Config
                 onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => {
                     if (docSnap.exists()) {
                         campaignSettings = docSnap.data();
                         
-                        // Apply Nav Terminology
                         const safeSet = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerText = val; };
                         safeSet('nav-party', campaignSettings.terms?.nav_party);
                         safeSet('nav-npcs', campaignSettings.terms?.nav_npcs);
@@ -1075,7 +1065,6 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                         const titleEl = document.getElementById('main-campaign-title-label');
                         if (titleEl) titleEl.innerText = campaignSettings.terms?.book_scriptcodex || 'Script Codex';
                         
-                        // Re-render tabs and titles with new names
                         window.renderVocationTabs();
                         window.setLevelFilter(currentLevelFilter);
                     }
@@ -1096,27 +1085,32 @@ Some Scripts require an attack roll. Ranged Script Attacks follow normal ranged 
                     scripts = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.name > b.name ? 1 : -1));
                     window.renderScripts();
 
-                    // Open specific script if requested via URL (e.g. from Vocations page link)
+                    // If it's the DM's first time and the codex is empty, pop up the import UI automatically
+                    if (scripts.length === 0 && isDM && !window.importModalShown) {
+                        document.getElementById('import-modal').classList.remove('hidden');
+                        window.importModalShown = true;
+                    }
+
                     const targetScriptId = new URLSearchParams(window.location.search).get('targetScript');
                     if (targetScriptId && !window.targetScriptOpened) {
-                        setTimeout(() => window.viewScript(targetScriptId), 200); // Wait briefly for DOM to be ready
+                        setTimeout(() => window.viewScript(targetScriptId), 200); 
                         window.targetScriptOpened = true; 
                     }
 
                 }, (err) => console.error("Script Sync Error:", err));
 
-                // 3. Listen for Characters (For Transfer Feature)
+                // 3. Listen for Characters
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => {
                     characters = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 });
 
-                // 4. Listen for Vocations (For Transfer Feature)
+                // 4. Listen for Vocations
                 const VOCATIONS_COLLECTION = `handbookVocations_${appId}`;
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', VOCATIONS_COLLECTION), (snap) => {
                     vocationsData = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 });
 
-                // 5. Listen for Gear Artifacts (For Material Component Links)
+                // 5. Listen for Gear Artifacts
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'gearArtifacts'), (snap) => {
                     materialComponents = snap.docs.map(d => d.data()).filter(item => item.visibility === 'public' && item.type === 'Material Component');
                 });
