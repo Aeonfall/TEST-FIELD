@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -964,19 +964,14 @@
 
         // --- AUTH & INIT ---
         const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    try {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } catch (tokenErr) {
-                        console.warn("Custom token failed, falling back to anonymous auth:", tokenErr);
-                        await signInAnonymously(auth);
-                    }
-                } else {
-                    await signInAnonymously(auth);
+            // Only attempt custom token auth if injected by the preview environment.
+            // DO NOT force anonymous login here, as it overwrites real user sessions!
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                try {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } catch (tokenErr) {
+                    console.warn("Custom token failed:", tokenErr);
                 }
-            } catch (e) {
-                console.error("Auth init error:", e);
             }
         };
         initAuth();
