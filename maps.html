@@ -1,4 +1,4 @@
-!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -231,10 +231,13 @@
             <div id="dm-map-controls" class="p-4 border-t border-gold/30 bg-black/60 hidden shrink-0">
                 <h3 class="text-[9px] font-black uppercase text-gold mb-3 font-heading tracking-widest">Cartographer (DM)</h3>
                 <div class="flex flex-col gap-2">
-                    <label class="relative block w-full">
-                        <button class="w-full fantasy-btn-alt py-1.5 rounded text-[10px] pointer-events-none">Upload Map Scroll</button>
-                        <input type="file" id="dm-map-input-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="window.handleMapUpload(event)">
-                    </label>
+                    <div class="flex gap-2">
+                        <label class="relative block flex-1">
+                            <button class="w-full fantasy-btn-alt py-1.5 rounded text-[9px] pointer-events-none">File Upload</button>
+                            <input type="file" id="dm-map-input-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="window.handleMapUpload(event)">
+                        </label>
+                        <button onclick="window.handleMapUrlUpload()" class="flex-1 fantasy-btn-alt py-1.5 rounded text-[9px]" title="Provide a direct image URL">Link URL</button>
+                    </div>
                     <div class="flex gap-2">
                         <button id="btn-edit-map-info" onclick="window.openEditMapModal()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-white hover:border-white transition-colors">Edit Details</button>
                         <button id="btn-manage-legend" onclick="window.openLegendManager()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-gold hover:border-gold transition-colors">Map Key</button>
@@ -245,7 +248,7 @@
     </main>
 
     <!-- NEW PIN MODAL -->
-    <div id="new-pin-modal" class="modal-overlay hidden z-[9000]">
+    <div id="new-pin-modal" class="modal-overlay hidden z-[9000]" onclick="if(event.target===this) window.cancelPin()">
         <div class="modal-container text-center">
             <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Mark Landmark</h3>
             <div class="space-y-4 text-left">
@@ -299,7 +302,7 @@
     </div>
 
     <!-- DM: MANAGE LEGEND / KEY MODAL -->
-    <div id="legend-manager-modal" class="modal-overlay hidden z-[9000]">
+    <div id="legend-manager-modal" class="modal-overlay hidden z-[9000]" onclick="if(event.target===this) this.classList.add('hidden')">
         <div class="modal-container text-left !max-w-2xl">
             <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2 text-center">Manage Map Key</h3>
             
@@ -386,7 +389,7 @@
     </div>
 
     <!-- EDIT MAP MODAL -->
-    <div id="edit-map-modal" class="modal-overlay hidden z-[9000]">
+    <div id="edit-map-modal" class="modal-overlay hidden z-[9000]" onclick="if(event.target===this) this.classList.add('hidden')">
         <div class="modal-container text-center">
             <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Map Details</h3>
             <div class="space-y-4 text-left">
@@ -403,7 +406,7 @@
                 <button onclick="window.deleteCurrentMap()" class="w-full sm:w-auto bg-transparent border-2 border-blood text-blood font-bold uppercase text-[10px] py-3 px-4 rounded hover:bg-red-50 transition-colors mb-2 sm:mb-0">Burn Map</button>
                 <div class="flex flex-1 gap-2">
                     <button onclick="document.getElementById('edit-map-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                    <button onclick="window.saveMapDetails()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save</button>
+                    <button id="btn-save-map-details" onclick="window.saveMapDetails()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save</button>
                 </div>
             </div>
         </div>
@@ -653,8 +656,12 @@
         window.closePinDetails = () => {
             activePinIndex = null;
             document.getElementById('pin-details-panel').classList.add('translate-y-full');
-            window.renderPins();
-            window.renderLandmarksList();
+            try {
+                window.renderPins();
+                window.renderLandmarksList();
+            } catch(e) {
+                console.error("Error clearing pin highlight:", e);
+            }
         };
 
         // --- MAP INTERACTIONS ---
@@ -887,6 +894,44 @@
 
 
         // --- MAP MANAGEMENT (DM) ---
+
+        window.handleMapUrlUpload = async () => {
+            if (activeRole !== 'dm') return window.showToast("Only DMs can ink maps.");
+            const url = prompt("Enter the direct image URL for the map (e.g., from Discord, Imgur, etc.):");
+            if (!url) return;
+            
+            const mapName = prompt("Name this new region/map:", `Archive ${Date.now().toString().slice(-4)}`);
+            if(!mapName) return;
+
+            const newMap = {
+                id: crypto.randomUUID(),
+                name: mapName,
+                description: "Newly discovered territory.",
+                src: url,
+                pins: [],
+                legendItems: [],
+                scale: ""
+            };
+            
+            const mapsCopy = [...allMaps, newMap];
+            
+            try {
+                await updateDoc(cacheDocRef, { maps: mapsCopy }); 
+                
+                const snap = await getDoc(cacheDocRef);
+                if (snap.exists()) {
+                    const logs = [...(snap.data().log || [])].slice(-24);
+                    logs.push({ text: `stored a new linked map in the archives: ${mapName}`, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+                    await updateDoc(cacheDocRef, { log: logs });
+                }
+                
+                window.showToast("Map Linked Successfully.");
+            } catch (e) {
+                console.error("Failed to link map:", e);
+                window.showToast("Failed to link map.");
+            }
+        };
+
         window.handleMapUpload = (e) => {
             if (activeRole !== 'dm') return window.showToast("Only DMs can ink maps.");
             const file = e.target.files[0]; if (!file) return;
@@ -942,24 +987,41 @@
 
         window.saveMapDetails = async () => {
             if(currentMapIndex === null) return;
-            const mapsCopy = [...allMaps];
-            mapsCopy[currentMapIndex].name = document.getElementById('edit-map-name').value.trim();
-            mapsCopy[currentMapIndex].description = document.getElementById('edit-map-desc').value.trim();
             
-            await updateDoc(cacheDocRef, { maps: mapsCopy });
-            document.getElementById('edit-map-modal').classList.add('hidden');
+            const saveBtn = document.getElementById('btn-save-map-details');
+            if (saveBtn) { saveBtn.disabled = true; saveBtn.innerText = 'Saving...'; }
+
+            try {
+                const mapsCopy = [...allMaps];
+                mapsCopy[currentMapIndex].name = document.getElementById('edit-map-name').value.trim();
+                mapsCopy[currentMapIndex].description = document.getElementById('edit-map-desc').value.trim();
+                
+                await updateDoc(cacheDocRef, { maps: mapsCopy });
+                document.getElementById('edit-map-modal').classList.add('hidden');
+                window.showToast("Map details updated.");
+            } catch(e) {
+                console.error("Error saving map details:", e);
+                window.showToast("Error updating map.");
+            } finally {
+                if (saveBtn) { saveBtn.disabled = false; saveBtn.innerText = 'Save'; }
+            }
         };
 
         window.deleteCurrentMap = async () => {
             if(currentMapIndex === null) return;
             if (!confirm(`Burn the map "${allMaps[currentMapIndex].name}" to ashes? This cannot be undone.`)) return;
             
-            const mapsCopy = [...allMaps];
-            mapsCopy.splice(currentMapIndex, 1);
-            
-            await updateDoc(cacheDocRef, { maps: mapsCopy });
-            document.getElementById('edit-map-modal').classList.add('hidden');
-            window.clearMapDisplay();
+            try {
+                const mapsCopy = [...allMaps];
+                mapsCopy.splice(currentMapIndex, 1);
+                
+                await updateDoc(cacheDocRef, { maps: mapsCopy });
+                document.getElementById('edit-map-modal').classList.add('hidden');
+                window.clearMapDisplay();
+            } catch(e) {
+                console.error("Error deleting map:", e);
+                window.showToast("Failed to delete map.");
+            }
         };
 
         // --- AUTH & INIT ---
