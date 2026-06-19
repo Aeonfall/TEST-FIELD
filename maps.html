@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chronicles - Cartography</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'parchment': '#f1e5c5',
+                        'ink': '#2c1e16',
+                        'blood': '#7a1b1b',
+                        'gold': '#c5a059',
+                        'wood': '#1a110b'
+                    },
+                    fontFamily: {
+                        'serif': ['Lora', 'serif'],
+                        'heading': ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
+        
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
+        .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
+
+        .nav-link { color: #888; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; white-space: nowrap; font-family: 'Cinzel', serif; }
+        .nav-link.active { color: #c5a059; border-bottom: 2px solid #c5a059; padding-bottom: 4px; text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); }
+        .nav-link:hover { color: #f1e5c5; }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 10000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
+
+        /* Map Viewer Styles */
+        .map-viewport { 
+            background-color: #d8cba7;
+            background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+            overflow: hidden; position: relative; cursor: grab; touch-action: none;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+        }
+        .map-viewport:active { cursor: grabbing; }
+        .pin-mode-active { cursor: crosshair !important; }
+        
+        .map-pin { position: absolute; pointer-events: auto; z-index: 20; width: 0; height: 0; }
+        .map-pin-inner { 
+            position: absolute; bottom: 0; left: -16px; width: 32px; text-align: center; 
+            color: #dc2626; font-size: 32px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); 
+            cursor: pointer; transform-origin: bottom center; transition: all 0.2s; 
+        }
+        .map-pin-inner:hover { color: #f87171; transform: scale(1.1) !important; }
+        .map-pin-active .map-pin-inner { color: #facc15; filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.8)); z-index: 30; }
+
+        .map-controls {
+            position: absolute; bottom: 20px; right: 20px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 50;
+        }
+        .map-btn {
+            width: 40px; height: 40px; background: #1a110b; border: 2px solid #c5a059; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; font-weight: 900; color: #c5a059;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5); cursor: pointer; transition: 0.2s; font-family: 'Cinzel', serif;
+        }
+        .map-btn:hover { background: #3d2a1f; color: #f1e5c5; }
+        .map-btn.active-tool { background: #7a1b1b; color: white; border-color: white; animation: pulse 2s infinite; }
+
+        /* Legend Panel Styles */
+        .legend-panel {
+            background: #2c1e16; border-left: 2px solid #c5a059; color: #f1e5c5;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+        }
+        .legend-item {
+            border: 1px solid rgba(197, 160, 89, 0.3); background: rgba(0,0,0,0.3); cursor: pointer;
+            transition: all 0.2s;
+        }
+        .legend-item:hover { border-color: rgba(197, 160, 89, 0.8); background: rgba(0,0,0,0.5); }
+        .legend-item.active-item { border-color: #c5a059; background: #3d2a1f; box-shadow: inset 4px 0 0 #c5a059; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 800; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; text-align: center;}
+    </style>
+</head>
+<body class="min-h-screen flex flex-col h-screen overflow-hidden">
+
+    <div id="toast" class="toast">Message</div>
+
+    <!-- Initial Loading State -->
+    <div id="initial-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-wood z-[9999] text-center">
+        <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
+        <h2 class="font-heading text-2xl text-parchment animate-pulse">Unfurling Cartography...</h2>
+    </div>
+
+    <!-- HEADER -->
+    <header class="flex flex-col lg:flex-row justify-between items-center px-4 md:px-8 py-4 bg-black/60 border-b border-gray-800/50 shadow-md shrink-0 relative z-[60]">
+        <div class="text-center md:text-left flex items-center gap-4">
+            <h1 id="main-campaign-title" class="text-2xl md:text-3xl text-gray-400 font-bold font-heading tracking-tight drop-shadow-md">Chronicles</h1>
+            <div class="h-6 w-px bg-gray-700 hidden md:block"></div>
+            <p class="text-gold text-sm uppercase tracking-[0.2em] font-bold font-heading hidden md:block">Cartography Archives</p>
+        </div>
+
+        <nav id="main-nav" class="flex gap-4 md:gap-6 items-center overflow-x-auto scrollbar-hide pt-2 md:pt-0">
+            <a href="#" onclick="window.routeTo('campaigns.html'); return false;" class="nav-link !text-gray-500 hover:!text-white"><i class="fa-solid fa-arrow-left mr-1"></i>Nexus</a>
+            <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
+            <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
+            <a href="#" class="nav-link active">Maps</a>
+        </nav>
+    </header>
+
+    <!-- MAIN APP AREA -->
+    <main class="flex-grow flex flex-col md:flex-row relative overflow-hidden">
+        
+        <!-- LEFT: Map Viewer -->
+        <section class="flex-grow relative map-viewport" id="map-viewport">
+            <!-- Canvas layer -->
+            <div id="map-canvas-container" class="absolute top-0 left-0 origin-top-left transition-transform duration-75 ease-out">
+                <img id="map-image-display" src="" class="block shadow-2xl max-w-none hidden pointer-events-auto">
+                <div id="map-pins-container" class="absolute inset-0 pointer-events-none"></div>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="map-empty-view" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[40]">
+                <span class="text-5xl md:text-7xl mb-4 opacity-50 grayscale">🗺️</span>
+                <p class="font-serif italic text-gray-700 text-sm">No Maps in Archive</p>
+                <p class="text-xs text-gray-500 mt-2 font-heading tracking-widest uppercase">The DM must scribe a map.</p>
+            </div>
+
+            <!-- On-map controls -->
+            <div class="map-controls">
+                <button class="map-btn text-[12px] hidden" id="btn-pin-mode" onclick="window.togglePinMode()" title="Drop Landmark Pin (DM Only)"><i class="fa-solid fa-location-dot"></i></button>
+                <button class="map-btn" onclick="window.zoomMap(1.2)"><i class="fa-solid fa-plus"></i></button>
+                <button class="map-btn" onclick="window.zoomMap(0.8)"><i class="fa-solid fa-minus"></i></button>
+                <button class="map-btn text-[8px] tracking-widest" onclick="window.resetMap()">RST</button>
+            </div>
+        </section>
+
+        <!-- RIGHT: Legend Sidebar -->
+        <aside class="w-full md:w-80 lg:w-96 legend-panel flex flex-col shrink-0 h-64 md:h-auto overflow-hidden relative z-[50]">
+            <!-- Map Selector -->
+            <div class="p-4 border-b border-gold/30 bg-black/40">
+                <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-1 block font-heading">Current Map</label>
+                <select id="map-selector" onchange="window.selectMap(this.value)" class="w-full bg-ink border border-gold rounded p-2 text-sm text-parchment font-serif outline-none focus:border-blood shadow-inner">
+                    <option value="">-- No Maps Found --</option>
+                </select>
+            </div>
+
+            <!-- Legend Content -->
+            <div class="flex-grow overflow-y-auto p-4 scrollbar-hide flex flex-col gap-6">
+                <!-- Map Info -->
+                <div id="active-map-info" class="hidden">
+                    <h2 id="legend-map-title" class="font-heading text-xl font-black text-gold uppercase tracking-widest drop-shadow mb-2 border-b border-gold/20 pb-2">Map Name</h2>
+                    <p id="legend-map-desc" class="text-xs font-serif text-gray-300 italic leading-relaxed">Map description goes here...</p>
+                </div>
+
+                <!-- Landmarks List -->
+                <div id="landmarks-section" class="hidden">
+                    <h3 class="text-[10px] font-black uppercase text-blood mb-3 font-heading tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-map-pin"></i> Known Landmarks
+                    </h3>
+                    <div id="legend-pins-list" class="flex flex-col gap-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Pin Details (Sliding panel) -->
+            <div id="pin-details-panel" class="absolute bottom-0 left-0 right-0 bg-[#f1e5c5] text-[#2c1e16] p-5 border-t-4 border-blood transform translate-y-full transition-transform duration-300 shadow-[0_-10px_30px_rgba(0,0,0,0.8)] z-[60]">
+                <button onclick="window.closePinDetails()" class="absolute top-2 right-3 text-gray-500 hover:text-blood text-xl font-black">&times;</button>
+                <h3 id="detail-pin-name" class="font-heading text-lg font-black uppercase text-blood tracking-widest mb-1 pr-6">Landmark Name</h3>
+                <p id="detail-pin-author" class="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3 font-heading">Discovered by: Player</p>
+                <div id="detail-pin-desc" class="text-xs font-serif italic max-h-32 overflow-y-auto border-l-2 border-gold pl-3 mb-4 text-ink">
+                    Description...
+                </div>
+                <button id="btn-delete-pin" onclick="window.deleteActivePin()" class="hidden w-full bg-transparent border-2 border-blood text-blood font-bold uppercase text-[9px] py-2 rounded hover:bg-red-50 transition-colors font-heading tracking-widest">Destroy Record</button>
+            </div>
+
+            <!-- DM Controls -->
+            <div id="dm-map-controls" class="p-4 border-t border-gold/30 bg-black/60 hidden shrink-0">
+                <h3 class="text-[9px] font-black uppercase text-gold mb-3 font-heading tracking-widest">Cartographer (DM)</h3>
+                <div class="flex flex-col gap-2">
+                    <label class="relative block w-full">
+                        <button class="w-full fantasy-btn-alt py-2 rounded text-[10px] pointer-events-none">Upload Map Scroll</button>
+                        <input type="file" id="dm-map-input-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="window.handleMapUpload(event)">
+                    </label>
+                    <button id="btn-edit-map-info" onclick="window.openEditMapModal()" class="w-full bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-white hover:border-white transition-colors">Edit Map Details</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- NEW PIN MODAL -->
+    <div id="new-pin-modal" class="modal-overlay hidden z-[9000]">
+        <div class="modal-container">
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Mark Landmark</h3>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Landmark Name</label>
+                    <input type="text" id="new-pin-name" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded font-bold text-ink uppercase tracking-widest mb-2 font-heading" placeholder="E.g., Ruined Tower">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Discovery Notes</label>
+                    <textarea id="new-pin-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded font-serif text-ink h-24 resize-none outline-none focus:border-blood" placeholder="What did you find here?"></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 font-heading mt-6">
+                <button onclick="window.cancelPin()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.savePin()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Plant Pin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MAP MODAL -->
+    <div id="edit-map-modal" class="modal-overlay hidden z-[9000]">
+        <div class="modal-container">
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Map Details</h3>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Region / Name</label>
+                    <input type="text" id="edit-map-name" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded font-bold text-ink font-heading mb-2">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Legend Notes</label>
+                    <textarea id="edit-map-desc" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded font-serif text-ink h-24 resize-none outline-none focus:border-blood" placeholder="General description of the region..."></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 font-heading mt-6 flex-col sm:flex-row">
+                <button onclick="window.deleteCurrentMap()" class="w-full sm:w-auto bg-transparent border-2 border-blood text-blood font-bold uppercase text-[10px] py-3 px-4 rounded hover:bg-red-50 transition-colors mb-2 sm:mb-0">Burn Map</button>
+                <div class="flex flex-1 gap-2">
+                    <button onclick="document.getElementById('edit-map-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                    <button onclick="window.saveMapDetails()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
+            authDomain: "dndcampaigns-f3d48.firebaseapp.com",
+            projectId: "dndcampaigns-f3d48",
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id') || urlParams.get('campaignId');
+        const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        if (!appId) {
+            if (isPreviewEnv) { appId = "demo_campaign"; } 
+            else { try { window.location.href = "campaigns.html"; } catch(e) {} }
+        }
+
+        let currentUser = null;
+        let activeRole = 'player';
+        
+        // We tie into the exact same document as backpack to reuse the existing maps array.
+        const cacheDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'backpacks', 'party-cache');
+        
+        let allMaps = [];
+        let currentMapIndex = null;
+        let activePinIndex = null;
+        
+        let mapScale = 1, mapPosX = 0, mapPosY = 0, isPanning = false, startX = 0, startY = 0;
+        let dragDist = 0, lastMouseX = 0, lastMouseY = 0;
+        let isPinMode = false;
+        let pendingPinCoords = null;
+
+        window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
+        window.routeTo = (page) => {
+            try { window.location.href = `${page}?id=${appId}`; } 
+            catch(e) { window.showToast("Redirects disabled in preview window."); }
+        };
+
+        // --- MAP RENDER LOGIC ---
+        
+        window.selectMap = (idx) => {
+            if (idx === "" || !allMaps[idx]) return window.clearMapDisplay();
+            currentMapIndex = parseInt(idx);
+            
+            const mapData = allMaps[currentMapIndex];
+            document.getElementById('map-image-display').src = mapData.src;
+            document.getElementById('map-image-display').classList.remove('hidden');
+            document.getElementById('map-empty-view').classList.add('hidden');
+            
+            document.getElementById('active-map-info').classList.remove('hidden');
+            document.getElementById('landmarks-section').classList.remove('hidden');
+            
+            document.getElementById('legend-map-title').textContent = mapData.name || "Unknown Region";
+            document.getElementById('legend-map-desc').textContent = mapData.description || "The edges of the map fade into uncharted territory...";
+
+            window.resetMap();
+            window.renderPins();
+            window.renderLegendList();
+            window.closePinDetails();
+        };
+
+        window.clearMapDisplay = () => {
+            currentMapIndex = null;
+            document.getElementById('map-image-display').classList.add('hidden');
+            document.getElementById('map-empty-view').classList.remove('hidden');
+            document.getElementById('active-map-info').classList.add('hidden');
+            document.getElementById('landmarks-section').classList.add('hidden');
+            document.getElementById('map-pins-container').innerHTML = '';
+            document.getElementById('legend-pins-list').innerHTML = '';
+            window.closePinDetails();
+        };
+
+        window.renderLegendList = () => {
+            const list = document.getElementById('legend-pins-list');
+            list.innerHTML = '';
+            if (currentMapIndex === null) return;
+            
+            const pins = allMaps[currentMapIndex].pins || [];
+            if (pins.length === 0) {
+                list.innerHTML = '<p class="text-xs text-gray-500 italic font-serif p-2">No landmarks recorded.</p>';
+                return;
+            }
+
+            pins.forEach((pin, idx) => {
+                const el = document.createElement('div');
+                el.className = `legend-item p-3 rounded flex items-center gap-3 ${activePinIndex === idx ? 'active-item' : ''}`;
+                el.onclick = () => window.focusPin(idx);
+                
+                el.innerHTML = `
+                    <div class="text-blood text-lg"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="flex-grow">
+                        <h4 class="font-heading font-black text-[11px] text-gold uppercase tracking-widest m-0 leading-tight">${pin.name}</h4>
+                        <p class="text-[9px] text-gray-400 font-serif line-clamp-1 italic m-0">${pin.desc || 'No notes.'}</p>
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+        };
+
+        window.renderPins = () => {
+            const container = document.getElementById('map-pins-container');
+            container.innerHTML = '';
+            if (currentMapIndex === null) return;
+            
+            const pins = allMaps[currentMapIndex].pins || [];
+            pins.forEach((pin, idx) => {
+                const pEl = document.createElement('div');
+                pEl.className = `map-pin ${activePinIndex === idx ? 'map-pin-active' : ''}`;
+                pEl.style.left = `${pin.x}%`;
+                pEl.style.top = `${pin.y}%`;
+                pEl.id = `map-pin-${idx}`;
+                
+                pEl.innerHTML = `
+                    <div class="map-pin-inner" style="transform: scale(${1/mapScale})" onclick="event.stopPropagation(); if(window.dragDist<10) window.focusPin(${idx})">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                `;
+                container.appendChild(pEl);
+            });
+        };
+
+        window.focusPin = (idx) => {
+            if (currentMapIndex === null) return;
+            activePinIndex = idx;
+            window.renderPins();
+            window.renderLegendList();
+            
+            const pin = allMaps[currentMapIndex].pins[idx];
+            
+            // Pan to pin
+            const container = document.getElementById('map-viewport');
+            const img = document.getElementById('map-image-display');
+            if (img && container) {
+                const targetX = (pin.x / 100) * img.offsetWidth;
+                const targetY = (pin.y / 100) * img.offsetHeight;
+                
+                // Center it
+                mapPosX = (container.offsetWidth / 2) - (targetX * mapScale);
+                mapPosY = (container.offsetHeight / 2) - (targetY * mapScale);
+                window.updateMapTransform();
+            }
+
+            // Show panel
+            document.getElementById('detail-pin-name').textContent = pin.name;
+            document.getElementById('detail-pin-author').textContent = `Recorded by: ${pin.author || 'Unknown'}`;
+            document.getElementById('detail-pin-desc').innerHTML = (pin.desc || 'No detailed notes.').replace(/\n/g, '<br>');
+            
+            const canDelete = activeRole === 'dm' || pin.author === currentUser.username;
+            document.getElementById('btn-delete-pin').classList.toggle('hidden', !canDelete);
+            
+            document.getElementById('pin-details-panel').classList.remove('translate-y-full');
+        };
+
+        window.closePinDetails = () => {
+            activePinIndex = null;
+            document.getElementById('pin-details-panel').classList.add('translate-y-full');
+            window.renderPins();
+            window.renderLegendList();
+        };
+
+        // --- MAP INTERACTIONS ---
+        window.resetMap = () => { mapScale = 1; mapPosX = 0; mapPosY = 0; window.updateMapTransform(); };
+        window.zoomMap = (factor) => { mapScale = Math.min(10, Math.max(0.3, mapScale * factor)); window.updateMapTransform(); };
+        
+        window.updateMapTransform = () => { 
+            const container = document.getElementById('map-canvas-container');
+            if (container) container.style.transform = `translate(${mapPosX}px, ${mapPosY}px) scale(${mapScale})`; 
+            document.querySelectorAll('.map-pin-inner').forEach(p => { p.style.transform = `scale(${1/mapScale})`; });
+        };
+
+        const viewport = document.getElementById('map-viewport');
+        if (viewport) {
+            viewport.onmousedown = (e) => { 
+                if (e.target.closest('.map-controls') || e.target.closest('.map-pin')) return;
+                isPanning = true; dragDist = 0; 
+                startX = e.clientX - mapPosX; startY = e.clientY - mapPosY; 
+                lastMouseX = e.clientX; lastMouseY = e.clientY;
+            };
+            viewport.ontouchstart = (e) => { 
+                if (e.target.closest('.map-controls') || e.target.closest('.map-pin')) return;
+                isPanning = true; dragDist = 0; 
+                const t = e.touches[0]; startX = t.clientX - mapPosX; startY = t.clientY - mapPosY; 
+                lastMouseX = t.clientX; lastMouseY = t.clientY;
+            };
+            window.onmousemove = (e) => { 
+                if (!isPanning) return; 
+                window.dragDist += Math.abs(e.clientX - lastMouseX) + Math.abs(e.clientY - lastMouseY);
+                lastMouseX = e.clientX; lastMouseY = e.clientY;
+                mapPosX = e.clientX - startX; mapPosY = e.clientY - startY; 
+                window.updateMapTransform(); 
+            };
+            window.ontouchmove = (e) => { 
+                if (!isPanning) return; 
+                const t = e.touches[0]; 
+                window.dragDist += Math.abs(t.clientX - lastMouseX) + Math.abs(t.clientY - lastMouseY);
+                lastMouseX = t.clientX; lastMouseY = t.clientY;
+                mapPosX = t.clientX - startX; mapPosY = t.clientY - startY; 
+                window.updateMapTransform(); 
+            };
+            window.onmouseup = window.ontouchend = () => isPanning = false;
+
+            // Optional mousewheel zoom
+            viewport.onwheel = (e) => {
+                if(e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    window.zoomMap(e.deltaY < 0 ? 1.1 : 0.9);
+                }
+            };
+        }
+
+        // --- DM / ADDING PINS ---
+        window.togglePinMode = () => {
+            isPinMode = !isPinMode;
+            document.getElementById('btn-pin-mode').classList.toggle('active-tool', isPinMode);
+            document.getElementById('map-viewport').classList.toggle('pin-mode-active', isPinMode);
+            if (isPinMode) window.showToast("Click anywhere on the map to plant a landmark.");
+        };
+
+        viewport.onclick = (e) => {
+            if (window.dragDist > 10 || !isPinMode || currentMapIndex === null) return;
+            const img = document.getElementById('map-image-display');
+            if(e.target !== img) return;
+            
+            const xPct = (e.offsetX / img.offsetWidth) * 100;
+            const yPct = (e.offsetY / img.offsetHeight) * 100;
+            
+            pendingPinCoords = { x: xPct, y: yPct };
+            document.getElementById('new-pin-name').value = '';
+            document.getElementById('new-pin-desc').value = '';
+            document.getElementById('new-pin-modal').classList.remove('hidden');
+            window.togglePinMode(); 
+        };
+
+        window.cancelPin = () => {
+            pendingPinCoords = null;
+            document.getElementById('new-pin-modal').classList.add('hidden');
+        };
+
+        window.savePin = async () => {
+            const name = document.getElementById('new-pin-name').value.trim();
+            const desc = document.getElementById('new-pin-desc').value.trim();
+            if (!name || !pendingPinCoords) return window.showToast("Landmark needs a name.");
+
+            const mapsCopy = [...allMaps];
+            if (!mapsCopy[currentMapIndex].pins) mapsCopy[currentMapIndex].pins = [];
+            
+            mapsCopy[currentMapIndex].pins.push({
+                x: pendingPinCoords.x,
+                y: pendingPinCoords.y,
+                name: name,
+                desc: desc,
+                author: currentUser.username,
+                id: crypto.randomUUID()
+            });
+
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            
+            // Add log to backpack
+            const snap = await getDoc(cacheDocRef);
+            if (snap.exists()) {
+                const d = snap.data();
+                const logs = [...(d.log || [])].slice(-24);
+                logs.push({ text: `marked landmark [${name}] on ${mapsCopy[currentMapIndex].name}`, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+                await updateDoc(cacheDocRef, { log: logs });
+            }
+
+            document.getElementById('new-pin-modal').classList.add('hidden');
+            pendingPinCoords = null;
+        };
+
+        window.deleteActivePin = async () => {
+            if (activePinIndex === null || currentMapIndex === null) return;
+            if (!confirm("Destroy this landmark record forever?")) return;
+            
+            const mapsCopy = [...allMaps];
+            mapsCopy[currentMapIndex].pins.splice(activePinIndex, 1);
+            
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            window.closePinDetails();
+        };
+
+        // --- MAP MANAGEMENT (DM) ---
+        window.handleMapUpload = (e) => {
+            if (activeRole !== 'dm') return window.showToast("Only DMs can ink maps.");
+            const file = e.target.files[0]; if (!file) return;
+            
+            const mapName = prompt("Name this new region/map:", `Archive ${Date.now().toString().slice(-4)}`);
+            if(!mapName) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = async () => {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 2000;
+                    let w = img.width, h = img.height;
+                    if (w > maxDim || h > maxDim) { const r = maxDim / Math.max(w, h); w *= r; h *= r; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    
+                    const newMap = {
+                        id: crypto.randomUUID(),
+                        name: mapName,
+                        description: "Newly discovered territory.",
+                        src: canvas.toDataURL('image/jpeg', 0.8),
+                        pins: []
+                    };
+                    
+                    const mapsCopy = [...allMaps, newMap];
+                    await updateDoc(cacheDocRef, { maps: mapsCopy }); 
+                    
+                    // Add log
+                    const snap = await getDoc(cacheDocRef);
+                    if (snap.exists()) {
+                        const logs = [...(snap.data().log || [])].slice(-24);
+                        logs.push({ text: `stored a new map in the archives: ${mapName}`, user: currentUser.username, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+                        await updateDoc(cacheDocRef, { log: logs });
+                    }
+                    
+                    window.showToast("Map Stored.");
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.openEditMapModal = () => {
+            if(currentMapIndex === null) return window.showToast("Select a map first.");
+            const m = allMaps[currentMapIndex];
+            document.getElementById('edit-map-name').value = m.name || '';
+            document.getElementById('edit-map-desc').value = m.description || '';
+            document.getElementById('edit-map-modal').classList.remove('hidden');
+        };
+
+        window.saveMapDetails = async () => {
+            if(currentMapIndex === null) return;
+            const mapsCopy = [...allMaps];
+            mapsCopy[currentMapIndex].name = document.getElementById('edit-map-name').value.trim();
+            mapsCopy[currentMapIndex].description = document.getElementById('edit-map-desc').value.trim();
+            
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            document.getElementById('edit-map-modal').classList.add('hidden');
+        };
+
+        window.deleteCurrentMap = async () => {
+            if(currentMapIndex === null) return;
+            if (!confirm(`Burn the map "${allMaps[currentMapIndex].name}" to ashes? This cannot be undone.`)) return;
+            
+            const mapsCopy = [...allMaps];
+            mapsCopy.splice(currentMapIndex, 1);
+            
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            document.getElementById('edit-map-modal').classList.add('hidden');
+            window.clearMapDisplay();
+        };
+
+        // --- AUTH & INIT ---
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) {
+                document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                return;
+            }
+            
+            try {
+                if (u.isAnonymous) {
+                    currentUser = { uid: u.uid, username: "Guest", role: 'player' };
+                } else {
+                    const userDoc = await getDoc(doc(db, 'users', u.uid));
+                    currentUser = userDoc.exists() ? { uid: u.uid, ...userDoc.data() } : { uid: u.uid, username: u.displayName || 'Guest', role: 'player' };
+                }
+                activeRole = currentUser.role || 'player';
+
+                // Setup DM UI features
+                if (activeRole === 'dm') {
+                    document.getElementById('dm-map-controls').classList.remove('hidden');
+                    document.getElementById('btn-pin-mode').classList.remove('hidden');
+                }
+
+                // Title update
+                if (appId !== "demo_campaign") {
+                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                    if (campDoc.exists() && campDoc.data().name) {
+                        document.getElementById('main-campaign-title').innerText = campDoc.data().name;
+                        document.title = `${campDoc.data().name} - Cartography`;
+                    }
+                }
+
+                document.getElementById('initial-loading').classList.add('hidden');
+
+                // Data listener
+                onSnapshot(cacheDocRef, (d) => { 
+                    if (d.exists()) { 
+                        const data = d.data();
+                        
+                        // Handle legacy Map format if present
+                        if(data.mapSrc && (!data.maps || data.maps.length === 0)) {
+                            allMaps = [{ name: 'World Map', src: data.mapSrc, pins: data.pins || [], id: 'legacy' }];
+                        } else {
+                            allMaps = data.maps || [];
+                        }
+
+                        // Populate selector
+                        const selector = document.getElementById('map-selector');
+                        selector.innerHTML = allMaps.length > 0 ? '' : '<option value="">-- No Maps Found --</option>';
+                        allMaps.forEach((m, idx) => {
+                            selector.innerHTML += `<option value="${idx}">${m.name}</option>`;
+                        });
+
+                        // Maintain active map state
+                        if (allMaps.length > 0) {
+                            if (currentMapIndex === null || currentMapIndex >= allMaps.length) {
+                                selector.value = "0";
+                                window.selectMap("0");
+                            } else {
+                                selector.value = currentMapIndex.toString();
+                                // Refresh visual data
+                                document.getElementById('legend-map-title').textContent = allMaps[currentMapIndex].name || "Unknown Region";
+                                document.getElementById('legend-map-desc').textContent = allMaps[currentMapIndex].description || "The edges of the map fade into uncharted territory...";
+                                window.renderPins();
+                                window.renderLegendList();
+                                if (activePinIndex !== null && !allMaps[currentMapIndex].pins[activePinIndex]) {
+                                    window.closePinDetails();
+                                }
+                            }
+                        } else {
+                            window.clearMapDisplay();
+                        }
+                    } else {
+                        // Ensure cache doc exists for maps
+                        setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" });
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`;
+            }
+        });
+    </script>
+</body>
+</html>
