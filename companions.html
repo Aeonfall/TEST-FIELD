@@ -38,12 +38,13 @@
         
         .card { transition: all 0.2s; cursor: pointer; border-left-width: 4px; position: relative; border: 1px solid #555; background-color: rgba(0,0,0,0.7); color: #f1e5c5; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.7); border-color: #c5a059; }
+        
         .status-badge { position: absolute; top: 8px; right: 8px; font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 99px; text-transform: uppercase; z-index: 10; font-family: 'Cinzel', serif;}
         
-        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); cursor: pointer;}
+        .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .fantasy-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6) !important; border-color: #e8cd87 !important; }
         
-        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; cursor: pointer;}
+        .fantasy-btn-alt { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: #c5a059 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; }
         .fantasy-btn-alt:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: #f1e5c5 !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; }
 
         .nav-link { color: #888; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s; cursor: pointer; text-decoration: none; white-space: nowrap; font-family: 'Cinzel', serif; }
@@ -51,14 +52,12 @@
         .nav-link:hover { color: #f1e5c5; }
 
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2c1e16; border: 1px solid #c5a059; color: #f1e5c5; padding: 12px 24px; border-radius: 4px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
-        .hidden-view { display: none !important; }
-        .read-only-hide.hidden { display: none !important; }
-
+        
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 500; padding: 20px; backdrop-filter: blur(4px);}
         .modal-container { background: #f1e5c5; border: 2px solid #c5a059; border-radius: 8px; width: 100%; max-width: 500px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: #2c1e16; background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); }
-        .modal-header { font-family: 'Cinzel', serif; font-size: 1.25rem; font-weight: 900; color: #7a1b1b; text-transform: uppercase; border-bottom: 2px solid rgba(197, 160, 89, 0.5); padding-bottom: 8px; margin-bottom: 20px; text-align: center; }
         
-        /* GACHA ANIMATIONS */
+        .hidden-view { display: none !important; }
+
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -72,9 +71,10 @@
             90% { transform: translate(1px, 2px) rotate(0deg); }
             100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
-        .gacha-shake { animation: shake 0.5s infinite; }
-        .gacha-cage { transition: all 0.5s ease; border: 2px solid #555; background: #111; }
-        .gacha-glow-common { box-shadow: 0 0 20px rgba(200,200,200,0.8); border-color: #aaa; }
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; }
+        
+        .gacha-cage { transition: all 0.5s ease; border: 2px solid #4b5563; }
+        .gacha-glow-common { box-shadow: 0 0 20px rgba(255,255,255,0.5); border-color: #e5e7eb; }
         .gacha-glow-rare { box-shadow: 0 0 25px rgba(59,130,246,0.8); border-color: #3b82f6; }
         .gacha-glow-legendary { box-shadow: 0 0 35px rgba(245,158,11,1); border-color: #f59e0b; }
 
@@ -107,27 +107,39 @@
             -webkit-mask: url("data:image/svg+xml,%3Csvg width='100' height='15' viewBox='0 0 100 15' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L0,10 L5,3 L10,13 L15,5 L20,15 L25,3 L30,11 L35,1 L40,12 L45,4 L50,14 L55,2 L60,13 L65,4 L70,12 L75,1 L80,11 L85,3 L90,14 L95,5 L100,10 L100,0 Z' fill='black'/%3E%3C/svg%3E");
         }
 
-        /* COMPANION SHEET CSS (Parchment Style) */
+        /* COMPANION SHEET CSS (Classic Layout inside Parchment) */
         #companion-sheet { font-family: 'Lora', serif; color: #2c1e16; }
-        #companion-sheet input[type="text"], #companion-sheet input[type="number"], #companion-sheet textarea { color: #2c1e16; background: transparent; border: none; outline: none; font-family: 'Lora', serif; font-weight: 700; }
+        #companion-sheet input[type="text"], #companion-sheet input[type="number"], #companion-sheet textarea { color: #2c1e16; background: transparent; border: none; outline: none; font-family: 'Lora', serif; font-weight: 700; width: 100%; }
         #companion-sheet input:focus, #companion-sheet textarea:focus { background-color: rgba(255,255,255,0.4) !important; }
-        #companion-sheet .border-black { border-color: rgba(44, 30, 22, 0.7) !important; }
-        #companion-sheet input[type="checkbox"] { appearance: auto; accent-color: #7a1b1b; cursor: pointer; border: 1px solid rgba(44, 30, 22, 0.7); }
-        #companion-sheet label { color: #2c1e16; font-family: 'Cinzel', serif; }
+        #companion-sheet .border-black { border-color: rgba(44, 30, 22, 0.7) !important; border-width: 2px; }
+        #companion-sheet input[type="checkbox"] { appearance: auto; accent-color: #7a1b1b; cursor: pointer; border: 1px solid rgba(44, 30, 22, 0.7); width: 14px; height: 14px; }
+        #companion-sheet label { color: #2c1e16; font-family: 'Cinzel', serif; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
 
         #companion-sheet .bg-white { background-color: transparent !important; }
         #companion-sheet .bg-gray-100 { background-color: rgba(255,255,255,0.3) !important; }
         #companion-sheet .bg-gray-200 { background-color: rgba(255,255,255,0.4) !important; }
-        #companion-sheet .bg-gray-50 { background-color: rgba(255,255,255,0.2) !important; }
+
+        .sheet-box { border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 6px; padding: 8px; position: relative; background: rgba(255,255,255,0.2); }
+        .sheet-title { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #f1e5c5; padding: 0 4px; font-size: 0.6rem; font-weight: 800; font-family: 'Cinzel', serif; text-transform: uppercase; white-space: nowrap; }
+        .sheet-input-line { border-bottom: 1px solid rgba(44, 30, 22, 0.5); padding-bottom: 2px; margin-bottom: 4px; }
+        
+        .stat-block { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 8px; width: 50px; height: 60px; position: relative; background: rgba(255,255,255,0.3); }
+        .stat-title { font-size: 0.5rem; position: absolute; top: 2px; font-family: 'Cinzel', serif; font-weight: bold;}
+        .stat-val { width: 100%; text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 4px;}
+        .stat-mod { position: absolute; bottom: -10px; width: 30px; height: 20px; border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 10px; background: #f1e5c5; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
+
+        .ac-shield { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z' fill='none' stroke='rgba(44,30,22,0.7)' stroke-width='4'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; background-position: center; width: 60px; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .irv-grid { display: grid; grid-template-columns: 14px 14px 14px 1fr; gap: 2px; align-items: center; font-size: 0.7rem; margin-bottom: 4px;}
+        .irv-header { display: grid; grid-template-columns: 14px 14px 14px 1fr; gap: 2px; font-size: 0.6rem; font-weight: bold; text-align: center; margin-bottom: 2px; font-family: 'Cinzel', serif;}
 
         .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="min-h-screen">
 
     <div id="toast" class="toast">Message</div>
-    <div id="sync-indicator" class="fixed top-4 right-4 bg-green-800 text-parchment px-3 py-1 border border-green-600 rounded text-[10px] font-black uppercase tracking-widest opacity-0 pointer-events-none transition-opacity shadow-lg font-heading z-[9999]">Cloud Synced</div>
+    <div id="sync-indicator" class="fixed top-4 right-4 bg-green-800 text-parchment px-3 py-1 border border-green-600 rounded text-[10px] font-black uppercase tracking-widest opacity-0 pointer-events-none transition-opacity shadow-lg font-heading z-[1000]">Cloud Synced</div>
 
     <div id="initial-loading" class="flex flex-col items-center justify-center h-screen fade-in w-full text-center">
         <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
@@ -153,27 +165,27 @@
 
                 <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
                     <div class="flex items-center gap-4">
-                        <button onclick="window.navTo('campaigns.html')" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                        <button onclick="window.navigate('campaigns.html')" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
                     </div>
 
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
-                        <a onclick="window.navTo('characters.html')" class="nav-link">Party</a>
-                        <a onclick="window.navTo('encounters.html')" class="nav-link" id="nav-encounters">Encounters</a>
-                        <a onclick="window.navTo('npcs.html')" class="nav-link">NPCs</a>
-                        <a onclick="window.navTo('companions.html')" class="nav-link active !text-blood">Companions</a>
-                        <a onclick="window.navTo('beasts.html')" class="nav-link">Bestiary</a>
-                        <a onclick="window.navTo('backpack.html')" class="nav-link">Backpack</a>
-                        <a onclick="window.navTo('handbook.html')" class="nav-link">Handbook</a>
+                        <a onclick="window.navigate('characters.html')" class="nav-link">Party</a>
+                        <a onclick="window.navigate('npcs.html')" class="nav-link">NPCs</a>
+                        <a onclick="window.navigate('companions.html')" class="nav-link active !text-blood">Companions</a>
+                        <a onclick="window.navigate('beasts.html')" class="nav-link">Bestiary</a>
+                        <a onclick="window.navigate('backpack.html')" class="nav-link">Backpack</a>
+                        <a onclick="window.navigate('handbook.html')" class="nav-link">Handbook</a>
+                        <a onclick="window.navigate('graveyard.html')" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
             </header>
 
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <h2 id="view-title" class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Companions & Beasts</h2>
-                <div id="create-actions" class="flex flex-wrap gap-2 w-full md:w-auto">
-                    <button onclick="window.openAdoptModal()" class="flex-1 md:flex-none bg-transparent border border-gray-500 text-gray-300 hover:bg-gray-800 px-6 py-2.5 rounded text-xs md:text-sm shadow font-heading uppercase tracking-widest font-bold">Adopt Existing</button>
-                    <button onclick="window.openGachaModal()" class="flex-1 md:flex-none fantasy-btn px-6 py-2.5 rounded text-xs md:text-sm shadow">Spawn Wild Beast</button>
-                    <button id="btn-dm-bestiary" onclick="window.navTo('beasts.html')" class="flex-1 md:flex-none fantasy-btn-alt !border-purple-800 !text-purple-400 hover:!text-parchment px-6 py-2.5 rounded text-xs md:text-sm shadow hidden">DM: Bestiary</button>
+                <h2 class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Companions & Beasts</h2>
+                <div class="flex gap-2 w-full md:w-auto flex-wrap justify-center md:justify-end">
+                    <button onclick="window.openGachaModal()" class="fantasy-btn px-6 py-2.5 rounded text-xs md:text-sm shadow"><i class="fa-solid fa-paw mr-2"></i>Spawn Wild Beast</button>
+                    <button onclick="window.openAdoptModal()" class="fantasy-btn-alt px-6 py-2.5 rounded text-xs md:text-sm shadow">Adopt from Bestiary</button>
+                    <button id="btn-dm-bestiary" onclick="window.navigate('beasts.html')" class="hidden bg-purple-900 border border-purple-700 text-parchment hover:bg-purple-800 px-4 py-2.5 rounded text-xs shadow transition-colors font-heading tracking-widest uppercase">DM: Bestiary ➔</button>
                 </div>
             </div>
 
@@ -184,257 +196,345 @@
     </div>
 
     <!-- SHEET SCREEN -->
-    <div id="sheet-screen" class="hidden-view pb-12">
-        <nav class="sticky top-0 z-[60] bg-[#1a110b] p-2 shadow-2xl border-b border-gray-800 font-heading mb-8">
+    <div id="sheet-screen" class="hidden-view">
+        <nav class="sticky top-0 z-[60] bg-[#1a110b] p-2 shadow-2xl border-b border-gray-800 font-heading">
             <div class="max-w-6xl mx-auto flex justify-between items-center text-gray-300 px-4">
                 <button onclick="window.closeSheet()" class="text-gold hover:text-white font-bold flex items-center gap-2 text-xs uppercase tracking-widest"><span>←</span> Depart</button>
                 <div id="sheet-readonly-badge" class="hidden bg-gray-800 text-gray-400 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest border border-gray-600">VIEW ONLY</div>
                 <div class="flex items-center gap-4">
-                    <span id="sheet-type-badge" class="bg-green-900 border border-green-700 text-parchment px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest">COMPANION</span>
-                    <div class="flex items-center gap-2">
-                        <button id="sync-btn" onclick="window.saveCurrentCharacter(true)" class="fantasy-btn-alt px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">Sync</button>
-                        <button id="delete-char-btn" onclick="window.triggerDeleteModal()" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-parchment px-3 py-1 rounded text-[10px] font-black uppercase transition-colors">Manage</button>
-                    </div>
+                    <button id="sync-btn" onclick="window.saveCurrentCharacter(true)" class="fantasy-btn-alt px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">Sync</button>
+                    <button id="delete-char-btn" onclick="window.triggerDeleteModal()" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-parchment px-3 py-1 rounded text-[10px] font-black uppercase transition-colors">Manage</button>
                 </div>
             </div>
         </nav>
 
-        <div id="sheet-container" class="max-w-6xl mx-auto px-4">
-            <div id="companion-sheet" class="torn-paper p-4 md:p-8 mx-auto relative" style="max-width: 900px;">
+        <div id="sheet-wrapper" class="max-w-4xl mx-auto px-4 pb-20">
+            <!-- Classic 5e Layout inside Torn Parchment -->
+            <div id="companion-sheet" class="torn-paper p-6 md:p-10 mx-auto relative mt-12 mb-12">
                 
-                <div class="absolute top-2 right-2 flex items-center gap-1 border border-gray-300 p-1 rounded bg-gray-50 text-[10px] read-only-hide">
-                    <span class="font-bold uppercase text-gray-500">Prof Bonus</span>
-                    <input type="number" data-key="profBonus" class="w-8 text-center bg-transparent font-bold outline-none border-b border-gray-400" value="2" onchange="window.calcMods()">
-                </div>
-
                 <!-- Header Block -->
-                <div class="flex flex-col md:flex-row mb-6 border-b-4 border-black pb-4 gap-4">
-                    <div class="w-32 h-24 bg-gray-200 border-2 border-black flex items-center justify-center font-bold text-gray-400 overflow-hidden shrink-0 relative cursor-pointer group" onclick="if(!document.getElementById('sheet-readonly-badge').classList.contains('hidden')) return; const url = prompt('Image URL:'); if(url !== null) { document.getElementById('comp-img-val').value = url; window.saveCurrentCharacter(); }">
-                        <img id="comp-portrait-img" src="" class="absolute inset-0 w-full h-full object-cover hidden">
-                        <span id="comp-portrait-ph" class="group-hover:text-black transition-colors">IMAGE</span>
-                        <input type="hidden" data-key="imageSrc" id="comp-img-val">
+                <div class="flex flex-col md:flex-row gap-6 border-b-4 border-double border-black pb-4 mb-6">
+                    <div class="w-full md:w-1/3">
+                        <label class="block mb-1">Companion Name</label>
+                        <input type="text" data-key="name" class="text-3xl font-heading text-blood font-black border-b-2 border-black w-full" placeholder="Name">
                     </div>
-                    
-                    <div class="flex-grow flex flex-col justify-end">
-                        <input type="text" data-key="name" class="w-full text-3xl font-bold bg-transparent border-b-2 border-black outline-none uppercase pb-1" placeholder="Companion Name">
-                        <label class="text-[10px] uppercase font-bold text-gray-600 mt-1">Companion Name</label>
-                    </div>
-                    <div class="w-full md:w-1/2 border-2 border-black rounded-lg p-2 grid grid-cols-3 gap-x-2 gap-y-1">
-                        <div><input type="text" data-key="creature" class="w-full border-b border-black outline-none text-xs font-bold bg-transparent text-center"><label class="block text-center text-[7px] uppercase font-bold text-gray-500">Creature</label></div>
-                        <div><input type="text" data-key="owner" class="w-full border-b border-black outline-none text-xs font-bold bg-transparent text-gray-500 text-center" readonly><label class="block text-center text-[7px] uppercase font-bold text-gray-500">Bonded To</label></div>
-                        <div><input type="text" data-key="size" class="w-full border-b border-black outline-none text-xs font-bold bg-transparent text-center"><label class="block text-center text-[7px] uppercase font-bold text-gray-500">Creature Size</label></div>
-                        <div><input type="text" data-key="alignment" class="w-full border-b border-black outline-none text-xs font-bold bg-transparent text-center"><label class="block text-center text-[7px] uppercase font-bold text-gray-500">Creature Alignment</label></div>
-                        <div><input type="text" data-key="weight" class="w-full border-b border-black outline-none text-xs font-bold bg-transparent text-center"><label class="block text-center text-[7px] uppercase font-bold text-gray-500">Weight</label></div>
-                        <div><input type="text" data-key="creatureType" class="w-full border-b border-black outline-none text-xs font-bold bg-transparent text-center"><label class="block text-center text-[7px] uppercase font-bold text-gray-500">Creature Type</label></div>
+                    <div class="w-full md:w-2/3 grid grid-cols-2 lg:grid-cols-3 gap-4 bg-gray-100 p-3 rounded border border-black">
+                        <div><label>Creature</label><input type="text" data-key="creature" class="sheet-input-line text-sm" placeholder="e.g. Wolf"></div>
+                        <div><label class="flex justify-between items-end w-full"><span>Bonded To</span><button onclick="window.openRelationshipModal()" class="text-[9px] text-blood hover:text-red-700 bg-transparent border-none cursor-pointer flex items-center gap-1 transition-colors" id="bond-ui-btn" title="Build Relationship"><i class="fa-solid fa-heart"></i> Bond</button></label><input type="text" data-key="bondedTo" class="sheet-input-line text-sm text-green-900" placeholder="PC Name" readonly></div>
+                        <div><label>Size</label><input type="text" data-key="size" class="sheet-input-line text-sm" placeholder="Medium"></div>
+                        <div><label>Alignment</label><input type="text" data-key="alignment" class="sheet-input-line text-sm" placeholder="Unaligned"></div>
+                        <div><label>Weight</label><input type="text" data-key="weight" class="sheet-input-line text-sm" placeholder="100 lbs"></div>
+                        <div><label>Type</label><input type="text" data-key="creatureType" class="sheet-input-line text-sm" placeholder="Beast"></div>
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                    <div class="w-full md:w-1/5 border-2 border-black rounded-lg p-2 flex flex-col relative pt-5 min-h-[120px]">
-                        <label class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase border border-black rounded-full text-center">Speeds</label>
-                        <div id="speeds-container" class="space-y-1 flex-grow flex flex-col justify-center"></div>
-                    </div>
-
-                    <div class="w-full md:w-3/5 flex justify-between gap-2" id="comp-stats-container"></div>
-
-                    <div class="w-full md:w-1/5 border-2 border-black rounded-lg p-2 relative pt-3 min-h-[120px] flex flex-col justify-center">
-                        <label class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase whitespace-nowrap border border-black rounded-full">Saving Throws</label>
-                        <div id="comp-saves-container" class="space-y-0.5"></div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col md:flex-row gap-4 mb-4 items-start">
-                    <div class="w-full md:w-1/5 flex flex-col gap-4">
-                        <div class="flex gap-2">
-                            <div class="w-1/2 aspect-square border-2 border-black flex flex-col items-center justify-center relative bg-gray-100" style="border-radius: 50% 50% 20% 20% / 30% 30% 50% 50%;">
-                                <input type="number" data-key="ac" class="text-3xl font-bold w-full text-center bg-transparent outline-none border-none">
-                                <label class="text-[8px] font-bold uppercase absolute bottom-2">Armor Class</label>
-                            </div>
-                            <div class="w-1/2 border-2 border-black rounded-lg p-1 text-[8px] flex flex-col justify-center relative bg-white">
-                                <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-1 text-[8px] font-bold uppercase whitespace-nowrap z-10 border border-black rounded-full">Death Saves</label>
-                                <div class="flex items-center justify-between mb-1"><span class="font-bold">SUCCESSES</span> <div class="flex gap-0.5"><input type="checkbox" data-key="ds_succ_1" class="w-3 h-3"><input type="checkbox" data-key="ds_succ_2" class="w-3 h-3"><input type="checkbox" data-key="ds_succ_3" class="w-3 h-3"></div></div>
-                                <div class="flex items-center justify-between"><span class="font-bold">FAILURES</span> <div class="flex gap-0.5"><input type="checkbox" data-key="ds_fail_1" class="w-3 h-3"><input type="checkbox" data-key="ds_fail_2" class="w-3 h-3"><input type="checkbox" data-key="ds_fail_3" class="w-3 h-3"></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Left Column -->
+                    <div class="md:col-span-3 space-y-6">
+                        <!-- Speeds -->
+                        <div class="sheet-box pb-4">
+                            <div class="sheet-title">Speeds</div>
+                            <div class="space-y-2 mt-2">
+                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedWalk" class="w-12 text-center border-b border-black bg-transparent"> <label>Walk</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedFly" class="w-12 text-center border-b border-black bg-transparent"> <label>Fly</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedSwim" class="w-12 text-center border-b border-black bg-transparent"> <label>Swim</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedClimb" class="w-12 text-center border-b border-black bg-transparent"> <label>Climb</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedBurrow" class="w-12 text-center border-b border-black bg-transparent"> <label>Burrow</label></div>
                             </div>
                         </div>
-                        
-                        <div class="border-2 border-black rounded-lg p-2 text-center relative h-16 flex flex-col justify-center bg-white">
-                            <div class="flex justify-center items-center gap-1">
-                                <input type="number" data-key="hpCurrent" class="text-2xl font-bold w-12 text-center bg-transparent border-b border-gray-400 outline-none">
-                                <span class="text-gray-500 font-bold">/</span>
-                                <input type="number" data-key="hpMax" class="text-xl font-bold w-12 text-center bg-transparent text-gray-500 outline-none border-b border-gray-400">
+
+                        <!-- AC / HP -->
+                        <div class="flex gap-4">
+                            <div class="ac-shield shrink-0">
+                                <label class="text-[0.5rem] mt-1">Armor<br>Class</label>
+                                <input type="number" data-key="ac" class="text-xl font-bold text-center w-full" value="10">
                             </div>
-                            <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase whitespace-nowrap border border-black rounded-full">Hit Points</label>
+                            <div class="flex flex-col gap-2 flex-grow">
+                                <div class="sheet-box text-center">
+                                    <div class="sheet-title">Hit Points</div>
+                                    <div class="flex items-center justify-center gap-1 mt-1 text-lg font-bold">
+                                        <input type="number" data-key="hpCurrent" class="w-12 text-center text-blood" value="10"> / <input type="number" data-key="hpMax" class="w-12 text-center" value="10">
+                                    </div>
+                                </div>
+                                <div class="sheet-box text-center">
+                                    <div class="sheet-title">Temp HP</div>
+                                    <input type="number" data-key="tempHp" class="w-full text-center text-lg mt-1 font-bold" placeholder="--">
+                                </div>
+                            </div>
                         </div>
-                        <div class="border-2 border-black rounded-lg p-2 text-center relative h-12 flex flex-col justify-center bg-white">
-                            <input type="number" data-key="tempHp" class="text-xl font-bold w-full text-center bg-transparent outline-none border-b border-gray-400">
-                            <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase whitespace-nowrap border border-black rounded-full">Temporary HP</label>
+
+                        <!-- Senses -->
+                        <div class="sheet-box pb-4">
+                            <div class="sheet-title">Senses</div>
+                            <div class="space-y-2 mt-2">
+                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseBlindsight" class="w-16 border-b border-black bg-transparent text-center"> <label>Blindsight</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseDarkvision" class="w-16 border-b border-black bg-transparent text-center"> <label>Darkvision</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseTremor" class="w-16 border-b border-black bg-transparent text-center"> <label>Tremorsense</label></div>
+                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseTrue" class="w-16 border-b border-black bg-transparent text-center"> <label>Truesight</label></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="w-full md:w-2/5 border-2 border-black rounded-lg p-2 relative flex flex-col min-h-[180px] bg-white">
-                        <div class="absolute -top-2 left-6 bg-white px-1 text-[8px] font-bold">I R V</div>
-                        <div class="absolute -top-2 left-1/2 ml-2 bg-white px-1 text-[8px] font-bold">I R V</div>
-                        
-                        <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] font-bold mt-2 flex-grow content-start" id="comp-damage-container"></div>
-                        
-                        <label class="text-[8px] font-bold uppercase text-center mt-auto pt-2 block w-full border-t border-gray-300">Damage Immunities, Resistances & Vulnerabilities</label>
-                    </div>
+                    <!-- Middle Column -->
+                    <div class="md:col-span-6 space-y-6">
+                        <!-- Stats Array -->
+                        <div class="flex justify-between items-center bg-gray-100 p-2 rounded border border-black pb-4">
+                            <div class="stat-block"><span class="stat-title">STR</span><input type="number" data-key="str" class="stat-val" value="10"><span class="stat-mod" id="mod-str">+0</span></div>
+                            <div class="stat-block"><span class="stat-title">DEX</span><input type="number" data-key="dex" class="stat-val" value="10"><span class="stat-mod" id="mod-dex">+0</span></div>
+                            <div class="stat-block"><span class="stat-title">CON</span><input type="number" data-key="con" class="stat-val" value="10"><span class="stat-mod" id="mod-con">+0</span></div>
+                            <div class="stat-block"><span class="stat-title">INT</span><input type="number" data-key="int" class="stat-val" value="10"><span class="stat-mod" id="mod-int">+0</span></div>
+                            <div class="stat-block"><span class="stat-title">WIS</span><input type="number" data-key="wis" class="stat-val" value="10"><span class="stat-mod" id="mod-wis">+0</span></div>
+                            <div class="stat-block"><span class="stat-title">CHA</span><input type="number" data-key="cha" class="stat-val" value="10"><span class="stat-mod" id="mod-cha">+0</span></div>
+                        </div>
 
-                    <div class="w-full md:w-1/5 flex flex-col items-center">
-                        <div class="w-16 h-20 border-2 border-black rounded-lg flex flex-col items-center justify-center relative mb-4 bg-white">
-                            <input type="number" data-key="init" class="text-3xl font-bold w-full text-center bg-transparent outline-none border-b border-gray-400">
-                            <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-1 text-[8px] font-bold uppercase border border-black rounded-full text-center">Initiative</label>
+                        <!-- Damage Types IRV -->
+                        <div class="sheet-box pb-3">
+                            <div class="sheet-title" style="font-size: 0.5rem; white-space: normal; text-align: center; width: 80%; bottom: -12px;">Damage Immunities, Resistances & Vulnerabilities</div>
+                            <div class="grid grid-cols-2 gap-4 mt-2 px-2">
+                                <div>
+                                    <div class="irv-header"><span>I</span><span>R</span><span>V</span><span></span></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_bludgeoning_i"><input type="checkbox" data-key="irv_bludgeoning_r"><input type="checkbox" data-key="irv_bludgeoning_v"><label>Bludgeoning</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_piercing_i"><input type="checkbox" data-key="irv_piercing_r"><input type="checkbox" data-key="irv_piercing_v"><label>Piercing</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_slashing_i"><input type="checkbox" data-key="irv_slashing_r"><input type="checkbox" data-key="irv_slashing_v"><label>Slashing</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_cold_i"><input type="checkbox" data-key="irv_cold_r"><input type="checkbox" data-key="irv_cold_v"><label>Cold</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_fire_i"><input type="checkbox" data-key="irv_fire_r"><input type="checkbox" data-key="irv_fire_v"><label>Fire</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_poison_i"><input type="checkbox" data-key="irv_poison_r"><input type="checkbox" data-key="irv_poison_v"><label>Poison</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_acid_i"><input type="checkbox" data-key="irv_acid_r"><input type="checkbox" data-key="irv_acid_v"><label>Acid</label></div>
+                                </div>
+                                <div>
+                                    <div class="irv-header"><span>I</span><span>R</span><span>V</span><span></span></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_psychic_i"><input type="checkbox" data-key="irv_psychic_r"><input type="checkbox" data-key="irv_psychic_v"><label>Psychic</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_necrotic_i"><input type="checkbox" data-key="irv_necrotic_r"><input type="checkbox" data-key="irv_necrotic_v"><label>Necrotic</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_radiant_i"><input type="checkbox" data-key="irv_radiant_r"><input type="checkbox" data-key="irv_radiant_v"><label>Radiant</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_lightning_i"><input type="checkbox" data-key="irv_lightning_r"><input type="checkbox" data-key="irv_lightning_v"><label>Lightning</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_thunder_i"><input type="checkbox" data-key="irv_thunder_r"><input type="checkbox" data-key="irv_thunder_v"><label>Thunder</label></div>
+                                    <div class="irv-grid"><input type="checkbox" data-key="irv_force_i"><input type="checkbox" data-key="irv_force_r"><input type="checkbox" data-key="irv_force_v"><label>Force</label></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skills -->
+                        <div class="sheet-box pb-4">
+                            <div class="sheet-title">Skills</div>
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-1 mt-2 px-2 text-sm">
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_acrobatics"> <label>Acrobatics <span class="text-gray-500 normal-case font-normal">(Dex)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_animal"> <label>Animal Handling <span class="text-gray-500 normal-case font-normal">(Wis)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_arcana"> <label>Arcana <span class="text-gray-500 normal-case font-normal">(Int)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_athletics"> <label>Athletics <span class="text-gray-500 normal-case font-normal">(Str)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_deception"> <label>Deception <span class="text-gray-500 normal-case font-normal">(Cha)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_history"> <label>History <span class="text-gray-500 normal-case font-normal">(Int)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_insight"> <label>Insight <span class="text-gray-500 normal-case font-normal">(Wis)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_intimidation"> <label>Intimidation <span class="text-gray-500 normal-case font-normal">(Cha)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_investigation"> <label>Investigation <span class="text-gray-500 normal-case font-normal">(Int)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_medicine"> <label>Medicine <span class="text-gray-500 normal-case font-normal">(Wis)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_nature"> <label>Nature <span class="text-gray-500 normal-case font-normal">(Int)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_perception"> <label>Perception <span class="text-gray-500 normal-case font-normal">(Wis)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_performance"> <label>Performance <span class="text-gray-500 normal-case font-normal">(Cha)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_persuasion"> <label>Persuasion <span class="text-gray-500 normal-case font-normal">(Cha)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_religion"> <label>Religion <span class="text-gray-500 normal-case font-normal">(Int)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_sleight"> <label>Sleight of Hand <span class="text-gray-500 normal-case font-normal">(Dex)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_stealth"> <label>Stealth <span class="text-gray-500 normal-case font-normal">(Dex)</span></label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_survival"> <label>Survival <span class="text-gray-500 normal-case font-normal">(Wis)</span></label></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/5 border-2 border-black rounded-lg p-2 relative min-h-[180px] bg-white">
-                        <div class="grid grid-cols-2 gap-y-1 text-[8px] font-bold" id="comp-conditions-container"></div>
-                        <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[8px] font-bold uppercase whitespace-nowrap text-center leading-tight border border-black rounded-full">Condition<br>Immunities</label>
+                    <!-- Right Column -->
+                    <div class="md:col-span-3 space-y-6">
+                        <!-- Saves -->
+                        <div class="sheet-box pb-4">
+                            <div class="sheet-title">Saving Throws</div>
+                            <div class="space-y-1 mt-2 px-2 text-sm">
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_str"> <label>Strength</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_dex"> <label>Dexterity</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_con"> <label>Constitution</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_int"> <label>Intelligence</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_wis"> <label>Wisdom</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_cha"> <label>Charisma</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Init & Passives -->
+                        <div class="flex gap-4">
+                            <div class="sheet-box text-center flex-1">
+                                <div class="sheet-title">Initiative</div>
+                                <input type="number" data-key="init" class="w-full text-center text-xl mt-1 font-bold bg-transparent" value="0">
+                            </div>
+                        </div>
+                        <div class="sheet-box text-center">
+                            <div class="sheet-title" style="white-space: normal; line-height: 1;">Passive Wisdom (Perception)</div>
+                            <input type="number" data-key="passivePerception" class="w-full text-center text-xl mt-1 font-bold bg-transparent" value="10">
+                        </div>
+
+                        <!-- Condition Immunities -->
+                        <div class="sheet-box pb-4">
+                            <div class="sheet-title">Condition Immunities</div>
+                            <div class="grid grid-cols-2 gap-1 mt-2 px-1 text-xs">
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_blind"> <label>Blind</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_paralyze"> <label>Paralyze</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_charm"> <label>Charm</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_petrify"> <label>Petrify</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_deafen"> <label>Deafen</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_poison"> <label>Poison</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_frighten"> <label>Frighten</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_prone"> <label>Prone</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_grapple"> <label>Grapple</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_restrain"> <label>Restrain</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_incapacitate"> <label>Incap.</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_stun"> <label>Stun</label></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row gap-4 mb-4 relative mt-8">
-                    <div class="absolute -top-5 md:left-1/4 border-2 border-black rounded-full h-8 flex items-center bg-white z-10 w-full md:w-1/2 overflow-hidden shadow-sm">
-                        <div class="w-12 h-full border-r-2 border-black flex items-center justify-center bg-gray-100">
-                            <input type="number" data-key="passivePerception" class="w-full text-center font-bold bg-transparent outline-none border-none" readonly>
+                <!-- Bottom Three Panels -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <!-- Load -->
+                    <div class="sheet-box flex flex-col h-64">
+                        <div class="sheet-title">Load</div>
+                        <div class="flex justify-between gap-4 px-2 mt-2 border-b border-black pb-2 mb-2">
+                            <div class="text-center w-1/2"><label class="text-[0.55rem]">Current Carry</label><input type="text" data-key="carryLoad" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
+                            <div class="text-center w-1/2"><label class="text-[0.55rem]">Capacity</label><input type="text" data-key="carryCapacity" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
                         </div>
-                        <div class="flex-grow text-center text-[10px] font-bold uppercase tracking-widest px-2 whitespace-nowrap overflow-hidden text-ellipsis">Passive Wisdom (Perception)</div>
+                        <div class="flex justify-between gap-2 px-2 border-b border-black pb-2 mb-2">
+                            <div class="text-center w-1/2"><label class="text-[0.55rem]">Armor</label><input type="text" data-key="armorName" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
+                            <div class="text-center w-1/4"><label class="text-[0.55rem]">Weight</label><input type="text" data-key="armorWeight" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
+                            <div class="text-center w-1/4"><label class="text-[0.55rem]">AC</label><input type="text" data-key="armorAc" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
+                        </div>
+                        <textarea data-key="inventory" class="flex-grow w-full bg-transparent resize-none p-2 text-sm" placeholder="Other gear..."></textarea>
                     </div>
 
-                    <div class="w-full md:w-3/4 border-2 border-black rounded-lg p-4 pt-6 relative bg-white">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-1" id="comp-skills-container"></div>
-                        <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase border border-black rounded-full">Skills</label>
+                    <!-- Actions -->
+                    <div class="sheet-box flex flex-col h-64">
+                        <div class="sheet-title">Actions</div>
+                        <textarea data-key="actions" class="flex-grow w-full bg-transparent resize-none p-2 text-sm mt-2 font-serif" placeholder="Attacks, abilities, etc...
+e.g. Bite. +4 to hit, 1d6+2 piercing."></textarea>
                     </div>
 
-                    <div class="w-full md:w-1/4 border-2 border-black rounded-lg p-4 pt-4 relative flex flex-col justify-center bg-white">
-                        <div id="comp-senses-container" class="space-y-2"></div>
-                        <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase border border-black rounded-full">Senses</label>
+                    <!-- Traits -->
+                    <div class="sheet-box flex flex-col h-64">
+                        <div class="sheet-title">Traits</div>
+                        <textarea data-key="traits" class="flex-grow w-full bg-transparent resize-none p-2 text-sm mt-2 font-serif" placeholder="Keen Hearing and Smell, Pack Tactics..."></textarea>
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row gap-4 md:h-80">
-                    <div class="w-full md:w-1/3 border-2 border-black rounded-lg p-3 relative flex flex-col min-h-[200px] bg-white">
-                        <div class="flex justify-between text-[8px] font-bold uppercase mb-1 px-1">
-                            <span>Current Carry Load</span><span>Carrying Capacity</span>
-                        </div>
-                        <div class="flex gap-2 mb-3">
-                            <input type="text" data-key="carry_load" class="w-1/2 border border-gray-300 bg-gray-100 rounded px-1 outline-none text-xs h-6">
-                            <input type="text" data-key="carry_capacity" class="w-1/2 border border-gray-300 bg-gray-100 rounded px-1 outline-none text-xs h-6">
-                        </div>
-                        <div class="flex justify-between text-[8px] font-bold uppercase mb-1 gap-2 px-1">
-                            <span class="flex-grow">Armor</span><span class="w-12 text-center">Weight</span><span class="w-8 text-center">AC</span>
-                        </div>
-                        <div class="flex gap-2 mb-3">
-                            <input type="text" data-key="armor_name" class="flex-grow border border-gray-300 bg-gray-100 rounded px-1 outline-none text-xs h-6">
-                            <input type="text" data-key="armor_weight" class="w-12 border border-gray-300 bg-gray-100 rounded px-1 text-center outline-none text-xs h-6">
-                            <input type="text" data-key="armor_ac" class="w-8 border border-gray-300 bg-gray-100 rounded px-1 text-center outline-none text-xs h-6">
-                        </div>
-                        <textarea data-key="load_notes" class="flex-grow border border-gray-300 resize-none text-xs p-2 outline-none rounded" placeholder="Additional load notes..."></textarea>
-                        <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase border border-black rounded-full">Load</label>
-                    </div>
-
-                    <div class="w-full md:w-1/3 border-2 border-black rounded-lg p-3 relative flex flex-col min-h-[200px] bg-white">
-                        <div class="flex text-[8px] font-bold text-gray-500 uppercase mb-1 gap-1 pl-1 pr-6 border-b border-black pb-1">
-                            <span class="flex-grow">Name</span><span class="w-12 text-center">Atk Bonus</span><span class="w-20 text-center">Damage/Type</span>
-                        </div>
-                        <div id="comp-attacks-container" class="space-y-1 mb-2 max-h-32 overflow-y-auto pr-1"></div>
-                        <button onclick="window.addCompAttackItem()" class="text-[9px] bg-gray-200 hover:bg-gray-300 border border-black rounded px-3 py-1 mb-2 font-bold w-max mx-auto transition-colors read-only-hide">+ Add Attack</button>
-                        
-                        <textarea data-key="actions_notes" class="flex-grow border border-gray-300 resize-none text-xs p-2 outline-none rounded mt-1" placeholder="Other actions..."></textarea>
-                        <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase border border-black rounded-full">Actions</label>
-                    </div>
-
-                    <div class="w-full md:w-1/3 border-2 border-black rounded-lg p-3 relative flex flex-col min-h-[200px] bg-white">
-                        <textarea data-key="traits" class="flex-grow border border-gray-300 rounded resize-none text-xs outline-none p-2 bg-transparent" placeholder="Special traits, abilities..."></textarea>
-                        <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] font-bold uppercase border border-black rounded-full">Traits</label>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- ADOPT EXISTING COMPANION MODAL -->
+    <!-- GACHA / SPAWN MODAL -->
+    <div id="gacha-modal" class="modal-overlay hidden z-[700]">
+        <div class="modal-container !bg-ink !text-parchment !border-gold shadow-2xl max-w-2xl flex flex-col p-8 !bg-none text-center">
+            <h2 class="font-heading text-3xl font-black text-gold uppercase tracking-widest mb-2">Spawn Wild Beast</h2>
+            <p class="text-sm text-gray-400 font-serif italic mb-8">Roll to discover a companion wandering the wilds.</p>
+            
+            <div id="gacha-cages-area" class="flex justify-center gap-6 mb-8">
+                <div class="w-24 h-32 bg-gray-800 rounded flex items-center justify-center text-4xl shadow-inner gacha-cage" id="cage-1"><i class="fa-solid fa-box text-gray-600"></i></div>
+                <div class="w-24 h-32 bg-gray-800 rounded flex items-center justify-center text-4xl shadow-inner gacha-cage" id="cage-2"><i class="fa-solid fa-box text-gray-600"></i></div>
+                <div class="w-24 h-32 bg-gray-800 rounded flex items-center justify-center text-4xl shadow-inner gacha-cage" id="cage-3"><i class="fa-solid fa-box text-gray-600"></i></div>
+            </div>
+
+            <div id="gacha-result-area" class="hidden mb-8">
+                <div class="text-sm font-bold uppercase tracking-widest mb-1" id="gacha-rarity-label">Rare</div>
+                <h3 class="text-2xl font-black font-heading text-white mb-2" id="gacha-beast-name">Skywing Drake</h3>
+                <p class="text-xs text-gray-300 font-serif italic px-8" id="gacha-beast-desc">A cat-sized drake capable of gliding long distances.</p>
+            </div>
+
+            <button id="gacha-roll-btn" onclick="window.rollGacha()" class="fantasy-btn px-12 py-4 rounded text-xl font-bold uppercase tracking-widest shadow-lg mx-auto w-max mb-4 transition-all">Roll Encounter</button>
+            <button id="gacha-claim-btn" class="hidden fantasy-btn-alt px-12 py-4 rounded text-xl font-bold uppercase tracking-widest shadow-lg mx-auto w-max mb-4 transition-all border-green-600 text-green-500">Claim Companion</button>
+            
+            <button onclick="document.getElementById('gacha-modal').classList.add('hidden')" class="text-xs text-gray-500 uppercase tracking-widest font-bold hover:text-white mt-4">Close</button>
+        </div>
+    </div>
+
+    <!-- ADOPT COMPANION MODAL -->
     <div id="adopt-companion-modal" class="modal-overlay hidden z-[700]">
         <div class="modal-container !bg-ink !text-parchment !border-green-800 shadow-2xl max-w-2xl max-h-[85vh] flex flex-col p-6 md:p-8 !bg-none">
             <div class="flex justify-between items-center mb-6 border-b border-green-900/50 pb-4">
-                <h2 class="font-heading text-2xl font-black text-green-500 uppercase tracking-widest">Adopt Existing Beast</h2>
+                <h2 class="font-heading text-2xl font-black text-green-500 uppercase tracking-widest">Bestiary</h2>
                 <button onclick="document.getElementById('adopt-companion-modal').classList.add('hidden')" class="text-gray-500 hover:text-white text-xl font-black">✕</button>
             </div>
-            <p class="text-xs text-gray-400 mb-4 font-serif italic">This list shows all unowned public beasts and your private ties.</p>
             <div class="overflow-y-auto flex-grow pr-2 space-y-3 pb-4 scrollbar-hide" id="adopt-list-container">
                 <!-- Dynamic adopt content goes here -->
             </div>
         </div>
     </div>
 
-    <!-- GACHA "SPAWN WILD BEAST" MODAL -->
-    <div id="gacha-modal" class="modal-overlay hidden z-[800]">
-        <div class="modal-container !bg-ink !text-parchment !border-gold shadow-2xl max-w-4xl max-h-[90vh] flex flex-col p-6 md:p-10 !bg-none text-center">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-heading text-3xl font-black text-gold uppercase tracking-widest w-full border-b border-gold/30 pb-4">Spawn Wild Beast</h2>
-                <button onclick="document.getElementById('gacha-modal').classList.add('hidden')" class="absolute top-4 right-6 text-gray-500 hover:text-white text-xl font-black z-10">✕</button>
+    <!-- PC SELECTOR MODAL -->
+    <div id="pc-selector-modal" class="modal-overlay hidden z-[900]">
+        <div class="modal-container !bg-ink !text-parchment !border-gold shadow-2xl max-w-md flex flex-col p-6 !bg-none text-center">
+            <h2 class="font-heading text-2xl font-black text-gold uppercase tracking-widest mb-4">Select Character</h2>
+            <p class="text-sm text-gray-400 font-serif italic mb-6">Which character is bonding with this companion?</p>
+            <select id="pc-selector-dropdown" class="w-full bg-black/60 border border-gold p-3 rounded text-parchment font-bold uppercase tracking-widest mb-6 focus:outline-none">
+            </select>
+            <div class="flex gap-4">
+                <button onclick="document.getElementById('pc-selector-modal').classList.add('hidden')" class="flex-1 bg-transparent border border-gray-500 text-gray-400 hover:text-white px-4 py-2 rounded font-bold uppercase text-xs transition-colors">Cancel</button>
+                <button onclick="window.finalizeBond()" class="flex-1 fantasy-btn px-4 py-2 rounded font-bold uppercase text-xs shadow-lg">Confirm Bond</button>
             </div>
-            <p class="text-sm text-gray-400 font-serif italic mb-8">Roll to discover wild beasts. You may select one to form a permanent bond.</p>
-            
-            <div id="gacha-cages-area" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Cage 1 -->
-                <div class="gacha-cage rounded-lg p-6 flex flex-col items-center justify-center min-h-[250px] relative" id="cage-1">
-                    <div class="text-6xl text-gray-700 mb-4 cage-icon"><i class="fa-solid fa-paw"></i></div>
-                    <div class="font-heading font-bold text-gray-500 uppercase tracking-widest cage-text">Unknown</div>
-                </div>
-                <!-- Cage 2 -->
-                <div class="gacha-cage rounded-lg p-6 flex flex-col items-center justify-center min-h-[250px] relative" id="cage-2">
-                    <div class="text-6xl text-gray-700 mb-4 cage-icon"><i class="fa-solid fa-paw"></i></div>
-                    <div class="font-heading font-bold text-gray-500 uppercase tracking-widest cage-text">Unknown</div>
-                </div>
-                <!-- Cage 3 -->
-                <div class="gacha-cage rounded-lg p-6 flex flex-col items-center justify-center min-h-[250px] relative" id="cage-3">
-                    <div class="text-6xl text-gray-700 mb-4 cage-icon"><i class="fa-solid fa-paw"></i></div>
-                    <div class="font-heading font-bold text-gray-500 uppercase tracking-widest cage-text">Unknown</div>
-                </div>
-            </div>
-
-            <button id="gacha-roll-btn" onclick="window.rollGacha()" class="fantasy-btn px-12 py-4 rounded text-xl font-bold uppercase tracking-widest shadow-lg mx-auto w-max mb-4">Roll Encounter</button>
         </div>
     </div>
 
-    <!-- DELETE/MANAGE MODAL -->
-    <div id="delete-modal" class="modal-overlay hidden z-[900]">
-        <div class="modal-container">
-            <h2 class="modal-header">Manage Companion</h2>
-            <div id="delete-stage-1" class="space-y-4 font-heading">
-                <button id="archive-btn" onclick="window.archiveCharacter()" class="w-full py-3 bg-transparent text-ink border border-ink hover:bg-ink hover:text-parchment rounded font-bold uppercase text-xs">Sever Bond (Unlink)</button>
-                <button onclick="window.showPermDeleteConfirm()" class="w-full py-3 bg-transparent text-blood border-2 border-blood hover:bg-blood hover:text-parchment rounded font-bold uppercase text-xs">Permanently Delete</button>
+    <!-- DELETE MODAL -->
+    <div id="delete-modal" class="modal-overlay hidden z-[800]">
+        <div class="modal-container text-center">
+            <h2 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4">Manage Companion</h2>
+            <p class="text-sm font-serif mb-6">Permanently remove this companion from the database?</p>
+            <div class="flex gap-4 font-heading">
+                <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="flex-1 py-3 bg-transparent text-ink border border-ink rounded text-xs font-bold uppercase">Cancel</button>
+                <button onclick="window.executePermDelete()" class="flex-1 py-3 bg-blood text-parchment border border-gold rounded text-xs font-bold uppercase">Delete</button>
             </div>
-            <div id="delete-stage-confirm" class="hidden space-y-4 text-center font-heading">
-                <p class="text-sm font-bold text-blood uppercase border-b border-dashed border-blood pb-2 mb-4">Warning: This deletes the beast entirely.</p>
-                <div class="flex gap-2">
-                    <button onclick="window.resetDeleteModal()" class="flex-grow py-3 bg-transparent text-ink border border-ink rounded text-xs font-bold">Cancel</button>
-                    <button onclick="window.executePermDelete()" class="flex-grow py-3 bg-blood text-parchment border border-gold rounded text-xs font-bold">YES, DELETE</button>
+        </div>
+    </div>
+
+    <!-- RELATIONSHIP MODAL -->
+    <div id="relationship-modal" class="modal-overlay hidden z-[800]">
+        <div class="modal-container !bg-ink !text-parchment !border-gold shadow-2xl !bg-none relative max-w-md text-center">
+            <button onclick="document.getElementById('relationship-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i class="fa-solid fa-times text-xl"></i></button>
+            <h2 class="font-heading text-2xl font-black text-gold uppercase tracking-widest mb-2"><i class="fa-solid fa-heart text-red-500 mr-2 drop-shadow-[0_0_5px_rgba(239,68,68,0.5)]"></i>Companion Bond</h2>
+            <p class="text-sm font-serif mb-6 text-gray-400" id="rel-modal-subtitle">Build your relationship with this creature.</p>
+            
+            <div class="bg-black/60 rounded p-6 border border-gray-700 mb-6 text-left shadow-inner">
+                <div class="flex justify-between items-end mb-2">
+                    <span class="font-heading font-bold uppercase text-sm text-gray-300">Bond: <span id="rel-level-text" class="text-white text-lg drop-shadow-md">1 - Wary</span></span>
+                    <span class="text-xs text-gray-500 font-bold font-mono" id="rel-xp-text">0 / 20 XP</span>
                 </div>
+                <div class="w-full bg-gray-800 rounded-full h-4 mb-4 border border-gray-600 overflow-hidden relative">
+                    <div id="rel-progress-bar" class="bg-gradient-to-r from-red-600 to-green-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-gray-400 italic mb-2 h-8" id="rel-perk-text">The creature barely tolerates your presence.</p>
             </div>
-            <div class="modal-footer font-heading">
-                <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="px-6 py-2 text-555 font-bold uppercase text-xs underline">Close</button>
+
+            <div class="flex justify-center gap-4 font-heading">
+                <button onclick="window.executeBondingRoll()" class="fantasy-btn px-8 py-4 rounded text-sm font-bold uppercase w-full shadow-lg transition-transform hover:scale-[1.02] active:scale-95"><i class="fa-solid fa-hand-sparkles mr-2"></i> Spend Time & Train</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, addDoc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Navigation Helper
+        const urlParams = new URLSearchParams(window.location.search);
+        let appId = urlParams.get('id') || urlParams.get('campaignId') || "demo_campaign";
+        
+        window.navigate = (page) => {
+            window.location.href = `${page}?id=${appId}`;
+        };
 
         window.showToast = (m) => { 
             const t = document.getElementById('toast'); 
             if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 4000); } 
         };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'demo_campaign';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+        const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
             authDomain: "dndcampaigns-f3d48.firebaseapp.com",
             projectId: "dndcampaigns-f3d48",
-            storageBucket: "dndcampaigns-f3d48.firebasestorage.app"
+            storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
+            messagingSenderId: "1074491536795",
+            appId: "1:1074491536795:web:56211729489be776d79d3e"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -444,637 +544,46 @@
         let characters = [], currentUser = null, activeCharId = null, activeRole = 'player';
         let autoSaveTimer = null;
         let compendiumBeasts = [];
+        let pendingBond = null; // { type: 'gacha' | 'adopt', data: object | string }
 
-        // Core D&D Data Arrays for Companion Sheet
-        const SPEEDS = ['Walk', 'Fly', 'Swim', 'Climb', 'Burrow'];
-        const STAT_NAMES = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
-        const STATS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-        const DAMAGES = ['Bludgeoning', 'Piercing', 'Slashing', 'Cold', 'Fire', 'Poison', 'Acid', 'Psychic', 'Necrotic', 'Radiant', 'Lightning', 'Thunder', 'Force'];
-        const CONDITIONS = ['Blind', 'Charm', 'Deafen', 'Frighten', 'Grapple', 'Incapacitate', 'Paralyze', 'Petrify', 'Poison', 'Prone', 'Restrain', 'Stun'];
-        const SENSES = ['Blindsight', 'Darkvision', 'Tremorsense', 'Truesight'];
-        const SKILLS = [
-            {n:'Acrobatics', s:'dex'},{n:'Animal Handling', s:'wis'},{n:'Arcana', s:'int'},
-            {n:'Athletics', s:'str'},{n:'Deception', s:'cha'},{n:'History', s:'int'},
-            {n:'Insight', s:'wis'},{n:'Intimidation', s:'cha'},{n:'Investigation', s:'int'},
-            {n:'Medicine', s:'wis'},{n:'Nature', s:'int'},{n:'Perception', s:'wis'},
-            {n:'Performance', s:'cha'},{n:'Persuasion', s:'cha'},{n:'Religion', s:'int'},
-            {n:'Sleight of Hand', s:'dex'},{n:'Stealth', s:'dex'},{n:'Survival', s:'wis'}
-        ];
-
-        // Custom Navigation Logic
-        window.navTo = (page) => {
-            window.location.href = `${page}?id=${appId}`;
-        };
-
-        // Initialize Sheet UI
-        window.initSheetUI = () => {
-            const spC = document.getElementById('speeds-container');
-            if (spC) spC.innerHTML = SPEEDS.map(s => `
-                <div class="flex items-center justify-between text-[10px] font-bold">
-                    <input type="checkbox" data-key="has_speed_${s.toLowerCase()}" class="w-3 h-3 outline-none accent-black cursor-pointer">
-                    <input type="text" data-key="speed_${s.toLowerCase()}" class="w-8 border-b border-black outline-none text-center text-[10px] bg-transparent" placeholder="0">
-                    <span class="w-10 text-right uppercase">${s}</span>
-                </div>
-            `).join('');
-
-            const stC = document.getElementById('comp-stats-container');
-            if (stC) stC.innerHTML = STATS.map((s, i) => `
-                <div class="flex-1 border-2 border-black rounded-lg flex flex-col items-center relative pb-2 bg-white shadow-[2px_2px_0px_rgba(0,0,0,0.1)]">
-                    <label class="text-[7px] uppercase font-bold mt-1 tracking-tighter">${STAT_NAMES[i]}</label>
-                    <input type="number" data-key="${s}" class="text-2xl font-bold w-full text-center bg-transparent outline-none my-1 border-none" value="10" onchange="window.calcMods()">
-                    <div class="absolute -bottom-3 border-2 border-black bg-white rounded-full w-8 h-6 flex items-center justify-center font-bold text-xs" id="mod-${s}">+0</div>
-                </div>
-            `).join('');
-
-            const svC = document.getElementById('comp-saves-container');
-            if (svC) svC.innerHTML = STATS.map((s, i) => `
-                <div class="flex items-center gap-1 text-[9px] font-bold py-0.5">
-                    <input type="checkbox" data-key="save_prof_${s}" class="w-3 h-3 outline-none accent-black cursor-pointer" onchange="window.calcMods()">
-                    <span class="w-5 text-center border-b border-black" id="save-mod-${s}">+0</span>
-                    <span class="uppercase">${STAT_NAMES[i]}</span>
-                </div>
-            `).join('');
-
-            const dmC = document.getElementById('comp-damage-container');
-            if (dmC) {
-                let html = '';
-                DAMAGES.forEach(d => {
-                    const key = d.toLowerCase();
-                    html += `
-                    <div class="flex items-center gap-1">
-                        <div class="flex gap-0.5">
-                            <input type="checkbox" data-key="dmg_${key}_i" class="w-3 h-3 outline-none accent-black cursor-pointer" title="Immunity">
-                            <input type="checkbox" data-key="dmg_${key}_r" class="w-3 h-3 outline-none accent-black cursor-pointer" title="Resistance">
-                            <input type="checkbox" data-key="dmg_${key}_v" class="w-3 h-3 outline-none accent-black cursor-pointer" title="Vulnerability">
-                        </div>
-                        <span class="whitespace-nowrap">${d}</span>
-                    </div>`;
-                });
-                dmC.innerHTML = html;
-            }
-
-            const cdC = document.getElementById('comp-conditions-container');
-            if (cdC) cdC.innerHTML = CONDITIONS.map(c => `
-                <div class="flex items-center gap-1 py-0.5">
-                    <input type="checkbox" data-key="cond_imm_${c.toLowerCase()}" class="w-3 h-3 outline-none accent-black cursor-pointer">
-                    <span>${c}</span>
-                </div>
-            `).join('');
-
-            const skC = document.getElementById('comp-skills-container');
-            if (skC) skC.innerHTML = SKILLS.map(sk => {
-                const safe = sk.n.toLowerCase().replace(/ /g,'_').replace(/[()]/g,'');
-                return `
-                <div class="flex items-center gap-1 text-[9px] py-0.5 pr-2">
-                    <input type="checkbox" data-key="prof_${safe}" class="w-3 h-3 outline-none accent-black cursor-pointer" onchange="window.calcMods()">
-                    <span class="w-5 text-center border-b border-black font-bold" id="skill-mod-${safe}">+0</span>
-                    <span class="font-bold whitespace-nowrap">${sk.n} <span class="text-[7px] text-gray-500 font-normal">(${sk.s.charAt(0).toUpperCase() + sk.s.slice(1)})</span></span>
-                </div>`;
-            }).join('');
-
-            const snC = document.getElementById('comp-senses-container');
-            if (snC) snC.innerHTML = SENSES.map(s => `
-                <div class="flex items-center justify-between text-[10px] font-bold">
-                    <input type="checkbox" data-key="has_sense_${s.toLowerCase()}" class="w-3 h-3 outline-none accent-black cursor-pointer">
-                    <input type="text" data-key="sense_${s.toLowerCase()}" class="w-12 border-b border-black outline-none text-center bg-transparent" placeholder="ft.">
-                    <span class="flex-grow text-right">${s}</span>
-                </div>
-            `).join('');
-        };
-
-        window.addCompAttackItem = () => {
-            const c = document.getElementById('comp-attacks-container');
-            const d = document.createElement('div');
-            d.className = "flex gap-1 mb-1 items-center";
-            d.innerHTML = `
-                <input type="text" class="atk-name flex-grow border border-gray-300 bg-gray-100 rounded px-1 text-xs outline-none focus:bg-white transition-colors" placeholder="Name">
-                <input type="text" class="atk-bonus w-12 text-center border border-gray-300 bg-gray-100 rounded px-1 text-xs outline-none focus:bg-white transition-colors" placeholder="+Atk">
-                <input type="text" class="atk-dmg w-20 text-center border border-gray-300 bg-gray-100 rounded px-1 text-xs outline-none focus:bg-white transition-colors" placeholder="Dmg/Type">
-                <button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-red-500 font-bold hover:text-red-700 leading-none">×</button>
-            `;
-            c.appendChild(d);
-        };
-
-        const GACHA_POOLS = {
+        // --- GACHA BEAST DATA ---
+        const gachaPool = {
             common: [
-                {name: 'Dust Fox', creature: 'Scavenger Fox', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A clever fox-like scavenger adapted to ruined lands.'},
-                {name: 'Burrow Hound', creature: 'Tracking Canine', type: 'Beast', size: 'Medium', align: 'Unaligned', desc: 'A loyal canine used for tracking, hunting, and exploring ruins.'},
-                {name: 'Mossback Tortoise', creature: 'Fungal Reptile', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A small tortoise with moss and fungi growing naturally on its shell.'},
-                {name: 'Glowtail Lemur', creature: 'Jungle Climber', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A colorful jungle climber with a bioluminescent tail.'},
-                {name: 'Thorn Hare', creature: 'Quilled Mammal', type: 'Beast', size: 'Tiny', align: 'Unaligned', desc: 'A fast rabbit-like creature with protective quills.'},
-                {name: 'Sandrunner', creature: 'Desert Lizard', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A swift desert lizard often kept as a pet or messenger animal.'},
-                {name: 'Echo Bat', creature: 'Scouting Bat', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A large bat trained for scouting dark tunnels and ruins.'},
-                {name: 'Scrap Beetle', creature: 'Metallic Insect', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A metallic-shelled insect that feeds on rust and junk.'},
-                {name: 'River Skipper', creature: 'Amphibious Lizard', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'An amphibious lizard commonly found around rivers and marshes.'},
-                {name: 'Brushtail Grazer', creature: 'Herbivore', type: 'Beast', size: 'Medium', align: 'Unaligned', desc: 'A goat-sized herbivore often raised by frontier communities.'}
+                {name: "Dust Fox", type: "Beast", size: "Small", align: "Unaligned", desc: "A clever fox-like scavenger adapted to ruined lands.", ac: 12, hp: 6, stats:[8,14,10,3,12,8]},
+                {name: "Burrow Hound", type: "Beast", size: "Medium", align: "Unaligned", desc: "A loyal canine used for tracking, hunting, and exploring ruins.", ac: 13, hp: 11, stats:[13,14,12,3,12,7]},
+                {name: "Mossback Tortoise", type: "Beast", size: "Small", align: "Unaligned", desc: "A small tortoise with moss and fungi growing naturally on its shell.", ac: 15, hp: 8, stats:[10,8,14,2,10,5]},
+                {name: "Glowtail Lemur", type: "Beast", size: "Tiny", align: "Unaligned", desc: "A colorful jungle climber with a bioluminescent tail.", ac: 12, hp: 3, stats:[6,15,10,4,12,10]},
+                {name: "Thorn Hare", type: "Beast", size: "Tiny", align: "Unaligned", desc: "A fast rabbit-like creature with protective quills.", ac: 13, hp: 2, stats:[4,16,10,2,12,6]},
+                {name: "Sandrunner", type: "Beast", size: "Small", align: "Unaligned", desc: "A swift desert lizard often kept as a pet or messenger animal.", ac: 13, hp: 7, stats:[10,15,11,2,10,6]},
+                {name: "Echo Bat", type: "Beast", size: "Tiny", align: "Unaligned", desc: "A large bat trained for scouting dark tunnels and ruins.", ac: 12, hp: 2, stats:[4,15,8,2,12,6]},
+                {name: "Scrap Beetle", type: "Beast", size: "Small", align: "Unaligned", desc: "A metallic-shelled insect that feeds on rust and junk.", ac: 16, hp: 5, stats:[12,8,13,1,8,3]},
+                {name: "River Skipper", type: "Beast", size: "Small", align: "Unaligned", desc: "An amphibious lizard commonly found around rivers and marshes.", ac: 12, hp: 6, stats:[8,14,10,2,10,6]},
+                {name: "Brushtail Grazer", type: "Beast", size: "Medium", align: "Unaligned", desc: "A goat-sized herbivore often raised by frontier communities.", ac: 11, hp: 11, stats:[12,12,12,2,10,6]}
             ],
             rare: [
-                {name: 'Skywing Drake', creature: 'Lesser Drake', type: 'Dragon', size: 'Small', align: 'Unaligned', desc: 'A cat-sized drake capable of gliding long distances.'},
-                {name: 'Pulse Hound', creature: 'Heart-touched Canine', type: 'Monstrosity', size: 'Medium', align: 'Unaligned', desc: 'A canine that can sense Heart energy and hidden relics.'},
-                {name: 'Shardwing', creature: 'Crystal Avian', type: 'Beast', size: 'Small', align: 'Unaligned', desc: 'A bird whose crystal feathers refract light into brilliant colors.'},
-                {name: 'Bloomcrawler', creature: 'Fungal Reptile', type: 'Plant', size: 'Medium', align: 'Unaligned', desc: 'A fungal reptile that produces useful medicinal spores.'},
-                {name: 'Emberclaw', creature: 'Elemental Feline', type: 'Elemental', size: 'Medium', align: 'Unaligned', desc: 'A feline predator with naturally warm skin and ember-like eyes.'},
-                {name: 'Ironback Raptor', creature: 'Armored Reptile', type: 'Beast', size: 'Medium', align: 'Unaligned', desc: 'A small pack-hunting reptile covered in armored scales.'},
-                {name: 'Prism Moth', creature: 'Giant Insect', type: 'Beast', size: 'Medium', align: 'Unaligned', desc: 'A giant moth with crystalline wings and natural luminescence.'},
-                {name: 'Ghost Stag', creature: 'Ethereal Cervid', type: 'Fey', size: 'Large', align: 'Neutral', desc: 'A pale woodland deer known for disappearing into mist.'},
-                {name: 'Dunescale', creature: 'Monitor Lizard', type: 'Beast', size: 'Large', align: 'Unaligned', desc: 'A large monitor-lizard adapted to desert storms.'},
-                {name: 'Storm Crow', creature: 'Intelligent Avian', type: 'Beast', size: 'Small', align: 'Neutral', desc: 'An unusually intelligent bird believed to predict weather changes.'}
+                {name: "Skywing Drake", type: "Dragon", size: "Tiny", align: "Unaligned", desc: "A cat-sized drake capable of gliding long distances.", ac: 14, hp: 14, stats:[8,16,12,6,12,10]},
+                {name: "Pulse Hound", type: "Monstrosity", size: "Medium", align: "Unaligned", desc: "A canine that can sense Heart energy and hidden relics.", ac: 14, hp: 22, stats:[14,14,14,4,14,8]},
+                {name: "Shardwing", type: "Beast", size: "Small", align: "Unaligned", desc: "A bird whose crystal feathers refract light into brilliant colors.", ac: 13, hp: 10, stats:[6,16,10,4,14,10]},
+                {name: "Bloomcrawler", type: "Plant", size: "Small", align: "Unaligned", desc: "A fungal reptile that produces useful medicinal spores.", ac: 12, hp: 18, stats:[10,10,14,2,12,6]},
+                {name: "Emberclaw", type: "Beast", size: "Medium", align: "Unaligned", desc: "A feline predator with naturally warm skin and ember-like eyes.", ac: 13, hp: 16, stats:[14,15,12,3,12,8]},
+                {name: "Ironback Raptor", type: "Beast", size: "Medium", align: "Unaligned", desc: "A small pack-hunting reptile covered in armored scales.", ac: 15, hp: 19, stats:[12,14,14,3,10,6]},
+                {name: "Prism Moth", type: "Beast", size: "Small", align: "Unaligned", desc: "A giant moth with crystalline wings and natural luminescence.", ac: 12, hp: 9, stats:[4,14,10,2,10,12]},
+                {name: "Ghost Stag", type: "Fey", size: "Large", align: "Unaligned", desc: "A pale woodland deer known for disappearing into mist.", ac: 14, hp: 26, stats:[16,14,12,6,14,10]},
+                {name: "Dunescale", type: "Beast", size: "Large", align: "Unaligned", desc: "A large monitor-lizard adapted to desert storms.", ac: 14, hp: 30, stats:[16,12,14,2,10,6]},
+                {name: "Storm Crow", type: "Beast", size: "Tiny", align: "Unaligned", desc: "An unusually intelligent bird believed to predict weather changes.", ac: 13, hp: 5, stats:[4,16,10,8,14,10]}
             ],
             legendary: [
-                {name: 'Sunscale Dragon', creature: 'Ancient Reptile', type: 'Dragon', size: 'Huge', align: 'Neutral', desc: 'An ancient winged reptile descended from Founder-era genetic experiments. Scales shimmer like molten gold.'},
-                {name: 'The White Pulse Wolf', creature: 'Heart-touched Wolf', type: 'Monstrosity', size: 'Large', align: 'Neutral Good', desc: 'A singular Heart-touched wolf that can track Heart energy across continents.'},
-                {name: 'Crownhorn', creature: 'Crystal Stag', type: 'Fey', size: 'Huge', align: 'Lawful Neutral', desc: 'A colossal stag whose antlers resemble living crystal. Believed to guard ancient Heart sites.'},
-                {name: 'Leviathan Eel', creature: 'River Serpent', type: 'Monstrosity', size: 'Gargantuan', align: 'Unaligned', desc: 'A gigantic river serpent dwelling in deep waters. Older than many nations.'},
-                {name: 'Verdant Titan', creature: 'Wandering Beast', type: 'Plant', size: 'Gargantuan', align: 'Neutral', desc: 'An enormous wandering beast covered in forests and moss. Small ecosystems live on its back.'},
-                {name: 'Voidwing', creature: 'Storm Bird', type: 'Elemental', size: 'Huge', align: 'Chaotic Neutral', desc: 'A massive black bird said to fly between storms. Feathers absorb light.'},
-                {name: 'The First Hound', creature: 'Immortal Canine', type: 'Construct', size: 'Medium', align: 'Lawful Neutral', desc: 'A supposedly immortal canine created during the Founder Age. Said to know every road.'},
-                {name: 'Heart Phoenix', creature: 'Radiant Avian', type: 'Elemental', size: 'Large', align: 'Neutral Good', desc: 'A radiant avian creature born from concentrated Heart energy. Reforms after destruction.'},
-                {name: 'Deepmother Avatar', creature: 'Fungal Intelligence', type: 'Plant', size: 'Medium', align: 'Neutral', desc: 'An immense fungal intelligence that occasionally manifests through a companion-sized avatar.'},
-                {name: 'Starfang', creature: 'Sky Predator', type: 'Monstrosity', size: 'Huge', align: 'Unaligned', desc: 'A predatory sky-beast that glides on upper-atmosphere currents.'}
+                {name: "Sunscale Dragon", type: "Dragon", size: "Large", align: "Unaligned", desc: "An ancient winged reptile. Scales shimmer like molten gold.", ac: 18, hp: 80, stats:[20,14,18,10,14,14]},
+                {name: "The White Pulse Wolf", type: "Monstrosity", size: "Large", align: "Unaligned", desc: "A singular Heart-touched wolf. Can track energy across continents.", ac: 16, hp: 65, stats:[18,16,16,8,16,12]},
+                {name: "Crownhorn", type: "Fey", size: "Huge", align: "Unaligned", desc: "A colossal stag whose antlers resemble living crystal.", ac: 15, hp: 76, stats:[22,12,18,10,18,16]},
+                {name: "Leviathan Eel", type: "Monstrosity", size: "Huge", align: "Unaligned", desc: "A gigantic river serpent dwelling in deep waters.", ac: 16, hp: 90, stats:[22,14,20,4,12,8]},
+                {name: "Verdant Titan", type: "Plant", size: "Gargantuan", align: "Unaligned", desc: "An enormous wandering beast covered in forests and moss.", ac: 14, hp: 120, stats:[24,8,22,6,16,10]},
+                {name: "Voidwing", type: "Monstrosity", size: "Huge", align: "Unaligned", desc: "A massive black bird said to fly between storms.", ac: 17, hp: 85, stats:[20,18,16,8,16,12]},
+                {name: "The First Hound", type: "Construct", size: "Medium", align: "Unaligned", desc: "An immortal canine created during the Founder Age.", ac: 18, hp: 50, stats:[16,16,16,14,18,14]},
+                {name: "Heart Phoenix", type: "Elemental", size: "Large", align: "Unaligned", desc: "A radiant avian creature born from concentrated Heart energy.", ac: 16, hp: 70, stats:[14,18,16,10,16,18]},
+                {name: "Deepmother Avatar", type: "Plant", size: "Medium", align: "Unaligned", desc: "An immense fungal intelligence manifesting a small avatar.", ac: 15, hp: 60, stats:[12,12,18,18,20,14]},
+                {name: "Starfang", type: "Monstrosity", size: "Huge", align: "Unaligned", desc: "A predatory sky-beast that glides on upper-atmosphere currents.", ac: 17, hp: 95, stats:[22,16,18,6,14,10]}
             ]
-        };
-
-        window.openGachaModal = () => {
-            document.getElementById('gacha-modal').classList.remove('hidden');
-            // Reset cages
-            for(let i=1; i<=3; i++) {
-                const cage = document.getElementById(`cage-${i}`);
-                cage.className = "gacha-cage rounded-lg p-6 flex flex-col items-center justify-center min-h-[250px] relative";
-                cage.innerHTML = `
-                    <div class="text-6xl text-gray-700 mb-4 cage-icon"><i class="fa-solid fa-paw"></i></div>
-                    <div class="font-heading font-bold text-gray-500 uppercase tracking-widest cage-text">Unknown</div>
-                `;
-                cage.onclick = null;
-            }
-            document.getElementById('gacha-roll-btn').classList.remove('hidden');
-        };
-
-        window.rollGacha = () => {
-            document.getElementById('gacha-roll-btn').classList.add('hidden');
-            const cages = [document.getElementById('cage-1'), document.getElementById('cage-2'), document.getElementById('cage-3')];
-            
-            // Animation start
-            cages.forEach(c => c.classList.add('gacha-shake'));
-
-            setTimeout(() => {
-                cages.forEach((c, index) => {
-                    c.classList.remove('gacha-shake');
-                    
-                    // Determine rarity
-                    const roll = Math.random();
-                    let rarity = 'common';
-                    let pool = GACHA_POOLS.common;
-                    let glowClass = 'gacha-glow-common';
-                    let rarityText = '<span class="text-gray-300">Common</span>';
-
-                    if (roll > 0.90) { // 10% Legendary
-                        rarity = 'legendary'; pool = GACHA_POOLS.legendary; glowClass = 'gacha-glow-legendary';
-                        rarityText = '<span class="text-yellow-400 font-black animate-pulse">Legendary</span>';
-                    } else if (roll > 0.60) { // 30% Rare
-                        rarity = 'rare'; pool = GACHA_POOLS.rare; glowClass = 'gacha-glow-rare';
-                        rarityText = '<span class="text-blue-400 font-bold">Rare</span>';
-                    }
-
-                    // Pick random beast from pool
-                    const beast = pool[Math.floor(Math.random() * pool.length)];
-                    
-                    c.classList.add(glowClass);
-                    c.innerHTML = `
-                        <div class="text-[10px] uppercase font-bold tracking-widest mb-2 font-heading">${rarityText}</div>
-                        <div class="text-4xl mb-3">🐾</div>
-                        <h4 class="text-gold font-heading font-black text-lg leading-tight mb-2 uppercase">${beast.name}</h4>
-                        <p class="text-[10px] text-gray-300 font-serif italic mb-4">${beast.desc}</p>
-                        <button class="bg-black/50 border border-gold text-gold hover:bg-gold hover:text-ink px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors shadow">Claim Bond</button>
-                    `;
-                    
-                    c.onclick = () => window.claimGachaBeast(beast);
-                });
-            }, 1500); // 1.5 second shake
-        };
-
-        window.claimGachaBeast = async (beastData) => {
-            if (!currentUser) return;
-            try {
-                // Find user's main PC
-                const myPC = characters.find(c => c.type === 'PC' && c.owner === currentUser.username);
-
-                // Create the Beast Document
-                const newBeast = {
-                    type: 'BEAST',
-                    class: 'Companion',
-                    ownerId: currentUser.uid,
-                    owner: currentUser.username,
-                    isDeleted: false,
-                    status: 'alive',
-                    visibility: 'private', // Claimed via gacha makes it private tie
-                    name: beastData.name,
-                    creature: beastData.creature,
-                    creatureType: beastData.type,
-                    size: beastData.size,
-                    alignment: beastData.align,
-                    traits: beastData.desc,
-                    hpMax: 15,
-                    hpCurrent: 15,
-                    ac: 12,
-                    profBonus: 2,
-                    str: 10, dex: 12, con: 10, int: 8, wis: 12, cha: 10
-                };
-
-                const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), newBeast);
-                
-                // Link to PC if exists
-                if (myPC) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', myPC.id), { companionId: ref.id });
-                    window.showToast(`Bonded with ${beastData.name}! Linked to ${myPC.name}.`);
-                } else {
-                    window.showToast(`Claimed ${beastData.name}! (No active PC found to link to)`);
-                }
-
-                document.getElementById('gacha-modal').classList.add('hidden');
-                
-                // Open the new beast's sheet immediately
-                window.openSheet(ref.id);
-
-            } catch (err) {
-                console.error(err);
-                window.showToast("Failed to claim beast.");
-            }
-        };
-
-        window.openAdoptModal = async () => {
-            document.getElementById('adopt-companion-modal').classList.remove('hidden');
-            
-            // Show public beasts and private ties owned by the user
-            compendiumBeasts = characters.filter(c => {
-                if (c.isDeleted) return false;
-                if (!currentUser) return false;
-                if (c.type === 'BEAST') {
-                    return c.visibility === 'public' || c.owner === currentUser.username;
-                }
-                return false;
-            });
-            
-            const container = document.getElementById('adopt-list-container');
-            if (compendiumBeasts.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-gray-500 font-heading text-xs uppercase">No beasts available.</div>`;
-                return;
-            }
-
-            const myPC = characters.find(pc => pc.type === 'PC' && pc.owner === currentUser.username);
-
-            container.innerHTML = compendiumBeasts.map((b) => {
-                let badge = "";
-                if (b.visibility === 'private' && b.owner === currentUser.username) {
-                    badge = `<span class="bg-purple-900 border border-purple-700 text-parchment px-2 py-0.5 rounded text-[8px] ml-2 font-heading">Private Tie</span>`;
-                }
-
-                let btnText = "Bond";
-                let btnStyle = "bg-transparent border border-green-600 text-green-400 group-hover:bg-green-800 group-hover:text-parchment group-hover:border-green-600";
-                
-                // Check if already bonded to someone
-                const bondedPC = characters.find(pc => pc.type === 'PC' && pc.companionId === b.id);
-                if (bondedPC) {
-                    if (myPC && bondedPC.id === myPC.id) {
-                        btnText = "Your Companion";
-                        btnStyle = "bg-green-900 border-green-700 text-green-300 opacity-50 cursor-not-allowed";
-                    } else {
-                        badge += `<span class="bg-blue-900 border border-blue-700 text-parchment px-2 py-0.5 rounded text-[8px] ml-2 font-heading">With ${bondedPC.name}</span>`;
-                        btnText = "Steal/Transfer";
-                        btnStyle = "bg-transparent border border-blue-600 text-blue-300 group-hover:bg-blue-800 group-hover:text-parchment group-hover:border-blue-600";
-                    }
-                }
-
-                return `
-                <div class="bg-black/60 p-4 rounded border border-gray-700 flex justify-between items-center hover:border-green-500 transition-all cursor-pointer group">
-                    <div class="flex items-center gap-4">
-                        ${b.imageSrc ? `<img src="${b.imageSrc}" class="w-12 h-12 rounded object-cover border border-gray-600 group-hover:border-green-500">` : `<div class="w-12 h-12 rounded bg-gray-800 flex items-center justify-center text-xl border border-gray-600 group-hover:border-green-500">🐾</div>`}
-                        <div>
-                            <div class="text-gray-200 font-bold uppercase text-sm tracking-wider mb-1 font-heading">${b.name || 'Unknown Beast'} ${badge}</div>
-                            <div class="text-[9px] text-gray-500 uppercase font-bold tracking-[0.1em] flex gap-2 font-heading">
-                                <span class="text-green-500">HP ${b.hpMax || '?'}</span>
-                                <span>•</span>
-                                <span class="text-blue-400">AC ${b.ac || '10'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="window.executeAdopt('${b.id}')" class="${btnStyle} px-5 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors font-heading">${btnText}</button>
-                </div>
-            `}).join('');
-        };
-
-        window.executeAdopt = async (beastId) => {
-            if (!currentUser) return;
-            const myPC = characters.find(pc => pc.type === 'PC' && pc.owner === currentUser.username);
-            
-            try {
-                // If the beast is currently bonded to another PC, unlink it first
-                const oldPC = characters.find(pc => pc.type === 'PC' && pc.companionId === beastId);
-                if (oldPC && (!myPC || oldPC.id !== myPC.id)) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', oldPC.id), { companionId: null });
-                }
-
-                // Update the beast ownership
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', beastId), {
-                    ownerId: currentUser.uid,
-                    owner: currentUser.username,
-                    visibility: 'private' // Adopting makes it a private tie
-                });
-
-                // Link to active PC
-                if (myPC) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', myPC.id), { companionId: beastId });
-                    window.showToast(`Bonded with Beast! Linked to ${myPC.name}.`);
-                } else {
-                    window.showToast(`Bonded! (No active PC to link to)`);
-                }
-
-                document.getElementById('adopt-companion-modal').classList.add('hidden');
-                
-                // Instantly open the sheet
-                window.openSheet(beastId);
-
-            } catch (e) {
-                console.error(e);
-                window.showToast("Failed to adopt.");
-            }
-        };
-
-        window.renderDashboard = () => {
-            const compC = document.getElementById('companions-view-container');
-            if (!compC) return; 
-            compC.innerHTML = '';
-            
-            const activeBeasts = characters.filter(c => !c.isDeleted && c.type === 'BEAST');
-            const pcOwnedCompanions = new Set(characters.filter(c => c.type === 'PC').map(c => c.companionId).filter(Boolean));
-            
-            const claimed = activeBeasts.filter(c => pcOwnedCompanions.has(c.id));
-            const wild = activeBeasts.filter(c => !pcOwnedCompanions.has(c.id) && c.visibility === 'public');
-            const privateUnlinked = activeBeasts.filter(c => !pcOwnedCompanions.has(c.id) && c.visibility === 'private' && (currentUser && c.owner === currentUser.username));
-            
-            const renderSection = (title, items, color) => {
-                if (items.length === 0) return;
-                const s = document.createElement('div'); s.className = "bg-black/60 p-6 rounded border border-gray-700 shadow-xl mb-8";
-                s.innerHTML = `<h3 class="${color} font-heading font-bold uppercase text-sm mb-4 border-b border-gray-700 pb-2">${title}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
-                const g = s.querySelector('.grid'); items.forEach(c => g.appendChild(createCard(c))); compC.appendChild(s);
-            };
-            
-            renderSection('Claimed Companions', claimed, 'text-green-500');
-            renderSection('Your Private Ties (Unlinked)', privateUnlinked, 'text-purple-400');
-            renderSection('Wild Beasts', wild, 'text-gold');
-        };
-
-        function createCard(c) {
-            let statusClass = "border-gold", badgeHtml = "", imgStyle = "";
-            if (currentUser && c.owner === currentUser.username) badgeHtml += `<span class="status-badge bg-green-900 border border-green-700 text-parchment" style="left: 8px; right: auto;">YOURS</span>`;
-            else if (!c.owner || c.owner === 'DM') badgeHtml += `<span class="status-badge bg-gray-700 border border-gray-500 text-parchment" style="left: 8px; right: auto;">WILD</span>`;
-            
-            const mediaSrc = c.imageSrc ? `<img src="${c.imageSrc}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-xl">🐾</div>`;
-            const d = document.createElement('div'); 
-            d.className = `bg-black/70 rounded card border-l-4 flex flex-col overflow-hidden ${statusClass}`;
-            
-            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === c.id);
-            const companionOf = ownerPC ? `<p class="text-[9px] text-green-500 uppercase tracking-widest mt-0.5 font-heading">Companion to ${ownerPC.name}</p>` : `<p class="text-[9px] text-gray-500 uppercase tracking-widest mt-0.5 font-heading">Untamed Wildling</p>`;
-
-            d.innerHTML = `
-                <div class="p-4 md:p-5 relative flex-grow hover:bg-gray-800 transition-colors" onclick="window.openSheet('${c.id}')">
-                    ${badgeHtml}
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded bg-gray-900 border border-gray-700 overflow-hidden relative shrink-0">${mediaSrc}</div>
-                        <div class="flex-grow min-w-0">
-                            <h5 class="text-gold font-heading font-bold text-sm md:text-base leading-tight truncate">${c.name || 'Unknown'}</h5>
-                            ${companionOf}
-                        </div>
-                    </div>
-                </div>
-            `;
-            return d;
-        }
-
-        window.openSheet = (id) => { 
-            activeCharId = id; 
-            document.getElementById('dashboard-screen')?.classList.add('hidden-view'); 
-            document.getElementById('sheet-screen')?.classList.remove('hidden-view'); 
-            window.initSheetUI(); 
-            syncSheetData(); 
-            window.scrollTo(0,0); 
-            
-            // Update URL cleanly
-            const url = new URL(window.location);
-            url.searchParams.set('openSheet', id);
-            window.history.pushState({}, '', url);
-        };
-
-        window.closeSheet = () => { 
-            activeCharId = null; 
-            document.getElementById('sheet-screen')?.classList.add('hidden-view'); 
-            document.getElementById('dashboard-screen')?.classList.remove('hidden-view'); 
-            window.scrollTo(0,0);
-            
-            // Clean URL
-            const url = new URL(window.location);
-            url.searchParams.delete('openSheet');
-            window.history.pushState({}, '', url);
-        };
-
-        window.calcMods = () => { 
-            const p = parseInt(document.querySelector('[data-key="profBonus"]')?.value) || 2; 
-            let stats = {};
-            STATS.forEach(s => { 
-                const v = parseInt(document.querySelector(`[data-key="${s}"]`)?.value) || 10; 
-                const m = Math.floor((v - 10) / 2); 
-                stats[s] = {val: v, mod: m};
-                const el = document.getElementById(`mod-${s}`); 
-                if(el) el.textContent = (m >= 0 ? '+' : '') + m; 
-                
-                const sp = document.querySelector(`[data-key="save_prof_${s}"]`)?.checked; 
-                const sel = document.getElementById(`save-mod-${s}`); 
-                if(sel) sel.textContent = (m + (sp ? p : 0) >= 0 ? '+' : '') + (m + (sp ? p : 0)); 
-            }); 
-            
-            const ppInput = document.querySelector('[data-key="passivePerception"]'); 
-            if (ppInput) {
-                const wisMod = stats.wis ? stats.wis.mod : 0;
-                const percProf = document.querySelector(`[data-key="prof_perception"]`)?.checked;
-                ppInput.value = 10 + wisMod + (percProf ? p : 0);
-            }
-            
-            SKILLS.forEach(sk => { 
-                const safe = sk.n.toLowerCase().replace(/ /g,'_').replace(/[()]/g,''); 
-                const sMod = stats[sk.s] ? stats[sk.s].mod : 0;
-                const sp = document.querySelector(`[data-key="prof_${safe}"]`)?.checked; 
-                const sel = document.getElementById(`skill-mod-${safe}`); 
-                if(sel) sel.textContent = (sMod + (sp ? p : 0) >= 0 ? '+' : '') + (sMod + (sp ? p : 0)); 
-            });
-        };
-
-        function syncSheetData() {
-            const char = characters.find(c => c.id === activeCharId); if (!char) return;
-            const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM'; 
-            const isDM = activeRole === 'dm'; 
-            const canEdit = isOwner || isDM; 
-
-            document.querySelectorAll('#companion-sheet input, #companion-sheet textarea').forEach(el => { 
-                if (el.type === 'checkbox') el.disabled = !canEdit; 
-                else el.readOnly = !canEdit; 
-                if(!canEdit) el.classList.add('cursor-default');
-                else el.classList.remove('cursor-default');
-            });
-
-            document.getElementById('sync-btn').style.display = canEdit ? 'block' : 'none'; 
-            document.getElementById('delete-char-btn').style.display = canEdit ? 'block' : 'none';
-            document.querySelectorAll('.read-only-hide').forEach(el => el.classList.toggle('hidden', !canEdit));
-            document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
-            
-            const ownerField = document.querySelector('[data-key="owner"]');
-            if (ownerField) {
-                const pcOwner = characters.find(pc => pc.type === 'PC' && pc.companionId === char.id);
-                ownerField.value = pcOwner ? pcOwner.name : 'Unbonded';
-            }
-
-            document.querySelectorAll('[data-key]').forEach(el => { 
-                if(el.dataset.key === 'owner') return; // Handled above
-                if (el.type === 'checkbox') { el.checked = !!char[el.dataset.key]; } 
-                else { const rawVal = char[el.dataset.key]; el.value = (rawVal !== undefined && rawVal !== null) ? rawVal : ""; }
-            });
-            
-            for (let i = 1; i <= 3; i++) {
-                const sCb = document.querySelector(`[data-key="ds_succ_${i}"]`);
-                const fCb = document.querySelector(`[data-key="ds_fail_${i}"]`);
-                if(sCb) sCb.checked = (char.dsSucc || 0) >= i;
-                if(fCb) fCb.checked = (char.dsFail || 0) >= i;
-            }
-
-            const imgEl = document.getElementById('comp-portrait-img');
-            const phEl = document.getElementById('comp-portrait-ph');
-            if(imgEl && phEl) {
-                if(char.imageSrc) {
-                    imgEl.src = char.imageSrc;
-                    imgEl.classList.remove('hidden');
-                    phEl.classList.add('hidden');
-                } else {
-                    imgEl.src = '';
-                    imgEl.classList.add('hidden');
-                    phEl.classList.remove('hidden');
-                }
-            }
-
-            const ac = document.getElementById('comp-attacks-container'); 
-            if (ac) { 
-                ac.innerHTML = ''; 
-                (char.attacks || []).forEach(a => { 
-                    const d = document.createElement('div'); 
-                    d.className = "flex gap-1 mb-1 items-center"; 
-                    const disabledAttr = !canEdit ? 'readonly' : ''; 
-                    const delBtn = canEdit ? `<button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-red-500 font-bold hover:text-red-700 leading-none">×</button>` : ''; 
-                    d.innerHTML = `<input type="text" class="atk-name flex-grow border border-gray-300 bg-gray-100 rounded px-1 text-xs outline-none focus:bg-white transition-colors" value="${a.name}" ${disabledAttr}><input type="text" class="atk-bonus w-12 text-center border border-gray-300 bg-gray-100 rounded px-1 text-xs outline-none focus:bg-white transition-colors" value="${a.bonus}" ${disabledAttr}><input type="text" class="atk-dmg w-20 text-center border border-gray-300 bg-gray-100 rounded px-1 text-xs outline-none focus:bg-white transition-colors" value="${a.dmg}" ${disabledAttr}>${delBtn}`; 
-                    ac.appendChild(d); 
-                }); 
-            }
-            
-            window.calcMods();
-        }
-
-        window.saveCurrentCharacter = (m) => { 
-            if (!activeCharId || !currentUser) return; 
-            const char = characters.find(c => c.id === activeCharId); 
-            if (!((currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm')) return; 
-            
-            const data = {}; 
-            document.querySelectorAll('#companion-sheet [data-key]').forEach(el => {
-                if(el.dataset.key === 'owner') return;
-                data[el.dataset.key] = el.type === 'checkbox' ? el.checked : el.value;
-            }); 
-            
-            let newDsSucc = 0;
-            if (document.querySelector('[data-key="ds_succ_3"]')?.checked) newDsSucc = 3;
-            else if (document.querySelector('[data-key="ds_succ_2"]')?.checked) newDsSucc = 2;
-            else if (document.querySelector('[data-key="ds_succ_1"]')?.checked) newDsSucc = 1;
-
-            let newDsFail = 0;
-            if (document.querySelector('[data-key="ds_fail_3"]')?.checked) newDsFail = 3;
-            else if (document.querySelector('[data-key="ds_fail_2"]')?.checked) newDsFail = 2;
-            else if (document.querySelector('[data-key="ds_fail_1"]')?.checked) newDsFail = 1;
-
-            data.dsSucc = newDsSucc;
-            data.dsFail = newDsFail;
-            for(let i=1;i<=3;i++) { delete data[`ds_succ_${i}`]; delete data[`ds_fail_${i}`]; }
-
-            data.attacks = Array.from(document.querySelectorAll('#comp-attacks-container > div')).map(r => ({ 
-                name: r.querySelector('.atk-name')?.value || "", 
-                bonus: r.querySelector('.atk-bonus')?.value || "", 
-                dmg: r.querySelector('.atk-dmg')?.value || "" 
-            })); 
-            
-            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data); 
-            
-            if (m) window.showToast("Synced"); 
-            const si = document.getElementById('sync-indicator'); 
-            if (si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); } 
-        };
-
-        window.triggerDeleteModal = () => {
-            document.getElementById('delete-modal').classList.remove('hidden');
-            window.resetDeleteModal();
-        };
-
-        window.showPermDeleteConfirm = () => { document.getElementById('delete-stage-1').classList.add('hidden'); document.getElementById('delete-stage-confirm').classList.remove('hidden'); };
-        window.resetDeleteModal = () => { document.getElementById('delete-stage-1').classList.remove('hidden'); document.getElementById('delete-stage-confirm').classList.add('hidden'); };
-        
-        window.archiveCharacter = async () => { 
-            if (!activeCharId) return; 
-            
-            // Unlink from PC
-            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === activeCharId);
-            if(ownerPC) {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', ownerPC.id), { companionId: null });
-            }
-
-            // Unown Beast
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { 
-                owner: 'DM',
-                ownerId: null,
-                visibility: 'public'
-            }); 
-            document.getElementById('delete-modal').classList.add('hidden'); 
-            window.showToast("Bond Severed. Beast released to the wild.");
-            window.closeSheet(); 
-        };
-        
-        window.executePermDelete = async () => { 
-            if (!activeCharId) return; 
-            
-            // Clean up PC link
-            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === activeCharId);
-            if(ownerPC) {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', ownerPC.id), { companionId: null });
-            }
-
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId)); 
-            document.getElementById('delete-modal').classList.add('hidden'); 
-            window.closeSheet(); 
-        };
-
-        const checkOpenSheetUrl = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const sheetId = urlParams.get('openSheet');
-            if (sheetId && characters.some(c => c.id === sheetId)) {
-                window.openSheet(sheetId);
-            }
-        };
-
-        const setupListeners = () => {
-            if (!currentUser) return;
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { 
-                characters = snap.docs.map(d => ({id: d.id, ...d.data()})); 
-                window.renderDashboard(); 
-                if (activeCharId) syncSheetData(); 
-                
-                // Only try to open URL sheet once data is loaded initially
-                if (!window.initialLoadDone) {
-                    window.initialLoadDone = true;
-                    checkOpenSheetUrl();
-                }
-            });
         };
 
         // --- GLOBAL AUTHENTICATION SYNC ---
@@ -1109,27 +618,27 @@
                         if (campDoc.exists() && campDoc.data().name) {
                             const titleEls = [document.getElementById('main-campaign-title')];
                             titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                            document.title = `${campDoc.data().name} - Companions`;
+                            document.title = campDoc.data().name;
                         }
                     } catch (err) {
                         console.warn("Could not read campaign info:", err);
                     }
+                } else {
+                    const titleEls = [document.getElementById('main-campaign-title')];
+                    titleEls.forEach(el => { if(el) el.innerText = "Demo Campaign"; });
+                    document.title = "Demo Campaign";
                 }
 
                 document.getElementById('user-display-name').innerText = currentUser.username;
-                
-                // Set DM buttons based on activeRole
                 document.getElementById('btn-dm-bestiary').classList.toggle('hidden', activeRole !== 'dm');
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 
-                // Show the dashboard!
                 const dashboard = document.getElementById('dashboard-screen');
-                if(dashboard) {
-                    dashboard.classList.remove('hidden', 'hidden-view');
-                }
+                if(dashboard) { dashboard.classList.remove('hidden', 'hidden-view'); }
 
                 setupListeners();
+                checkOpenSheetUrl();
 
             } catch (error) {
                 console.error(error);
@@ -1137,12 +646,446 @@
             }
         });
 
+        const setupListeners = () => {
+            if (!currentUser) return;
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { 
+                characters = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+                window.renderDashboard(); 
+                if (activeCharId) syncSheetData(); 
+            });
+        };
+
+        const checkOpenSheetUrl = () => {
+            const sheetId = urlParams.get('openSheet');
+            if (sheetId && characters.find(c => c.id === sheetId)) {
+                window.openSheet(sheetId);
+            } else if (sheetId) {
+                // Wait a tiny bit for characters array to populate if it hasn't
+                setTimeout(() => {
+                    if(characters.find(c => c.id === sheetId)) window.openSheet(sheetId);
+                }, 1000);
+            }
+        };
+
+        // --- DASHBOARD RENDER ---
+        window.renderDashboard = () => {
+            const compC = document.getElementById('companions-view-container');
+            if (!compC) return; 
+            compC.innerHTML = '';
+            
+            const activeBeasts = characters.filter(c => !c.isDeleted && (c.type === 'BEAST' || (c.creatureType || '').toLowerCase() === 'beast'));
+            const pcOwnedCompanions = new Set(characters.filter(c => c.type === 'PC').map(c => c.companionId).filter(Boolean));
+            
+            const myCompanions = activeBeasts.filter(c => pcOwnedCompanions.has(c.id) && c.owner === currentUser.username);
+            const otherCompanions = activeBeasts.filter(c => pcOwnedCompanions.has(c.id) && c.owner !== currentUser.username);
+            const wild = activeBeasts.filter(c => !pcOwnedCompanions.has(c.id) && c.visibility !== 'private'); // Only show public beasts as wild
+            
+            const renderSection = (title, items, color) => {
+                if (items.length === 0) return;
+                const s = document.createElement('div'); s.className = "bg-black/60 p-6 rounded border border-gray-700 shadow-xl mb-8";
+                s.innerHTML = `<h3 class="${color} font-heading font-bold uppercase text-sm mb-4 border-b border-gray-700 pb-2">${title}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
+                const g = s.querySelector('.grid'); items.forEach(c => g.appendChild(createCard(c))); compC.appendChild(s);
+            };
+            
+            renderSection('Your Companions', myCompanions, 'text-green-500');
+            renderSection('Party Companions', otherCompanions, 'text-blue-400');
+            if(activeRole === 'dm') renderSection('Wild / Unclaimed', wild, 'text-gold');
+        };
+
+        function createCard(c) {
+            let badgeHtml = "";
+            if (c.status === 'dead') badgeHtml += `<span class="status-badge bg-black text-white">Dead</span>`;
+            
+            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === c.id);
+            const companionOf = ownerPC ? `<p class="text-[9px] text-green-500 uppercase tracking-widest mt-0.5 font-heading">Bonded to ${ownerPC.name}</p>` : `<p class="text-[9px] text-gray-500 uppercase tracking-widest mt-0.5 font-heading">Wild</p>`;
+
+            const d = document.createElement('div'); 
+            d.className = `bg-black/70 rounded card flex flex-col overflow-hidden`;
+            if (c.status === 'dead') d.style.filter = "grayscale(1)";
+
+            d.innerHTML = `
+                <div class="p-4 md:p-5 relative flex-grow hover:bg-gray-800 transition-colors" onclick="window.openSheet('${c.id}')">
+                    ${badgeHtml}
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded bg-gray-900 border border-gray-700 overflow-hidden relative shrink-0 flex items-center justify-center text-xl">🐾</div>
+                        <div class="flex-grow min-w-0">
+                            <h5 class="text-gold font-heading font-bold text-sm md:text-base leading-tight truncate">${c.name || 'Unknown'}</h5>
+                            ${companionOf}
+                        </div>
+                    </div>
+                </div>
+            `;
+            return d;
+        }
+
+        // --- SHEET LOGIC ---
+        window.openSheet = (id) => { 
+            activeCharId = id; 
+            document.getElementById('dashboard-screen')?.classList.add('hidden-view'); 
+            document.getElementById('sheet-screen')?.classList.remove('hidden-view'); 
+            syncSheetData(); 
+            window.scrollTo(0,0); 
+            
+            // Update URL without refreshing
+            const url = new URL(window.location);
+            url.searchParams.set('openSheet', id);
+            window.history.pushState({}, '', url);
+        };
+        
+        window.closeSheet = () => { 
+            activeCharId = null; 
+            document.getElementById('sheet-screen')?.classList.add('hidden-view'); 
+            document.getElementById('dashboard-screen')?.classList.remove('hidden-view'); 
+            window.scrollTo(0,0);
+            
+            const url = new URL(window.location);
+            url.searchParams.delete('openSheet');
+            window.history.pushState({}, '', url);
+        };
+
+        function syncSheetData() {
+            const char = characters.find(c => c.id === activeCharId); if (!char) return;
+            const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM'; 
+            const isDM = activeRole === 'dm'; 
+            const canEdit = isOwner || isDM; 
+
+            document.querySelectorAll('#companion-sheet input, #companion-sheet textarea').forEach(el => { 
+                if (el.type === 'checkbox') el.disabled = !canEdit; 
+                else el.readOnly = !canEdit; 
+            });
+            
+            document.getElementById('sync-btn').style.display = canEdit ? 'block' : 'none'; 
+            document.getElementById('delete-char-btn').style.display = canEdit ? 'block' : 'none';
+            document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
+            
+            // Sync bondedTo name dynamically
+            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === char.id);
+            if(ownerPC) char.bondedTo = ownerPC.name; else char.bondedTo = "None";
+
+            document.querySelectorAll('[data-key]').forEach(el => { 
+                if (el.type === 'checkbox') { el.checked = !!char[el.dataset.key]; } 
+                else { const rawVal = char[el.dataset.key]; el.value = (rawVal !== undefined && rawVal !== null) ? rawVal : ""; }
+            });
+
+            // Calculate mods
+            ['str','dex','con','int','wis','cha'].forEach(s => {
+                const v = parseInt(char[s]) || 10;
+                const m = Math.floor((v - 10) / 2);
+                const el = document.getElementById(`mod-${s}`);
+                if(el) el.textContent = (m >= 0 ? '+' : '') + m;
+            });
+        }
+
+        window.saveCurrentCharacter = (manual = false) => { 
+            if (!activeCharId || !currentUser) return; 
+            const char = characters.find(c => c.id === activeCharId); 
+            if (!((currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm')) return; 
+            
+            const data = {}; 
+            document.querySelectorAll('#companion-sheet [data-key]').forEach(el => {
+                if(el.dataset.key === 'bondedTo') return; // Readonly field
+                data[el.dataset.key] = el.type === 'checkbox' ? el.checked : el.value;
+            }); 
+            
+            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data); 
+            
+            if (manual) window.showToast("Synced"); 
+            const si = document.getElementById('sync-indicator'); 
+            if (si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); } 
+        };
+
         document.addEventListener('input', (e) => { 
-            if (e.target.dataset.key && activeCharId && document.getElementById('sheet-screen').classList.contains('hidden-view') === false) { 
+            if (e.target.dataset.key) { 
                 if (autoSaveTimer) clearTimeout(autoSaveTimer); 
                 autoSaveTimer = setTimeout(() => window.saveCurrentCharacter(), 1000); 
             } 
         });
+
+        window.triggerDeleteModal = () => document.getElementById('delete-modal').classList.remove('hidden');
+        window.executePermDelete = async () => { 
+            if (!activeCharId) return; 
+            const char = characters.find(c => c.id === activeCharId);
+            const oldPC = characters.find(pc => pc.type === 'PC' && pc.companionId === activeCharId);
+            if (oldPC) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', oldPC.id), { companionId: null });
+            
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId)); 
+            document.getElementById('delete-modal').classList.add('hidden'); 
+            window.closeSheet(); 
+        };
+
+        // --- RELATIONSHIP SYSTEM ---
+        window.openRelationshipModal = () => {
+            if (!activeCharId) return;
+            const char = characters.find(c => c.id === activeCharId);
+            if (!char) return;
+            
+            const pcOwner = characters.find(pc => pc.type === 'PC' && pc.companionId === char.id);
+            document.getElementById('rel-modal-subtitle').innerText = pcOwner 
+                ? `Bond between ${pcOwner.name || 'PC'} and ${char.name || 'Companion'}` 
+                : `Bond with ${char.name || 'Companion'}`;
+
+            window.updateRelationshipUI(char);
+            document.getElementById('relationship-modal').classList.remove('hidden');
+        };
+
+        window.updateRelationshipUI = (char) => {
+            let xp = parseInt(char.bondXP) || 0;
+            let level = 1, maxXP = 20, label = "Wary", perk = "The creature barely tolerates your presence.";
+            
+            if (xp >= 150) { level = 5; maxXP = 150; label = "Soulbound"; perk = "A legendary bond. The creature will fight to the death for you."; xp = 150; }
+            else if (xp >= 80) { level = 4; maxXP = 150; label = "Devoted"; perk = "Highly protective. Responds to complex commands easily."; }
+            else if (xp >= 40) { level = 3; maxXP = 80; label = "Loyal"; perk = "Trusts you implicitly. Follows you without hesitation."; }
+            else if (xp >= 20) { level = 2; maxXP = 40; label = "Trusting"; perk = "Comfortable around you. Will follow basic commands."; }
+
+            let progress = (xp / maxXP) * 100;
+            if (level === 5) progress = 100;
+
+            document.getElementById('rel-level-text').innerText = `${level} - ${label}`;
+            document.getElementById('rel-xp-text').innerText = level === 5 ? "MAX" : `${xp} / ${maxXP} XP`;
+            document.getElementById('rel-progress-bar').style.width = `${progress}%`;
+            document.getElementById('rel-perk-text').innerText = perk;
+        };
+
+        window.executeBondingRoll = async () => {
+            if (!activeCharId || !currentUser) return;
+            const char = characters.find(c => c.id === activeCharId);
+            
+            if (!((currentUser && char.owner === currentUser.username) || activeRole === 'dm')) {
+                window.showToast("Only the owner can build this bond.");
+                return;
+            }
+
+            const roll = Math.floor(Math.random() * 20) + 1;
+            let currentXP = parseInt(char.bondXP) || 0;
+            
+            if (currentXP >= 150) {
+                window.showToast("Bond is already at maximum!");
+                return;
+            }
+
+            let oldLevel = 1;
+            if (currentXP >= 80) oldLevel = 4;
+            else if (currentXP >= 40) oldLevel = 3;
+            else if (currentXP >= 20) oldLevel = 2;
+
+            currentXP += roll;
+            if (currentXP > 150) currentXP = 150;
+
+            let newLevel = 1;
+            if (currentXP >= 80) newLevel = 4;
+            else if (currentXP >= 40) newLevel = 3;
+            else if (currentXP >= 20) newLevel = 2;
+            if (currentXP >= 150) newLevel = 5;
+
+            if (newLevel > oldLevel) {
+                window.showToast(`Bond Level Up! You rolled a ${roll}!`);
+            } else {
+                window.showToast(`Training Roll: +${roll} Bond XP!`);
+            }
+            
+            char.bondXP = currentXP; 
+            window.updateRelationshipUI(char);
+
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { bondXP: currentXP });
+            } catch (e) {
+                console.error("Failed to save bond xp", e);
+            }
+        };
+
+        // --- GACHA SYSTEM ---
+        window.openGachaModal = () => {
+            document.getElementById('gacha-modal').classList.remove('hidden');
+            document.getElementById('gacha-result-area').classList.add('hidden');
+            document.getElementById('gacha-claim-btn').classList.add('hidden');
+            document.getElementById('gacha-roll-btn').classList.remove('hidden');
+            const cages = [document.getElementById('cage-1'), document.getElementById('cage-2'), document.getElementById('cage-3')];
+            cages.forEach(c => {
+                c.className = "w-24 h-32 bg-gray-800 rounded flex items-center justify-center text-4xl shadow-inner gacha-cage";
+                c.innerHTML = '<i class="fa-solid fa-box text-gray-600"></i>';
+            });
+        };
+
+        window.rollGacha = () => {
+            const rollBtn = document.getElementById('gacha-roll-btn');
+            rollBtn.disabled = true;
+            rollBtn.innerText = "Rolling...";
+
+            const cages = [document.getElementById('cage-1'), document.getElementById('cage-2'), document.getElementById('cage-3')];
+            cages.forEach(c => c.classList.add('animate-shake'));
+
+            setTimeout(() => {
+                cages.forEach(c => c.classList.remove('animate-shake'));
+                
+                // Roll 1-100 for rarity
+                const roll = Math.floor(Math.random() * 100) + 1;
+                let rarity = 'common';
+                if (roll > 75 && roll <= 95) rarity = 'rare';
+                else if (roll > 95) rarity = 'legendary';
+
+                const pool = gachaPool[rarity];
+                const beast = pool[Math.floor(Math.random() * pool.length)];
+
+                // Reveal animation
+                const revealCage = cages[1]; // Center cage
+                revealCage.innerHTML = '<i class="fa-solid fa-paw text-white"></i>';
+                
+                let glowClass = 'gacha-glow-common';
+                let rarityColor = 'text-gray-300';
+                if(rarity === 'rare') { glowClass = 'gacha-glow-rare'; rarityColor = 'text-blue-400'; }
+                if(rarity === 'legendary') { glowClass = 'gacha-glow-legendary'; rarityColor = 'text-gold'; }
+                
+                revealCage.classList.add(glowClass);
+
+                document.getElementById('gacha-rarity-label').innerText = rarity.toUpperCase();
+                document.getElementById('gacha-rarity-label').className = `text-sm font-bold uppercase tracking-widest mb-1 ${rarityColor}`;
+                document.getElementById('gacha-beast-name').innerText = beast.name;
+                document.getElementById('gacha-beast-desc').innerText = beast.desc;
+                
+                document.getElementById('gacha-result-area').classList.remove('hidden');
+                rollBtn.classList.add('hidden');
+                
+                const claimBtn = document.getElementById('gacha-claim-btn');
+                claimBtn.classList.remove('hidden');
+                claimBtn.onclick = () => window.claimGachaBeast(beast);
+
+            }, 1500);
+        };
+
+        // --- ADOPT SYSTEM ---
+        window.openAdoptModal = () => {
+            document.getElementById('adopt-companion-modal').classList.remove('hidden');
+            
+            // Pull Beasts that are public, not deleted, and don't have an owner mapped to a PC
+            const pcOwnedCompanions = new Set(characters.filter(c => c.type === 'PC').map(c => c.companionId).filter(Boolean));
+            compendiumBeasts = characters.filter(c => c.type === 'BEAST' && !c.isDeleted && !pcOwnedCompanions.has(c.id));
+            
+            const container = document.getElementById('adopt-list-container');
+            if (compendiumBeasts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="text-5xl mb-4 grayscale opacity-50">🏕️</div>
+                        <h4 class="text-sm font-black text-gray-500 uppercase tracking-[0.2em] mb-2 font-heading">No Wild Beasts Found</h4>
+                        <p class="text-xs text-gray-600 max-w-sm mx-auto font-serif italic">The DM must create Beasts in the Bestiary before you can adopt them.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = compendiumBeasts.map((b) => {
+                return `
+                <div class="bg-black/60 p-4 rounded border border-gray-700 flex justify-between items-center hover:border-green-600 transition-all cursor-pointer group" onclick="window.executeAdopt('${b.id}')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded bg-gray-800 flex items-center justify-center text-xl border border-gray-600 group-hover:border-green-500">🐾</div>
+                        <div>
+                            <div class="text-gray-200 font-bold uppercase text-sm tracking-wider mb-1 font-heading">${b.name || 'Unknown Beast'}</div>
+                            <div class="text-[9px] text-gray-500 uppercase font-bold tracking-[0.1em] flex gap-2 font-heading">
+                                <span class="text-green-500">HP ${b.hpMax || '?'}</span>
+                                <span>•</span>
+                                <span class="text-blue-400">AC ${b.ac || '10'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="bg-transparent border border-gray-600 text-gray-300 group-hover:bg-green-800 group-hover:text-parchment group-hover:border-green-600 px-5 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-colors font-heading">Bond</button>
+                </div>
+            `}).join('');
+        };
+
+        // --- PC SELECTOR / BONDING LOGIC ---
+        window.claimGachaBeast = (beastData) => {
+            if (!currentUser) return;
+            const myPCs = characters.filter(c => c.type === 'PC' && c.owner === currentUser.username);
+            
+            if (myPCs.length === 0) {
+                window.showToast("You need a character to bond with a beast!");
+                return;
+            }
+
+            pendingBond = { type: 'gacha', data: beastData };
+            window.openPcSelector(myPCs);
+        };
+
+        window.executeAdopt = (beastId) => {
+            if (!currentUser) return;
+            const myPCs = characters.filter(c => c.type === 'PC' && c.owner === currentUser.username);
+            
+            if (myPCs.length === 0) {
+                window.showToast("You need a character to bond with a beast!");
+                return;
+            }
+
+            pendingBond = { type: 'adopt', data: beastId };
+            window.openPcSelector(myPCs);
+        };
+
+        window.openPcSelector = (pcs) => {
+            const dropdown = document.getElementById('pc-selector-dropdown');
+            dropdown.innerHTML = pcs.map(pc => `<option value="${pc.id}">${pc.name || 'Unnamed'}</option>`).join('');
+            document.getElementById('pc-selector-modal').classList.remove('hidden');
+        };
+
+        window.finalizeBond = async () => {
+            const pcId = document.getElementById('pc-selector-dropdown').value;
+            const selectedPC = characters.find(c => c.id === pcId);
+            if (!selectedPC || !pendingBond) return;
+
+            document.getElementById('pc-selector-modal').classList.add('hidden');
+
+            try {
+                if (pendingBond.type === 'gacha') {
+                    const bData = pendingBond.data;
+                    const newBeast = {
+                        type: 'BEAST',
+                        ownerId: currentUser.uid,
+                        owner: currentUser.username,
+                        visibility: 'private',
+                        isDeleted: false,
+                        name: bData.name,
+                        creature: bData.name, // base creature type
+                        creatureType: bData.type,
+                        size: bData.size,
+                        alignment: bData.align,
+                        traits: bData.desc,
+                        hpMax: bData.hp,
+                        hpCurrent: bData.hp,
+                        ac: bData.ac,
+                        str: bData.stats[0], dex: bData.stats[1], con: bData.stats[2], int: bData.stats[3], wis: bData.stats[4], cha: bData.stats[5]
+                    };
+
+                    const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), newBeast);
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', pcId), { companionId: ref.id });
+                    
+                    window.showToast(`Bonded with ${bData.name}! Linked to ${selectedPC.name}.`);
+                    document.getElementById('gacha-modal').classList.add('hidden');
+                    window.openSheet(ref.id);
+                    
+                } else if (pendingBond.type === 'adopt') {
+                    const beastId = pendingBond.data;
+                    const oldPC = characters.find(pc => pc.type === 'PC' && pc.companionId === beastId);
+                    
+                    if (oldPC && oldPC.id !== pcId) {
+                        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', oldPC.id), { companionId: null });
+                    }
+
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', beastId), {
+                        ownerId: currentUser.uid,
+                        owner: currentUser.username,
+                        visibility: 'private' // Claimed beasts go private
+                    });
+
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', pcId), { companionId: beastId });
+                    
+                    window.showToast(`Bonded with Beast! Linked to ${selectedPC.name}.`);
+                    document.getElementById('adopt-companion-modal').classList.add('hidden');
+                    window.openSheet(beastId);
+                }
+                
+                pendingBond = null;
+            } catch (e) {
+                console.error(e);
+                window.showToast("Failed to complete bond.");
+            }
+        };
+
     </script>
 </body>
 </html>
