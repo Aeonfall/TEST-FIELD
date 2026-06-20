@@ -445,7 +445,10 @@
                         <p class="text-[8px] text-gray-600 italic mt-1 leading-tight font-serif">Link this pin to another map to let players enter it.</p>
                     </div>
                     
-                    <button id="btn-delete-pin" onclick="window.deleteActivePin()" class="mt-2 w-full bg-transparent border-2 border-blood text-blood font-bold uppercase text-[10px] py-2 rounded hover:bg-red-50 transition-colors font-heading tracking-widest">Destroy Landmark Record</button>
+                    <div class="flex gap-2 mt-2">
+                        <button id="btn-edit-pin" onclick="window.openEditPinModal()" class="w-full bg-transparent border-2 border-gold text-gold font-bold uppercase text-[10px] py-2 rounded hover:bg-gold hover:text-ink transition-colors font-heading tracking-widest">Edit Landmark</button>
+                        <button id="btn-delete-pin" onclick="window.deleteActivePin()" class="w-full bg-transparent border-2 border-blood text-blood font-bold uppercase text-[10px] py-2 rounded hover:bg-red-50 transition-colors font-heading tracking-widest">Destroy Record</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -613,6 +616,66 @@
             <div class="flex gap-3 font-heading mt-6">
                 <button onclick="window.cancelPin()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
                 <button onclick="window.savePin()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Plant Pin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT PIN MODAL -->
+    <div id="edit-pin-modal" class="modal-overlay hidden z-[9000]">
+        <div class="modal-container text-center">
+            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Edit Landmark</h3>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Landmark Name</label>
+                    <input type="text" id="edit-pin-name" class="w-full fantasy-input p-3 rounded font-bold uppercase tracking-widest mb-2 font-heading" placeholder="E.g., Ruined Tower">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Symbol / Icon</label>
+                        <select id="edit-pin-icon" class="w-full fantasy-input p-2.5 rounded text-sm">
+                            <option value="fa-solid fa-location-dot">Default Pin</option>
+                            <option value="fa-solid fa-circle-question">Unknown / Secret</option>
+                            <option value="fa-solid fa-city">City / Capital</option>
+                            <option value="fa-solid fa-house-chimney">Town / Village</option>
+                            <option value="fa-brands fa-fort-awesome">Castle / Fortress</option>
+                            <option value="fa-solid fa-dungeon">Dungeon / Ruin</option>
+                            <option value="fa-solid fa-mountain">Mountain / Peak</option>
+                            <option value="fa-solid fa-tree">Forest / Camp</option>
+                            <option value="fa-solid fa-water">Water / Lake</option>
+                            <option value="fa-solid fa-skull">Danger / Monster</option>
+                            <option value="fa-solid fa-gem">Magic / Treasure</option>
+                            <option value="fa-solid fa-anchor">Port / Harbor</option>
+                            <option value="fa-solid fa-archway">Portal / Gate</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Marker Color</label>
+                        <select id="edit-pin-color" class="w-full fantasy-input p-2.5 rounded text-sm font-bold" style="color: #dc2626;">
+                            <option value="#dc2626" style="color:#dc2626;">Blood Red</option>
+                            <option value="#2563eb" style="color:#2563eb;">Ocean Blue</option>
+                            <option value="#16a34a" style="color:#16a34a;">Forest Green</option>
+                            <option value="#ca8a04" style="color:#ca8a04;">Gold</option>
+                            <option value="#9333ea" style="color:#9333ea;">Royal Purple</option>
+                            <option value="#1f2937" style="color:#1f2937;">Ink Black</option>
+                            <option value="#f8fafc" style="color:#94a3b8; background:#1e293b;">White (for dark maps)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-2">
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Image URL (Optional)</label>
+                    <input type="text" id="edit-pin-image" class="w-full fantasy-input p-2.5 rounded text-sm" placeholder="https://example.com/landmark.jpg">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1 mt-2">Discovery Notes & Lore</label>
+                    <textarea id="edit-pin-desc" class="w-full fantasy-input p-3 rounded h-24 resize-none" placeholder="Record the history, dangers, or secrets found here..."></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 font-heading mt-6">
+                <button onclick="document.getElementById('edit-pin-modal').classList.add('hidden')" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
+                <button onclick="window.saveEditedPin()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save Changes</button>
             </div>
         </div>
     </div>
@@ -830,6 +893,7 @@
 
         // Ensure FontAwesome renders correctly in dynamic selects
         document.getElementById('new-pin-color').addEventListener('change', function() { this.style.color = this.value; });
+        document.getElementById('edit-pin-color').addEventListener('change', function() { this.style.color = this.value; });
 
         window.showToast = (m) => { const t = document.getElementById('toast'); if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 3000); } };
         window.routeTo = (page) => { try { window.location.href = `${page}?id=${appId}`; } catch(e) { window.showToast("Redirects disabled in preview window."); } };
@@ -1656,6 +1720,51 @@
             document.getElementById('new-pin-modal').classList.add('hidden');
             document.getElementById('new-pin-image').value = '';
             pendingPinCoords = null;
+        };
+
+        window.openEditPinModal = () => {
+            if (activePinIndex === null || currentMapIndex === null) return;
+            const pin = allMaps[currentMapIndex].pins[activePinIndex];
+            
+            document.getElementById('edit-pin-name').value = pin.name || '';
+            document.getElementById('edit-pin-desc').value = pin.desc || '';
+            document.getElementById('edit-pin-icon').value = pin.icon || 'fa-solid fa-location-dot';
+            
+            const colorSelect = document.getElementById('edit-pin-color');
+            colorSelect.value = pin.color || '#dc2626';
+            colorSelect.style.color = pin.color || '#dc2626';
+            
+            document.getElementById('edit-pin-image').value = pin.imageSrc || '';
+            
+            document.getElementById('edit-pin-modal').classList.remove('hidden');
+        };
+
+        window.saveEditedPin = async () => {
+            if (activeRole !== 'dm' || activePinIndex === null || currentMapIndex === null) return;
+            
+            const name = document.getElementById('edit-pin-name').value.trim();
+            const desc = document.getElementById('edit-pin-desc').value.trim();
+            const icon = document.getElementById('edit-pin-icon').value;
+            const color = document.getElementById('edit-pin-color').value;
+            const imageSrc = document.getElementById('edit-pin-image').value.trim();
+
+            if (!name) return window.showToast("Landmark needs a name.");
+
+            const mapsCopy = [...allMaps];
+            mapsCopy[currentMapIndex].pins[activePinIndex] = {
+                ...mapsCopy[currentMapIndex].pins[activePinIndex],
+                name: name,
+                desc: desc,
+                icon: icon,
+                color: color,
+                imageSrc: imageSrc
+            };
+
+            await updateDoc(cacheDocRef, { maps: mapsCopy });
+            document.getElementById('edit-pin-modal').classList.add('hidden');
+            window.showToast("Landmark updated.");
+            
+            window.focusPin(activePinIndex); // Refresh view
         };
 
 
