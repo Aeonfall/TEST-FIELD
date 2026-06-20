@@ -157,6 +157,10 @@
         
         .pending-line { stroke: #c5a059; stroke-width: 3; stroke-dasharray: 5,5; fill: none; pointer-events: none; animation: dash 10s linear infinite; }
         @keyframes dash { to { stroke-dashoffset: -100; } }
+
+        .stamp-pick-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: 0.2s; font-size: 16px; border: 1px solid transparent; }
+        .stamp-pick-btn:hover { background: rgba(255,255,255,0.1); border-color: #c5a059; transform: scale(1.1); }
+        .stamp-pick-btn.active-stamp { background: rgba(197, 160, 89, 0.3); border-color: #c5a059; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col h-screen overflow-hidden">
@@ -231,15 +235,55 @@
                 </div>
 
                 <!-- Tool: Decoration Stamps -->
-                <button class="dm-tool-btn" id="tool-stamp" onclick="window.setTool('stamp')" title="Place Decorative Stamps">
-                    <i class="fa-solid fa-stamp"></i>
-                </button>
+                <div class="relative">
+                    <button class="dm-tool-btn" id="tool-stamp" onclick="window.toggleSubTools('stamp-panel')" title="Place Landscape & City Stamps">
+                        <i class="fa-solid fa-stamp"></i>
+                    </button>
+                    <div id="stamp-panel" class="sub-tools-panel hidden w-56">
+                        <div class="text-[8px] font-black uppercase text-gold font-heading tracking-widest mb-1 border-b border-gold/30 pb-1 flex justify-between">
+                            <span>Stamp Palette</span>
+                            <span class="text-gray-400 italic font-serif normal-case">Click map to place</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-1 mb-2 max-h-40 overflow-y-auto p-1 bg-black/50 rounded border border-gray-700">
+                            <!-- Nature -->
+                            <button onclick="window.setStampStyle('fa-solid fa-tree', this)" class="stamp-pick-btn text-green-600 active-stamp"><i class="fa-solid fa-tree"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-mountain', this)" class="stamp-pick-btn text-gray-400"><i class="fa-solid fa-mountain"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-water', this)" class="stamp-pick-btn text-blue-500"><i class="fa-solid fa-water"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-leaf', this)" class="stamp-pick-btn text-green-400"><i class="fa-solid fa-leaf"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-fire', this)" class="stamp-pick-btn text-orange-500"><i class="fa-solid fa-fire"></i></button>
+                            
+                            <!-- Settlements -->
+                            <button onclick="window.setStampStyle('fa-solid fa-house', this)" class="stamp-pick-btn text-yellow-700"><i class="fa-solid fa-house"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-city', this)" class="stamp-pick-btn text-purple-400"><i class="fa-solid fa-city"></i></button>
+                            <button onclick="window.setStampStyle('fa-brands fa-fort-awesome', this)" class="stamp-pick-btn text-gray-300"><i class="fa-brands fa-fort-awesome"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-dungeon', this)" class="stamp-pick-btn text-red-800"><i class="fa-solid fa-dungeon"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-chess-rook', this)" class="stamp-pick-btn text-gray-400"><i class="fa-solid fa-chess-rook"></i></button>
+
+                            <!-- Markers / Details -->
+                            <button onclick="window.setStampStyle('fa-solid fa-skull', this)" class="stamp-pick-btn text-red-500"><i class="fa-solid fa-skull"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-campground', this)" class="stamp-pick-btn text-orange-400"><i class="fa-solid fa-campground"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-ship', this)" class="stamp-pick-btn text-yellow-600"><i class="fa-solid fa-ship"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-bridge-water', this)" class="stamp-pick-btn text-gray-500"><i class="fa-solid fa-bridge-water"></i></button>
+                            <button onclick="window.setStampStyle('fa-solid fa-flag', this)" class="stamp-pick-btn text-red-600"><i class="fa-solid fa-flag"></i></button>
+                        </div>
+                        <div class="flex gap-2 items-center mb-1">
+                            <input type="color" id="palette-color" class="w-8 h-8 p-0 border-2 border-gray-600 rounded cursor-pointer" value="#16a34a" onchange="window.updateStampPalette()">
+                            <div class="flex-1 flex flex-col">
+                                <label class="text-[8px] text-gray-400 uppercase font-bold tracking-widest">Size</label>
+                                <input type="range" id="palette-size" min="10" max="150" value="24" class="w-full accent-blood" oninput="window.updateStampPalette()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Canvas layers container (Transforms on pan/zoom) -->
             <div id="map-canvas-container" class="absolute top-0 left-0 origin-top-left transition-transform duration-75 ease-out">
                 <img id="map-image-display" src="" class="block shadow-2xl max-w-none hidden pointer-events-auto">
                 
+                <!-- Grid Layer -->
+                <div id="map-grid-layer" class="absolute inset-0 pointer-events-none z-[5]"></div>
+
                 <!-- Dynamic SVGs (Paths/Borders) -->
                 <svg id="map-svg-layer" class="map-svg-layer"></svg>
                 
@@ -297,6 +341,10 @@
                         </div>
                         <div class="layer-toggle" onclick="window.toggleLayer('paths')" id="layer-tgl-paths">
                             <span class="text-[10px] font-bold font-serif text-gray-300">Routes, Rivers & Borders</span>
+                            <i class="fa-solid fa-eye text-gold text-xs layer-icon"></i>
+                        </div>
+                        <div class="layer-toggle" onclick="window.toggleLayer('grid')" id="layer-tgl-grid">
+                            <span class="text-[10px] font-bold font-serif text-gray-300">Cartographer's Grid</span>
                             <i class="fa-solid fa-eye text-gold text-xs layer-icon"></i>
                         </div>
                         <div class="layer-toggle" onclick="window.toggleLayer('shrouds')" id="layer-tgl-shrouds">
@@ -425,10 +473,17 @@
                 <div class="bg-[rgba(139,90,43,0.1)] p-3 border border-gold/50 rounded border-dashed">
                     <label class="text-[10px] font-black text-blood uppercase font-heading tracking-widest block mb-2 border-b border-gold/30 pb-1">Image Source</label>
                     
-                    <!-- NEW: Procedural Generation -->
+                    <!-- NEW: Procedural Generation & Blank Canvas -->
                     <div class="mb-3 p-3 bg-black/80 rounded border border-gold/40 text-center">
-                        <button type="button" id="btn-auto-gen" onclick="window.autoGenerateMap()" class="w-full fantasy-btn-alt py-2 rounded text-[10px] uppercase tracking-widest mb-2"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Auto-Generate Terrain</button>
-                        <p class="text-[8px] text-gray-400 font-serif italic">Creates a unique layout based on the Classification selected above.</p>
+                        <div class="flex gap-2 mb-2">
+                            <button type="button" id="btn-auto-gen" onclick="window.autoGenerateMap()" class="flex-1 fantasy-btn-alt py-2 rounded text-[9px] uppercase tracking-widest"><i class="fa-solid fa-wand-magic-sparkles mb-1 block"></i>Auto-Generate</button>
+                            <div class="flex-1 flex flex-col gap-1">
+                                <button type="button" onclick="window.generateBlankCanvas('parchment')" class="w-full bg-[#f1e5c5] text-[#2c1e16] py-1 rounded text-[8px] font-bold uppercase tracking-wider hover:bg-white transition-colors border border-gold">Blank Parchment</button>
+                                <button type="button" onclick="window.generateBlankCanvas('grass')" class="w-full bg-[#4d7c0f] text-white py-1 rounded text-[8px] font-bold uppercase tracking-wider hover:bg-green-600 transition-colors border border-green-900">Grassland</button>
+                                <button type="button" onclick="window.generateBlankCanvas('water')" class="w-full bg-[#1e3a8a] text-white py-1 rounded text-[8px] font-bold uppercase tracking-wider hover:bg-blue-600 transition-colors border border-blue-900">Ocean / Sea</button>
+                            </div>
+                        </div>
+                        <p class="text-[8px] text-gray-400 font-serif italic">Generate terrain automatically, or start with a blank canvas to build from scratch using Stamps and Drawing tools.</p>
                         <img id="generator-preview" class="hidden w-full h-32 object-cover rounded mt-3 border border-gold shadow-inner" src="">
                     </div>
 
@@ -484,48 +539,6 @@
                     <button onclick="window.closeShroudModal()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
                     <button onclick="window.saveActiveShroud()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Save Shroud</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- STAMP MODAL -->
-    <div id="stamp-modal" class="modal-overlay hidden z-[9000]">
-        <div class="modal-container text-center">
-            <h3 class="font-heading text-xl font-black text-blood uppercase tracking-widest mb-4 border-b border-gold pb-2">Place Stamp</h3>
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Stamp Type</label>
-                    <select id="stamp-icon-select" class="w-full fantasy-input p-2.5 rounded text-sm font-bold" onchange="document.getElementById('custom-stamp-container').classList.toggle('hidden', this.value !== 'text')">
-                        <option value="fa-solid fa-tree">Forest / Tree</option>
-                        <option value="fa-solid fa-mountain">Mountain / Hills</option>
-                        <option value="fa-solid fa-house">Village / House</option>
-                        <option value="fa-solid fa-city">City / Castle</option>
-                        <option value="fa-solid fa-dungeon">Ruins / Dungeon</option>
-                        <option value="fa-brands fa-fly">Floating Island / Tech</option>
-                        <option value="fa-solid fa-skull">Danger / Skull</option>
-                        <option value="fa-solid fa-circle-question">Unknown / Question Mark</option>
-                        <option value="text">Custom Text / Emoji</option>
-                    </select>
-                </div>
-                <div id="custom-stamp-container" class="hidden">
-                    <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Custom Text / Emoji</label>
-                    <input type="text" id="stamp-custom-text" class="w-full fantasy-input p-2.5 rounded font-bold" placeholder="E.g., ⚔️ or 'The Whispering Woods'">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Color</label>
-                        <input type="color" id="stamp-color" class="w-full h-10 cursor-pointer rounded border border-gray-400" value="#16a34a">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-ink uppercase font-heading tracking-widest block mb-1">Size</label>
-                        <input type="range" id="stamp-size" min="10" max="100" value="24" class="w-full accent-blood mt-2">
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-3 font-heading mt-6">
-                <button onclick="window.cancelStamp()" class="flex-1 text-gray-600 font-bold uppercase text-[10px] border border-gray-400 rounded py-3 hover:bg-gray-200 transition-colors">Cancel</button>
-                <button onclick="window.saveStamp()" class="flex-1 fantasy-btn text-white font-bold uppercase text-[10px] rounded py-3 shadow-md transition-colors">Stamp Map</button>
             </div>
         </div>
     </div>
@@ -714,7 +727,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-        import { getFirestore, collection, doc, updateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, updateDoc as firebaseUpdateDoc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
         let firebaseConfig;
         if (typeof __firebase_config !== 'undefined') {
@@ -735,6 +748,20 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // --- OFFLINE / PERMISSION FALLBACK WRAPPER ---
+        // Intercepts cloud saves. If permission is denied, silently saves locally so the app keeps working.
+        const updateDoc = async (ref, data) => {
+            try {
+                await firebaseUpdateDoc(ref, data);
+            } catch (err) {
+                console.warn("Firebase save prevented by permissions/offline. Saving locally.", err);
+                if (data.maps) {
+                    allMaps = data.maps;
+                    localStorage.setItem(`chronicles_maps_${appId}`, JSON.stringify(data.maps));
+                }
+            }
+        };
 
         const urlParams = new URLSearchParams(window.location.search);
         let appId = urlParams.get('id') || urlParams.get('campaignId');
@@ -767,7 +794,8 @@
         
         // Sub-tool settings
         let drawStyle = { type: 'road', color: '#8b5a2b', width: 3, dashed: true };
-        let stampStyle = { icon: 'fa-tree', color: '#16a34a', size: 20 };
+        let stampStyle = { icon: 'fa-solid fa-tree', color: '#16a34a', size: 24 };
+        let stampSaveTimer = null;
         
         // Drawing specific state
         let isDrawing = false;
@@ -775,7 +803,7 @@
         let currentPathPoints = [];
 
         // Layers State
-        let layerVis = { pins: true, decor: true, paths: true, shrouds: true };
+        let layerVis = { pins: true, decor: true, paths: true, shrouds: true, grid: true };
         
         let activeShroudIndex = null;
         let selectedShroudPlayers = new Set();
@@ -798,6 +826,7 @@
             if (layerName === 'decor') window.renderDecorations();
             if (layerName === 'paths') window.renderPaths();
             if (layerName === 'shrouds') window.renderShrouds();
+            if (layerName === 'grid') window.renderGrid();
         };
 
         // --- CORE RENDERING LOGIC ---
@@ -835,6 +864,7 @@
             window.renderPins();
             window.renderDecorations();
             window.renderPaths();
+            window.renderGrid();
         };
 
         window.clearMapDisplay = () => {
@@ -849,6 +879,7 @@
             document.getElementById('map-shrouds-container').innerHTML = '';
             document.getElementById('map-decor-container').innerHTML = '';
             document.getElementById('map-svg-layer').innerHTML = '';
+            document.getElementById('map-grid-layer').innerHTML = '';
             
             document.getElementById('legend-pins-list').innerHTML = '';
             window.closePinDetails();
@@ -1115,6 +1146,25 @@
             });
         };
 
+        // --- MAP RENDER: GRID ---
+        window.renderGrid = () => {
+            const layer = document.getElementById('map-grid-layer');
+            layer.innerHTML = '';
+            if (currentMapIndex === null || !layerVis.grid) return;
+
+            const img = document.getElementById('map-image-display');
+            if(!img) return;
+
+            // Render a square grid pattern using CSS background
+            // For a D&D builder, a standard 50px physical grid is common
+            layer.style.backgroundImage = `
+                linear-gradient(to right, rgba(0,0,0,0.3) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.3) 1px, transparent 1px)
+            `;
+            layer.style.backgroundSize = `50px 50px`;
+            layer.style.width = `${img.offsetWidth}px`;
+            layer.style.height = `${img.offsetHeight}px`;
+        };
 
         // --- FOG OF WAR (SHROUD) LOGIC ---
         window.renderShrouds = () => {
@@ -1347,6 +1397,7 @@
             
             // Close sub-panels if changing main tool
             document.getElementById('draw-panel').classList.add('hidden');
+            document.getElementById('stamp-panel').classList.add('hidden');
 
             // Handle drawing cancellation
             if (toolName !== 'draw' && isDrawing) {
@@ -1367,10 +1418,12 @@
             
             // Close all
             document.getElementById('draw-panel').classList.add('hidden');
+            document.getElementById('stamp-panel').classList.add('hidden');
             
             if (isHidden) {
                 panel.classList.remove('hidden');
                 if(panelId === 'draw-panel') window.setTool('draw');
+                if(panelId === 'stamp-panel') window.setTool('stamp');
             }
         };
 
@@ -1382,10 +1435,15 @@
             document.getElementById('draw-panel').classList.add('hidden');
         };
 
-        window.setStampStyle = (icon, color, size) => {
-            stampStyle = { icon, color, size };
-            window.showToast("Stamp selected.");
-            document.getElementById('stamp-panel').classList.add('hidden');
+        window.setStampStyle = (icon, btnElement) => {
+            stampStyle.icon = icon;
+            document.querySelectorAll('.stamp-pick-btn').forEach(b => b.classList.remove('active-stamp'));
+            if(btnElement) btnElement.classList.add('active-stamp');
+        };
+
+        window.updateStampPalette = () => {
+            stampStyle.color = document.getElementById('palette-color').value;
+            stampStyle.size = parseInt(document.getElementById('palette-size').value);
         };
 
         // Handle Map Clicks based on Current Tool
@@ -1417,11 +1475,6 @@
                 document.getElementById('new-pin-modal').classList.remove('hidden');
                 window.setTool('pan'); 
             } 
-            else if (currentTool === 'stamp') {
-                pendingStampCoords = { x: xPct, y: yPct };
-                document.getElementById('stamp-custom-text').value = '';
-                document.getElementById('stamp-modal').classList.remove('hidden');
-            }
             else if (currentTool === 'shroud') {
                 if (!mapsCopy[currentMapIndex].shrouds) mapsCopy[currentMapIndex].shrouds = [];
                 mapsCopy[currentMapIndex].shrouds.push({ id: crypto.randomUUID(), x: xPct, y: yPct, radius: 15, allowedUsers: [] });
@@ -1429,12 +1482,25 @@
                 window.renderShrouds();
             }
             else if (currentTool === 'stamp') {
+                // Continuous stamping directly on click
                 if (!mapsCopy[currentMapIndex].decorations) mapsCopy[currentMapIndex].decorations = [];
+                
+                // Add tiny random offset to make rapid placing look organic
+                const ox = (Math.random() - 0.5) * 0.5;
+                const oy = (Math.random() - 0.5) * 0.5;
+
                 mapsCopy[currentMapIndex].decorations.push({
-                    id: crypto.randomUUID(), x: xPct, y: yPct, icon: stampStyle.icon, color: stampStyle.color, size: stampStyle.size
+                    id: crypto.randomUUID(), x: xPct + ox, y: yPct + oy, icon: stampStyle.icon, color: stampStyle.color, size: stampStyle.size
                 });
-                await updateDoc(cacheDocRef, { maps: mapsCopy });
+                
+                // Render immediately for responsiveness
                 window.renderDecorations();
+
+                // Debounce save to Firebase to prevent spamming
+                clearTimeout(stampSaveTimer);
+                stampSaveTimer = setTimeout(async () => {
+                    await updateDoc(cacheDocRef, { maps: mapsCopy });
+                }, 1000);
             }
             else if (currentTool === 'draw') {
                 isDrawing = true;
@@ -1495,43 +1561,6 @@
             await updateDoc(cacheDocRef, { maps: mapsCopy });
             window.renderPaths();
         };
-
-
-        // --- STAMP CREATION ---
-        window.cancelStamp = () => { 
-            pendingStampCoords = null; 
-            document.getElementById('stamp-modal').classList.add('hidden'); 
-        };
-
-        window.saveStamp = async () => {
-            if (!pendingStampCoords || currentMapIndex === null) return;
-            
-            const iconType = document.getElementById('stamp-icon-select').value;
-            const color = document.getElementById('stamp-color').value;
-            const size = parseInt(document.getElementById('stamp-size').value);
-            const text = document.getElementById('stamp-custom-text').value.trim();
-
-            if (iconType === 'text' && !text) return window.showToast("Custom text cannot be empty.");
-
-            const mapsCopy = [...allMaps];
-            if (!mapsCopy[currentMapIndex].decorations) mapsCopy[currentMapIndex].decorations = [];
-            
-            mapsCopy[currentMapIndex].decorations.push({
-                id: crypto.randomUUID(), 
-                x: pendingStampCoords.x, 
-                y: pendingStampCoords.y, 
-                icon: iconType, 
-                color: color, 
-                size: size,
-                text: iconType === 'text' ? text : null
-            });
-
-            await updateDoc(cacheDocRef, { maps: mapsCopy });
-            document.getElementById('stamp-modal').classList.add('hidden');
-            pendingStampCoords = null;
-            window.renderDecorations();
-        };
-
 
         // --- PIN CREATION (Lore/Landmark) ---
         window.cancelPin = () => { pendingPinCoords = null; document.getElementById('new-pin-modal').classList.add('hidden'); };
@@ -1769,6 +1798,33 @@
         };
 
         // --- PROCEDURAL MAP GENERATOR ---
+        window.generateBlankCanvas = (bgType) => {
+            const canvas = document.createElement('canvas');
+            const w = 1600; const h = 1200;
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            
+            if (bgType === 'parchment') ctx.fillStyle = '#d8cba7';
+            else if (bgType === 'grass') ctx.fillStyle = '#4d7c0f';
+            else if (bgType === 'water') ctx.fillStyle = '#1e3a8a';
+            ctx.fillRect(0,0,w,h);
+
+            // Add slight texture
+            ctx.fillStyle = 'rgba(0,0,0,0.05)';
+            for(let i=0; i<10000; i++) {
+                ctx.fillRect(Math.random()*w, Math.random()*h, 2, 2);
+            }
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            document.getElementById('new-map-url').value = dataUrl;
+            document.getElementById('new-map-file').value = '';
+            
+            const preview = document.getElementById('generator-preview');
+            preview.src = dataUrl;
+            preview.classList.remove('hidden');
+            window.showToast("Blank Canvas Created! Ready for stamps.");
+        };
+
         window.autoGenerateMap = async () => {
             const btn = document.getElementById('btn-auto-gen');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Weaving Magic...';
@@ -1919,7 +1975,10 @@
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } catch (tokenErr) {
                     console.warn("Custom token failed:", tokenErr);
+                    await signInAnonymously(auth).catch(e => console.warn(e));
                 }
+            } else {
+                await signInAnonymously(auth).catch(e => console.warn(e));
             }
         };
         initAuth();
@@ -1982,75 +2041,82 @@
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
                     allPlayerNames.clear();
                     s.docs.forEach(d => { const owner = d.data().owner; if (owner) allPlayerNames.add(owner); });
+                }, (error) => {
+                    console.warn("Permission denied for party characters list. Using fallbacks.", error);
+                    ['Traveler', 'Ranger', 'Wizard'].forEach(p => allPlayerNames.add(p)); // Fallbacks for DM testing
                 });
 
                 // Initialize Database Connections 
                 try { 
                     const snap = await getDoc(cacheDocRef); 
-                    if (!snap.exists()) await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }); 
+                    if (!snap.exists()) {
+                        try { await setDoc(cacheDocRef, { maps: [], items: [], capacity: 30, log: [], bagType: "satchel" }); } catch(e){}
+                    }
                 } catch (err) { 
                     console.warn("Initialization error for maps:", err); 
                 } 
                  
+                const processMapData = (data) => {
+                    // Handle legacy Map format if present
+                    if(data.mapSrc && (!data.maps || data.maps.length === 0)) {
+                        allMaps = [{ name: 'World Map', src: data.mapSrc, pins: data.pins || [], decorations: [], paths: [], shrouds: [], legendItems: [], scale: "", id: 'legacy' }];
+                    } else {
+                        allMaps = data.maps || [];
+                    }
+
+                    // Populate selector
+                    const selector = document.getElementById('map-selector');
+                    selector.innerHTML = allMaps.length > 0 ? '' : '<option value="">-- No Maps Found --</option>';
+                    allMaps.forEach((m, idx) => {
+                        const badge = m.type ? `[${m.type}] ` : '';
+                        selector.innerHTML += `<option value="${idx}">${badge}${m.name}</option>`;
+                    });
+
+                    // Maintain active map state
+                    if (allMaps.length > 0) {
+                        if (currentMapIndex === null || currentMapIndex >= allMaps.length) {
+                            selector.value = "0";
+                            window.selectMap("0");
+                        } else {
+                            selector.value = currentMapIndex.toString();
+                            // Refresh visual data
+                            document.getElementById('legend-map-title').textContent = allMaps[currentMapIndex].name || "Unknown Region";
+                            document.getElementById('legend-map-desc').textContent = allMaps[currentMapIndex].description || "The edges of the map fade into uncharted territory...";
+                            
+                            const typeBadge = document.getElementById('legend-map-type-badge');
+                            if (allMaps[currentMapIndex].type) {
+                                typeBadge.textContent = allMaps[currentMapIndex].type;
+                                typeBadge.className = `map-type-badge type-${allMaps[currentMapIndex].type.replace(/\s+/g, '')}`;
+                                typeBadge.classList.remove('hidden');
+                            } else { typeBadge.classList.add('hidden'); }
+
+                            window.renderAllLayers();
+                            window.renderMapKey();
+                            window.renderLandmarksList();
+                            if (activePinIndex !== null && (!allMaps[currentMapIndex].pins || !allMaps[currentMapIndex].pins[activePinIndex])) {
+                                window.closePinDetails();
+                            }
+                        }
+                    } else {
+                        window.clearMapDisplay();
+                    }
+                };
+
                 // Data listener for MAPS
                 onSnapshot(cacheDocRef, (d) => {  
                     if (d.exists()) {  
-                        const data = d.data();
-                        
-                        // Handle legacy Map format if present
-                        if(data.mapSrc && (!data.maps || data.maps.length === 0)) {
-                            allMaps = [{ name: 'World Map', src: data.mapSrc, pins: data.pins || [], decorations: [], paths: [], shrouds: [], legendItems: [], scale: "", id: 'legacy' }];
-                        } else {
-                            allMaps = data.maps || [];
-                        }
-
-                        // Populate selector
-                        const selector = document.getElementById('map-selector');
-                        selector.innerHTML = allMaps.length > 0 ? '' : '<option value="">-- No Maps Found --</option>';
-                        allMaps.forEach((m, idx) => {
-                            const badge = m.type ? `[${m.type}] ` : '';
-                            selector.innerHTML += `<option value="${idx}">${badge}${m.name}</option>`;
-                        });
-
-                        // Maintain active map state
-                        if (allMaps.length > 0) {
-                            if (currentMapIndex === null || currentMapIndex >= allMaps.length) {
-                                selector.value = "0";
-                                window.selectMap("0");
-                            } else {
-                                selector.value = currentMapIndex.toString();
-                                // Refresh visual data
-                                document.getElementById('legend-map-title').textContent = allMaps[currentMapIndex].name || "Unknown Region";
-                                document.getElementById('legend-map-desc').textContent = allMaps[currentMapIndex].description || "The edges of the map fade into uncharted territory...";
-                                
-                                const typeBadge = document.getElementById('legend-map-type-badge');
-                                if (allMaps[currentMapIndex].type) {
-                                    typeBadge.textContent = allMaps[currentMapIndex].type;
-                                    typeBadge.className = `map-type-badge type-${allMaps[currentMapIndex].type.replace(/\s+/g, '')}`;
-                                    typeBadge.classList.remove('hidden');
-                                } else { typeBadge.classList.add('hidden'); }
-
-                                window.renderAllLayers();
-                                window.renderMapKey();
-                                window.renderLandmarksList();
-                                if (activePinIndex !== null && (!allMaps[currentMapIndex].pins || !allMaps[currentMapIndex].pins[activePinIndex])) {
-                                    window.closePinDetails();
-                                }
-                            }
-                        } else {
-                            window.clearMapDisplay();
-                        }
+                        processMapData(d.data());
                     }  
                 }, (error) => { 
-                    console.error("Map sync error:", error); 
-                    document.getElementById('initial-loading').innerHTML = `
-                        <div class="flex flex-col items-center text-center px-4 bg-wood p-8 rounded-lg border-2 border-blood shadow-2xl max-w-md mx-auto relative z-[9999]">
-                            <i class="fa-solid fa-lock text-6xl text-blood mb-6"></i>
-                            <h2 class="font-heading text-2xl text-blood mb-2">Database Locked</h2>
-                            <p class="text-parchment font-serif text-sm mb-4">Firebase is blocking access. Please update your Firestore Security Rules.</p>
-                        </div>
-                    `;
-                    document.getElementById('initial-loading').classList.remove('hidden'); 
+                    console.warn("Map sync listener failed due to permissions. Enabling Local Storage fallback.", error); 
+                    document.getElementById('initial-loading').classList.add('hidden'); 
+                    
+                    const localData = localStorage.getItem(`chronicles_maps_${appId}`);
+                    if (localData) {
+                        processMapData({ maps: JSON.parse(localData) });
+                    } else {
+                        window.clearMapDisplay();
+                    }
                 }); 
                  
             } catch (error) { 
