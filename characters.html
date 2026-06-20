@@ -492,7 +492,6 @@
                                 </div>
                                 
                                 <div class="tab-content-area">
-                                    <!-- ACTIONS TAB -->
                                     <div id="tab-content-actions" class="tab-pane">
                                         <div id="label-term-attacks" class="beyond-header">Attacks & Spellcasting</div>
                                         <div class="equip-header"><span>Name</span><span>Atk</span><span>Dmg</span><span></span></div>
@@ -515,7 +514,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="beyond-header">Conditions & Exhaustion</div>
+                                        <div id="label-term-conditions" class="beyond-header">Conditions & Exhaustion</div>
                                         <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner mb-4">
                                             <div class="mb-4">
                                                 <label class="prof-label">Exhaustion Level (0-6)</label>
@@ -571,7 +570,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- INVENTORY TAB -->
                                     <div id="tab-content-inventory" class="tab-pane hidden">
                                         <div id="label-term-currency" class="beyond-header">Currency</div>
                                         <div class="grid grid-cols-4 gap-4 mb-8">
@@ -590,9 +588,8 @@
                                         <textarea data-key="inventory" class="text-[12px] h-64 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded w-full font-serif" placeholder="Detailed Inventory list..."></textarea>
                                     </div>
 
-                                    <!-- FEATURES TAB -->
                                     <div id="tab-content-features" class="tab-pane hidden">
-                                        <div class="beyond-header">Personality & Traits</div>
+                                        <div id="label-term-traits" class="beyond-header">Personality & Traits</div>
                                         <div class="trait-section">
                                             <label id="label-term-personality" class="trait-title">Personality Traits</label>
                                             <textarea data-key="traits" class="trait-input-area font-serif" placeholder="+ Add Personality Traits"></textarea>
@@ -616,7 +613,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- BACKGROUND TAB -->
                                     <div id="tab-content-background" class="tab-pane hidden">
                                         <div class="sub-filter-row">
                                             <button onclick="window.switchSubFilter('all')" class="sub-btn active" id="sub-btn-all">All</button>
@@ -624,7 +620,7 @@
                                             <button onclick="window.switchSubFilter('characteristics')" class="sub-btn" id="sub-btn-characteristics">Appearance</button>
                                         </div>
                                         <div id="sub-content-background" class="sub-pane">
-                                            <div class="beyond-header">Background</div>
+                                            <div id="label-term-background" class="beyond-header">Background</div>
                                             <div class="mb-6">
                                                 <input type="text" data-key="backgroundTitle" class="text-lg font-bold w-full mb-1 font-heading text-blood" placeholder="Background Title">
                                                 <textarea data-key="backgroundDesc" class="text-sm text-ink w-full h-24 bg-transparent border-t border-[rgba(139,90,43,0.2)] pt-2" placeholder="Feature Description..."></textarea>
@@ -646,15 +642,13 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- COMPANION TAB -->
                                     <div id="tab-content-companion" class="tab-pane hidden">
-                                        <div class="beyond-header">Personal Companion</div>
+                                        <div id="label-term-companion" class="beyond-header">Personal Companion</div>
                                         <div id="companion-view-area"></div>
                                     </div>
 
-                                    <!-- NOTES TAB -->
                                     <div id="tab-content-notes" class="tab-pane hidden">
-                                        <div class="beyond-header">Character Notes</div>
+                                        <div id="label-term-notes" class="beyond-header">Character Notes</div>
                                         <textarea data-key="notes" class="text-[12px] h-96 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded font-serif w-full" placeholder="Character history, secret notes..."></textarea>
                                     </div>
                                 </div>
@@ -683,8 +677,7 @@
     </div>
 
     <!-- MODALS -->
-    <!-- HP ADJUSTMENT MODAL -->
-    <div id="hp-adjustment-modal" class="modal-overlay hidden z-[800]">
+    <div id="hp-adjustment-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="modal-header">Adjust Health</h2>
             <div class="space-y-6">
@@ -704,7 +697,7 @@
     </div>
 
     <!-- PARTY MODAL -->
-    <div id="party-modal" class="modal-overlay hidden z-[800]">
+    <div id="party-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="modal-header">New Party</h2>
             <div class="space-y-4">
@@ -718,7 +711,7 @@
     </div>
 
     <!-- SCORE GENERATOR MODAL -->
-    <div id="score-gen-modal" class="modal-overlay hidden z-[800]">
+    <div id="score-gen-modal" class="modal-overlay hidden">
         <div class="modal-container max-w-xl py-12 px-10">
             <h2 class="text-4xl font-heading font-black text-blood text-center uppercase tracking-tighter mb-10 border-b border-gold pb-4">Score Generator</h2>
             <div id="gen-controls" class="space-y-12">
@@ -752,7 +745,7 @@
     </div>
 
     <!-- SHORT REST MODAL -->
-    <div id="short-rest-modal" class="modal-overlay hidden z-[800]">
+    <div id="short-rest-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="modal-header">Short Rest</h2>
             <div class="space-y-6">
@@ -783,7 +776,7 @@
     </div>
 
     <!-- MULTICLASS MODAL -->
-    <div id="multiclass-modal" class="modal-overlay hidden z-[800]">
+    <div id="multiclass-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="modal-header">Manage Vocations</h2>
             <p class="text-xs text-ink mb-4 font-serif italic text-center">Combine levels in multiple vocations. Ensure you meet the ability score prerequisites!</p>
@@ -798,7 +791,7 @@
     </div>
 
     <!-- DELETE/MANAGE MODAL -->
-    <div id="delete-modal" class="modal-overlay hidden z-[800]">
+    <div id="delete-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="modal-header">Manage Character</h2>
             <div id="delete-stage-1" class="space-y-4 font-heading">
@@ -820,7 +813,7 @@
     </div>
 
     <!-- MOVE MODAL -->
-    <div id="move-modal" class="modal-overlay hidden z-[800]">
+    <div id="move-modal" class="modal-overlay hidden">
         <div class="modal-container max-w-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b-2 border-gold mb-6 pb-2">
                 <h2 id="move-modal-title" class="text-xl font-heading font-bold uppercase tracking-wider text-blood">Edit Move</h2>
@@ -853,8 +846,92 @@
                     <div><label class="tiny-label">Duration</label><input type="text" id="script-duration-in" class="w-full bg-[rgba(255,255,255,0.5)] p-2 rounded font-bold" placeholder="Instantaneous"></div>
                 </div>
                 <div>
-                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Classes (Script Codex Tabs)</h3>
+                    <label id="move-desc-label" class="tiny-label">Description</label>
+                    <textarea id="move-desc-in" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded text-sm h-32 leading-relaxed font-serif" placeholder="Detailed effects..."></textarea>
+                </div>
+                <div id="script-scaling-field" class="hidden">
+                    <label class="tiny-label">Scaling</label>
+                    <textarea id="script-scaling-in" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded text-sm h-20 leading-relaxed font-serif" placeholder="Higher level initialization effects..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer font-heading">
+                <button id="move-delete-btn" onclick="window.deleteMove()" class="hidden mr-auto text-blood font-black uppercase text-[10px] underline border-r border-blood pr-4">Delete</button>
+                <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="px-4 py-2 text-555 font-bold uppercase text-xs underline">Cancel</button>
+                <button onclick="window.saveMove()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs shadow-lg">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANAGE PARTY MODAL -->
+    <div id="manage-party-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <h2 class="modal-header">Manage Party</h2>
+            <div id="party-manage-main" class="space-y-6">
+                <div>
+                    <label class="tiny-label">Party Name</label>
+                    <input type="text" id="manage-party-name" class="w-full bg-gray-100 p-3 rounded font-bold">
+                </div>
+                <div class="pt-4 border-t">
+                    <button onclick="window.confirmDeletePartyState()" class="w-full py-3 bg-red-50 text-red-600 rounded text-xs font-black uppercase">Disband Party</button>
+                </div>
+            </div>
+            <div id="party-manage-delete" class="hidden space-y-4 text-center">
+                <p class="text-sm font-bold text-red-600 uppercase">Disband this party? Members will become unassigned.</p>
+                <div class="flex gap-2">
+                    <button onclick="window.resetPartyManageState()" class="flex-grow py-3 bg-gray-100 rounded text-xs font-black">Cancel</button>
+                    <button onclick="window.executeDeleteParty()" class="flex-grow py-3 bg-red-600 text-white rounded text-xs font-black">YES, DISBAND</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="document.getElementById('manage-party-modal').classList.add('hidden')" class="px-6 py-2 text-gray-400 font-bold uppercase text-xs">Close</button>
+                <button onclick="window.savePartyRename()" class="px-8 py-2 bg-indigo-600 text-white rounded font-black uppercase text-xs">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAMPAIGN TERMINOLOGY SETTINGS MODAL (DM ONLY) -->
+    <div id="settings-modal" class="modal-overlay hidden z-[900]">
+        <div class="modal-container !bg-[#1a110b] !border-gold !text-parchment shadow-2xl !max-w-3xl flex flex-col p-6 md:p-8 !bg-none h-[90vh]">
+            <h2 class="font-heading text-2xl font-black text-gold uppercase tracking-widest border-b border-gold/30 pb-4 mb-4 text-center shrink-0">Campaign Terminology</h2>
+            <p class="text-xs text-gray-400 font-serif italic text-center mb-6 shrink-0">Rename the core pillars of your world. These names will update across all ledgers and navigation links.</p>
+            
+            <div class="overflow-y-auto space-y-8 pr-4 scrollbar-hide flex-grow pb-8 text-left">
+                <div>
+                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Navigation & Core Hubs</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Party</label><input type="text" id="term-nav_party" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">NPCs</label><input type="text" id="term-nav_npcs" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Bestiary</label><input type="text" id="term-nav_beasts" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Backpack</label><input type="text" id="term-nav_backpack" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Handbook</label><input type="text" id="term-nav_handbook" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Graveyard</label><input type="text" id="term-nav_graveyard" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Session Logs</label><input type="text" id="term-nav_logs" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Library & Lore</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Classes</label><input type="text" id="term-book_vocations" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Races</label><input type="text" id="term-book_lineages" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Backgrounds</label><input type="text" id="term-book_backgrounds" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Landmarks</label><input type="text" id="term-book_landmarks" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Spells</label><input type="text" id="term-book_scriptcodex" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Gear & Artifacts</label><input type="text" id="term-book_artifacts" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">World Lore</label><input type="text" id="term-book_worldlore" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div class="col-span-2 sm:col-span-3 h-2"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Custodian's Athenaeum</label><input type="text" id="term-lore_custodians" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Archivist Library</label><input type="text" id="term-lore_archivists" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Classes & Vocations</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Fighter</label><input type="text" id="term-class_vanguard" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Barbarian</label><input type="text" id="term-class_warrior" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Monk</label><input type="text" id="term-class_peacekeeper" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Rogue</label><input type="text" id="term-class_scavenger" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Paladin</label><input type="text" id="term-class_heartbound" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Ranger</label><input type="text" id="term-class_nomad" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Druid</label><input type="text" id="term-class_warden" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
@@ -1260,7 +1337,7 @@
         let activeManagePartyId = null, activeMoveLvl = null, editingMoveIndex = null;
         let currentRound = 1, activeTurnId = null, pendingHoldId = null;
         let campaignSettings = { terms: {} };
-        
+
         const SHEET_LABELS = {
             class: 'Class', level: 'Level', party: 'Party', race: 'Race', archetype: 'Archetype', belief: 'Belief',
             insp: 'Insp', abilities: 'Abilities', prof: 'Proficiency', saves: 'Saves', skills: 'Skills', ac: 'AC', init: 'INIT', speed: 'Speed',
@@ -1581,7 +1658,7 @@
             document.querySelectorAll('.read-only-hide').forEach(el => el.classList.toggle('hidden', !canEdit));
             document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
             
-            /* --- PROGRESSION LOCKS (Class & Ability Scores) --- */
+            /* PROGRESSION LOCKS */
             const dmUnlockCheck = document.getElementById('dm-unlock-sheet');
             if (dmUnlockCheck) dmUnlockCheck.checked = !!char.unlockedByDM;
 
@@ -1625,8 +1702,7 @@
                     });
                 }
             }
-            /* -------------------------------------------------- */
-
+            
             const dmPanel = document.getElementById('dm-oversight-panel');
             if (dmPanel) dmPanel.classList.toggle('hidden-view', !isDM);
 
