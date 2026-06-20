@@ -298,6 +298,10 @@
                                 <button onclick="window.updateCharStatus('coma')" class="bg-[#92400e] hover:bg-[#b45309] text-white px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow transition-colors">Coma</button>
                                 <button onclick="window.updateCharStatus('dead')" class="bg-[#475569] hover:bg-[#64748b] text-white px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow transition-colors">Death</button>
                             </div>
+                            <div class="flex items-center gap-2 mt-1">
+                                <input type="checkbox" id="dm-unlock-sheet" class="w-3 h-3 accent-[#f59e0b] cursor-pointer" onchange="window.toggleSheetUnlock(this.checked)">
+                                <label for="dm-unlock-sheet" class="text-[9px] font-black uppercase text-[#f59e0b] tracking-wider font-heading cursor-pointer">Unlock Class/Stats for Player</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1577,6 +1581,52 @@
             document.querySelectorAll('.read-only-hide').forEach(el => el.classList.toggle('hidden', !canEdit));
             document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
             
+            /* --- PROGRESSION LOCKS (Class & Ability Scores) --- */
+            const dmUnlockCheck = document.getElementById('dm-unlock-sheet');
+            if (dmUnlockCheck) dmUnlockCheck.checked = !!char.unlockedByDM;
+
+            const isLockedProgression = !isDM && !char.unlockedByDM;
+
+            const classInput = document.getElementById('class-input');
+            const mClassBtn = document.getElementById('btn-multiclass');
+            const hasClass = char.class && char.class.trim() !== "";
+            if (classInput) {
+                if (hasClass && isLockedProgression) {
+                    classInput.readOnly = true;
+                    classInput.disabled = true;
+                    classInput.classList.add('opacity-70', 'cursor-not-allowed');
+                    if (mClassBtn) mClassBtn.classList.add('hidden');
+                } else {
+                    if (canEdit) {
+                        classInput.disabled = false;
+                        classInput.readOnly = false;
+                        classInput.classList.remove('opacity-70', 'cursor-not-allowed');
+                        if (mClassBtn) mClassBtn.classList.remove('hidden');
+                    }
+                }
+            }
+
+            const rollGenBtn = document.getElementById('main-gen-btn');
+            if (rollGenBtn) {
+                if (char.scoresGenerated && isLockedProgression) {
+                    rollGenBtn.classList.add('hidden');
+                    STATS.forEach(s => {
+                        const el = document.querySelector(`[data-key="${s}"]`);
+                        if (el) { el.readOnly = true; el.classList.add('opacity-70', 'cursor-not-allowed', 'bg-transparent'); }
+                    });
+                } else {
+                    if (canEdit) rollGenBtn.classList.remove('hidden');
+                    STATS.forEach(s => {
+                        const el = document.querySelector(`[data-key="${s}"]`);
+                        if (el && canEdit) { 
+                            el.readOnly = false;
+                            el.classList.remove('opacity-70', 'cursor-not-allowed'); 
+                        }
+                    });
+                }
+            }
+            /* -------------------------------------------------- */
+
             const dmPanel = document.getElementById('dm-oversight-panel');
             if (dmPanel) dmPanel.classList.toggle('hidden-view', !isDM);
 
@@ -2168,6 +2218,7 @@
         };
         
         window.updateCharStatus = async (s) => { if (!activeCharId) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { status: s }); };
+        window.toggleSheetUnlock = async (val) => { if (!activeCharId || activeRole !== 'dm') return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { unlockedByDM: val }); window.showToast(val ? "Progression Unlocked for Player" : "Progression Locked"); };
         window.addAttackItem = () => { const c = document.getElementById('attacks-list'); const d = document.createElement('div'); d.className = "equip-row"; d.innerHTML = `<input type="text" class="atk-name font-bold bg-transparent" placeholder="Weapon"><input type="text" class="atk-bonus text-center bg-transparent" placeholder="+0"><input type="text" class="atk-dmg text-center bg-transparent" placeholder="1d8"><button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-blood hover:text-red-800 font-black">✕</button>`; c.appendChild(d); };
         window.addLanguageItem = async () => { const i = document.getElementById('lang-input'); if (!i.value) return; const char = characters.find(c => c.id === activeCharId); const langs = [...(char.languages || []), i.value]; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { languages: langs }); i.value = ''; };
         window.removeLanguageItem = async (idx) => { const char = characters.find(c => c.id === activeCharId); const langs = [...(char.languages || [])]; langs.splice(idx, 1); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { languages: langs }); };
