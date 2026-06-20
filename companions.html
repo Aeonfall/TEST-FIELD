@@ -221,13 +221,36 @@
                     <div class="md:col-span-6 space-y-6">
                         <!-- Stats Array -->
                         <div class="flex justify-between items-center gap-1">
-                            ${['str', 'dex', 'con', 'int', 'wis', 'cha'].map(s => `
-                                <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
-                                    <label class="text-[7px] font-black uppercase mt-1">${s}</label>
-                                    <input type="number" data-key="${s}" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
-                                    <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-${s}">+0</div>
-                                </div>
-                            `).join('')}
+                            <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
+                                <label class="text-[7px] font-black uppercase mt-1">str</label>
+                                <input type="number" data-key="str" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
+                                <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-str">+0</div>
+                            </div>
+                            <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
+                                <label class="text-[7px] font-black uppercase mt-1">dex</label>
+                                <input type="number" data-key="dex" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
+                                <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-dex">+0</div>
+                            </div>
+                            <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
+                                <label class="text-[7px] font-black uppercase mt-1">con</label>
+                                <input type="number" data-key="con" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
+                                <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-con">+0</div>
+                            </div>
+                            <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
+                                <label class="text-[7px] font-black uppercase mt-1">int</label>
+                                <input type="number" data-key="int" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
+                                <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-int">+0</div>
+                            </div>
+                            <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
+                                <label class="text-[7px] font-black uppercase mt-1">wis</label>
+                                <input type="number" data-key="wis" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
+                                <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-wis">+0</div>
+                            </div>
+                            <div class="border-2 border-[rgba(44,30,22,0.7)] rounded-lg w-12 h-16 flex flex-col items-center justify-between pb-1 relative">
+                                <label class="text-[7px] font-black uppercase mt-1">cha</label>
+                                <input type="number" data-key="cha" class="w-full text-center text-sm font-black bg-transparent -mt-1" value="10">
+                                <div class="absolute -bottom-3 bg-parchment border-2 border-[rgba(44,30,22,0.7)] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold" id="mod-cha">+0</div>
+                            </div>
                         </div>
 
                         <!-- I R V Matrix -->
@@ -235,25 +258,22 @@
                             <div class="grid grid-cols-2 gap-4 text-[10px] font-bold">
                                 <div>
                                     <div class="flex gap-3 mb-1 pl-6"><span class="w-3 text-center">I</span><span class="w-3 text-center">R</span><span class="w-3 text-center">V</span></div>
-                                    ${['Bludgeoning','Piercing','Slashing','Cold','Fire','Poison','Acid'].map(dmg => `
-                                        <div class="flex items-center gap-1 mb-1">
-                                            <input type="checkbox" data-key="imm_${dmg}">
-                                            <input type="checkbox" data-key="res_${dmg}">
-                                            <input type="checkbox" data-key="vul_${dmg}">
-                                            <label class="ml-1">${dmg}</label>
-                                        </div>
-                                    `).join('')}
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Bludgeoning"><input type="checkbox" data-key="res_Bludgeoning"><input type="checkbox" data-key="vul_Bludgeoning"><label class="ml-1">Bludgeoning</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Piercing"><input type="checkbox" data-key="res_Piercing"><input type="checkbox" data-key="vul_Piercing"><label class="ml-1">Piercing</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Slashing"><input type="checkbox" data-key="res_Slashing"><input type="checkbox" data-key="vul_Slashing"><label class="ml-1">Slashing</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Cold"><input type="checkbox" data-key="res_Cold"><input type="checkbox" data-key="vul_Cold"><label class="ml-1">Cold</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Fire"><input type="checkbox" data-key="res_Fire"><input type="checkbox" data-key="vul_Fire"><label class="ml-1">Fire</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Poison"><input type="checkbox" data-key="res_Poison"><input type="checkbox" data-key="vul_Poison"><label class="ml-1">Poison</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Acid"><input type="checkbox" data-key="res_Acid"><input type="checkbox" data-key="vul_Acid"><label class="ml-1">Acid</label></div>
                                 </div>
                                 <div>
                                     <div class="flex gap-3 mb-1 pl-6"><span class="w-3 text-center">I</span><span class="w-3 text-center">R</span><span class="w-3 text-center">V</span></div>
-                                    ${['Psychic','Necrotic','Radiant','Lightning','Thunder','Force'].map(dmg => `
-                                        <div class="flex items-center gap-1 mb-1">
-                                            <input type="checkbox" data-key="imm_${dmg}">
-                                            <input type="checkbox" data-key="res_${dmg}">
-                                            <input type="checkbox" data-key="vul_${dmg}">
-                                            <label class="ml-1">${dmg}</label>
-                                        </div>
-                                    `).join('')}
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Psychic"><input type="checkbox" data-key="res_Psychic"><input type="checkbox" data-key="vul_Psychic"><label class="ml-1">Psychic</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Necrotic"><input type="checkbox" data-key="res_Necrotic"><input type="checkbox" data-key="vul_Necrotic"><label class="ml-1">Necrotic</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Radiant"><input type="checkbox" data-key="res_Radiant"><input type="checkbox" data-key="vul_Radiant"><label class="ml-1">Radiant</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Lightning"><input type="checkbox" data-key="res_Lightning"><input type="checkbox" data-key="vul_Lightning"><label class="ml-1">Lightning</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Thunder"><input type="checkbox" data-key="res_Thunder"><input type="checkbox" data-key="vul_Thunder"><label class="ml-1">Thunder</label></div>
+                                    <div class="flex items-center gap-1 mb-1"><input type="checkbox" data-key="imm_Force"><input type="checkbox" data-key="res_Force"><input type="checkbox" data-key="vul_Force"><label class="ml-1">Force</label></div>
                                 </div>
                             </div>
                             <div class="text-[8px] font-black uppercase text-center mt-3 pt-2 border-t border-[rgba(44,30,22,0.3)]">Damage Immunities, Resistances & Vulnerabilities</div>
@@ -272,13 +292,12 @@
                         <!-- Saves -->
                         <div class="border-2 border-[rgba(44,30,22,0.7)] p-3 rounded-lg">
                             <div class="space-y-1 text-[10px] font-bold">
-                                ${['str', 'dex', 'con', 'int', 'wis', 'cha'].map(s => `
-                                    <div class="flex items-center gap-2">
-                                        <input type="checkbox" data-key="save_prof_${s}">
-                                        <input type="text" id="save-mod-${s}" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly>
-                                        <label class="uppercase">${s}</label>
-                                    </div>
-                                `).join('')}
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_prof_str"><input type="text" id="save-mod-str" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label class="uppercase">str</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_prof_dex"><input type="text" id="save-mod-dex" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label class="uppercase">dex</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_prof_con"><input type="text" id="save-mod-con" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label class="uppercase">con</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_prof_int"><input type="text" id="save-mod-int" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label class="uppercase">int</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_prof_wis"><input type="text" id="save-mod-wis" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label class="uppercase">wis</label></div>
+                                <div class="flex items-center gap-2"><input type="checkbox" data-key="save_prof_cha"><input type="text" id="save-mod-cha" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label class="uppercase">cha</label></div>
                             </div>
                             <div class="text-[9px] font-black uppercase text-center mt-2 border-t border-[rgba(44,30,22,0.3)] pt-1">Saving Throws</div>
                         </div>
@@ -286,9 +305,18 @@
                         <!-- Condition Immunities -->
                         <div class="border-2 border-[rgba(44,30,22,0.7)] p-3 rounded-lg">
                             <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[9px] font-bold">
-                                ${['Blind', 'Charm', 'Deafen', 'Frighten', 'Grapple', 'Incapacitate', 'Paralyze', 'Petrify', 'Poison', 'Prone', 'Restrain', 'Stun'].map(c => `
-                                    <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_${c}"><label>${c}</label></div>
-                                `).join('')}
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Blind"><label>Blind</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Charm"><label>Charm</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Deafen"><label>Deafen</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Frighten"><label>Frighten</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Grapple"><label>Grapple</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Incapacitate"><label>Incap.</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Paralyze"><label>Paralyze</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Petrify"><label>Petrify</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Poison"><label>Poison</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Prone"><label>Prone</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Restrain"><label>Restrain</label></div>
+                                <div class="flex items-center gap-1"><input type="checkbox" data-key="condImm_Stun"><label>Stun</label></div>
                             </div>
                             <div class="text-[9px] font-black uppercase text-center mt-2 border-t border-[rgba(44,30,22,0.3)] pt-1">Condition Immunities</div>
                         </div>
@@ -301,19 +329,27 @@
                     <!-- Skills -->
                     <div class="border-2 border-[rgba(44,30,22,0.7)] p-4 rounded-lg md:col-span-3">
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-y-1 text-[10px] font-bold">
-                            ${[
-                                {n:'Acrobatics', s:'dex'},{n:'Animal Handling', s:'wis'},{n:'Arcana', s:'int'},{n:'Athletics', s:'str'},
-                                {n:'Deception', s:'cha'},{n:'History', s:'int'},{n:'Insight', s:'wis'},{n:'Intimidation', s:'cha'},
-                                {n:'Investigation', s:'int'},{n:'Medicine', s:'wis'},{n:'Nature', s:'int'},{n:'Perception', s:'wis'},
-                                {n:'Performance', s:'cha'},{n:'Persuasion', s:'cha'},{n:'Sleight of Hand', s:'dex'},{n:'Stealth', s:'dex'},
-                                {n:'Survival', s:'wis'}
-                            ].map(sk => `
-                                <div class="flex items-center gap-1">
-                                    <input type="checkbox" data-key="prof_${sk.n.toLowerCase().replace(/ /g,'_')}">
-                                    <input type="text" id="skill-mod-${sk.n.toLowerCase().replace(/ /g,'_')}" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly>
-                                    <label>${sk.n} <span class="text-gray-500 font-normal">(${sk.s})</span></label>
-                                </div>
-                            `).join('')}
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_acrobatics"><input type="text" id="skill-mod-acrobatics" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Acrobatics <span class="text-gray-500 font-normal">(dex)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_animal_handling"><input type="text" id="skill-mod-animal_handling" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Animal Handling <span class="text-gray-500 font-normal">(wis)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_arcana"><input type="text" id="skill-mod-arcana" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Arcana <span class="text-gray-500 font-normal">(int)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_athletics"><input type="text" id="skill-mod-athletics" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Athletics <span class="text-gray-500 font-normal">(str)</span></label></div>
+                            
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_deception"><input type="text" id="skill-mod-deception" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Deception <span class="text-gray-500 font-normal">(cha)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_history"><input type="text" id="skill-mod-history" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>History <span class="text-gray-500 font-normal">(int)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_insight"><input type="text" id="skill-mod-insight" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Insight <span class="text-gray-500 font-normal">(wis)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_intimidation"><input type="text" id="skill-mod-intimidation" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Intimidation <span class="text-gray-500 font-normal">(cha)</span></label></div>
+                            
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_investigation"><input type="text" id="skill-mod-investigation" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Investigation <span class="text-gray-500 font-normal">(int)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_medicine"><input type="text" id="skill-mod-medicine" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Medicine <span class="text-gray-500 font-normal">(wis)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_nature"><input type="text" id="skill-mod-nature" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Nature <span class="text-gray-500 font-normal">(int)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_perception"><input type="text" id="skill-mod-perception" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Perception <span class="text-gray-500 font-normal">(wis)</span></label></div>
+                            
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_performance"><input type="text" id="skill-mod-performance" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Performance <span class="text-gray-500 font-normal">(cha)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_persuasion"><input type="text" id="skill-mod-persuasion" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Persuasion <span class="text-gray-500 font-normal">(cha)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_sleight_of_hand"><input type="text" id="skill-mod-sleight_of_hand" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Sleight of Hand <span class="text-gray-500 font-normal">(dex)</span></label></div>
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_stealth"><input type="text" id="skill-mod-stealth" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Stealth <span class="text-gray-500 font-normal">(dex)</span></label></div>
+                            
+                            <div class="flex items-center gap-1"><input type="checkbox" data-key="prof_survival"><input type="text" id="skill-mod-survival" class="w-6 border-b border-gray-400 text-center text-[9px]" readonly><label>Survival <span class="text-gray-500 font-normal">(wis)</span></label></div>
                         </div>
                         <div class="text-[10px] font-black uppercase text-center mt-3 pt-1 border-t border-[rgba(44,30,22,0.3)]">Skills</div>
                     </div>
@@ -322,12 +358,10 @@
                     <div class="space-y-6">
                         <div class="border-2 border-[rgba(44,30,22,0.7)] p-3 rounded-lg">
                             <div class="space-y-2 text-[10px] font-bold">
-                                ${['Blindsight', 'Darkvision', 'Tremorsense', 'Truesight'].map(s => `
-                                    <div class="flex items-center gap-2">
-                                        <input type="text" data-key="sense_${s}" class="w-10 border-b border-gray-400 text-center" placeholder="--">
-                                        <label>${s}</label>
-                                    </div>
-                                `).join('')}
+                                <div class="flex items-center gap-2"><input type="text" data-key="sense_Blindsight" class="w-10 border-b border-gray-400 text-center" placeholder="--"><label>Blindsight</label></div>
+                                <div class="flex items-center gap-2"><input type="text" data-key="sense_Darkvision" class="w-10 border-b border-gray-400 text-center" placeholder="--"><label>Darkvision</label></div>
+                                <div class="flex items-center gap-2"><input type="text" data-key="sense_Tremorsense" class="w-10 border-b border-gray-400 text-center" placeholder="--"><label>Tremorsense</label></div>
+                                <div class="flex items-center gap-2"><input type="text" data-key="sense_Truesight" class="w-10 border-b border-gray-400 text-center" placeholder="--"><label>Truesight</label></div>
                             </div>
                             <div class="text-[9px] font-black uppercase text-center mt-3 pt-1 border-t border-[rgba(44,30,22,0.3)]">Senses</div>
                         </div>
