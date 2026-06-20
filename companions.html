@@ -139,6 +139,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                 <h2 id="view-title" class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Companions</h2>
                 <div id="create-actions" class="flex gap-2 w-full md:w-auto hidden">
+                    <button onclick="window.openAdoptModal()" class="flex-1 md:flex-none fantasy-btn-alt px-6 py-2.5 rounded text-xs md:text-sm shadow">Adopt from Bestiary</button>
                     <button onclick="window.openGachaModal()" class="flex-1 md:flex-none fantasy-btn px-6 py-2.5 rounded text-xs md:text-sm shadow">Spawn Wild Beast</button>
                     <button onclick="window.routeTo('beasts.html')" id="btn-dm-bestiary" class="hidden flex-1 md:flex-none fantasy-btn-alt !border-green-800 !text-green-600 hover:!text-parchment px-6 py-2.5 rounded text-xs md:text-sm shadow">DM: Bestiary</button>
                 </div>
@@ -153,6 +154,7 @@
         <nav class="sticky top-0 z-[60] bg-[#1a110b] p-2 shadow-2xl border-b border-gray-800 font-heading">
             <div class="max-w-6xl mx-auto flex justify-between items-center text-gray-300 px-4">
                 <button onclick="window.closeSheet()" class="text-gold hover:text-white font-bold flex items-center gap-2 text-xs uppercase tracking-widest"><span>←</span> Depart</button>
+                <div id="sheet-readonly-badge" class="hidden bg-gray-800 text-gray-400 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest border border-gray-600">VIEW ONLY</div>
                 <div class="flex items-center gap-4">
                     <button id="sync-btn" onclick="window.saveCurrentCharacter(true)" class="fantasy-btn-alt px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">Sync</button>
                 </div>
@@ -165,12 +167,12 @@
                 <!-- Header -->
                 <div class="border-b-4 border-double border-[rgba(44,30,22,0.7)] pb-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                     <div class="w-full md:w-1/2">
-                        <input type="text" data-key="name" class="w-full text-4xl font-heading text-blood font-black border-b border-gray-400 placeholder-gray-500 mb-1" placeholder="Companion Name" onchange="window.saveCurrentCharacter()">
+                        <input type="text" data-key="name" class="w-full text-4xl font-heading text-blood font-black border-b border-gray-400 placeholder-gray-500 mb-1" placeholder="Companion Name">
                         <label class="text-[10px] font-black uppercase tracking-widest text-gray-600">Companion Name</label>
                     </div>
                     <div class="w-full md:w-1/2 grid grid-cols-2 gap-x-4 gap-y-2">
                         <div class="relative">
-                            <button onclick="window.openBondModal()" class="absolute -top-6 right-0 bg-[rgba(139,90,43,0.2)] hover:bg-[rgba(139,90,43,0.4)] text-blood border border-blood px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest font-heading transition-colors">Build Bond</button>
+                            <button id="btn-build-bond" onclick="window.openBondModal()" class="absolute -top-6 right-0 bg-[rgba(139,90,43,0.2)] hover:bg-[rgba(139,90,43,0.4)] text-blood border border-blood px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest font-heading transition-colors">Build Bond</button>
                             <input type="text" data-key="owner" class="w-full text-sm font-bold border-b border-gray-400" readonly>
                             <label class="text-[9px] font-bold uppercase text-gray-600">Bonded To (PC)</label>
                         </div>
@@ -341,7 +343,7 @@
                             <span class="w-1/2">Name</span><span class="w-1/4 text-center">Atk Bonus</span><span class="w-1/4 text-center">Damage/Type</span>
                         </div>
                         <div id="attacks-list" class="space-y-2 mb-4"></div>
-                        <button onclick="window.addAttackItem()" class="text-[9px] font-bold text-blood border border-dashed border-blood py-1 rounded w-full mb-4 hover:bg-[rgba(122,27,27,0.1)]">+ Add Attack</button>
+                        <button id="btn-add-attack" onclick="window.addAttackItem()" class="text-[9px] font-bold text-blood border border-dashed border-blood py-1 rounded w-full mb-4 hover:bg-[rgba(122,27,27,0.1)]">+ Add Attack</button>
                         
                         <textarea data-key="actionNotes" class="w-full flex-grow bg-transparent text-xs border-t border-dashed border-[rgba(44,30,22,0.3)] pt-2" placeholder="Other actions (Multiattack, etc)..."></textarea>
                         <div class="text-[10px] font-black uppercase text-center mt-2 border-t border-[rgba(44,30,22,0.3)] pt-1">Actions</div>
@@ -393,6 +395,20 @@
 
             <div class="text-center font-heading">
                 <button onclick="document.getElementById('gacha-modal').classList.add('hidden')" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADOPT MODAL -->
+    <div id="adopt-modal" class="modal-overlay hidden z-[700]">
+        <div class="modal-container !bg-ink !text-parchment !border-blue-800 shadow-2xl max-w-2xl max-h-[85vh] flex flex-col p-6 md:p-8 !bg-none">
+            <div class="flex justify-between items-center mb-6 border-b border-blue-900/50 pb-4">
+                <h2 class="font-heading text-2xl font-black text-blue-400 uppercase tracking-widest">Bestiary Companions</h2>
+                <button onclick="document.getElementById('adopt-modal').classList.add('hidden')" class="text-gray-500 hover:text-white text-xl font-black">✕</button>
+            </div>
+            <p class="text-xs text-gray-400 font-serif italic mb-4">Select an unclaimed beast created by the DM to bond with your character.</p>
+            <div class="overflow-y-auto flex-grow pr-2 space-y-3 pb-4 scrollbar-hide" id="adopt-list-container">
+                <!-- Dynamically populated -->
             </div>
         </div>
     </div>
@@ -500,6 +516,7 @@
         let characters = [], currentUser = null, activeCharId = null, activeRole = 'player';
         let autoSaveTimer = null;
         let pendingGachaBeast = null;
+        let pendingAdoptBeastId = null;
 
         const COMMON_ANIMALS = [
             {n: 'Dust Fox', d: 'A clever fox-like scavenger adapted to ruined lands.'},
@@ -607,8 +624,9 @@
 
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 
-                // Set DM buttons based on activeRole
+                // Permissions UI Updates
                 document.getElementById('btn-dm-bestiary').classList.toggle('hidden', activeRole !== 'dm');
+                document.getElementById('create-actions').classList.remove('hidden');
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 
@@ -639,24 +657,33 @@
             compC.innerHTML = '';
             
             const activeBeasts = characters.filter(c => !c.isDeleted && (c.type === 'BEAST' || (c.class || '').toLowerCase() === 'beast'));
-            const myPCs = characters.filter(c => c.type === 'PC' && c.owner === currentUser.username);
-            const myCompanions = activeBeasts.filter(b => myPCs.some(pc => pc.companionId === b.id));
+            const isDM = activeRole === 'dm';
             
-            const renderSection = (title, items, color) => {
-                if (items.length === 0) return;
+            // Determine which companions to show.
+            // DMs see all active beasts in the companion tab? Or maybe we just show PC-claimed ones.
+            // Let's show claimed companions.
+            let displayCompanions = [];
+            
+            if (isDM) {
+                // DM sees all claimed companions
+                displayCompanions = activeBeasts.filter(b => characters.some(pc => pc.type === 'PC' && pc.companionId === b.id));
+            } else {
+                // Players see their own companions
+                const myPCs = characters.filter(c => c.type === 'PC' && c.owner === currentUser.username);
+                displayCompanions = activeBeasts.filter(b => myPCs.some(pc => pc.companionId === b.id));
+            }
+            
+            if (displayCompanions.length > 0) {
+                const title = isDM ? 'Active Companions in Party' : 'Your Companions';
                 const s = document.createElement('div'); s.className = "bg-black/60 p-6 rounded border border-gray-700 shadow-xl mb-8";
-                s.innerHTML = `<h3 class="${color} font-heading font-bold uppercase text-sm mb-4 border-b border-gray-700 pb-2">${title}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
-                const g = s.querySelector('.grid'); items.forEach(c => g.appendChild(createCard(c))); compC.appendChild(s);
-            };
-            
-            if (myCompanions.length > 0) {
-                renderSection('Your Companions', myCompanions, 'text-green-500');
+                s.innerHTML = `<h3 class="text-green-500 font-heading font-bold uppercase text-sm mb-4 border-b border-gray-700 pb-2">${title}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>`;
+                const g = s.querySelector('.grid'); displayCompanions.forEach(c => g.appendChild(createCard(c))); compC.appendChild(s);
             } else {
                 compC.innerHTML += `
                     <div class="text-center py-16 border border-dashed border-gray-700 rounded bg-[rgba(0,0,0,0.4)] max-w-lg mx-auto">
                         <div class="text-5xl mb-4 grayscale opacity-50">🐾</div>
-                        <h4 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em] mb-2 font-heading">No Companions Claimed</h4>
-                        <p class="text-xs text-gray-500 mb-6 font-serif italic">Use the "Spawn Wild Beast" action to discover an animal, or claim one from the Bestiary.</p>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em] mb-2 font-heading">No Companions Found</h4>
+                        <p class="text-xs text-gray-500 mb-6 font-serif italic">Use "Spawn Wild Beast" to discover an animal, or "Adopt from Bestiary".</p>
                     </div>`;
             }
         };
@@ -664,10 +691,15 @@
         function createCard(c) {
             const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === c.id);
             const d = document.createElement('div'); 
+            const isMine = currentUser && (c.owner === currentUser.username || (ownerPC && ownerPC.owner === currentUser.username));
             d.className = `bg-black/70 rounded card border-l-4 flex flex-col overflow-hidden border-green-600`;
+            
+            let badgeHtml = '';
+            if (isMine) badgeHtml = `<span class="status-badge bg-green-900 border border-green-700 text-parchment" style="left: 8px; right: auto;">YOURS</span>`;
+
             d.innerHTML = `
                 <div class="p-4 md:p-5 relative flex-grow hover:bg-gray-800 transition-colors" onclick="window.openSheet('${c.id}')">
-                    <span class="status-badge bg-green-900 border border-green-700 text-parchment" style="left: 8px; right: auto;">YOURS</span>
+                    ${badgeHtml}
                     <div class="flex items-center gap-4 mt-2">
                         <div class="w-12 h-12 rounded bg-gray-900 border border-gray-700 overflow-hidden relative shrink-0 flex justify-center items-center text-xl">🐾</div>
                         <div class="flex-grow min-w-0">
@@ -699,14 +731,26 @@
             const char = characters.find(c => c.id === activeCharId); if (!char) return;
             const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === char.id);
             
-            document.querySelectorAll('#companion-sheet [data-key]').forEach(el => {
-                const key = el.dataset.key;
-                if (key === 'owner') {
+            const isOwner = currentUser && char.owner === currentUser.username;
+            const isDM = activeRole === 'dm';
+            const canEdit = isOwner || isDM;
+
+            document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
+            document.getElementById('sync-btn').classList.toggle('hidden', !canEdit);
+            document.getElementById('btn-add-attack').classList.toggle('hidden', !canEdit);
+            document.getElementById('btn-build-bond').classList.toggle('hidden', !canEdit);
+
+            document.querySelectorAll('#companion-sheet input, #companion-sheet textarea').forEach(el => {
+                if (el.dataset.key === 'owner') {
                     el.value = ownerPC ? ownerPC.name : 'Unclaimed';
                     return;
                 }
-                if (el.type === 'checkbox') el.checked = !!char[key];
-                else el.value = char[key] !== undefined ? char[key] : '';
+                
+                el.readOnly = !canEdit;
+                if (el.type === 'checkbox') el.disabled = !canEdit;
+
+                if (el.type === 'checkbox') el.checked = !!char[el.dataset.key];
+                else el.value = char[el.dataset.key] !== undefined ? char[el.dataset.key] : '';
             });
 
             // Calc mods
@@ -734,16 +778,20 @@
             ac.innerHTML = ''; 
             (char.attacks || []).forEach(a => { 
                 const d = document.createElement('div'); d.className = "flex gap-2 mb-1"; 
-                d.innerHTML = `<input type="text" class="atk-name w-1/2 bg-[rgba(255,255,255,0.4)] border border-[rgba(44,30,22,0.3)] rounded px-1 text-[10px]" value="${a.name}">
-                               <input type="text" class="atk-bonus w-1/4 bg-[rgba(255,255,255,0.4)] border border-[rgba(44,30,22,0.3)] rounded px-1 text-[10px] text-center" value="${a.bonus}">
-                               <input type="text" class="atk-dmg w-1/4 bg-[rgba(255,255,255,0.4)] border border-[rgba(44,30,22,0.3)] rounded px-1 text-[10px] text-center" value="${a.dmg}">
-                               <button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-blood font-black">✕</button>`; 
+                d.innerHTML = `<input type="text" class="atk-name w-1/2 bg-[rgba(255,255,255,0.4)] border border-[rgba(44,30,22,0.3)] rounded px-1 text-[10px]" value="${a.name}" ${!canEdit ? 'readonly' : ''}>
+                               <input type="text" class="atk-bonus w-1/4 bg-[rgba(255,255,255,0.4)] border border-[rgba(44,30,22,0.3)] rounded px-1 text-[10px] text-center" value="${a.bonus}" ${!canEdit ? 'readonly' : ''}>
+                               <input type="text" class="atk-dmg w-1/4 bg-[rgba(255,255,255,0.4)] border border-[rgba(44,30,22,0.3)] rounded px-1 text-[10px] text-center" value="${a.dmg}" ${!canEdit ? 'readonly' : ''}>
+                               ${canEdit ? `<button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-blood font-black">✕</button>` : ''}`; 
                 ac.appendChild(d); 
             });
         }
 
         window.saveCurrentCharacter = () => {
             if (!activeCharId) return;
+            const char = characters.find(c => c.id === activeCharId); if (!char) return;
+            const canEdit = activeRole === 'dm' || (currentUser && char.owner === currentUser.username);
+            if (!canEdit) return;
+
             const data = {};
             document.querySelectorAll('#companion-sheet [data-key]').forEach(el => {
                 if (el.dataset.key === 'owner') return; // Skip owner string, it's inferred
@@ -801,6 +849,7 @@
                 
                 const beast = list[Math.floor(Math.random() * list.length)];
                 pendingGachaBeast = { ...beast, tier };
+                pendingAdoptBeastId = null;
 
                 document.getElementById('gacha-tier').innerText = tier;
                 document.getElementById('gacha-tier').className = `text-[10px] font-black uppercase tracking-[0.3em] mb-2 font-heading ${tier==='Common'?'text-gray-300':tier==='Rare'?'text-blue-400':'text-gold'}`;
@@ -813,7 +862,7 @@
         };
 
         window.claimGachaBeast = () => {
-            const myPCs = characters.filter(c => c.type === 'PC' && c.owner === currentUser.username);
+            const myPCs = characters.filter(c => c.type === 'PC' && (c.owner === currentUser.username || activeRole === 'dm'));
             if (myPCs.length === 0) {
                 window.showToast("You need a Player Character to claim a companion.");
                 return;
@@ -834,33 +883,100 @@
             document.getElementById('pc-select-modal').classList.remove('hidden');
         };
 
+        // ADOPT BESTIARY LOGIC
+        window.openAdoptModal = () => {
+            const listContainer = document.getElementById('adopt-list-container');
+            const availableBeasts = characters.filter(c => !c.isDeleted && c.type === 'BEAST' && (!c.owner || c.owner === 'DM' || c.owner === ''));
+
+            if (availableBeasts.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-12 text-gray-500 text-xs uppercase font-bold tracking-widest font-heading">
+                        No wild beasts available in the compendium.
+                    </div>`;
+            } else {
+                listContainer.innerHTML = availableBeasts.map(b => `
+                    <div class="bg-black/60 p-4 border border-blue-800 rounded hover:border-blue-400 transition-colors cursor-pointer flex justify-between items-center group" onclick="window.selectAdoptBeast('${b.id}')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-gray-900 border border-gray-700 flex justify-center items-center text-xl">🐾</div>
+                            <div>
+                                <div class="text-blue-100 font-bold uppercase tracking-widest text-sm font-heading">${b.name || 'Unnamed Beast'}</div>
+                                <div class="text-[10px] text-gray-400">HP: ${b.hpMax || '?'} | AC: ${b.ac || '?'}</div>
+                            </div>
+                        </div>
+                        <button class="bg-transparent border border-blue-500 text-blue-400 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest group-hover:bg-blue-500 group-hover:text-black transition-colors">Adopt</button>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('adopt-modal').classList.remove('hidden');
+        };
+
+        window.selectAdoptBeast = (beastId) => {
+            document.getElementById('adopt-modal').classList.add('hidden');
+            pendingAdoptBeastId = beastId;
+            pendingGachaBeast = null;
+
+            const myPCs = characters.filter(c => c.type === 'PC' && (c.owner === currentUser.username || activeRole === 'dm'));
+            if (myPCs.length === 0) {
+                window.showToast("You need a Player Character to adopt a companion.");
+                return;
+            }
+
+            const listEl = document.getElementById('pc-select-list');
+            listEl.innerHTML = myPCs.map(pc => `
+                <div class="bg-black/60 p-4 border border-green-700 rounded hover:bg-green-900/40 cursor-pointer transition-colors flex justify-between items-center group" onclick="window.finalizeClaim('${pc.id}')">
+                    <div>
+                        <div class="text-white font-bold font-heading uppercase tracking-widest">${pc.name}</div>
+                        <div class="text-[10px] text-gray-400 font-serif italic">${pc.class || 'Unknown Class'} Lvl ${pc.level || 1}</div>
+                    </div>
+                    <button class="bg-transparent border border-green-500 text-green-400 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest group-hover:bg-green-500 group-hover:text-black transition-colors">Select</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('pc-select-modal').classList.remove('hidden');
+        };
+
         window.finalizeClaim = async (pcId) => {
-            if (!pendingGachaBeast) return;
+            document.getElementById('pc-select-modal').classList.add('hidden');
+
             try {
-                const b = pendingGachaBeast;
-                const newBeastRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), {
-                    type: 'BEAST',
-                    name: b.n,
-                    class: "Beast",
-                    ownerId: currentUser.uid,
-                    owner: currentUser.username,
-                    isDeleted: false, status: 'alive',
-                    hpMax: b.tier === 'Legendary' ? 40 : (b.tier === 'Rare' ? 25 : 10),
-                    hpCurrent: b.tier === 'Legendary' ? 40 : (b.tier === 'Rare' ? 25 : 10),
-                    ac: b.tier === 'Legendary' ? 16 : (b.tier === 'Rare' ? 14 : 11),
-                    traits: b.d,
-                    bondLevel: 1, bondXp: 0,
-                    str: 10, dex: 14, con: 12, int: 4, wis: 12, cha: 8
-                });
-                
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', pcId), { companionId: newBeastRef.id });
-                
-                document.getElementById('pc-select-modal').classList.add('hidden');
-                pendingGachaBeast = null;
-                window.showToast("Beast Claimed & Bonded!");
-                window.openSheet(newBeastRef.id);
+                if (pendingGachaBeast) {
+                    const b = pendingGachaBeast;
+                    const newBeastRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), {
+                        type: 'BEAST',
+                        name: b.n,
+                        class: "Beast",
+                        ownerId: currentUser.uid,
+                        owner: currentUser.username,
+                        isDeleted: false, status: 'alive',
+                        hpMax: b.tier === 'Legendary' ? 40 : (b.tier === 'Rare' ? 25 : 10),
+                        hpCurrent: b.tier === 'Legendary' ? 40 : (b.tier === 'Rare' ? 25 : 10),
+                        ac: b.tier === 'Legendary' ? 16 : (b.tier === 'Rare' ? 14 : 11),
+                        traits: b.d,
+                        bondLevel: 1, bondXp: 0,
+                        str: 10, dex: 14, con: 12, int: 4, wis: 12, cha: 8
+                    });
+                    
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', pcId), { companionId: newBeastRef.id });
+                    
+                    pendingGachaBeast = null;
+                    window.showToast("Beast Claimed & Bonded!");
+                    window.openSheet(newBeastRef.id);
+                } 
+                else if (pendingAdoptBeastId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', pendingAdoptBeastId), {
+                        ownerId: currentUser.uid,
+                        owner: currentUser.username,
+                        bondLevel: 1, bondXp: 0
+                    });
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', pcId), { companionId: pendingAdoptBeastId });
+
+                    const adoptingId = pendingAdoptBeastId;
+                    pendingAdoptBeastId = null;
+                    window.showToast("Bestiary Companion Adopted!");
+                    window.openSheet(adoptingId);
+                }
             } catch (e) {
-                window.showToast("Error claiming beast.");
+                window.showToast("Error linking companion.");
                 console.error(e);
             }
         };
@@ -911,7 +1027,6 @@
             const char = characters.find(c => c.id === activeCharId);
             if (!char) return;
             
-            // Limit to once a day logic could go here, for now just allow rolling
             const roll = Math.floor(Math.random() * 20) + 1;
             let xpGain = 0;
             if (roll === 1) { window.showToast("Critical Fail! No bond progress made."); }
