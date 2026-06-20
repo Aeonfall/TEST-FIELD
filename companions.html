@@ -109,29 +109,29 @@
 
         /* COMPANION SHEET CSS (Classic Layout inside Parchment) */
         #companion-sheet { font-family: 'Lora', serif; color: #2c1e16; }
-        #companion-sheet input[type="text"], #companion-sheet input[type="number"], #companion-sheet textarea { color: #2c1e16; background: transparent; border: none; outline: none; font-family: 'Lora', serif; font-weight: 700; width: 100%; }
+        #companion-sheet input[type="text"], #companion-sheet input[type="number"], #companion-sheet textarea { color: #2c1e16; background: transparent; border: none; outline: none; font-family: 'Lora', serif; font-weight: 600; width: 100%; font-size: 0.8rem; }
         #companion-sheet input:focus, #companion-sheet textarea:focus { background-color: rgba(255,255,255,0.4) !important; }
         #companion-sheet .border-black { border-color: rgba(44, 30, 22, 0.7) !important; border-width: 2px; }
-        #companion-sheet input[type="checkbox"] { appearance: auto; accent-color: #7a1b1b; cursor: pointer; border: 1px solid rgba(44, 30, 22, 0.7); width: 14px; height: 14px; }
-        #companion-sheet label { color: #2c1e16; font-family: 'Cinzel', serif; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
+        #companion-sheet input[type="checkbox"] { appearance: auto; accent-color: #7a1b1b; cursor: pointer; border: 1px solid rgba(44, 30, 22, 0.7); width: 12px; height: 12px; }
+        #companion-sheet label { color: #2c1e16; font-family: 'Cinzel', serif; font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
 
         #companion-sheet .bg-white { background-color: transparent !important; }
         #companion-sheet .bg-gray-100 { background-color: rgba(255,255,255,0.3) !important; }
         #companion-sheet .bg-gray-200 { background-color: rgba(255,255,255,0.4) !important; }
 
-        .sheet-box { border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 6px; padding: 8px; position: relative; background: rgba(255,255,255,0.2); }
-        .sheet-title { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #f1e5c5; padding: 0 4px; font-size: 0.6rem; font-weight: 800; font-family: 'Cinzel', serif; text-transform: uppercase; white-space: nowrap; }
-        .sheet-input-line { border-bottom: 1px solid rgba(44, 30, 22, 0.5); padding-bottom: 2px; margin-bottom: 4px; }
+        .sheet-box { border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 6px; padding: 10px 12px; position: relative; background: rgba(255,255,255,0.2); }
+        .sheet-title { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #f1e5c5; padding: 0 6px; font-size: 0.55rem; font-weight: 800; font-family: 'Cinzel', serif; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.05em; }
+        .sheet-input-line { border-bottom: 1px solid rgba(44, 30, 22, 0.4); padding-bottom: 1px; margin-bottom: 4px; }
         
-        .stat-block { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 8px; width: 50px; height: 60px; position: relative; background: rgba(255,255,255,0.3); }
-        .stat-title { font-size: 0.5rem; position: absolute; top: 2px; font-family: 'Cinzel', serif; font-weight: bold;}
-        .stat-val { width: 100%; text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 4px;}
-        .stat-mod { position: absolute; bottom: -10px; width: 30px; height: 20px; border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 10px; background: #f1e5c5; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
+        .stat-block { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 8px; width: 46px; height: 56px; position: relative; background: rgba(255,255,255,0.3); margin: 0 2px;}
+        .stat-title { font-size: 0.45rem; position: absolute; top: 2px; font-family: 'Cinzel', serif; font-weight: 900; letter-spacing: 0.05em;}
+        .stat-val { width: 100%; text-align: center; font-size: 1.1rem !important; font-weight: 700; margin-top: 4px; background: transparent; border: none;}
+        .stat-mod { position: absolute; bottom: -10px; width: 28px; height: 18px; border: 2px solid rgba(44, 30, 22, 0.7); border-radius: 9px; background: #f1e5c5; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; }
 
-        .ac-shield { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z' fill='none' stroke='rgba(44,30,22,0.7)' stroke-width='4'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; background-position: center; width: 60px; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ac-shield { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z' fill='none' stroke='rgba(44,30,22,0.7)' stroke-width='4'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; background-position: center; width: 55px; height: 65px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        .irv-grid { display: grid; grid-template-columns: 14px 14px 14px 1fr; gap: 2px; align-items: center; font-size: 0.7rem; margin-bottom: 4px;}
-        .irv-header { display: grid; grid-template-columns: 14px 14px 14px 1fr; gap: 2px; font-size: 0.6rem; font-weight: bold; text-align: center; margin-bottom: 2px; font-family: 'Cinzel', serif;}
+        .irv-grid { display: grid; grid-template-columns: 12px 12px 12px 1fr; gap: 4px; align-items: center; font-size: 0.65rem; margin-bottom: 4px;}
+        .irv-header { display: grid; grid-template-columns: 12px 12px 12px 1fr; gap: 4px; font-size: 0.55rem; font-weight: 800; text-align: center; margin-bottom: 2px; font-family: 'Cinzel', serif;}
 
         .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
@@ -214,71 +214,71 @@
                 
                 <!-- Header Block -->
                 <div class="flex flex-col md:flex-row gap-6 border-b-4 border-double border-black pb-4 mb-6">
-                    <div class="w-full md:w-1/3">
+                    <div class="w-full md:w-1/3 flex flex-col justify-end">
                         <label class="block mb-1">Companion Name</label>
-                        <input type="text" data-key="name" class="text-3xl font-heading text-blood font-black border-b-2 border-black w-full" placeholder="Name">
+                        <input type="text" data-key="name" class="!text-2xl font-heading text-blood font-black border-b-2 border-black w-full" placeholder="Name">
                     </div>
-                    <div class="w-full md:w-2/3 grid grid-cols-2 lg:grid-cols-3 gap-4 bg-gray-100 p-3 rounded border border-black">
-                        <div><label>Creature</label><input type="text" data-key="creature" class="sheet-input-line text-sm" placeholder="e.g. Wolf"></div>
-                        <div><label class="flex justify-between items-end w-full"><span>Bonded To</span><button onclick="window.openRelationshipModal()" class="text-[9px] text-blood hover:text-red-700 bg-transparent border-none cursor-pointer flex items-center gap-1 transition-colors" id="bond-ui-btn" title="Build Relationship"><i class="fa-solid fa-heart"></i> Bond</button></label><input type="text" data-key="bondedTo" class="sheet-input-line text-sm text-green-900" placeholder="PC Name" readonly></div>
-                        <div><label>Size</label><input type="text" data-key="size" class="sheet-input-line text-sm" placeholder="Medium"></div>
-                        <div><label>Alignment</label><input type="text" data-key="alignment" class="sheet-input-line text-sm" placeholder="Unaligned"></div>
-                        <div><label>Weight</label><input type="text" data-key="weight" class="sheet-input-line text-sm" placeholder="100 lbs"></div>
-                        <div><label>Type</label><input type="text" data-key="creatureType" class="sheet-input-line text-sm" placeholder="Beast"></div>
+                    <div class="w-full md:w-2/3 grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 bg-gray-100 p-4 rounded border border-black">
+                        <div><label>Creature</label><input type="text" data-key="creature" class="sheet-input-line" placeholder="e.g. Wolf"></div>
+                        <div><label class="flex justify-between items-end w-full"><span>Bonded To</span><button onclick="window.openRelationshipModal()" class="text-[9px] text-blood hover:text-red-700 bg-transparent border-none cursor-pointer flex items-center gap-1 transition-colors leading-none" id="bond-ui-btn" title="Build Relationship"><i class="fa-solid fa-heart"></i> Bond</button></label><input type="text" data-key="bondedTo" class="sheet-input-line text-green-900" placeholder="PC Name" readonly></div>
+                        <div><label>Size</label><input type="text" data-key="size" class="sheet-input-line" placeholder="Medium"></div>
+                        <div><label>Alignment</label><input type="text" data-key="alignment" class="sheet-input-line" placeholder="Unaligned"></div>
+                        <div><label>Weight</label><input type="text" data-key="weight" class="sheet-input-line" placeholder="100 lbs"></div>
+                        <div><label>Type</label><input type="text" data-key="creatureType" class="sheet-input-line" placeholder="Beast"></div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                     <!-- Left Column -->
-                    <div class="md:col-span-3 space-y-6">
+                    <div class="md:col-span-3 space-y-5">
                         <!-- Speeds -->
-                        <div class="sheet-box pb-4">
+                        <div class="sheet-box pb-3">
                             <div class="sheet-title">Speeds</div>
-                            <div class="space-y-2 mt-2">
-                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedWalk" class="w-12 text-center border-b border-black bg-transparent"> <label>Walk</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedFly" class="w-12 text-center border-b border-black bg-transparent"> <label>Fly</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedSwim" class="w-12 text-center border-b border-black bg-transparent"> <label>Swim</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedClimb" class="w-12 text-center border-b border-black bg-transparent"> <label>Climb</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="number" data-key="speedBurrow" class="w-12 text-center border-b border-black bg-transparent"> <label>Burrow</label></div>
+                            <div class="space-y-1.5 mt-2">
+                                <div class="flex items-center gap-2"><input type="number" data-key="speedWalk" class="w-10 text-center border-b border-black bg-transparent"> <label>Walk</label></div>
+                                <div class="flex items-center gap-2"><input type="number" data-key="speedFly" class="w-10 text-center border-b border-black bg-transparent"> <label>Fly</label></div>
+                                <div class="flex items-center gap-2"><input type="number" data-key="speedSwim" class="w-10 text-center border-b border-black bg-transparent"> <label>Swim</label></div>
+                                <div class="flex items-center gap-2"><input type="number" data-key="speedClimb" class="w-10 text-center border-b border-black bg-transparent"> <label>Climb</label></div>
+                                <div class="flex items-center gap-2"><input type="number" data-key="speedBurrow" class="w-10 text-center border-b border-black bg-transparent"> <label>Burrow</label></div>
                             </div>
                         </div>
 
                         <!-- AC / HP -->
                         <div class="flex gap-4">
                             <div class="ac-shield shrink-0">
-                                <label class="text-[0.5rem] mt-1">Armor<br>Class</label>
-                                <input type="number" data-key="ac" class="text-xl font-bold text-center w-full" value="10">
+                                <label class="text-[0.45rem] mt-1 tracking-widest text-center leading-tight">Armor<br>Class</label>
+                                <input type="number" data-key="ac" class="!text-lg font-bold text-center w-full mt-0.5" value="10">
                             </div>
-                            <div class="flex flex-col gap-2 flex-grow">
-                                <div class="sheet-box text-center">
+                            <div class="flex flex-col gap-3 flex-grow">
+                                <div class="sheet-box text-center py-2">
                                     <div class="sheet-title">Hit Points</div>
-                                    <div class="flex items-center justify-center gap-1 mt-1 text-lg font-bold">
-                                        <input type="number" data-key="hpCurrent" class="w-12 text-center text-blood" value="10"> / <input type="number" data-key="hpMax" class="w-12 text-center" value="10">
+                                    <div class="flex items-center justify-center gap-1 mt-1 font-bold">
+                                        <input type="number" data-key="hpCurrent" class="w-10 text-center text-blood !text-base" value="10"> / <input type="number" data-key="hpMax" class="w-10 text-center !text-base" value="10">
                                     </div>
                                 </div>
-                                <div class="sheet-box text-center">
+                                <div class="sheet-box text-center py-2">
                                     <div class="sheet-title">Temp HP</div>
-                                    <input type="number" data-key="tempHp" class="w-full text-center text-lg mt-1 font-bold" placeholder="--">
+                                    <input type="number" data-key="tempHp" class="w-full text-center !text-base mt-1 font-bold" placeholder="--">
                                 </div>
                             </div>
                         </div>
 
                         <!-- Senses -->
-                        <div class="sheet-box pb-4">
+                        <div class="sheet-box pb-3">
                             <div class="sheet-title">Senses</div>
-                            <div class="space-y-2 mt-2">
-                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseBlindsight" class="w-16 border-b border-black bg-transparent text-center"> <label>Blindsight</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseDarkvision" class="w-16 border-b border-black bg-transparent text-center"> <label>Darkvision</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseTremor" class="w-16 border-b border-black bg-transparent text-center"> <label>Tremorsense</label></div>
-                                <div class="flex items-center gap-2 text-sm"><input type="text" data-key="senseTrue" class="w-16 border-b border-black bg-transparent text-center"> <label>Truesight</label></div>
+                            <div class="space-y-1.5 mt-2">
+                                <div class="flex items-center gap-2"><input type="text" data-key="senseBlindsight" class="w-12 border-b border-black bg-transparent text-center"> <label>Blindsight</label></div>
+                                <div class="flex items-center gap-2"><input type="text" data-key="senseDarkvision" class="w-12 border-b border-black bg-transparent text-center"> <label>Darkvision</label></div>
+                                <div class="flex items-center gap-2"><input type="text" data-key="senseTremor" class="w-12 border-b border-black bg-transparent text-center"> <label>Tremorsense</label></div>
+                                <div class="flex items-center gap-2"><input type="text" data-key="senseTrue" class="w-12 border-b border-black bg-transparent text-center"> <label>Truesight</label></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Middle Column -->
-                    <div class="md:col-span-6 space-y-6">
+                    <div class="md:col-span-6 space-y-5">
                         <!-- Stats Array -->
-                        <div class="flex justify-between items-center bg-gray-100 p-2 rounded border border-black pb-4">
+                        <div class="flex justify-between items-center bg-gray-100 p-3 rounded border border-black pb-5">
                             <div class="stat-block"><span class="stat-title">STR</span><input type="number" data-key="str" class="stat-val" value="10"><span class="stat-mod" id="mod-str">+0</span></div>
                             <div class="stat-block"><span class="stat-title">DEX</span><input type="number" data-key="dex" class="stat-val" value="10"><span class="stat-mod" id="mod-dex">+0</span></div>
                             <div class="stat-block"><span class="stat-title">CON</span><input type="number" data-key="con" class="stat-val" value="10"><span class="stat-mod" id="mod-con">+0</span></div>
@@ -289,7 +289,7 @@
 
                         <!-- Damage Types IRV -->
                         <div class="sheet-box pb-3">
-                            <div class="sheet-title" style="font-size: 0.5rem; white-space: normal; text-align: center; width: 80%; bottom: -12px;">Damage Immunities, Resistances & Vulnerabilities</div>
+                            <div class="sheet-title" style="font-size: 0.45rem; white-space: normal; text-align: center; width: 85%; bottom: -10px;">Damage Immunities, Resistances & Vulnerabilities</div>
                             <div class="grid grid-cols-2 gap-4 mt-2 px-2">
                                 <div>
                                     <div class="irv-header"><span>I</span><span>R</span><span>V</span><span></span></div>
@@ -314,9 +314,9 @@
                         </div>
 
                         <!-- Skills -->
-                        <div class="sheet-box pb-4">
+                        <div class="sheet-box pb-3">
                             <div class="sheet-title">Skills</div>
-                            <div class="grid grid-cols-2 gap-x-6 gap-y-1 mt-2 px-2 text-sm">
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-2 mt-2 px-2 text-xs">
                                 <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_acrobatics"> <label>Acrobatics <span class="text-gray-500 normal-case font-normal">(Dex)</span></label></div>
                                 <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_animal"> <label>Animal Handling <span class="text-gray-500 normal-case font-normal">(Wis)</span></label></div>
                                 <div class="flex items-center gap-2"><input type="checkbox" data-key="skill_arcana"> <label>Arcana <span class="text-gray-500 normal-case font-normal">(Int)</span></label></div>
@@ -340,11 +340,11 @@
                     </div>
 
                     <!-- Right Column -->
-                    <div class="md:col-span-3 space-y-6">
+                    <div class="md:col-span-3 space-y-5">
                         <!-- Saves -->
-                        <div class="sheet-box pb-4">
+                        <div class="sheet-box pb-3">
                             <div class="sheet-title">Saving Throws</div>
-                            <div class="space-y-1 mt-2 px-2 text-sm">
+                            <div class="space-y-1.5 mt-2 px-2 text-xs">
                                 <div class="flex items-center gap-2"><input type="checkbox" data-key="save_str"> <label>Strength</label></div>
                                 <div class="flex items-center gap-2"><input type="checkbox" data-key="save_dex"> <label>Dexterity</label></div>
                                 <div class="flex items-center gap-2"><input type="checkbox" data-key="save_con"> <label>Constitution</label></div>
@@ -356,32 +356,32 @@
 
                         <!-- Init & Passives -->
                         <div class="flex gap-4">
-                            <div class="sheet-box text-center flex-1">
+                            <div class="sheet-box text-center flex-1 py-2">
                                 <div class="sheet-title">Initiative</div>
-                                <input type="number" data-key="init" class="w-full text-center text-xl mt-1 font-bold bg-transparent" value="0">
+                                <input type="number" data-key="init" class="w-full text-center !text-lg mt-0.5 font-bold bg-transparent" value="0">
                             </div>
                         </div>
-                        <div class="sheet-box text-center">
+                        <div class="sheet-box text-center py-2">
                             <div class="sheet-title" style="white-space: normal; line-height: 1;">Passive Wisdom (Perception)</div>
-                            <input type="number" data-key="passivePerception" class="w-full text-center text-xl mt-1 font-bold bg-transparent" value="10">
+                            <input type="number" data-key="passivePerception" class="w-full text-center !text-lg mt-0.5 font-bold bg-transparent" value="10">
                         </div>
 
                         <!-- Condition Immunities -->
-                        <div class="sheet-box pb-4">
+                        <div class="sheet-box pb-3">
                             <div class="sheet-title">Condition Immunities</div>
-                            <div class="grid grid-cols-2 gap-1 mt-2 px-1 text-xs">
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_blind"> <label>Blind</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_paralyze"> <label>Paralyze</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_charm"> <label>Charm</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_petrify"> <label>Petrify</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_deafen"> <label>Deafen</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_poison"> <label>Poison</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_frighten"> <label>Frighten</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_prone"> <label>Prone</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_grapple"> <label>Grapple</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_restrain"> <label>Restrain</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_incapacitate"> <label>Incap.</label></div>
-                                <div class="flex items-center gap-1"><input type="checkbox" data-key="cond_immune_stun"> <label>Stun</label></div>
+                            <div class="grid grid-cols-2 gap-1.5 mt-2 px-1 text-[10px]">
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_blind"> <label>Blind</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_paralyze"> <label>Paralyze</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_charm"> <label>Charm</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_petrify"> <label>Petrify</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_deafen"> <label>Deafen</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_poison"> <label>Poison</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_frighten"> <label>Frighten</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_prone"> <label>Prone</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_grapple"> <label>Grapple</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_restrain"> <label>Restrain</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_incapacitate"> <label>Incap.</label></div>
+                                <div class="flex items-center gap-1.5"><input type="checkbox" data-key="cond_immune_stun"> <label>Stun</label></div>
                             </div>
                         </div>
                     </div>
@@ -390,31 +390,31 @@
                 <!-- Bottom Three Panels -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                     <!-- Load -->
-                    <div class="sheet-box flex flex-col h-64">
+                    <div class="sheet-box flex flex-col h-64 p-3">
                         <div class="sheet-title">Load</div>
-                        <div class="flex justify-between gap-4 px-2 mt-2 border-b border-black pb-2 mb-2">
-                            <div class="text-center w-1/2"><label class="text-[0.55rem]">Current Carry</label><input type="text" data-key="carryLoad" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
-                            <div class="text-center w-1/2"><label class="text-[0.55rem]">Capacity</label><input type="text" data-key="carryCapacity" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
+                        <div class="flex justify-between gap-4 px-1 mt-2 border-b border-black pb-2 mb-2">
+                            <div class="text-center w-1/2"><label class="text-[0.5rem] tracking-wider">Current Carry</label><input type="text" data-key="carryLoad" class="text-center bg-gray-200 mt-1 rounded p-1 !text-xs"></div>
+                            <div class="text-center w-1/2"><label class="text-[0.5rem] tracking-wider">Capacity</label><input type="text" data-key="carryCapacity" class="text-center bg-gray-200 mt-1 rounded p-1 !text-xs"></div>
                         </div>
-                        <div class="flex justify-between gap-2 px-2 border-b border-black pb-2 mb-2">
-                            <div class="text-center w-1/2"><label class="text-[0.55rem]">Armor</label><input type="text" data-key="armorName" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
-                            <div class="text-center w-1/4"><label class="text-[0.55rem]">Weight</label><input type="text" data-key="armorWeight" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
-                            <div class="text-center w-1/4"><label class="text-[0.55rem]">AC</label><input type="text" data-key="armorAc" class="text-center bg-gray-200 mt-1 rounded p-1 text-sm"></div>
+                        <div class="flex justify-between gap-2 px-1 border-b border-black pb-2 mb-2">
+                            <div class="text-center w-1/2"><label class="text-[0.5rem] tracking-wider">Armor</label><input type="text" data-key="armorName" class="text-center bg-gray-200 mt-1 rounded p-1 !text-xs"></div>
+                            <div class="text-center w-1/4"><label class="text-[0.5rem] tracking-wider">Weight</label><input type="text" data-key="armorWeight" class="text-center bg-gray-200 mt-1 rounded p-1 !text-xs"></div>
+                            <div class="text-center w-1/4"><label class="text-[0.5rem] tracking-wider">AC</label><input type="text" data-key="armorAc" class="text-center bg-gray-200 mt-1 rounded p-1 !text-xs"></div>
                         </div>
-                        <textarea data-key="inventory" class="flex-grow w-full bg-transparent resize-none p-2 text-sm" placeholder="Other gear..."></textarea>
+                        <textarea data-key="inventory" class="flex-grow w-full bg-transparent resize-none p-1 !text-xs leading-relaxed" placeholder="Other gear..."></textarea>
                     </div>
 
                     <!-- Actions -->
-                    <div class="sheet-box flex flex-col h-64">
+                    <div class="sheet-box flex flex-col h-64 p-3">
                         <div class="sheet-title">Actions</div>
-                        <textarea data-key="actions" class="flex-grow w-full bg-transparent resize-none p-2 text-sm mt-2 font-serif" placeholder="Attacks, abilities, etc...
+                        <textarea data-key="actions" class="flex-grow w-full bg-transparent resize-none p-1 mt-2 font-serif !text-xs leading-relaxed" placeholder="Attacks, abilities, etc...
 e.g. Bite. +4 to hit, 1d6+2 piercing."></textarea>
                     </div>
 
                     <!-- Traits -->
-                    <div class="sheet-box flex flex-col h-64">
+                    <div class="sheet-box flex flex-col h-64 p-3">
                         <div class="sheet-title">Traits</div>
-                        <textarea data-key="traits" class="flex-grow w-full bg-transparent resize-none p-2 text-sm mt-2 font-serif" placeholder="Keen Hearing and Smell, Pack Tactics..."></textarea>
+                        <textarea data-key="traits" class="flex-grow w-full bg-transparent resize-none p-1 mt-2 font-serif !text-xs leading-relaxed" placeholder="Keen Hearing and Smell, Pack Tactics..."></textarea>
                     </div>
                 </div>
 
@@ -618,7 +618,7 @@ e.g. Bite. +4 to hit, 1d6+2 piercing."></textarea>
                         if (campDoc.exists() && campDoc.data().name) {
                             const titleEls = [document.getElementById('main-campaign-title')];
                             titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                            document.title = campDoc.data().name;
+                            document.title = `${campDoc.data().name} - Companions`;
                         }
                     } catch (err) {
                         console.warn("Could not read campaign info:", err);
@@ -626,10 +626,12 @@ e.g. Bite. +4 to hit, 1d6+2 piercing."></textarea>
                 } else {
                     const titleEls = [document.getElementById('main-campaign-title')];
                     titleEls.forEach(el => { if(el) el.innerText = "Demo Campaign"; });
-                    document.title = "Demo Campaign";
+                    document.title = "Demo Campaign - Companions";
                 }
 
                 document.getElementById('user-display-name').innerText = currentUser.username;
+                
+                // Set DM buttons based on activeRole
                 document.getElementById('btn-dm-bestiary').classList.toggle('hidden', activeRole !== 'dm');
 
                 document.getElementById('initial-loading').classList.add('hidden');
