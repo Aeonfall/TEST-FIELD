@@ -188,6 +188,24 @@
         .ornamental-hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(139, 90, 43, 0), rgba(139, 90, 43, 0.5), rgba(139, 90, 43, 0)); margin: 15px 0; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes shake-cage {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .gacha-shaking { animation: shake-cage 0.3s infinite; }
+        .glow-common { box-shadow: 0 0 25px rgba(161, 161, 170, 0.6); border-color: #a1a1aa; }
+        .glow-rare { box-shadow: 0 0 35px rgba(139, 92, 246, 0.8); border-color: #8b5cf6; }
+        .glow-legendary { box-shadow: 0 0 50px rgba(251, 191, 36, 1); border-color: #fbbf24; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -253,7 +271,8 @@
                 <h2 id="view-title" class="text-xl md:text-2xl font-heading text-gray-500 uppercase font-bold tracking-widest drop-shadow">Companions & Beasts</h2>
                 <div id="create-actions" class="flex gap-2 w-full md:w-auto hidden">
                     <button onclick="window.openAdoptModal()" class="flex-1 md:flex-none fantasy-btn px-6 py-2.5 rounded text-xs md:text-sm shadow">Adopt Companion</button>
-                    <button id="btn-create-npc" onclick="window.openEncounterSpawner()" class="flex-1 md:flex-none fantasy-btn-alt !border-green-800 !text-green-600 hover:!text-parchment px-6 py-2.5 rounded text-xs md:text-sm shadow hidden">Spawn Wild Beast</button>
+                    <button id="btn-gacha-beast" onclick="window.openGachaModal()" class="flex-1 md:flex-none fantasy-btn-alt !border-green-800 !text-green-600 hover:!text-parchment px-6 py-2.5 rounded text-xs md:text-sm shadow">Spawn Wild Beast</button>
+                    <button id="btn-spawn-bestiary" onclick="window.openEncounterSpawner()" class="flex-1 md:flex-none fantasy-btn-alt !border-purple-800 !text-purple-400 hover:!text-parchment px-6 py-2.5 rounded text-xs md:text-sm shadow hidden">DM: Bestiary</button>
                 </div>
             </div>
 
@@ -921,6 +940,25 @@
         </div>
     </div>
 
+    <!-- GACHA BEAST MODAL -->
+    <div id="gacha-modal" class="modal-overlay hidden z-[750]">
+        <div class="modal-container !bg-ink !text-parchment !border-gold shadow-2xl max-w-4xl flex flex-col p-6 md:p-8 !bg-none text-center">
+            <h2 class="font-heading text-3xl font-black text-gold uppercase tracking-widest mb-2">Wild Beast Encounter</h2>
+            <p class="text-xs text-gray-400 font-serif italic mb-8">You hear rustling in the brush. Three creatures emerge from the wilderness...</p>
+            
+            <div id="gacha-cages" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72"></div>
+                <div class="gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72"></div>
+                <div class="gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72"></div>
+            </div>
+
+            <div class="flex justify-center gap-4 font-heading">
+                <button id="gacha-roll-btn" onclick="window.rollGacha()" class="fantasy-btn px-12 py-3 rounded text-sm md:text-base font-black uppercase tracking-widest shadow-lg">Call to the Wilds</button>
+                <button onclick="document.getElementById('gacha-modal').classList.add('hidden')" class="bg-transparent border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 px-8 py-3 rounded text-sm font-bold uppercase tracking-widest transition-colors">Flee</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ENCOUNTER SPAWNER MODAL -->
     <div id="encounter-spawner-modal" class="modal-overlay hidden z-[700]">
         <div class="modal-container !bg-ink !text-parchment !border-purple-900 shadow-2xl max-w-2xl max-h-[85vh] flex flex-col p-6 md:p-8 !bg-none">
@@ -937,6 +975,25 @@
 
             <div class="overflow-y-auto flex-grow pr-2 space-y-3 pb-4 scrollbar-hide" id="spawner-list-container">
                 <!-- Dynamic spawner content goes here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- GACHA BEAST MODAL -->
+    <div id="gacha-modal" class="modal-overlay hidden z-[750]">
+        <div class="modal-container !bg-ink !text-parchment !border-gold shadow-2xl max-w-4xl flex flex-col p-6 md:p-8 !bg-none text-center">
+            <h2 class="font-heading text-3xl font-black text-gold uppercase tracking-widest mb-2">Wild Beast Encounter</h2>
+            <p class="text-xs text-gray-400 font-serif italic mb-8">You hear rustling in the brush. Three creatures emerge from the wilderness...</p>
+            
+            <div id="gacha-cages" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72"></div>
+                <div class="gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72"></div>
+                <div class="gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72"></div>
+            </div>
+
+            <div class="flex justify-center gap-4 font-heading">
+                <button id="gacha-roll-btn" onclick="window.rollGacha()" class="fantasy-btn px-12 py-3 rounded text-sm md:text-base font-black uppercase tracking-widest shadow-lg">Call to the Wilds</button>
+                <button onclick="document.getElementById('gacha-modal').classList.add('hidden')" class="bg-transparent border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 px-8 py-3 rounded text-sm font-bold uppercase tracking-widest transition-colors">Flee</button>
             </div>
         </div>
     </div>
@@ -1278,6 +1335,128 @@
         let activeManagePartyId = null, activeMoveLvl = null, editingMoveIndex = null;
         let currentRound = 1, activeTurnId = null, pendingHoldId = null;
         let campaignSettings = { terms: {} };
+
+        const GACHA_BEASTS = {
+            common: [
+                { name: "Dust Fox", desc: "A clever fox-like scavenger adapted to ruined lands." },
+                { name: "Burrow Hound", desc: "A loyal canine used for tracking, hunting, and exploring ruins." },
+                { name: "Mossback Tortoise", desc: "A small tortoise with moss and fungi growing naturally on its shell." },
+                { name: "Glowtail Lemur", desc: "A colorful jungle climber with a bioluminescent tail." },
+                { name: "Thorn Hare", desc: "A fast rabbit-like creature with protective quills." },
+                { name: "Sandrunner", desc: "A swift desert lizard often kept as a pet or messenger animal." },
+                { name: "Echo Bat", desc: "A large bat trained for scouting dark tunnels and ruins." },
+                { name: "Scrap Beetle", desc: "A metallic-shelled insect that feeds on rust and junk." },
+                { name: "River Skipper", desc: "An amphibious lizard commonly found around rivers and marshes." },
+                { name: "Brushtail Grazer", desc: "A goat-sized herbivore often raised by frontier communities." }
+            ],
+            rare: [
+                { name: "Skywing Drake", desc: "A cat-sized drake capable of gliding long distances." },
+                { name: "Pulse Hound", desc: "A canine that can sense Heart energy and hidden relics." },
+                { name: "Shardwing", desc: "A bird whose crystal feathers refract light into brilliant colors." },
+                { name: "Bloomcrawler", desc: "A fungal reptile that produces useful medicinal spores." },
+                { name: "Emberclaw", desc: "A feline predator with naturally warm skin and ember-like eyes." },
+                { name: "Ironback Raptor", desc: "A small pack-hunting reptile covered in armored scales." },
+                { name: "Prism Moth", desc: "A giant moth with crystalline wings and natural luminescence." },
+                { name: "Ghost Stag", desc: "A pale woodland deer known for disappearing into mist." },
+                { name: "Dunescale", desc: "A large monitor-lizard adapted to desert storms." },
+                { name: "Storm Crow", desc: "An unusually intelligent bird believed to predict weather changes." }
+            ],
+            legendary: [
+                { name: "Sunscale Dragon", desc: "An ancient winged reptile descended from Founder-era genetic experiments. Scales shimmer like molten gold. Said to nest atop impossible peaks." },
+                { name: "The White Pulse Wolf", desc: "A singular Heart-touched wolf. Can track Heart energy across continents. Appears throughout history beside heroes and explorers." },
+                { name: "Crownhorn", desc: "A colossal stag whose antlers resemble living crystal. Believed to guard ancient Heart sites. Can vanish into light." },
+                { name: "Leviathan Eel", desc: "A gigantic river serpent dwelling in deep waters. Entire villages tell stories about sightings. Older than many nations." },
+                { name: "Verdant Titan", desc: "An enormous wandering beast covered in forests and moss. Small ecosystems live on its back. Mistaken for hills or islands." },
+                { name: "Voidwing", desc: "A massive black bird said to fly between storms. Feathers absorb light. Considered an omen of great change." },
+                { name: "The First Hound", desc: "A supposedly immortal canine created during the Founder Age. Appears unchanged across centuries. Said to know every road in Aeonfall." },
+                { name: "Heart Phoenix", desc: "A radiant avian creature born from concentrated Heart energy. Reforms after destruction. Feathers become powerful relics." },
+                { name: "Deepmother", desc: "An immense fungal intelligence that occasionally manifests through a companion-sized avatar. Revered by some Mycelins. Possibly connected directly to the Eternal Heart." },
+                { name: "Starfang", desc: "A predatory sky-beast that glides on upper-atmosphere currents. Rarely descends to the surface. Viewed as a living legend by Nomads." }
+            ]
+        };
+
+        window.openGachaModal = () => {
+            document.getElementById('gacha-modal').classList.remove('hidden');
+            document.getElementById('gacha-roll-btn').classList.remove('hidden');
+            
+            const cages = document.querySelectorAll('.gacha-cage');
+            cages.forEach(c => {
+                c.className = 'gacha-cage bg-black/80 border-2 border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center transition-all duration-300 relative h-72';
+                c.innerHTML = '<i class="fa-solid fa-box text-6xl text-gray-500 mb-4"></i><div class="text-gray-400 font-heading font-bold text-sm tracking-widest uppercase">Mysterious Scent</div>';
+            });
+        };
+
+        window.rollGacha = () => {
+            document.getElementById('gacha-roll-btn').classList.add('hidden');
+            const cages = document.querySelectorAll('.gacha-cage');
+            
+            cages.forEach(c => c.classList.add('gacha-shaking'));
+            
+            setTimeout(() => {
+                cages.forEach((c, index) => {
+                    c.classList.remove('gacha-shaking');
+                    
+                    const roll = Math.random();
+                    let rarity = 'common';
+                    let glowClass = 'glow-common';
+                    let colorClass = 'text-gray-400';
+                    let bgClass = 'bg-gray-500';
+                    
+                    if (roll > 0.95) { rarity = 'legendary'; glowClass = 'glow-legendary'; colorClass = 'text-gold'; bgClass = 'bg-gold'; }
+                    else if (roll > 0.70) { rarity = 'rare'; glowClass = 'glow-rare'; colorClass = 'text-purple-400'; bgClass = 'bg-purple-600'; }
+                    
+                    const list = GACHA_BEASTS[rarity];
+                    const beastIdx = Math.floor(Math.random() * list.length);
+                    const beast = list[beastIdx];
+                    
+                    c.classList.add(glowClass);
+                    c.innerHTML = `
+                        <div class="text-4xl mb-4">🐾</div>
+                        <div class="${colorClass} font-heading font-black text-center text-sm md:text-base mb-2">${beast.name}</div>
+                        <div class="text-[10px] text-gray-300 font-serif italic text-center px-2 line-clamp-4 leading-relaxed">${beast.desc}</div>
+                        <div class="absolute -top-3 -right-3 ${bgClass} ${rarity === 'legendary' ? 'text-ink' : 'text-white'} text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg transform rotate-6 border border-white/20 tracking-widest">${rarity}</div>
+                        <button onclick="window.selectGachaBeast('${rarity}', ${beastIdx})" class="mt-auto mb-2 px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded text-[10px] font-bold uppercase tracking-widest text-white transition-colors">Choose</button>
+                    `;
+                });
+            }, 1500);
+        };
+
+        window.selectGachaBeast = async (rarity, idx) => {
+            const list = GACHA_BEASTS[rarity];
+            const beast = list[idx];
+            if(!beast) return;
+            
+            try {
+                let hp = 10;
+                if(rarity === 'rare') hp = 25;
+                if(rarity === 'legendary') hp = 50;
+                
+                const newData = {
+                    type: 'BEAST',
+                    ownerId: currentUser.uid,
+                    owner: 'DM', 
+                    isDeleted: false,
+                    status: 'alive',
+                    scoresGenerated: false,
+                    name: beast.name,
+                    class: 'Beast',
+                    appearance: beast.desc,
+                    hpMax: hp,
+                    hpCurrent: hp,
+                    ac: rarity === 'legendary' ? 16 : (rarity === 'rare' ? 14 : 12),
+                    visibility: 'public'
+                };
+                
+                const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), newData);
+                window.showToast(`${beast.name} Spawned into the Wild!`);
+                document.getElementById('gacha-modal').classList.add('hidden');
+                
+                window.openSheet(ref.id);
+            } catch(e) {
+                console.error(e);
+                window.showToast("Failed to spawn beast.");
+            }
+        };
         
         let compendiumNPCs = [];
         let compendiumBeasts = [];
@@ -2614,7 +2793,7 @@
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 
                 const isDM = activeRole === 'dm';
-                document.getElementById('btn-create-npc')?.classList.toggle('hidden', !isDM);
+                document.getElementById('btn-spawn-bestiary')?.classList.toggle('hidden', !isDM);
                 document.getElementById('nav-encounters')?.classList.toggle('hidden', !isDM);
                 document.getElementById('create-actions')?.classList.remove('hidden');
                 document.getElementById('btn-campaign-settings')?.classList.toggle('hidden', !isDM);
