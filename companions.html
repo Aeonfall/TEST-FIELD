@@ -157,6 +157,7 @@
                 <div id="sheet-readonly-badge" class="hidden bg-gray-800 text-gray-400 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest border border-gray-600">VIEW ONLY</div>
                 <div class="flex items-center gap-4">
                     <button id="sync-btn" onclick="window.saveCurrentCharacter(true)" class="fantasy-btn-alt px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">Sync</button>
+                    <button id="btn-manage-companion" onclick="window.triggerDeleteModal()" class="bg-transparent border border-blood text-blood hover:bg-blood hover:text-parchment px-3 py-1 rounded text-[10px] font-black uppercase transition-colors tracking-widest hidden">Manage</button>
                 </div>
             </div>
         </nav>
@@ -463,10 +464,31 @@
         </div>
     </div>
 
+    <!-- DELETE/MANAGE MODAL -->
+    <div id="delete-modal" class="modal-overlay hidden z-[900]">
+        <div class="modal-container !bg-ink !border-blood shadow-2xl !text-parchment">
+            <h2 class="modal-header !text-blood">Manage Companion</h2>
+            <div id="delete-stage-1" class="space-y-4 font-heading">
+                <button onclick="window.releaseCompanion()" class="w-full py-3 bg-transparent text-ink border border-gold hover:bg-gold hover:text-ink rounded font-bold uppercase text-xs !text-gold transition-colors">Release to Wilds (Unlink)</button>
+                <button onclick="window.showPermDeleteConfirm()" class="w-full py-3 bg-transparent text-blood border-2 border-blood hover:bg-blood hover:text-parchment rounded font-bold uppercase text-xs transition-colors">Permanently Delete</button>
+            </div>
+            <div id="delete-stage-confirm" class="hidden space-y-4 text-center font-heading">
+                <p class="text-sm font-bold text-blood uppercase border-b border-dashed border-blood pb-2 mb-4">Warning: This action is irreversible.</p>
+                <div class="flex gap-2">
+                    <button onclick="window.resetDeleteModal()" class="flex-grow py-3 bg-transparent text-parchment border border-gray-600 hover:bg-gray-800 rounded text-xs font-bold transition-colors">Cancel</button>
+                    <button onclick="window.executePermDelete()" class="flex-grow py-3 bg-blood text-parchment border border-gold rounded text-xs font-bold transition-colors">YES, DELETE</button>
+                </div>
+            </div>
+            <div class="modal-footer font-heading">
+                <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="px-6 py-2 text-gray-500 hover:text-parchment font-bold uppercase text-xs transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, updateDoc, onSnapshot, addDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, addDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         window.showToast = (m) => { 
             const t = document.getElementById('toast'); 
@@ -659,9 +681,6 @@
             const activeBeasts = characters.filter(c => !c.isDeleted && (c.type === 'BEAST' || (c.class || '').toLowerCase() === 'beast'));
             const isDM = activeRole === 'dm';
             
-            // Determine which companions to show.
-            // DMs see all active beasts in the companion tab? Or maybe we just show PC-claimed ones.
-            // Let's show claimed companions.
             let displayCompanions = [];
             
             if (isDM) {
@@ -737,6 +756,7 @@
 
             document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
             document.getElementById('sync-btn').classList.toggle('hidden', !canEdit);
+            document.getElementById('btn-manage-companion').classList.toggle('hidden', !canEdit);
             document.getElementById('btn-add-attack').classList.toggle('hidden', !canEdit);
             document.getElementById('btn-build-bond').classList.toggle('hidden', !canEdit);
 
@@ -1038,6 +1058,67 @@
                 const newXp = (char.bondXp || 0) + xpGain;
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { bondXp: newXp });
                 setTimeout(window.openBondModal, 500); // refresh UI
+            }
+        };
+
+        // DELETE / MANAGE COMPANION LOGIC
+        window.triggerDeleteModal = () => {
+            window.resetDeleteModal();
+            document.getElementById('delete-modal').classList.remove('hidden');
+        };
+
+        window.showPermDeleteConfirm = () => {
+            document.getElementById('delete-stage-1').classList.add('hidden');
+            document.getElementById('delete-stage-confirm').classList.remove('hidden');
+        };
+
+        window.resetDeleteModal = () => {
+            document.getElementById('delete-stage-1').classList.remove('hidden');
+            document.getElementById('delete-stage-confirm').classList.add('hidden');
+        };
+
+        window.releaseCompanion = async () => {
+            if (!activeCharId) return;
+            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === activeCharId);
+            
+            try {
+                if (ownerPC) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', ownerPC.id), { companionId: null });
+                }
+                
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { 
+                    owner: 'DM', 
+                    ownerId: null, 
+                    bondLevel: 1, 
+                    bondXp: 0 
+                });
+                
+                document.getElementById('delete-modal').classList.add('hidden');
+                window.closeSheet();
+                window.showToast("Companion released to the Bestiary.");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Failed to release companion.");
+            }
+        };
+
+        window.executePermDelete = async () => {
+            if (!activeCharId) return;
+            const ownerPC = characters.find(pc => pc.type === 'PC' && pc.companionId === activeCharId);
+            
+            try {
+                if (ownerPC) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', ownerPC.id), { companionId: null });
+                }
+                
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId));
+                
+                document.getElementById('delete-modal').classList.add('hidden');
+                window.closeSheet();
+                window.showToast("Companion permanently deleted.");
+            } catch (e) {
+                console.error(e);
+                window.showToast("Failed to delete companion.");
             }
         };
 
