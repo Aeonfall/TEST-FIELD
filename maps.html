@@ -18,7 +18,7 @@
                         'blood': '#7a1b1b',
                         'gold': '#c5a059',
                         'wood': '#1a110b',
-                        'azgaar': '#a58d94' /* Muted purple inspired by the reference */
+                        'azgaar': '#a58d94'
                     },
                     fontFamily: {
                         'serif': ['Lora', 'serif'],
@@ -32,7 +32,7 @@
     <style>
         body { 
             font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
@@ -167,13 +167,11 @@
 
     <div id="toast" class="toast">Message</div>
 
-    <!-- Initial Loading State -->
     <div id="initial-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-wood z-[9999] text-center">
         <i class="fa-solid fa-compass fa-spin text-6xl text-gold mb-6"></i>
         <h2 class="font-heading text-2xl text-parchment animate-pulse">Unfurling Cartography...</h2>
     </div>
 
-    <!-- HEADER -->
     <header class="flex flex-col lg:flex-row justify-between items-center px-4 md:px-8 py-4 bg-black/60 border-b border-gray-800/50 shadow-md shrink-0 relative z-[60]">
         <div class="text-center md:text-left flex items-center gap-4">
             <h1 id="main-campaign-title" class="text-2xl md:text-3xl text-gray-400 font-bold font-heading tracking-tight drop-shadow-md">Chronicles</h1>
@@ -192,7 +190,6 @@
         </nav>
     </header>
 
-    <!-- MAIN APP AREA -->
     <main class="flex-grow flex flex-col md:flex-row relative overflow-hidden" id="dashboard-screen">
         
         <!-- LEFT: Map Viewer -->
@@ -437,6 +434,11 @@
                         <button id="btn-edit-map-info" onclick="window.openEditMapModal()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-white hover:border-white transition-colors">Edit Metadata</button>
                         <button id="btn-manage-legend" onclick="window.openLegendManager()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-1.5 rounded text-[9px] font-heading uppercase hover:text-gold hover:border-gold transition-colors">Map Key</button>
                     </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
     <!-- NEW MAP MODAL -->
     <div id="new-map-modal" class="modal-overlay hidden z-[9000]">
         <div class="modal-container text-center !max-w-lg">
@@ -472,7 +474,7 @@
                 <div class="bg-[rgba(139,90,43,0.1)] p-3 border border-gold/50 rounded border-dashed">
                     <label class="text-[10px] font-black text-blood uppercase font-heading tracking-widest block mb-2 border-b border-gold/30 pb-1">Image Source</label>
                     
-                    <!-- NEW: Procedural Generation & Blank Canvas -->
+                    <!-- Procedural Generation & Blank Canvas -->
                     <div class="mb-3 p-3 bg-black/80 rounded border border-gold/40 text-center">
                         <div class="flex gap-2 mb-2">
                             <button type="button" id="btn-auto-gen" onclick="window.autoGenerateMap()" class="flex-1 fantasy-btn-alt py-2 rounded text-[9px] uppercase tracking-widest"><i class="fa-solid fa-wand-magic-sparkles mb-1 block"></i>Auto-Generate</button>
@@ -958,7 +960,6 @@
             });
         };
 
-
         // --- MAP RENDER: PINS ---
         window.renderPins = () => {
             const container = document.getElementById('map-pins-container');
@@ -1136,7 +1137,6 @@
                 // If DM, allow deletion
                 if(activeRole === 'dm') {
                     pathEl.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); window.deletePath(idx); };
-                    // pathEl.innerHTML = `<title>Right-click to remove path</title>`;
                 } else {
                     pathEl.style.pointerEvents = 'none';
                 }
@@ -1383,9 +1383,7 @@
             });
         }
 
-
         // --- DM BUILDER TOOLS LOGIC ---
-        
         window.setTool = (toolName) => {
             currentTool = toolName;
             
@@ -1978,8 +1976,6 @@
                     await signInAnonymously(auth).catch(e => console.warn(e));
                 }
             }
-            // CRITICAL FIX: Do not blindly call signInAnonymously() here otherwise!
-            // It will overwrite existing authenticated sessions (email/password) from index.html.
         };
         initAuth();
 
@@ -2032,38 +2028,19 @@
                 document.getElementById('user-display-name').innerText = currentUser.username; 
                 
                 const isDM = activeRole === 'dm'; 
-                document.getElementById('btn-create-npc')?.classList.toggle('hidden', !isDM); 
-                document.getElementById('nav-encounters')?.classList.toggle('hidden', !isDM); 
-                document.getElementById('create-actions')?.classList.remove('hidden'); 
-                document.getElementById('btn-campaign-settings')?.classList.toggle('hidden', !isDM); 
 
                 // Map Builder Specific DM Controls
                 if (isDM) {
                     document.getElementById('dm-map-controls')?.classList.remove('hidden');
                     document.getElementById('dm-builder-tools')?.classList.remove('hidden');
+                } else {
+                    document.getElementById('dm-map-controls')?.classList.add('hidden');
+                    document.getElementById('dm-builder-tools')?.classList.add('hidden');
                 }
 
                 document.getElementById('initial-loading').classList.add('hidden'); 
                 document.getElementById('dashboard-screen').classList.remove('hidden'); 
                 
-                if (typeof setupListeners === 'function') setupListeners();
-
-                let campaignSettings = {};
-                try {
-                    onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => { 
-                        if (docSnap.exists()) { 
-                            campaignSettings = docSnap.data(); 
-                            if (typeof applyTerminology === 'function') applyTerminology(campaignSettings.terms); 
-                            if (typeof activeCharId !== 'undefined' && activeCharId) { 
-                                if (typeof window.calcMods === 'function') window.calcMods(); 
-                                if (typeof window.renderMovesGrid === 'function') window.renderMovesGrid(); 
-                                if (typeof window.updateClassSpecifics === 'function') window.updateClassSpecifics(); 
-                                if (typeof syncSheetData === 'function') syncSheetData(); 
-                            } 
-                        } 
-                    }, (err) => console.warn("Terminology Sync Error:", err.message));
-                } catch(e) {}
-
                 // --- Map Builder Initialization ---
                 try {
                     onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (s) => {
@@ -2144,20 +2121,15 @@
 
             } catch (error) { 
                 console.error(error); 
-                document.getElementById('initial-loading').innerHTML = `<h2 class="font-heading text-2xl text-blood">Database Access Denied</h2>`; 
+                document.getElementById('initial-loading').innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <i class="fa-solid fa-lock text-6xl text-blood mb-6"></i>
+                        <h2 class="font-heading text-2xl text-blood mb-4">Database Access Denied</h2>
+                        <button onclick="window.location.href='index.html'" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button>
+                    </div>`; 
                 document.getElementById('initial-loading').classList.remove('hidden');
             } 
         }); 
-
-        let autoSaveTimer;
-        document.addEventListener('input', (e) => { 
-            if (e.target.dataset.key) { 
-                if (autoSaveTimer) clearTimeout(autoSaveTimer); 
-                autoSaveTimer = setTimeout(() => {
-                    if (typeof window.saveCurrentCharacter === 'function') window.saveCurrentCharacter();
-                }, 1000); 
-            } 
-        });
     </script> 
 </body> 
 </html>
