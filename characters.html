@@ -31,7 +31,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -234,18 +234,18 @@
 
                 <div class="flex flex-col items-center md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0">
                     <div class="flex items-center gap-4">
-                        <button onclick="try { window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
+                        <button onclick="try { window.routeTo ? window.routeTo('campaigns.html') : window.location.href='campaigns.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn-alt px-4 py-1.5 text-xs rounded"><i class="fa-solid fa-arrow-left mr-2"></i>Nexus</button>
                     </div>
 
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
-    <a href="#" onclick="window.routeTo('characters.html'); return false;" id="nav-party" class="nav-link active dyn-term" data-term="nav_party">Party</a>
-    <a href="#" onclick="window.routeTo('encounters.html'); return false;" id="nav-encounters" class="nav-link hidden !text-blood dyn-term" data-term="nav_encounters">Encounters</a>
-    <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link dyn-term" data-term="nav_npcs">NPCs</a>
-    <a href="#" onclick="window.routeTo('beasts.html'); return false;" id="nav-beasts" class="nav-link dyn-term" data-term="nav_beasts">Bestiary</a>
-    <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link dyn-term" data-term="nav_backpack">Backpack</a>
-    <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link dyn-term" data-term="nav_handbook">Handbook</a>
-    <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link dyn-term" data-term="nav_graveyard">Graveyard</a>
-</nav>
+                        <a href="#" onclick="window.routeTo('characters.html'); return false;" id="nav-party" class="nav-link active dyn-term" data-term="nav_party">Party</a>
+                        <a href="#" onclick="window.routeTo('encounters.html'); return false;" id="nav-encounters" class="nav-link hidden !text-blood dyn-term" data-term="nav_encounters">Encounters</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link dyn-term" data-term="nav_npcs">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" id="nav-beasts" class="nav-link dyn-term" data-term="nav_beasts">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link dyn-term" data-term="nav_backpack">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link dyn-term" data-term="nav_handbook">Handbook</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link dyn-term" data-term="nav_graveyard">Graveyard</a>
+                    </nav>
                 </div>
             </header>
 
@@ -312,13 +312,14 @@
                                 <div>
                                     <div class="flex justify-between items-center pr-1">
                                         <input type="text" data-key="class" id="class-input" placeholder="Fighter" oninput="window.calcMods(); window.updateClassSpecifics();">
+                                        <button id="btn-multiclass" onclick="window.openMulticlassModal()" class="text-[8px] font-black uppercase text-blood bg-[rgba(122,27,27,0.1)] px-1.5 py-0.5 rounded hover:bg-blood hover:text-parchment transition-colors read-only-hide whitespace-nowrap ml-1 shrink-0 shadow-sm border border-[rgba(122,27,27,0.3)]">M.Class</button>
                                     </div>
                                     <label id="class-label" class="tiny-label">Class</label>
                                 </div>
-                                <div><input type="number" data-key="level" placeholder="1" onchange="window.updateLevelDependencies(this.value)"><label class="tiny-label">Level</label></div>
-                                <div><select id="party-select" data-key="partyId" class="cursor-pointer"><option value="">Unassigned</option></select><label class="tiny-label">Party</label></div>
+                                <div><input type="number" data-key="level" placeholder="1" onchange="window.updateLevelDependencies(this.value)"><label id="label-term-level" class="tiny-label">Level</label></div>
+                                <div><select id="party-select" data-key="partyId" class="cursor-pointer"><option value="">Unassigned</option></select><label id="label-term-party" class="tiny-label">Party</label></div>
                                 <div><input type="text" data-key="race" placeholder="Human"><label id="label-term-race" class="tiny-label">Race</label></div>
-                                <div><input type="text" id="archetype-field" data-key="archetype" placeholder="Survivor"><label class="tiny-label">Archetype</label></div>
+                                <div><input type="text" id="archetype-field" data-key="archetype" placeholder="Survivor"><label id="label-term-archetype" class="tiny-label">Archetype</label></div>
                                 <div><input type="text" data-key="belief" placeholder="Belief"><label id="label-term-belief" class="tiny-label">Belief</label></div>
                             </div>
                         </div>
@@ -328,16 +329,16 @@
                         <div class="lg:col-span-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-6">
                                 <div class="sheet-card">
-                                    <h3 class="flex justify-between items-center">Abilities <button id="main-gen-btn" onclick="window.openScoreGenModal()" class="bg-transparent border border-blood text-blood px-2 py-0.5 rounded text-[8px] font-bold hover:bg-blood hover:text-parchment transition-colors font-heading">Roll</button></h3>
+                                    <h3 class="flex justify-between items-center"><span id="label-term-abilities">Abilities</span> <button id="main-gen-btn" onclick="window.openScoreGenModal()" class="bg-transparent border border-blood text-blood px-2 py-0.5 rounded text-[8px] font-bold hover:bg-blood hover:text-parchment transition-colors font-heading">Roll</button></h3>
                                     <div class="grid grid-cols-2 gap-4 mb-4">
-                                        <div class="text-center"><input type="number" data-key="profBonus" class="text-xl font-black text-center text-blood font-heading" value="2" onchange="window.calcMods()"><label class="tiny-label">Proficiency</label></div>
+                                        <div class="text-center"><input type="number" data-key="profBonus" class="text-xl font-black text-center text-blood font-heading" value="2" onchange="window.calcMods()"><label id="label-term-prof" class="tiny-label">Proficiency</label></div>
                                         <div class="text-center"><input type="number" data-key="passivePerception" class="text-xl font-black text-center text-ink font-heading" value="10" readonly><label class="tiny-label">Pass. Perception</label></div>
                                     </div>
                                     <hr class="ornamental-hr">
                                     <div id="stats-container" class="space-y-3"></div>
                                 </div>
                                 <div class="sheet-card">
-                                    <h3>Saves</h3>
+                                    <h3 id="label-term-saves">Saves</h3>
                                     <div class="row-header">
                                         <div class="w-4 header-item">Prof</div>
                                         <div class="w-8 header-item ml-2">Mod</div>
@@ -347,7 +348,7 @@
                                     <div id="saves-container" class="space-y-0.5"></div>
                                 </div>
                                 <div class="sheet-card">
-                                    <h3>Skills</h3>
+                                    <h3 id="label-term-skills">Skills</h3>
                                     <div class="row-header">
                                         <div class="w-4 header-item">Prof</div>
                                         <div class="w-8 header-item ml-2">Mod</div>
@@ -365,16 +366,16 @@
                                         <input type="text" data-key="heroicInspiration" class="vital-input" placeholder="0">
                                     </div>
                                     <div class="vital-container vital-shield">
-                                        <div class="vital-label">AC</div>
+                                        <div id="label-term-ac" class="vital-label">AC</div>
                                         <input type="text" class="vital-input" data-key="ac" placeholder="10">
                                     </div>
                                     <div class="vital-container vital-square-init">
-                                        <div class="vital-label">INIT</div>
+                                        <div id="label-term-init" class="vital-label">INIT</div>
                                         <button onclick="window.rollIndividualInitiative()" class="absolute top-1 right-1 text-[8px] bg-parchment hover:bg-gold text-ink p-0.5 rounded border border-gold transition-colors z-20 read-only-hide">🎲</button>
                                         <input type="text" class="vital-input" data-key="init" placeholder="0" onchange="window.saveCurrentCharacter()">
                                     </div>
                                     <div class="vital-container vital-square-speed">
-                                        <div class="vital-label">Speed</div>
+                                        <div id="label-term-speed" class="vital-label">Speed</div>
                                         <input type="text" class="vital-input" data-key="speed" placeholder="30">
                                     </div>
                                 </div>
@@ -383,15 +384,21 @@
                                     <button onclick="window.openHpAdjustmentModal()" class="absolute top-2 left-2 text-xs bg-transparent hover:bg-blood text-blood hover:text-parchment border border-blood p-1.5 rounded transition-colors" title="Apply Damage/Healing">⚔️</button>
                                     
                                     <div class="flex justify-between px-2 mb-2 text-[10px] font-bold uppercase text-ink font-heading items-center">
-                                        <span class="flex items-center gap-1">MAX HP: <input type="number" class="w-10 text-blood bg-transparent border-b border-dashed border-gray-400 text-center" data-key="hpMax"></span>
-                                        <span class="flex items-center gap-1">HD: <input type="number" class="w-8 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hdCurrent"> / <input type="text" class="w-10 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hd" placeholder="1d10"></span>
+                                        <span class="flex items-center gap-1">MAX HP: 
+                                            <input type="number" class="w-10 text-blood bg-transparent border-b border-dashed border-gray-400 text-center" data-key="hpMax">
+                                            <button onclick="window.autoCalcHP(true)" class="text-[10px] bg-[rgba(255,255,255,0.5)] border border-[rgba(139,90,43,0.4)] text-ink hover:bg-[rgba(197,160,89,0.2)] hover:border-blood px-1.5 rounded transition-all read-only-hide" title="Auto-Calculate HP (Average + CON)">⟳</button>
+                                        </span>
+                                        <span class="flex items-center gap-1"><span id="label-term-hd-inline">HD:</span> 
+                                            <input type="number" class="w-8 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hdCurrent"> / 
+                                            <input type="text" class="w-16 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hd" placeholder="1d10">
+                                        </span>
                                     </div>
                                     
                                     <input type="number" class="text-7xl font-black text-center w-full mb-1 text-blood font-heading drop-shadow-sm bg-transparent border-none mt-4" data-key="hpCurrent" placeholder="10">
-                                    <div class="text-[10px] font-bold uppercase mt-2 font-heading text-555 border-b border-dashed border-gray-400 pb-2 mx-8">Health Points</div>
+                                    <div id="label-term-hp" class="text-[10px] font-bold uppercase mt-2 font-heading text-555 border-b border-dashed border-gray-400 pb-2 mx-8">Health Points</div>
                                     
                                     <input type="number" class="text-xl font-bold text-center w-full mt-6 text-ink bg-transparent border-none" data-key="tempHp" placeholder="Temp HP">
-                                    <div class="text-[10px] font-bold uppercase mt-1 text-555 font-heading">Temporary Hit Points</div>
+                                    <div id="label-term-temphp" class="text-[10px] font-bold uppercase mt-1 text-555 font-heading">Temporary Hit Points</div>
                                     
                                     <div class="flex gap-2 justify-center mt-6 font-heading">
                                         <button onclick="window.rest('short')" class="bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">Short Rest</button>
@@ -481,13 +488,14 @@
                                 </div>
                                 
                                 <div class="tab-content-area">
+                                    <!-- ACTIONS TAB -->
                                     <div id="tab-content-actions" class="tab-pane">
-                                        <div class="beyond-header">Attacks & Spellcasting</div>
+                                        <div id="label-term-attacks" class="beyond-header">Attacks & Spellcasting</div>
                                         <div class="equip-header"><span>Name</span><span>Atk</span><span>Dmg</span><span></span></div>
                                         <div id="attacks-list" class="space-y-1 mb-4"></div>
                                         <button id="add-attack-btn" onclick="window.addAttackItem()" class="w-full py-2 border-2 border-dashed border-[rgba(139,90,43,0.4)] text-[10px] font-bold text-ink uppercase rounded hover:border-blood transition-colors font-heading">+ Add Weapon</button>
                                         
-                                        <div class="beyond-header">Defenses</div>
+                                        <div id="label-term-defenses" class="beyond-header">Defenses</div>
                                         <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner space-y-3 mb-4">
                                             <div>
                                                 <label class="prof-label">Damage Resistances</label>
@@ -534,7 +542,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="beyond-header">Proficiencies & Training</div>
+                                        <div id="label-term-proficiencies" class="beyond-header">Proficiencies & Training</div>
                                         <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner">
                                             <div class="prof-group">
                                                 <label class="prof-label">Armor</label>
@@ -559,8 +567,9 @@
                                         </div>
                                     </div>
 
+                                    <!-- INVENTORY TAB -->
                                     <div id="tab-content-inventory" class="tab-pane hidden">
-                                        <div class="beyond-header">Currency</div>
+                                        <div id="label-term-currency" class="beyond-header">Currency</div>
                                         <div class="grid grid-cols-4 gap-4 mb-8">
                                             <div class="char-box text-center"><label class="char-label">CP</label><input type="text" data-key="currencyCP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
                                             <div class="char-box text-center"><label class="char-label">SP</label><input type="text" data-key="currencySP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
@@ -573,26 +582,27 @@
                                             <div id="dynamic-class-equip-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                                         </div>
 
-                                        <div class="beyond-header">Equipment</div>
+                                        <div id="label-term-equipment" class="beyond-header">Equipment</div>
                                         <textarea data-key="inventory" class="text-[12px] h-64 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded w-full font-serif" placeholder="Detailed Inventory list..."></textarea>
                                     </div>
 
+                                    <!-- FEATURES TAB -->
                                     <div id="tab-content-features" class="tab-pane hidden">
                                         <div class="beyond-header">Personality & Traits</div>
                                         <div class="trait-section">
-                                            <label class="trait-title">Personality Traits</label>
+                                            <label id="label-term-personality" class="trait-title">Personality Traits</label>
                                             <textarea data-key="traits" class="trait-input-area font-serif" placeholder="+ Add Personality Traits"></textarea>
                                         </div>
                                         <div class="trait-section">
-                                            <label class="trait-title">Ideals</label>
+                                            <label id="label-term-ideals" class="trait-title">Ideals</label>
                                             <textarea data-key="ideals" class="trait-input-area font-serif" placeholder="+ Add Ideals"></textarea>
                                         </div>
                                         <div class="trait-section">
-                                            <label class="trait-title">Bonds</label>
+                                            <label id="label-term-bonds" class="trait-title">Bonds</label>
                                             <textarea data-key="bonds" class="trait-input-area font-serif" placeholder="+ Add Bonds"></textarea>
                                         </div>
                                         <div class="trait-section">
-                                            <label class="trait-title">Flaws</label>
+                                            <label id="label-term-flaws" class="trait-title">Flaws</label>
                                             <textarea data-key="flaws" class="trait-input-area font-serif" placeholder="+ Add Flaws"></textarea>
                                         </div>
                                         
@@ -602,6 +612,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- BACKGROUND TAB -->
                                     <div id="tab-content-background" class="tab-pane hidden">
                                         <div class="sub-filter-row">
                                             <button onclick="window.switchSubFilter('all')" class="sub-btn active" id="sub-btn-all">All</button>
@@ -616,7 +627,7 @@
                                             </div>
                                         </div>
                                         <div id="sub-content-characteristics" class="sub-pane">
-                                            <div class="beyond-header">Characteristics & Appearance</div>
+                                            <div id="label-term-characteristics" class="beyond-header">Characteristics & Appearance</div>
                                             <div class="char-grid">
                                                 <div class="char-box"><label class="char-label">Gender</label><input type="text" data-key="gender" class="char-val" placeholder="--"></div>
                                                 <div class="char-box"><label class="char-label">Eyes</label><input type="text" data-key="eyes" class="char-val" placeholder="--"></div>
@@ -631,11 +642,13 @@
                                         </div>
                                     </div>
                                     
+                                    <!-- COMPANION TAB -->
                                     <div id="tab-content-companion" class="tab-pane hidden">
                                         <div class="beyond-header">Personal Companion</div>
                                         <div id="companion-view-area"></div>
                                     </div>
 
+                                    <!-- NOTES TAB -->
                                     <div id="tab-content-notes" class="tab-pane hidden">
                                         <div class="beyond-header">Character Notes</div>
                                         <textarea data-key="notes" class="text-[12px] h-96 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded font-serif w-full" placeholder="Character history, secret notes..."></textarea>
@@ -667,7 +680,7 @@
 
     <!-- MODALS -->
     <!-- HP ADJUSTMENT MODAL -->
-    <div id="hp-adjustment-modal" class="modal-overlay hidden">
+    <div id="hp-adjustment-modal" class="modal-overlay hidden z-[800]">
         <div class="modal-container">
             <h2 class="modal-header">Adjust Health</h2>
             <div class="space-y-6">
@@ -687,7 +700,7 @@
     </div>
 
     <!-- PARTY MODAL -->
-    <div id="party-modal" class="modal-overlay hidden">
+    <div id="party-modal" class="modal-overlay hidden z-[800]">
         <div class="modal-container">
             <h2 class="modal-header">New Party</h2>
             <div class="space-y-4">
@@ -701,7 +714,7 @@
     </div>
 
     <!-- SCORE GENERATOR MODAL -->
-    <div id="score-gen-modal" class="modal-overlay hidden">
+    <div id="score-gen-modal" class="modal-overlay hidden z-[800]">
         <div class="modal-container max-w-xl py-12 px-10">
             <h2 class="text-4xl font-heading font-black text-blood text-center uppercase tracking-tighter mb-10 border-b border-gold pb-4">Score Generator</h2>
             <div id="gen-controls" class="space-y-12">
@@ -735,7 +748,7 @@
     </div>
 
     <!-- SHORT REST MODAL -->
-    <div id="short-rest-modal" class="modal-overlay hidden">
+    <div id="short-rest-modal" class="modal-overlay hidden z-[800]">
         <div class="modal-container">
             <h2 class="modal-header">Short Rest</h2>
             <div class="space-y-6">
@@ -765,8 +778,23 @@
         </div>
     </div>
 
+    <!-- MULTICLASS MODAL -->
+    <div id="multiclass-modal" class="modal-overlay hidden z-[800]">
+        <div class="modal-container">
+            <h2 class="modal-header">Manage Vocations</h2>
+            <p class="text-xs text-ink mb-4 font-serif italic text-center">Combine levels in multiple vocations. Ensure you meet the ability score prerequisites!</p>
+            <div id="multiclass-list" class="space-y-3 mb-4"></div>
+            <button onclick="window.addMulticlassRow()" class="w-full py-2 border-2 border-dashed border-gold text-[10px] font-bold text-ink uppercase rounded hover:border-blood transition-colors font-heading mb-6">+ Add Vocation</button>
+            
+            <div class="modal-footer font-heading">
+                <button onclick="document.getElementById('multiclass-modal').classList.add('hidden')" class="px-6 py-2 text-555 font-bold uppercase text-xs underline">Cancel</button>
+                <button onclick="window.saveMulticlass()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs">Save Classes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- DELETE/MANAGE MODAL -->
-    <div id="delete-modal" class="modal-overlay hidden">
+    <div id="delete-modal" class="modal-overlay hidden z-[800]">
         <div class="modal-container">
             <h2 class="modal-header">Manage Character</h2>
             <div id="delete-stage-1" class="space-y-4 font-heading">
@@ -788,7 +816,7 @@
     </div>
 
     <!-- MOVE MODAL -->
-    <div id="move-modal" class="modal-overlay hidden">
+    <div id="move-modal" class="modal-overlay hidden z-[800]">
         <div class="modal-container max-w-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b-2 border-gold mb-6 pb-2">
                 <h2 id="move-modal-title" class="text-xl font-heading font-bold uppercase tracking-wider text-blood">Edit Move</h2>
@@ -821,86 +849,6 @@
                     <div><label class="tiny-label">Duration</label><input type="text" id="script-duration-in" class="w-full bg-[rgba(255,255,255,0.5)] p-2 rounded font-bold" placeholder="Instantaneous"></div>
                 </div>
                 <div>
-                    <label id="move-desc-label" class="tiny-label">Description</label>
-                    <textarea id="move-desc-in" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded text-sm h-32 leading-relaxed font-serif" placeholder="Detailed effects..."></textarea>
-                </div>
-                <div id="script-scaling-field" class="hidden">
-                    <label class="tiny-label">Scaling</label>
-                    <textarea id="script-scaling-in" class="w-full bg-[rgba(255,255,255,0.5)] border border-gold p-3 rounded text-sm h-20 leading-relaxed font-serif" placeholder="Higher level initialization effects..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer font-heading">
-                <button id="move-delete-btn" onclick="window.deleteMove()" class="hidden mr-auto text-blood font-black uppercase text-[10px] underline border-r border-blood pr-4">Delete</button>
-                <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="px-4 py-2 text-555 font-bold uppercase text-xs underline">Cancel</button>
-                <button onclick="window.saveMove()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs shadow-lg">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MANAGE PARTY MODAL -->
-    <div id="manage-party-modal" class="modal-overlay hidden">
-        <div class="modal-container">
-            <h2 class="modal-header">Manage Party</h2>
-            <div id="party-manage-main" class="space-y-6">
-                <div>
-                    <label class="tiny-label">Party Name</label>
-                    <input type="text" id="manage-party-name" class="w-full bg-gray-100 p-3 rounded font-bold">
-                </div>
-                <div class="pt-4 border-t">
-                    <button onclick="window.confirmDeletePartyState()" class="w-full py-3 bg-red-50 text-red-600 rounded text-xs font-black uppercase">Disband Party</button>
-                </div>
-            </div>
-            <div id="party-manage-delete" class="hidden space-y-4 text-center">
-                <p class="text-sm font-bold text-red-600 uppercase">Disband this party? Members will become unassigned.</p>
-                <div class="flex gap-2">
-                    <button onclick="window.resetPartyManageState()" class="flex-grow py-3 bg-gray-100 rounded text-xs font-black">Cancel</button>
-                    <button onclick="window.executeDeleteParty()" class="flex-grow py-3 bg-red-600 text-white rounded text-xs font-black">YES, DISBAND</button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="document.getElementById('manage-party-modal').classList.add('hidden')" class="px-6 py-2 text-gray-400 font-bold uppercase text-xs">Close</button>
-                <button onclick="window.savePartyRename()" class="px-8 py-2 bg-indigo-600 text-white rounded font-black uppercase text-xs">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CAMPAIGN TERMINOLOGY SETTINGS MODAL (DM ONLY) -->
-    <div id="settings-modal" class="modal-overlay hidden z-[900]">
-        <div class="modal-container !bg-[#1a110b] !border-gold !text-parchment shadow-2xl !max-w-3xl flex flex-col p-6 md:p-8 !bg-none h-[90vh]">
-            <h2 class="font-heading text-2xl font-black text-gold uppercase tracking-widest border-b border-gold/30 pb-4 mb-4 text-center shrink-0">Campaign Terminology</h2>
-            <p class="text-xs text-gray-400 font-serif italic text-center mb-6 shrink-0">Rename the core pillars of your world. These names will update across all ledgers and navigation links.</p>
-            
-            <div class="overflow-y-auto space-y-8 pr-4 scrollbar-hide flex-grow pb-8 text-left">
-                <div>
-                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Navigation & Core Hubs</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Party</label><input type="text" id="term-nav_party" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">NPCs</label><input type="text" id="term-nav_npcs" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Bestiary</label><input type="text" id="term-nav_beasts" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Backpack</label><input type="text" id="term-nav_backpack" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Handbook</label><input type="text" id="term-nav_handbook" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Graveyard</label><input type="text" id="term-nav_graveyard" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Session Logs</label><input type="text" id="term-nav_logs" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Library & Lore</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Classes</label><input type="text" id="term-book_vocations" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Races</label><input type="text" id="term-book_lineages" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Backgrounds</label><input type="text" id="term-book_backgrounds" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Landmarks</label><input type="text" id="term-book_landmarks" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Spells</label><input type="text" id="term-book_scriptcodex" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Gear & Artifacts</label><input type="text" id="term-book_artifacts" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">World Lore</label><input type="text" id="term-book_worldlore" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div class="col-span-2 sm:col-span-3 h-2"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Custodian's Athenaeum</label><input type="text" id="term-lore_custodians" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Archivist Library</label><input type="text" id="term-lore_archivists" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
-                    </div>
-                </div>
-
-                <div>
                     <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Classes (Script Codex Tabs)</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Paladin</label><input type="text" id="term-class_heartbound" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
@@ -917,13 +865,50 @@
 
                 <div class="mt-8">
                     <h3 class="font-heading text-blood font-bold border-b border-blood/30 pb-1 mb-4">Character Sheet Labels</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[50vh] overflow-y-auto pr-2 scrollbar-hide">
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Class/Vocation</label><input type="text" id="term-sheet_class" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Level</label><input type="text" id="term-sheet_level" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Party</label><input type="text" id="term-sheet_party" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Race/Lineage</label><input type="text" id="term-sheet_race" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Archetype</label><input type="text" id="term-sheet_archetype" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Belief</label><input type="text" id="term-sheet_belief" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Inspiration</label><input type="text" id="term-sheet_insp" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Abilities</label><input type="text" id="term-sheet_abilities" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Proficiency</label><input type="text" id="term-sheet_prof" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Saves</label><input type="text" id="term-sheet_saves" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Skills</label><input type="text" id="term-sheet_skills" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Armor Class (AC)</label><input type="text" id="term-sheet_ac" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Initiative (INIT)</label><input type="text" id="term-sheet_init" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Speed</label><input type="text" id="term-sheet_speed" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Health Points</label><input type="text" id="term-sheet_hp" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Hit Dice (HD)</label><input type="text" id="term-sheet_hd" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Temp HP</label><input type="text" id="term-sheet_temphp" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Death & Coma</label><input type="text" id="term-sheet_death" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Stress</label><input type="text" id="term-sheet_stress" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                         <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Trauma</label><input type="text" id="term-sheet_trauma" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Actions (Tab)</label><input type="text" id="term-sheet_actions" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Attacks</label><input type="text" id="term-sheet_attacks" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Defenses</label><input type="text" id="term-sheet_defenses" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Conditions</label><input type="text" id="term-sheet_conditions" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Proficiencies</label><input type="text" id="term-sheet_proficiencies" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Inventory (Tab)</label><input type="text" id="term-sheet_inventory" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Currency</label><input type="text" id="term-sheet_currency" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Equipment</label><input type="text" id="term-sheet_equipment" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Traits (Tab)</label><input type="text" id="term-sheet_traits" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Personality</label><input type="text" id="term-sheet_personality" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Ideals</label><input type="text" id="term-sheet_ideals" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Bonds</label><input type="text" id="term-sheet_bonds" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Flaws</label><input type="text" id="term-sheet_flaws" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Background (Tab)</label><input type="text" id="term-sheet_background" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Characteristics</label><input type="text" id="term-sheet_characteristics" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Companion (Tab)</label><input type="text" id="term-sheet_companion" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
+                        
+                        <div><label class="text-[9px] font-black text-gray-500 uppercase tracking-widest font-heading mb-1 block">Notes (Tab)</label><input type="text" id="term-sheet_notes" class="w-full bg-black/50 border border-gray-700 rounded p-2 text-sm text-gold focus:border-gold outline-none"></div>
                     </div>
                 </div>
             </div>
@@ -1003,7 +988,7 @@
                 features: ['Travel Features', 'Route Knowledge', 'Vehicle/Transport Features', 'Exploration Benefits'],
                 equip: ['Travel Gear', 'Navigation Tools', 'Survival Supplies']
             },
-            'wilderness warden': {
+            'warden': {
                 trackers: ['Companion Tracker'],
                 features: ['Nature Features', 'Tracking Abilities', 'Survival Techniques', 'Beast/Wildlife Knowledge'],
                 equip: ['Warden Tools', 'Hunting Gear', 'Survival Equipment']
@@ -1023,7 +1008,7 @@
                 features: ['Scriptcasting', 'Scriptcasting Focus', 'Component Satchel', 'Known Scripts', 'Prepared Scripts', 'Script Modifiers'],
                 equip: ['Script Focus', 'Component Materials', 'Script Archive']
             },
-            'war-touched': {
+            'wartouched': {
                 trackers: ['Core Energy Tracker', 'Mutation Tracker', 'Instability Tracker'],
                 features: ['Transformation Abilities', 'Enhanced Physiology Features', 'Core-Touched Effects'],
                 equip: ['Core Relic', 'Mutation Records']
@@ -1042,18 +1027,99 @@
 
         window.currentRenderedClass = null;
 
+        window.getVocationAliases = () => {
+            const t = campaignSettings?.terms || {};
+            return {
+                'vanguard': (t.class_vanguard || 'vanguard').toLowerCase(),
+                'warrior': (t.class_warrior || 'warrior').toLowerCase(),
+                'peacekeeper': (t.class_peacekeeper || 'peacekeeper').toLowerCase(),
+                'scavenger': (t.class_scavenger || 'scavenger').toLowerCase(),
+                'heartbound': (t.class_heartbound || 'heartbound').toLowerCase(),
+                'nomad': (t.class_nomad || 'nomad').toLowerCase(),
+                'warden': (t.class_warden || 'wilderness warden').toLowerCase(),
+                'chronicler': (t.class_chronicler || 'chronicler').toLowerCase(),
+                'orator': (t.class_orator || 'orator').toLowerCase(),
+                'scriptweaver': (t.class_scriptweaver || 'scriptweaver').toLowerCase(),
+                'wartouched': (t.class_wartouched || 'war-touched').toLowerCase(),
+                'archivist': (t.class_archivist || 'archivist').toLowerCase(),
+                'fabricator': (t.class_fabricator || 'fabricator').toLowerCase()
+            };
+        };
+
+        window.getHitDie = (className) => {
+            if (!className) return 8; // Default
+            const c = className.toLowerCase();
+            const aliases = window.getVocationAliases();
+            if (c.includes(aliases['vanguard'])) return 12;
+            if (c.includes(aliases['warrior']) || c.includes(aliases['heartbound']) || c.includes(aliases['nomad'])) return 10;
+            if (c.includes(aliases['scriptweaver']) || c.includes(aliases['archivist'])) return 6;
+            return 8; // Default for Orator, Chronicler, Warden, Peacekeeper, Scavenger, War-Touched, Fabricator
+        };
+
+        window.autoCalcHP = (force = false) => {
+            const char = characters.find(c => c.id === activeCharId);
+            if (!char) return;
+            
+            const conMod = Math.floor(((parseInt(document.querySelector('[data-key="con"]')?.value) || 10) - 10) / 2);
+            let totalHp = 0;
+            let hdParts = [];
+            
+            let classes = char.classes || [];
+            if (classes.length === 0) {
+                classes = [{name: document.getElementById('class-input')?.value || '', level: parseInt(document.querySelector('[data-key="level"]')?.value) || 1}];
+            }
+            
+            classes.forEach((cls, idx) => {
+                const hd = window.getHitDie(cls.name);
+                const lvl = parseInt(cls.level) || 1;
+                if (lvl > 0) hdParts.push(`${lvl}d${hd}`);
+                
+                for (let i = 0; i < lvl; i++) {
+                    if (idx === 0 && i === 0) {
+                        totalHp += (hd + conMod); // Level 1 Max HP rule
+                    } else {
+                        totalHp += (Math.floor(hd / 2) + 1 + conMod); // Standard Average HP level up rule
+                    }
+                }
+            });
+            
+            const hdString = hdParts.join(' + ') || '1d8';
+            const hdInput = document.querySelector('[data-key="hd"]');
+            
+            if (hdInput && (force || hdInput.value === '1d8' || hdInput.value === '1d10' || hdInput.value === '')) {
+                hdInput.value = hdString;
+            }
+
+            const maxHpInput = document.querySelector('[data-key="hpMax"]');
+            if (maxHpInput) {
+                if (force || parseInt(maxHpInput.value) === 10) {
+                    maxHpInput.value = totalHp;
+                    const curHpInput = document.querySelector('[data-key="hpCurrent"]');
+                    if (curHpInput && (force || parseInt(curHpInput.value) === 10)) {
+                        curHpInput.value = totalHp;
+                    }
+                }
+            }
+            
+            if (force) {
+                window.saveCurrentCharacter();
+                window.showToast(`Max HP set to ${totalHp} (Average + CON)`);
+            }
+        };
+
         window.updateClassSpecifics = () => {
             const inputVal = (document.getElementById('class-input')?.value || '').toLowerCase();
-            let matchedClass = null;
+            let matchedClasses = [];
+            const aliases = window.getVocationAliases();
             for (const k in VOCATION_DATA) {
-                if (inputVal.includes(k)) {
-                    matchedClass = k;
-                    break;
+                if (inputVal.includes(aliases[k])) {
+                    matchedClasses.push(k);
                 }
             }
 
-            if (matchedClass === window.currentRenderedClass) return;
-            window.currentRenderedClass = matchedClass;
+            const matchKey = matchedClasses.sort().join(',');
+            if (matchKey === window.currentRenderedClass) return;
+            window.currentRenderedClass = matchKey;
 
             const tCard = document.getElementById('dynamic-class-trackers-card');
             const tContent = document.getElementById('dynamic-class-trackers-content');
@@ -1062,20 +1128,29 @@
             const eSection = document.getElementById('dynamic-class-equip-section');
             const eContent = document.getElementById('dynamic-class-equip-content');
 
-            if (!matchedClass) {
+            if (matchedClasses.length === 0) {
                 if(tCard) tCard.classList.add('hidden');
                 if(fSection) fSection.classList.add('hidden');
                 if(eSection) eSection.classList.add('hidden');
                 return;
             }
 
-            const data = VOCATION_DATA[matchedClass];
+            let allTrackers = [];
+            let allFeatures = [];
+            let allEquip = [];
+
+            matchedClasses.forEach(matchedClass => {
+                const data = VOCATION_DATA[matchedClass];
+                allTrackers = [...new Set([...allTrackers, ...data.trackers])];
+                allFeatures = [...new Set([...allFeatures, ...data.features])];
+                allEquip = [...new Set([...allEquip, ...data.equip])];
+            });
 
             if (tCard && tContent) {
-                if (data.trackers.length > 0) {
+                if (allTrackers.length > 0) {
                     tCard.classList.remove('hidden');
-                    document.getElementById('dynamic-class-title').innerText = matchedClass.toUpperCase() + ' TRACKERS';
-                    tContent.innerHTML = data.trackers.map(t => `
+                    document.getElementById('dynamic-class-title').innerText = 'VOCATION TRACKERS';
+                    tContent.innerHTML = allTrackers.map(t => `
                         <div class="flex justify-between items-center mb-2">
                             <label class="tiny-label mt-0">${t}</label>
                             <input type="text" data-key="tracker_${t.replace(/[^a-zA-Z0-9]/g,'_')}" class="w-16 bg-transparent border-b border-dashed border-gray-400 text-center font-bold text-ink font-heading text-lg" placeholder="0">
@@ -1087,9 +1162,9 @@
             }
 
             if (fSection && fContent) {
-                if (data.features.length > 0) {
+                if (allFeatures.length > 0) {
                     fSection.classList.remove('hidden');
-                    fContent.innerHTML = data.features.map(f => `
+                    fContent.innerHTML = allFeatures.map(f => `
                         <div class="trait-section">
                             <label class="trait-title">${f}</label>
                             <textarea data-key="feature_${f.replace(/[^a-zA-Z0-9]/g,'_')}" class="trait-input-area font-serif" placeholder="+ Add details..."></textarea>
@@ -1101,9 +1176,9 @@
             }
 
             if (eSection && eContent) {
-                if (data.equip.length > 0) {
+                if (allEquip.length > 0) {
                     eSection.classList.remove('hidden');
-                    eContent.innerHTML = data.equip.map(e => `
+                    eContent.innerHTML = allEquip.map(e => `
                         <div>
                             <label class="prof-label mb-1">${e}</label>
                             <textarea data-key="equip_${e.replace(/[^a-zA-Z0-9]/g,'_')}" class="w-full bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] p-2 rounded text-[12px] h-16 font-serif" placeholder="List items..."></textarea>
@@ -1129,7 +1204,6 @@
                     });
                 }
             }
-            window.renderMovesGrid();
         };
 
         window.showToast = (m) => { 
@@ -1182,6 +1256,15 @@
         let activeManagePartyId = null, activeMoveLvl = null, editingMoveIndex = null;
         let currentRound = 1, activeTurnId = null, pendingHoldId = null;
         let campaignSettings = { terms: {} };
+        
+        const SHEET_LABELS = {
+            class: 'Class', level: 'Level', party: 'Party', race: 'Race', archetype: 'Archetype', belief: 'Belief',
+            insp: 'Insp', abilities: 'Abilities', prof: 'Proficiency', saves: 'Saves', skills: 'Skills', ac: 'AC', init: 'INIT', speed: 'Speed',
+            hp: 'Health Points', hd: 'HD', temphp: 'Temporary Hit Points', death: 'Death & Coma', stress: 'Stress', trauma: 'Trauma',
+            actions: 'Actions', attacks: 'Attacks & Spellcasting', defenses: 'Defenses', conditions: 'Conditions & Exhaustion', proficiencies: 'Proficiencies & Training',
+            inventory: 'Inventory', currency: 'Currency', equipment: 'Equipment', traits: 'Traits', personality: 'Personality Traits', ideals: 'Ideals', bonds: 'Bonds', flaws: 'Flaws',
+            background: 'Background', characteristics: 'Characteristics & Appearance', companion: 'Companion', notes: 'Notes'
+        };
 
         const STATS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
         const SKILLS = [
@@ -1232,6 +1315,10 @@
             document.getElementById('term-lore_custodians').value = t.lore_custodians || "Custodian's Athenaeum";
             document.getElementById('term-lore_archivists').value = t.lore_archivists || "Archivist Public Library";
 
+            document.getElementById('term-class_vanguard').value = t.class_vanguard || 'Vanguard';
+            document.getElementById('term-class_warrior').value = t.class_warrior || 'Warrior';
+            document.getElementById('term-class_peacekeeper').value = t.class_peacekeeper || 'Peacekeeper';
+            document.getElementById('term-class_scavenger').value = t.class_scavenger || 'Scavenger';
             document.getElementById('term-class_heartbound').value = t.class_heartbound || 'Heartbound';
             document.getElementById('term-class_nomad').value = t.class_nomad || 'Nomad';
             document.getElementById('term-class_warden').value = t.class_warden || 'Wilderness Warden';
@@ -1242,12 +1329,10 @@
             document.getElementById('term-class_archivist').value = t.class_archivist || 'Archivist';
             document.getElementById('term-class_fabricator').value = t.class_fabricator || 'Fabricator';
 
-            document.getElementById('term-sheet_class').value = t.sheet_class || 'Class';
-            document.getElementById('term-sheet_race').value = t.sheet_race || 'Race';
-            document.getElementById('term-sheet_belief').value = t.sheet_belief || 'Belief';
-            document.getElementById('term-sheet_insp').value = t.sheet_insp || 'Insp';
-            document.getElementById('term-sheet_stress').value = t.sheet_stress || 'Stress';
-            document.getElementById('term-sheet_trauma').value = t.sheet_trauma || 'Trauma';
+            Object.keys(SHEET_LABELS).forEach(k => {
+                const el = document.getElementById(`term-sheet_${k}`);
+                if(el) el.value = t[`sheet_${k}`] || SHEET_LABELS[k];
+            });
 
             document.getElementById('settings-modal').classList.remove('hidden');
         };
@@ -1272,6 +1357,10 @@
                 lore_custodians: document.getElementById('term-lore_custodians').value.trim() || "Custodian's Athenaeum",
                 lore_archivists: document.getElementById('term-lore_archivists').value.trim() || "Archivist Public Library",
 
+                class_vanguard: document.getElementById('term-class_vanguard').value.trim() || 'Vanguard',
+                class_warrior: document.getElementById('term-class_warrior').value.trim() || 'Warrior',
+                class_peacekeeper: document.getElementById('term-class_peacekeeper').value.trim() || 'Peacekeeper',
+                class_scavenger: document.getElementById('term-class_scavenger').value.trim() || 'Scavenger',
                 class_heartbound: document.getElementById('term-class_heartbound').value.trim() || 'Heartbound',
                 class_nomad: document.getElementById('term-class_nomad').value.trim() || 'Nomad',
                 class_warden: document.getElementById('term-class_warden').value.trim() || 'Wilderness Warden',
@@ -1280,15 +1369,13 @@
                 class_scriptweaver: document.getElementById('term-class_scriptweaver').value.trim() || 'Scriptweaver',
                 class_wartouched: document.getElementById('term-class_wartouched').value.trim() || 'War-Touched',
                 class_archivist: document.getElementById('term-class_archivist').value.trim() || 'Archivist',
-                class_fabricator: document.getElementById('term-class_fabricator').value.trim() || 'Fabricator',
-
-                sheet_class: document.getElementById('term-sheet_class').value.trim() || 'Class',
-                sheet_race: document.getElementById('term-sheet_race').value.trim() || 'Race',
-                sheet_belief: document.getElementById('term-sheet_belief').value.trim() || 'Belief',
-                sheet_insp: document.getElementById('term-sheet_insp').value.trim() || 'Insp',
-                sheet_stress: document.getElementById('term-sheet_stress').value.trim() || 'Stress',
-                sheet_trauma: document.getElementById('term-sheet_trauma').value.trim() || 'Trauma'
+                class_fabricator: document.getElementById('term-class_fabricator').value.trim() || 'Fabricator'
             };
+
+            Object.keys(SHEET_LABELS).forEach(k => {
+                const el = document.getElementById(`term-sheet_${k}`);
+                if(el) terms[`sheet_${k}`] = el.value.trim() || SHEET_LABELS[k];
+            });
 
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), { terms }, { merge: true });
@@ -1306,15 +1393,21 @@
             
             safeSet('nav-party', terms.nav_party);
             
-            // Apply Character Sheet changes
-            safeSet('class-label', terms.sheet_class);
-            safeSet('label-term-race', terms.sheet_race);
-            safeSet('label-term-belief', terms.sheet_belief);
-            safeSet('label-term-insp', terms.sheet_insp);
+            Object.keys(SHEET_LABELS).forEach(k => {
+                safeSet(`label-term-${k}`, terms[`sheet_${k}`] || SHEET_LABELS[k]);
+            });
             
-            const stressLabel = terms.sheet_stress || 'Stress';
-            const traumaLabel = terms.sheet_trauma || 'Trauma';
-            safeSet('label-term-stress-header', `${stressLabel} & ${traumaLabel}`);
+            safeSet('class-label', terms.sheet_class || SHEET_LABELS.class);
+            safeSet('label-term-hd-inline', (terms.sheet_hd || SHEET_LABELS.hd) + ':');
+            safeSet('label-term-stress-header', (terms.sheet_stress || SHEET_LABELS.stress) + ' & ' + (terms.sheet_trauma || SHEET_LABELS.trauma));
+            safeSet('death-coma-header', terms.sheet_death || SHEET_LABELS.death);
+            
+            safeSet('tab-btn-actions', terms.sheet_actions || SHEET_LABELS.actions);
+            safeSet('tab-btn-inventory', terms.sheet_inventory || SHEET_LABELS.inventory);
+            safeSet('tab-btn-features', terms.sheet_traits || SHEET_LABELS.traits);
+            safeSet('tab-btn-background', terms.sheet_background || SHEET_LABELS.background);
+            safeSet('tab-btn-companion', terms.sheet_companion || SHEET_LABELS.companion);
+            safeSet('tab-btn-notes', terms.sheet_notes || SHEET_LABELS.notes);
 
             const vt = document.getElementById('view-title');
             if (vt) {
@@ -1561,16 +1654,24 @@
             
             const compTab = document.getElementById('companion-view-area');
             if (compTab) {
+                const classText = (char.class || '').toLowerCase();
+                const aliases = window.getVocationAliases();
+                const isArchivist = classText.includes(aliases['archivist']);
+                const isNomad = classText.includes(aliases['nomad']);
+                
                 if (char.companionId) {
                     const pet = characters.find(c => c.id === char.companionId && !c.isDeleted);
                     if (pet) {
-                        const isBonded = pet.bondLevel === 'bonded';
+                        let bondText = pet.bondLevel === 'bonded' ? 'Bonded Companion' : 'Connection Forming...';
+                        if (isArchivist && isNomad) bondText = 'Max Bond: Threaded Familiar & Beast Companion';
+                        else if (isArchivist) bondText = 'Max Bond: Threaded Familiar (Script Signature Linked)';
+                        else if (isNomad) bondText = 'Max Bond: Beast Companion (Lifelong Partner)';
                         
                         compTab.innerHTML = `
                             <div class="bg-transparent border-2 border-gold rounded p-6 text-center relative max-w-sm mx-auto mt-4">
                                 ${pet.imageSrc ? `<img src="${pet.imageSrc}" class="w-24 h-24 mx-auto rounded-full object-cover border-4 border-gold mb-4 shadow-md">` : `<div class="w-24 h-24 mx-auto rounded-full bg-gray-300 flex items-center justify-center text-4xl border-4 border-gold mb-4 shadow-md">🐾</div>`}
                                 <h4 class="text-2xl font-heading font-black text-blood uppercase tracking-widest mb-1">${pet.name}</h4>
-                                <p class="text-[10px] text-555 uppercase font-bold tracking-widest mb-6 font-heading">${isBonded ? 'Bonded Companion' : 'Connection Forming...'}</p>
+                                <p class="text-[10px] text-555 uppercase font-bold tracking-widest mb-6 font-heading">${bondText}</p>
                                 
                                 <div class="flex justify-center gap-8 mb-8 bg-[rgba(255,255,255,0.4)] p-4 rounded border border-[rgba(139,90,43,0.3)] shadow-inner font-heading">
                                     <div class="text-center"><span class="block text-[9px] font-bold text-555 uppercase tracking-widest mb-1">HP</span><span class="text-xl font-black ${pet.hpCurrent < (pet.hpMax/2) ? 'text-blood' : 'text-green-800'}">${pet.hpCurrent}/${pet.hpMax}</span></div>
@@ -1584,11 +1685,25 @@
                         compTab.innerHTML = `<div class="text-center py-12 font-heading"><p class="text-blood font-bold mb-4 text-xs uppercase tracking-widest">Companion missing or deleted.</p><button onclick="try { window.routeTo ? window.routeTo('companions.html') : window.location.href='companions.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn px-6 py-2 rounded text-[10px] font-bold uppercase tracking-widest mt-2">View Companions</button></div>`;
                     }
                 } else {
+                    let emptyTitle = "No Companion Linked";
+                    let emptyDesc = "You travel alone. Head to the Companions menu to adopt.";
+                    
+                    if (isArchivist && isNomad) {
+                        emptyTitle = "No Familiar or Beast Linked";
+                        emptyDesc = "As an Archivist/Nomad, you gain max friendship instantly with your first companion. You can form a THREADED FAMILIAR or bond with a real beast. Head to the Companions menu.";
+                    } else if (isArchivist) {
+                        emptyTitle = "No Threaded Familiar";
+                        emptyDesc = "As an Archivist, your first companion gains max friendship instantly. You can initiate a bonded companion Concord sequence, forming a persistent autonomous support entity linked to your Script signature (bat, cat, crab, frog, hawk, lizard, octopus, owl, snake, fish, rat, raven, sea horse, spider, or weasel). Head to Companions to manifest it.";
+                    } else if (isNomad) {
+                        emptyTitle = "No Beast Companion";
+                        emptyDesc = "As a Nomad, your first companion gains max friendship instantly. You can bond with a real beast (like a wolf, bear, panther, or hawk) that fights beside you in combat and grows stronger with your levels. Head to Companions to find them.";
+                    }
+
                     compTab.innerHTML = `
                         <div class="text-center py-16 border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)] max-w-lg mx-auto mt-4 font-heading">
                             <div class="text-5xl mb-4 grayscale opacity-50">🐾</div>
-                            <h4 class="text-sm font-bold text-ink uppercase tracking-[0.2em] mb-2">No Companion Linked</h4>
-                            <p class="text-xs text-555 mb-6 max-w-xs mx-auto font-serif italic">You travel alone. Head to the Companions menu to adopt.</p>
+                            <h4 class="text-sm font-bold text-ink uppercase tracking-[0.2em] mb-2">${emptyTitle}</h4>
+                            <p class="text-xs text-555 mb-6 max-w-xs mx-auto font-serif italic">${emptyDesc}</p>
                             <button onclick="try { window.routeTo ? window.routeTo('companions.html') : window.location.href='companions.html' } catch(e) { window.showToast('Redirects disabled in preview window.') }" class="fantasy-btn px-6 py-2 rounded text-[10px] font-bold uppercase tracking-widest">Find a Companion</button>
                         </div>
                     `;
@@ -1721,25 +1836,51 @@
         window.setRollMode = (m) => { rollMode = m; document.querySelectorAll('.roll-mode').forEach(b => b.classList.remove('active-norm', 'active-adv', 'active-dis')); if (m === 'normal') document.getElementById('mode-norm').classList.add('active-norm'); else if (m === 'adv') document.getElementById('mode-adv').classList.add('active-adv'); else if (m === 'dis') document.getElementById('mode-dis').classList.add('active-dis'); };
 
         window.renderMovesGrid = () => { 
-            const s = document.getElementById('moves-selector'); if (!s) return; const t = s.value, g = document.getElementById('features-lvl-grid'); if (!g) return; g.innerHTML = '';
-            const char = characters.find(c => c.id === activeCharId); const moves = char?.moves || []; 
+            const s = document.getElementById('moves-selector'); if (!s) return; 
+            const t = s.value, g = document.getElementById('features-lvl-grid'); if (!g) return; 
+            g.innerHTML = '';
+            
+            const char = characters.find(c => c.id === activeCharId); 
+            const moves = char?.moves || []; 
             let levels = [];
+            
             if (t === 'features') {
                 levels = Array.from({length: 20}, (_, i) => `Level ${i + 1}`);
             } else {
-                const cls = window.currentRenderedClass;
-                if (['vanguard', 'warrior', 'peacekeeper', 'scavenger'].includes(cls)) {
+                let classes = char?.classes || [];
+                if (classes.length === 0 && char?.class) {
+                    classes = [{name: char.class}];
+                }
+                
+                let maxScriptLevel = -1; 
+                let hasTrickCaster = false;
+                const aliases = window.getVocationAliases();
+
+                classes.forEach(clsObj => {
+                    const cName = (clsObj.name || '').toLowerCase();
+                    if (['warden', 'chronicler', 'orator', 'scriptweaver', 'wartouched', 'archivist'].some(vc => cName.includes(aliases[vc]))) {
+                        maxScriptLevel = Math.max(maxScriptLevel, 9);
+                        hasTrickCaster = true;
+                    } else if (cName.includes(aliases['fabricator'])) {
+                        maxScriptLevel = Math.max(maxScriptLevel, 5);
+                        hasTrickCaster = true;
+                    } else if (['heartbound', 'nomad'].some(vc => cName.includes(aliases[vc]))) {
+                        maxScriptLevel = Math.max(maxScriptLevel, 5);
+                    }
+                });
+
+                if (maxScriptLevel === -1) {
                     g.innerHTML = '<div class="col-span-full text-center py-8 text-555 font-heading text-xs uppercase tracking-widest border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)]">This vocation does not utilize scripts.</div>';
                     return;
-                } else if (['heartbound', 'nomad'].includes(cls)) {
-                    levels = Array.from({length: 5}, (_, i) => `Level ${i + 1}`);
-                } else if (cls === 'fabricator') {
-                    levels = ['Tricks (0)', ...Array.from({length: 5}, (_, i) => `Level ${i + 1}`)];
                 } else {
-                    levels = ['Tricks (0)', ...Array.from({length: 9}, (_, i) => `Level ${i + 1}`)];
+                    if (hasTrickCaster) levels.push('Tricks (0)');
+                    for(let i = 1; i <= maxScriptLevel; i++) {
+                        levels.push(`Level ${i}`);
+                    }
                 }
             }
-            const canEdit = (currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm';
+
+            const canEdit = (currentUser && char?.owner === currentUser?.username) || char?.owner === 'DM' || activeRole === 'dm';
             levels.forEach(lvl => { 
                 const card = document.createElement('div'); card.className = "lvl-card"; const filtered = moves.filter(m => m.lvl === lvl && m.type === t); let html = `<div class="lvl-header">${lvl.toUpperCase()}</div><div class="flex-grow space-y-1">`;
                 filtered.forEach(m => { const mIdx = moves.indexOf(m); html += `<div class="move-pill" ${canEdit ? `onclick="window.openMoveModal('${lvl}', ${mIdx})"` : ''}><span class="move-name">${m.name}</span><span class="move-roll">${m.roll || ''}</span></div>`; });
@@ -1880,6 +2021,77 @@
         };
         window.deleteMove = async () => { const char = characters.find(c => c.id === activeCharId); const moves = char.moves || []; moves.splice(editingMoveIndex, 1); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { moves }); document.getElementById('move-modal').classList.add('hidden'); };
 
+        window.openMulticlassModal = () => {
+            const char = characters.find(c => c.id === activeCharId);
+            if (!char) return;
+            
+            let classes = char.classes || [];
+            if (classes.length === 0) {
+                classes = [{name: char.class || '', level: parseInt(char.level) || 1}];
+            }
+            
+            const list = document.getElementById('multiclass-list');
+            list.innerHTML = '';
+            classes.forEach(c => {
+                window.appendMulticlassRow(c.name, c.level);
+            });
+            
+            document.getElementById('multiclass-modal').classList.remove('hidden');
+        };
+
+        window.appendMulticlassRow = (name = '', level = 1) => {
+            const list = document.getElementById('multiclass-list');
+            const div = document.createElement('div');
+            div.className = "flex gap-2 items-center mc-row";
+            div.innerHTML = `
+                <input type="text" class="mc-name flex-grow bg-[rgba(255,255,255,0.5)] border border-gold p-2 rounded font-bold font-serif text-ink" placeholder="Vocation Name" value="${name}">
+                <input type="number" class="mc-level w-20 bg-[rgba(255,255,255,0.5)] border border-gold p-2 rounded font-bold text-center text-ink" placeholder="Lvl" value="${level}" min="1">
+                <button onclick="this.parentElement.remove()" class="text-blood hover:text-red-800 font-black px-2 transition-colors">✕</button>
+            `;
+            list.appendChild(div);
+        };
+
+        window.addMulticlassRow = () => {
+            window.appendMulticlassRow('', 1);
+        };
+
+        window.saveMulticlass = async () => {
+            const char = characters.find(c => c.id === activeCharId);
+            if (!char) return;
+            
+            const rows = document.querySelectorAll('.mc-row');
+            let classes = [];
+            let totalLevel = 0;
+            let classStringParts = [];
+            
+            rows.forEach(r => {
+                const name = r.querySelector('.mc-name').value.trim();
+                const level = parseInt(r.querySelector('.mc-level').value) || 1;
+                if (name) {
+                    classes.push({name, level});
+                    totalLevel += level;
+                    classStringParts.push(`${name} ${level}`);
+                }
+            });
+            
+            if (classes.length === 0) {
+                window.showToast("Must have at least one vocation.");
+                return;
+            }
+            
+            const newClassString = classStringParts.join(' / ');
+            
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { 
+                classes: classes,
+                class: newClassString,
+                level: totalLevel
+            });
+            
+            document.getElementById('multiclass-modal').classList.add('hidden');
+            window.updateLevelDependencies(totalLevel);
+            window.showToast("Vocations Updated");
+        };
+
         window.saveCurrentCharacter = (m) => { 
             if (!activeCharId || !currentUser) return; 
             const char = characters.find(c => c.id === activeCharId); 
@@ -1932,6 +2144,7 @@
             });
             const armorText = (document.querySelector('[data-key="profArmor"]')?.value || "").toLowerCase();
             const classText = (document.querySelector('[data-key="class"]')?.value || "").toLowerCase();
+            const aliases = window.getVocationAliases();
             const acInput = document.querySelector('[data-key="ac"]');
             if (acInput) {
                 let baseAC = 10;
@@ -1942,11 +2155,15 @@
                 else if (armorText.includes('medium armor')) { baseAC = 14; dexBonus = Math.min(stats.dex.mod, 2); wearingArmor = true; }
                 else if (armorText.includes('heavy armor')) { baseAC = 16; dexBonus = 0; wearingArmor = true; }
                 if (!wearingArmor) {
-                    if (classText.includes('vanguard')) { baseAC = 10 + stats.con.mod; dexBonus = stats.dex.mod; }
-                    else if (classText.includes('peacekeeper')) { baseAC = 10 + stats.wis.mod; dexBonus = stats.dex.mod; }
+                    if (classText.includes(aliases['vanguard'])) { baseAC = 10 + stats.con.mod; dexBonus = stats.dex.mod; }
+                    else if (classText.includes(aliases['peacekeeper'])) { baseAC = 10 + stats.wis.mod; dexBonus = stats.dex.mod; }
                     else { baseAC = 10; dexBonus = stats.dex.mod; }
                 }
                 acInput.value = baseAC + dexBonus + shieldBonus;
+            }
+
+            if (activeCharId) {
+                window.autoCalcHP(false); 
             }
         };
         
@@ -1954,7 +2171,14 @@
         window.addAttackItem = () => { const c = document.getElementById('attacks-list'); const d = document.createElement('div'); d.className = "equip-row"; d.innerHTML = `<input type="text" class="atk-name font-bold bg-transparent" placeholder="Weapon"><input type="text" class="atk-bonus text-center bg-transparent" placeholder="+0"><input type="text" class="atk-dmg text-center bg-transparent" placeholder="1d8"><button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-blood hover:text-red-800 font-black">✕</button>`; c.appendChild(d); };
         window.addLanguageItem = async () => { const i = document.getElementById('lang-input'); if (!i.value) return; const char = characters.find(c => c.id === activeCharId); const langs = [...(char.languages || []), i.value]; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { languages: langs }); i.value = ''; };
         window.removeLanguageItem = async (idx) => { const char = characters.find(c => c.id === activeCharId); const langs = [...(char.languages || [])]; langs.splice(idx, 1); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { languages: langs }); };
-        window.updateLevelDependencies = (v) => { const l = parseInt(v) || 1; const b = l >= 17 ? 6 : l >= 13 ? 5 : l >= 9 ? 4 : l >= 5 ? 3 : 2; const pi = document.querySelector('[data-key="profBonus"]'); if (pi) pi.value = b; window.calcMods(); window.saveCurrentCharacter(); };
+        window.updateLevelDependencies = (v) => { 
+            const l = parseInt(v) || 1; 
+            const b = l >= 17 ? 6 : l >= 13 ? 5 : l >= 9 ? 4 : l >= 5 ? 3 : 2; 
+            const pi = document.querySelector('[data-key="profBonus"]'); 
+            if (pi) pi.value = b; 
+            window.calcMods(); 
+            window.saveCurrentCharacter(); 
+        };
         
         window.rest = async (t) => { 
             const char = characters.find(x => x.id === activeCharId); 
@@ -2111,6 +2335,12 @@
                     if (docSnap.exists()) {
                         campaignSettings = docSnap.data();
                         applyTerminology(campaignSettings.terms);
+                        if (activeCharId) {
+                            window.calcMods();
+                            window.renderMovesGrid();
+                            window.updateClassSpecifics();
+                            syncSheetData();
+                        }
                     }
                 }, (err) => console.error("Terminology Sync Error:", err));
 
