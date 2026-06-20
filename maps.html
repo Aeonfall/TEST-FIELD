@@ -32,7 +32,7 @@
     <style>
         body { 
             font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .fantasy-btn { background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: #f1e5c5 !important; border: 2px solid #c5a059 !important; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
@@ -186,9 +186,8 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></span>
                 <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Traveler</span>
             </div>
-            <a href="#" onclick="window.routeTo('campaigns.html'); return false;" class="nav-link !text-gray-500 hover:!text-white"><i class="fa-solid fa-arrow-left mr-1"></i>Nexus</a>
-            <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
-            <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
+            <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link !text-gray-500 hover:!text-white"><i class="fa-solid fa-arrow-left mr-1"></i>Backpack</a>
+            <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Player</a>
             <a href="#" class="nav-link active">Maps</a>
         </nav>
     </header>
@@ -1975,11 +1974,12 @@
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } catch (tokenErr) {
                     console.warn("Custom token failed:", tokenErr);
+                    // Only fallback to anon if explicitly in preview environment where token was passed but failed
                     await signInAnonymously(auth).catch(e => console.warn(e));
                 }
-            } else {
-                await signInAnonymously(auth).catch(e => console.warn(e));
             }
+            // CRITICAL FIX: Do not blindly call signInAnonymously() here otherwise!
+            // It will overwrite existing authenticated sessions (email/password) from index.html.
         };
         initAuth();
 
@@ -1987,29 +1987,35 @@
         onAuthStateChanged(auth, async (u) => { 
             if (!u) { 
                 try { window.location.href = "index.html"; } catch(e) { 
-                    document.getElementById('initial-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`; 
+                    document.getElementById('initial-loading').innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i>
+                            <h2 class="font-heading text-2xl text-blood mb-4">Authentication Required</h2>
+                            <button onclick="window.location.href='index.html'" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button>
+                        </div>
+                    `; 
                 } 
                 return; 
             } 
              
             try { 
                 if (u.isAnonymous) { 
-                    currentUser = { uid: u.uid, username: "Guest Cartographer", role: 'dm' }; 
+                    currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' }; 
                 } else { 
                     try {
                         const userDoc = await getDoc(doc(db, 'users', u.uid)); 
                         if (userDoc.exists()) { 
                             currentUser = { uid: u.uid, ...userDoc.data() }; 
                         } else { 
-                            currentUser = { uid: u.uid, username: u.displayName || 'Cartographer', role: 'dm' }; 
+                            currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' }; 
                         } 
                     } catch (err) {
-                        console.warn("User fetch restricted. Defaulting to local DM access.");
-                        currentUser = { uid: u.uid, username: u.displayName || 'Cartographer', role: 'dm' }; 
+                        console.warn("User fetch restricted. Defaulting to player access.");
+                        currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' }; 
                     }
                 } 
 
-                activeRole = currentUser.role || 'dm'; 
+                activeRole = currentUser.role || 'player'; 
 
                 if (appId !== "demo_campaign") { 
                     try {
