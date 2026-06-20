@@ -1434,7 +1434,7 @@
                 const newData = {
                     type: 'BEAST',
                     ownerId: currentUser.uid,
-                    owner: 'DM', 
+                    owner: currentUser.username, 
                     isDeleted: false,
                     status: 'alive',
                     scoresGenerated: false,
@@ -1444,11 +1444,28 @@
                     hpMax: hp,
                     hpCurrent: hp,
                     ac: rarity === 'legendary' ? 16 : (rarity === 'rare' ? 14 : 12),
-                    visibility: 'public'
+                    visibility: 'private',
+                    bondLevel: 'bonded',
+                    bondSuccesses: 3
                 };
                 
                 const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), newData);
-                window.showToast(`${beast.name} Spawned into the Wild!`);
+                
+                let targetPCId = activeCharId;
+                if (!targetPCId) {
+                    const myPCs = characters.filter(c => c.type === 'PC' && c.owner === currentUser.username && !c.isDeleted);
+                    if (myPCs.length > 0) targetPCId = myPCs[0].id;
+                }
+                
+                if (targetPCId) {
+                    const oldPC = characters.find(pc => pc.type === 'PC' && pc.companionId === ref.id);
+                    if (oldPC) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', oldPC.id), { companionId: null });
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', targetPCId), { companionId: ref.id });
+                    window.showToast(`${beast.name} added to Private Ties and Character Sheet!`);
+                } else {
+                    window.showToast(`${beast.name} added to your Private Ties!`);
+                }
+                
                 document.getElementById('gacha-modal').classList.add('hidden');
                 
                 window.openSheet(ref.id);
