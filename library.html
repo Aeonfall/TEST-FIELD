@@ -9,101 +9,214 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root {
-            --parchment: #f1e5c5;
-            --parchment-dark: #d8cba7;
-            --ink: #2c1e16;
-            --blood-ink: #7a1b1b;
-            --leather: #1a110b;
-            --gold: #c5a059;
+            --parchment: #F5F4E6; /* Bone White */
+            --parchment-dark: #E3DCC2; /* Aged Bone */
+            --ink: #0A0A0A; /* Deep Black Ink */
+            --blood-ink: #9B111E; /* Custodes Red */
+            --leather: #0D0D0D; /* Black Leather */
+            --gold: #FFD700; /* Auric Gold */
+            --gold-dark: #D4AF37; /* Burnished Gold */
+            --wood-dark: #050505; /* Obsidian Void */
+            --wood-light: #1A1A1A; /* Charcoal Iron */
         }
+
+        /* Utility classes for dynamic JS injection */
+        .bg-blood { background-color: var(--blood-ink) !important; }
+        .text-blood { color: var(--blood-ink) !important; }
+        .border-blood { border-color: var(--blood-ink) !important; }
+        .text-gold { color: var(--gold) !important; }
+        .text-ink { color: var(--ink) !important; }
+        .border-ink { border-color: var(--ink) !important; }
+        .bg-ink { background-color: var(--ink) !important; }
+        .text-parchment { color: var(--parchment) !important; }
 
         body { 
             font-family: 'Lora', serif; 
-            background-color: var(--leather); 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
-            color: var(--ink); 
+            background-color: var(--wood-dark); 
+            background-image: 
+                linear-gradient(rgba(5, 5, 5, 0.85), rgba(5, 5, 5, 0.95)),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.08' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            color: var(--parchment); 
             min-height: 100vh;
-            overflow: hidden; 
+            overflow-x: hidden; 
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(122, 27, 27, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(122, 27, 27, 0.6); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; border: 1px solid var(--leather); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-        .parchment-container {
-            max-width: 1600px; margin: 20px auto; background: var(--parchment);
-            background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.3) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.4), 0 40px 100px rgba(0,0,0,0.6);
-            border-radius: 4px; position: relative; display: flex; height: calc(100vh - 40px);
-            border: 2px solid var(--gold); box-sizing: border-box; overflow: hidden;
+        .topbar {
+            background: linear-gradient(to bottom, #111, #000);
+            border-bottom: 2px solid var(--gold);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .manual-nav {
-            width: 340px; background: rgba(0,0,0,0.03); border-right: 2px solid rgba(139, 90, 43, 0.3);
-            padding: 40px 20px; flex-shrink: 0; display: flex; flex-direction: column; height: 100%; overflow-y: auto;
-            box-shadow: inset -10px 0 20px rgba(0,0,0,0.02);
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- DOOR ANIMATION STYLES --- */
+        .door-container { perspective: 1200px; }
+        .door { transition: transform 2.5s cubic-bezier(0.25, 0.8, 0.25, 1); backface-visibility: hidden; }
+        .door-left { transform-origin: left; }
+        .door-right { transform-origin: right; }
+        .door-open-left { transform: rotateY(-110deg); }
+        .door-open-right { transform: rotateY(110deg); }
+        
+        .glow-overlay { 
+            opacity: 0; 
+            transition: opacity 1.5s ease-in, transform 3s ease-out; 
+            background: radial-gradient(circle, #FFFFFF 0%, rgba(255, 215, 0, 0.9) 20%, transparent 70%); 
+            transform: scale(0.1); 
+        }
+        .glow-active { opacity: 1; transform: scale(4); }
+        /* ---------------------------- */
+
+        .library-shelf {
+            background: rgba(13, 13, 13, 0.8);
+            border-radius: 8px;
+            padding: 40px 20px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            box-shadow: inset 0 20px 50px rgba(0,0,0,0.9);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            align-items: end;
+            position: relative;
+        }
+
+        .library-shelf::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 15px;
+            background: linear-gradient(to bottom, var(--wood-light), #000);
+            border-top: 2px solid var(--gold-dark); border-radius: 0 0 8px 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.9); z-index: 0;
+        }
+
+        .book-item {
+            position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform-origin: bottom center; group: hover;
         }
         
-        .shelf-item {
-            font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--parchment);
-            padding: 16px 20px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            letter-spacing: 1.5px; border-left: 4px solid transparent; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-radius: 0 6px 6px 0;
+        .book-item:hover { transform: translateY(-10px) scale(1.02); z-index: 10; }
+
+        .book-cover {
+            width: 140px; height: 190px; border-radius: 4px 12px 12px 4px;
+            box-shadow: inset 4px 0 10px rgba(0,0,0,0.6), inset -1px 0 2px rgba(255,215,0,0.2), 5px 5px 15px rgba(0,0,0,0.8);
+            position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 15px;
+            border-left: 6px solid rgba(0,0,0,0.8);
         }
-        .shelf-item.book { background: var(--leather); border-left-color: var(--blood-ink); border: 1px solid #555; }
-        .shelf-item.journal { background: #6d4c41; border-left-color: #d7ccc8; border: 1px solid #555;}
-        .shelf-item.manuscript { background: var(--parchment-dark); color: var(--ink); border-left-color: var(--blood-ink); border-radius: 4px; border: 1px solid rgba(0,0,0,0.2); border-left-width: 4px; }
-        .shelf-item.newspaper { background: #fff; color: var(--ink); border-left-color: #000; border: 1px solid #c5a059; }
-        .shelf-item.parchment { background: #ebdcb5; color: #5d4037; border-left-color: #a68b5b; border-radius: 0 20px 20px 0; border: 1px solid rgba(0,0,0,0.1); }
-        .shelf-item.textbook { background: #455a64; border-left-color: #cfd8dc; color: #fff; border: 1px solid #555;}
-        .shelf-item.song { background: #311b2b; border-left-color: #b05c8d; color: #fff; border-radius: 6px 0 6px 0; border: 1px solid #555;}
+
+        .type-book .book-cover { background: linear-gradient(135deg, var(--leather), #000); border: 1px solid var(--gold); }
+        .type-journal .book-cover { background: linear-gradient(135deg, var(--blood-ink), #4A080E); border: 1px solid var(--gold); border-radius: 8px; }
+        .type-manuscript .book-cover { background: linear-gradient(135deg, var(--parchment-dark), var(--parchment)); border: 1px solid var(--gold-dark); border-radius: 2px; color: var(--ink); box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 3px 3px 10px rgba(0,0,0,0.5); }
+        .type-textbook .book-cover { background: linear-gradient(135deg, #222, #111); border: 1px solid var(--gold); }
+        .type-newspaper .book-cover { background: var(--parchment); border: 1px solid var(--ink); border-radius: 0; color: var(--ink); box-shadow: 2px 2px 5px rgba(0,0,0,0.4); width: 160px; height: 210px; }
+        .type-parchment .book-cover { background: var(--parchment); border-radius: 0 30px 30px 0; color: var(--ink); border-left: 4px solid var(--blood-ink); width: 130px; height: 180px;}
+        .type-song .book-cover { background: linear-gradient(135deg, var(--gold-dark), #8B6508); border: 1px solid #FFF; }
+
+        .book-title { font-family: 'Cinzel', serif; font-weight: 900; font-size: 14px; text-transform: uppercase; color: var(--gold); text-shadow: 1px 1px 4px rgba(0,0,0,0.9); line-height: 1.2; word-wrap: break-word; }
+        .type-manuscript .book-title, .type-newspaper .book-title, .type-parchment .book-title { color: var(--ink); text-shadow: none; }
+        .type-journal .book-title { color: var(--parchment); }
         
-        .shelf-item:hover { transform: translateX(8px); filter: brightness(1.1); box-shadow: -4px 6px 15px rgba(0,0,0,0.3); }
+        .book-author { font-size: 9px; margin-top: 10px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; color: var(--parchment); font-family: 'Cinzel'; }
+        .type-manuscript .book-author, .type-newspaper .book-author, .type-parchment .book-author { color: var(--ink); }
 
-        .new-badge { position: absolute; top: -6px; right: -6px; background: var(--blood-ink); color: white; font-size: 8px; padding: 3px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); pointer-events: none; animation: pulse 2s infinite; font-family: 'Cinzel', serif;}
-        .personal-badge { position: absolute; bottom: -6px; right: -6px; background: #1e3a8a; color: white; font-size: 8px; padding: 3px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); pointer-events: none; font-family: 'Cinzel', serif;}
+        .book-decoration { position: absolute; inset: 5px; border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 2px 8px 8px 2px; pointer-events: none; }
+        .type-manuscript .book-decoration, .type-newspaper .book-decoration, .type-parchment .book-decoration { border-color: rgba(0,0,0,0.2); }
+
+        .badge-personal {
+            position: absolute; top: -10px; right: -10px; background: var(--leather); color: var(--gold); font-size: 9px; padding: 4px 8px; border-radius: 4px; 
+            box-shadow: 0 0 15px var(--gold), 0 4px 6px rgba(0,0,0,0.8); border: 1px solid var(--gold); z-index: 20; font-family: 'Cinzel', serif; font-weight: bold; text-transform: uppercase;
+        }
+        .badge-new {
+            position: absolute; top: -10px; left: -10px; background: var(--blood-ink); color: var(--parchment); font-size: 9px; padding: 4px 8px; border-radius: 4px; 
+            box-shadow: 0 0 15px var(--blood-ink); border: 1px solid var(--gold); z-index: 20; font-family: 'Cinzel', serif; font-weight: bold; text-transform: uppercase; animation: pulse 2s infinite;
+        }
+
+        .book-item.is-personal .book-cover { box-shadow: 0 0 25px rgba(255, 215, 0, 0.4), inset 4px 0 10px rgba(0,0,0,0.6); border: 1px solid var(--gold); }
+
+        .desk-view { display: none; flex-direction: column; align-items: center; width: 100%; animation: fadeIn 0.5s ease-out; }
+        .desk-view.active { display: flex; }
+
+        .book-cover-wrap {
+            width: 100%; max-width: 900px;
+            background: var(--leather);
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5z' fill='%23000000' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            border-radius: 6px 12px 12px 6px;
+            padding: 10px 15px 10px 35px;
+            position: relative; 
+            border: 2px solid var(--gold);
+            box-shadow: 0 35px 60px -15px rgba(0,0,0,1), inset 8px 0 20px rgba(0,0,0,0.9), inset -2px 0 5px rgba(255,215,0,0.3);
+        }
+
+        .book-spine-fold {
+            position: absolute; top: 0; bottom: 0; left: 15px; width: 20px;
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.8) 40%, rgba(255,215,0,0.15) 60%, transparent);
+            z-index: 5; pointer-events: none;
+        }
+
+        .desk-pages {
+            background: var(--parchment);
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.05) 100%), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            border-radius: 2px 6px 6px 2px;
+            padding: 60px 80px 100px 80px;
+            box-shadow: inset 15px 0 30px rgba(0,0,0,0.2), -3px 0 8px rgba(0,0,0,0.8);
+            min-height: 700px;
+            position: relative;
+        }
+
+        .desk-header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--gold); padding-bottom: 20px; position: relative; }
+        .desk-title { font-family: 'Cinzel', serif; font-weight: 900; font-size: 3rem; color: var(--ink); text-transform: uppercase; letter-spacing: 2px; }
+        .desk-meta { font-family: 'Cinzel', serif; font-size: 12px; color: var(--blood-ink); letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: bold; }
+
+        .content-block { position: relative; margin-bottom: 20px; border: 1px solid transparent; transition: all 0.2s; }
+        .content-block.group:hover { border-color: rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.03); border-radius: 4px; }
         
-        @keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
+        .manual-h3 { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.5rem; border-bottom: 1px solid var(--gold-dark); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; color: var(--blood-ink); margin-top: 30px; }
+        .manual-p { font-size: 1.1rem; line-height: 1.8; color: var(--ink); text-align: justify; white-space: pre-wrap; }
+        .manual-divider { width: 60%; height: 2px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 40px auto; opacity: 0.8; }
 
-        .manual-body { flex-grow: 1; padding: 60px 80px 150px 80px; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; }
-        #manual-sections-container { display: flex; flex-wrap: wrap; align-items: flex-start; width: 100%; gap: 0; }
+        .arch-btn { font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(to bottom, var(--blood-ink), #700B15); color: var(--parchment); font-family: 'Cinzel', serif; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,215,0,0.4); border: 1px solid var(--gold); }
+        .arch-btn:hover { background: linear-gradient(to bottom, #C41526, var(--blood-ink)); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255,215,0,0.3); border-color: #FFF; }
+        
+        .arch-btn-secondary { background: linear-gradient(to bottom, var(--leather), #000); color: var(--gold); border-color: var(--gold-dark); }
+        .arch-btn-secondary:hover { background: linear-gradient(to bottom, #222, var(--leather)); color: var(--parchment); border-color: var(--gold); }
 
-        .manual-h1, .manual-h2, .manual-h3, .manual-p { color: var(--ink); }
-        .manual-h2 { font-family: 'Cinzel', serif; font-weight: 900; font-size: 2.4rem; border-bottom: 2px solid var(--blood-ink); padding-bottom: 10px; text-transform: uppercase; margin-bottom: 20px; width: 100%; letter-spacing: 2px; }
-        .manual-h3 { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.5rem; border-bottom: 1px solid rgba(139, 90, 43, 0.3); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; width: 100%; }
-        .manual-p { font-size: 1.05rem; line-height: 1.8; margin-bottom: 15px; }
-        .manual-divider { width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--blood-ink), transparent); margin: 40px 0; opacity: 0.5; }
+        #dm-global-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(13, 13, 13, 0.95); backdrop-filter: blur(12px); border: 2px solid var(--gold); border-top: 4px solid var(--blood-ink); border-radius: 8px; padding: 16px 24px; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.9); display: flex; flex-direction: column; gap: 12px; min-width: 600px; }
 
-        .dm-active-edit .dm-editable { transition: all 0.2s; border-radius: 4px; }
-        .dm-active-edit .dm-editable:hover { background: rgba(138, 37, 37, 0.03); outline: 1px dashed rgba(138, 37, 37, 0.4); outline-offset: 4px; }
-        .dm-active-edit .dm-editable:focus { outline: 2px solid var(--blood-ink); outline-offset: 4px; background: #fff; }
+        .block-controls {
+            position: absolute; top: 0; right: -50px; opacity: 0; transition: opacity 0.2s;
+            display: flex; flex-direction: column; gap: 5px; background: var(--leather); border: 1px solid var(--gold); border-radius: 4px; padding: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 50;
+        }
+        .content-block:hover .block-controls { opacity: 1; right: -60px; }
+        
+        .book-dm-controls {
+            position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); opacity: 0; transition: all 0.2s;
+            display: flex; gap: 5px; background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 4px; padding: 6px; z-index: 50; pointer-events: none;
+        }
+        .book-item:hover .book-dm-controls { opacity: 1; bottom: -40px; pointer-events: auto; }
 
-        .arch-btn { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(to bottom, #8a2b2b, #5a1111); color: var(--parchment); font-family: 'Cinzel', serif; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2); border: 2px solid var(--gold); }
-        .arch-btn:hover { background: linear-gradient(to bottom, #a33232, #7a1b1b); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.6); border-color: #e8cd87; }
-        .arch-btn-secondary { background: linear-gradient(to bottom, #2c1e16, #1a110b); color: var(--gold); border: 2px solid var(--gold); }
-        .arch-btn-secondary:hover { background: linear-gradient(to bottom, #3d2a1f, #2c1e16); color: var(--parchment); }
-
-        #dm-global-controls { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(26, 17, 11, 0.95); backdrop-filter: blur(12px); border: 2px solid var(--gold); border-top: 3px solid var(--blood-ink); border-radius: 8px; padding: 16px 24px; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 12px; min-width: 600px; }
-
-        .drag-handle { cursor: grab; opacity: 0.6; transition: 0.2s; color: var(--blood-ink); font-size: 20px; }
-        .drag-handle:hover { opacity: 1; }
-        .section-dragging { opacity: 0.4; transform: scale(0.98); border: 2px dashed var(--blood-ink) !important; border-radius: 8px; }
-        .section-drag-over-top { border-top: 4px solid var(--blood-ink) !important; padding-top: 10px !important; }
-        .section-drag-over-bottom { border-bottom: 4px solid var(--blood-ink) !important; padding-bottom: 10px !important; }
-        .section-drag-over-left { border-left: 4px solid var(--blood-ink) !important; padding-left: 10px !important; }
-        .section-drag-over-right { border-right: 4px solid var(--blood-ink) !important; padding-right: 10px !important; }
-
-        .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--leather); color: var(--parchment); padding: 16px 40px; border-radius: 4px; z-index: 2000000; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-family: 'Cinzel'; font-size: 12px; font-weight: 700; pointer-events: none; border: 1px solid var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase; }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 5px var(--blood-ink); } 50% { box-shadow: 0 0 20px var(--blood-ink); transform: scale(1.05); } 100% { box-shadow: 0 0 5px var(--blood-ink); } }
+        
         .hidden { display: none !important; }
-        
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(4px); }
-        .modal-container { background: var(--parchment); border: 2px solid var(--gold); border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8); position: relative; color: var(--ink); background-image: radial-gradient(circle at center, transparent 0%, rgba(200, 170, 120, 0.1) 100%); text-align: center;}
+        .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--leather); color: var(--parchment); padding: 16px 40px; border-radius: 4px; z-index: 2000000; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-family: 'Cinzel'; font-size: 12px; font-weight: 900; pointer-events: none; border: 1px solid var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.9), 0 0 15px rgba(255,215,0,0.2); letter-spacing: 2px; text-transform: uppercase; }
 
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 200000; padding: 20px; backdrop-filter: blur(6px); }
+        .modal-container { background: var(--leather); border: 2px solid var(--gold); border-radius: 8px; width: 100%; max-width: 400px; padding: 32px; box-shadow: inset 0 0 40px rgba(255, 215, 0, 0.05), 0 25px 50px -12px rgba(0, 0, 0, 1); position: relative; color: var(--parchment); text-align: center;}
+        
         .font-signature { font-family: 'Homemade Apple', cursive; }
 
-        /* GUESTBOOK RECEPTION TERMINAL */
         #access-terminal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 100000;
             display: flex; align-items: center; justify-content: center; padding: 20px;
@@ -111,146 +224,196 @@
         }
         #access-terminal.unlocked { opacity: 0; pointer-events: none; transform: scale(1.05) translateY(-20px); }
 
-        .mobile-nav-toggle { display: none; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-
         @media (max-width: 1024px) {
-            .manual-body { padding: 40px 30px; }
-            .parchment-container { margin: 10px; height: calc(100vh - 20px); }
-            #dm-global-controls { min-width: 0; width: 90%; }
-        }
-
-        @media (max-width: 768px) {
-            .parchment-container { flex-direction: column; margin: 0; height: 100vh; border-radius: 0; border: none; }
-            .mobile-nav-toggle { display: flex; justify-content: space-between; align-items: center; background: var(--parchment-dark); padding: 15px 20px; border-bottom: 2px solid var(--blood-ink); z-index: 50; width: 100%; }
-            .manual-nav { position: absolute; top: 62px; left: -100%; width: 100%; height: calc(100vh - 62px); z-index: 40; background: var(--parchment); transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-right: none; padding-bottom: 80px; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-            .manual-nav.nav-open { left: 0; }
-            .manual-body { padding: 20px 15px 120px 15px; }
-            #dm-global-controls { width: 95%; padding: 12px; bottom: 10px; gap: 8px; border-radius: 8px; }
-            .manual-h1 { font-size: 2.2rem !important; }
-            .manual-h2 { font-size: 1.5rem !important; }
-            #toast { width: 90%; text-align: center; }
+            .book-cover-wrap { padding: 5px 10px 5px 20px; border-radius: 0; border-left: none; border-right: none; }
+            .desk-pages { padding: 40px 20px; }
+            #dm-global-controls { min-width: 0; width: 95%; padding: 12px; }
+            .library-shelf { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+            .book-cover { width: 110px; height: 150px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- INITIAL LOADING OVERLAY -->
-    <div id="initial-loading" class="fixed inset-0 bg-[#1a110b] z-[300000] flex flex-col items-center justify-center transition-opacity duration-500">
-        <i class="fa-solid fa-book-journal-whills text-4xl text-[#7a1b1b] mb-4 animate-pulse"></i>
-        <h2 class="font-heading text-xl text-[#c5a059] uppercase tracking-widest animate-pulse">Consulting Archives...</h2>
+    <!-- INTRO DOOR ANIMATION OVERLAY -->
+    <div id="intro-animation" class="fixed inset-0 z-[300000] flex items-center justify-center bg-[#0D0D0D] door-container transition-opacity duration-1000">
+        <!-- Light Glow Behind Doors -->
+        <div id="intro-glow" class="absolute inset-0 glow-overlay z-0 pointer-events-none"></div>
+
+        <!-- Left Vault Door -->
+        <div id="door-left" class="door door-left absolute top-0 left-0 w-1/2 h-full bg-[#0D0D0D] border-r-4 border-[var(--gold-dark)] flex justify-end items-center z-10 shadow-[15px_0_40px_rgba(0,0,0,1)] bg-[url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.05\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.08\'/%3E%3C/svg%3E')]">
+            <div class="w-32 h-96 border-4 border-[var(--gold)] border-r-0 rounded-l-full mr-2 flex items-center justify-end p-4 shadow-[inset_0_0_30px_rgba(255,215,0,0.1)] bg-gradient-to-l from-[#111] to-[#050505]">
+                <div class="w-20 h-72 border-2 border-[var(--gold-dark)] border-r-0 rounded-l-full flex items-center justify-end p-2 bg-[#0A0A0A]">
+                    <div class="flex flex-col justify-between h-full py-10 mr-2">
+                        <div class="w-4 h-4 bg-[var(--gold-dark)] rounded-full shadow-[0_0_5px_rgba(0,0,0,0.8)]"></div>
+                        <div class="w-4 h-4 bg-[var(--gold-dark)] rounded-full shadow-[0_0_5px_rgba(0,0,0,0.8)]"></div>
+                        <div class="w-4 h-4 bg-[var(--gold-dark)] rounded-full shadow-[0_0_5px_rgba(0,0,0,0.8)]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Vault Door -->
+        <div id="door-right" class="door door-right absolute top-0 right-0 w-1/2 h-full bg-[#0D0D0D] border-l-4 border-[var(--gold-dark)] flex justify-start items-center z-10 shadow-[-15px_0_40px_rgba(0,0,0,1)] bg-[url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.05\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.08\'/%3E%3C/svg%3E')]">
+            <div class="w-32 h-96 border-4 border-[var(--gold)] border-l-0 rounded-r-full ml-2 flex items-center justify-start p-4 shadow-[inset_0_0_30px_rgba(255,215,0,0.1)] bg-gradient-to-r from-[#111] to-[#050505]">
+                <div class="w-20 h-72 border-2 border-[var(--gold-dark)] border-l-0 rounded-r-full flex items-center justify-start p-2 bg-[#0A0A0A]">
+                    <div class="flex flex-col justify-between h-full py-10 ml-2">
+                        <div class="w-4 h-4 bg-[var(--gold-dark)] rounded-full shadow-[0_0_5px_rgba(0,0,0,0.8)]"></div>
+                        <div class="w-4 h-4 bg-[var(--gold-dark)] rounded-full shadow-[0_0_5px_rgba(0,0,0,0.8)]"></div>
+                        <div class="w-4 h-4 bg-[var(--gold-dark)] rounded-full shadow-[0_0_5px_rgba(0,0,0,0.8)]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Lock/Emblem & Button -->
+        <div id="door-center-console" class="absolute z-20 flex flex-col items-center pointer-events-auto">
+            <div id="door-emblem" class="w-32 h-32 bg-[#0D0D0D] rounded-full border-4 border-[var(--gold)] flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.5)] mb-8">
+                <i class="fa-solid fa-eagle text-[var(--gold)] text-6xl drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]"></i>
+            </div>
+            <div id="auth-loading-text" class="text-[var(--gold)] font-heading uppercase text-sm tracking-[0.3em] animate-pulse font-black drop-shadow-[0_0_5px_rgba(255,215,0,0.5)] bg-black/50 px-4 py-2 rounded">Consulting Imperial Archives...</div>
+            <button id="open-doors-btn" class="arch-btn !text-xl !py-4 !px-10 shadow-[0_0_40px_rgba(155,17,30,0.9)] animate-pulse hidden" onclick="window.playDoorAnimation()">Breach the Athenaeum</button>
+        </div>
     </div>
 
     <div id="toast" class="toast">Notification</div>
 
-    <!-- GUESTBOOK ACCESS TERMINAL -->
     <div id="access-terminal" class="hidden">
-        <div class="w-full max-w-2xl bg-[#f1e5c5] rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] border-2 border-[#c5a059] flex overflow-hidden min-h-[400px]">
-            <div class="w-12 bg-[#1a110b] border-r-2 border-[#c5a059] shadow-inner flex-shrink-0"></div> <!-- Book Spine -->
-            <div class="flex-1 p-8 md:p-12 flex flex-col relative bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]">
-                <h2 class="text-3xl font-heading font-black text-[#7a1b1b] text-center mb-1 uppercase tracking-widest">Library Guestbook</h2>
-                <p class="text-[10px] font-heading font-bold uppercase tracking-widest text-[#2c1e16] text-center mb-6 opacity-70">Select your character and sign the ledger</p>
+        <div class="w-full max-w-2xl bg-[#0D0D0D] rounded-lg shadow-[0_0_60px_rgba(255,215,0,0.15)] border-2 border-[#FFD700] flex overflow-hidden min-h-[400px]">
+            <div class="w-12 bg-black border-r-2 border-[#D4AF37] shadow-inner flex-shrink-0"></div> <!-- Book Spine -->
+            <div class="flex-1 p-8 md:p-12 flex flex-col relative bg-[url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5z\' fill=\'%23000000\' fill-opacity=\'0.5\' fill-rule=\'evenodd\'/%3E%3C/svg%3E')]">
+                <h2 class="text-3xl font-heading font-black text-[#FFD700] text-center mb-1 uppercase tracking-widest drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]">Library Guestbook</h2>
+                <p class="text-[10px] font-heading font-bold uppercase tracking-widest text-[#F5F4E6]/70 text-center mb-6">Select your character and sign the ledger</p>
                 
                 <div class="flex-grow flex flex-col justify-center max-w-md mx-auto w-full gap-6 mb-6">
                     <div>
-                        <label class="text-[10px] font-heading font-bold uppercase text-[#7a1b1b] tracking-widest mb-2 block text-center">Your Character Identity</label>
-                        <select id="guestbook-char-select" class="w-full bg-white/50 border border-[#c5a059] p-3 rounded font-serif text-sm focus:outline-none focus:border-[#7a1b1b] text-center shadow-inner cursor-pointer text-[#2c1e16]" onchange="window.onGuestbookCharSelect(this.value)">
+                        <label class="text-[10px] font-heading font-black uppercase text-[#9B111E] tracking-widest mb-2 block text-center">Your Character Identity</label>
+                        <select id="guestbook-char-select" class="w-full bg-[#1A1A1A] border border-[#FFD700] p-3 rounded font-serif text-sm focus:outline-none focus:border-[#9B111E] text-center shadow-inner cursor-pointer text-[#F5F4E6]" onchange="window.onGuestbookCharSelect(this.value)">
                             <option value="">-- Choose Character --</option>
-                            <!-- Populated via JS -->
                         </select>
                     </div>
 
                     <div class="mt-2">
-                        <input type="text" id="guestbook-signature" class="w-full bg-transparent border-none border-b-2 border-[#c5a059] font-signature text-3xl p-4 text-center text-[#2c1e16] focus:outline-none focus:border-[#7a1b1b] transition-colors placeholder:opacity-40 placeholder:font-serif placeholder:text-sm" placeholder="Sign your name in ink...">
+                        <input type="text" id="guestbook-signature" class="w-full bg-transparent border-none border-b-2 border-[#D4AF37] font-signature text-3xl p-4 text-center text-[#F5F4E6] focus:outline-none focus:border-[#9B111E] transition-colors placeholder:opacity-30 placeholder:font-serif placeholder:text-sm" placeholder="Sign your name in ink...">
                     </div>
 
                     <button onclick="window.submitGuestbookSignature()" class="arch-btn w-full shadow-lg !py-3">Inscribe Signature & Enter</button>
                 </div>
 
-                <div class="mt-auto pt-6 border-t border-[#c5a059]/30 text-center">
-                    <button onclick="window.bypassTerminal()" class="text-[10px] font-black uppercase text-[#7a1b1b] hover:text-[#c5a059] transition-colors tracking-widest">Enter as Guest (Public Archives Only)</button>
+                <div class="mt-auto pt-6 border-t border-[#FFD700]/20 text-center">
+                    <button onclick="window.bypassTerminal()" class="text-[10px] font-black uppercase text-[#9B111E] hover:text-[#FFD700] transition-colors tracking-widest">Enter as Guest (Public Archives Only)</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN PARCHMENT CONTAINER -->
-    <div class="parchment-container">
-        <!-- MOBILE HEADER -->
-        <div class="mobile-nav-toggle">
-            <div id="mobile-campaign-title" class="font-heading font-black text-lg text-[#7a1b1b] uppercase tracking-widest drop-shadow-md">Chronicles</div>
-            <button onclick="document.querySelector('.manual-nav').classList.toggle('nav-open')" class="p-2 bg-black/5 rounded hover:bg-black/10 transition-colors">
-                <i class="fa-solid fa-bars text-ink"></i>
-            </button>
+    <header class="topbar flex items-center justify-between px-6 py-4">
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-building-columns text-[var(--gold)] text-2xl drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]"></i>
+            <div>
+                <h1 id="main-campaign-title" class="font-heading font-black text-xl text-[var(--gold)] uppercase tracking-widest m-0 leading-none">Chronicles</h1>
+                <p id="sidebar-subtitle" class="text-[9px] uppercase font-bold tracking-[2px] text-[var(--parchment)]/60 font-heading m-0 mt-1">Custodian's Athenaeum</p>
+            </div>
         </div>
-
-        <!-- SIDEBAR -->
-        <div class="manual-nav">
-            <div class="mb-10 text-center">
-                <h1 id="sidebar-campaign-title" class="font-heading font-black text-3xl md:text-4xl text-[#7a1b1b] uppercase leading-none tracking-wider drop-shadow-md">Chronicles</h1>
-                <p id="sidebar-subtitle" class="text-[10px] uppercase font-bold tracking-[3px] opacity-60 mt-2 text-ink font-heading">Custodian's Athenaeum</p>
-                
-                <div id="user-display-container" class="mt-8 border-y border-black/10 py-5 bg-black/5 rounded-lg shadow-inner">
-                    <div id="user-identity" class="font-heading text-xs font-black uppercase text-[#1a110b] mb-1">Authenticating...</div>
-                    <div id="user-identity-sub" class="font-serif italic text-[10px] text-black/60 hidden"></div>
-                </div>
+        
+        <div class="flex items-center gap-6">
+            <div id="user-display-container" class="text-right hidden sm:block">
+                <div id="user-identity" class="font-heading text-xs font-black uppercase text-[var(--gold)] mb-0.5">Authenticating...</div>
+                <div id="user-identity-sub" class="font-serif italic text-[10px] text-[var(--parchment)]/60 hidden"></div>
             </div>
             
-            <button id="sync-btn" onclick="window.forceSync()" class="w-full arch-btn arch-btn-secondary !text-[10px] mb-6 flex items-center justify-center gap-2 !py-2 border-dashed">
+            <button id="sync-btn" onclick="window.forceSync()" class="arch-btn arch-btn-secondary !text-[10px] !py-1.5 !px-3 border-dashed" title="Synchronize Archive">
                 <i class="fa-solid fa-arrows-rotate sync-icon transition-all duration-500 ease-in-out"></i>
-                Synchronize Archive
             </button>
-            
-            <div id="nav-list" class="flex-grow space-y-1 overflow-y-auto mb-6 scrollbar-hide"></div>
 
-            <div class="mt-auto pt-6 border-t border-black/10 flex flex-col gap-3 font-heading">
-                <a href="#" onclick="window.routeTo('worldlore.html'); return false;" class="block text-center font-black text-[10px] tracking-widest text-[#7a1b1b] hover:text-[#c5a059] transition-colors uppercase">← Return to Lore</a>
-                <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="block text-center font-black text-[10px] tracking-widest text-ink/60 hover:text-[#c5a059] transition-colors uppercase">← Return to Hub</a>
+            <button onclick="window.routeTo('handbook.html')" class="text-[var(--parchment)]/60 hover:text-[var(--gold)] transition-colors text-lg" title="Exit Library">
+                <i class="fa-solid fa-door-open"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div id="library-view" class="w-full animation-fadeIn">
+            <div class="flex justify-between items-end mb-8 border-b border-[var(--gold)]/20 pb-4">
+                <div>
+                    <h2 class="font-heading text-3xl font-black text-[var(--gold)] uppercase tracking-widest drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]">The Grand Stacks</h2>
+                    <div class="text-[10px] font-heading font-bold text-[var(--parchment)]/50 uppercase tracking-widest mt-1"><span id="book-count">0</span> Volumes Found</div>
+                </div>
+                <div id="library-actions-container">
+                    <!-- Request Lore button populated here -->
+                </div>
+            </div>
+            
+            <div id="library-shelves-container" class="space-y-12">
+                <!-- Shelves dynamically generated here -->
             </div>
         </div>
 
-        <!-- CONTENT AREA -->
-        <div class="manual-body" id="content-pane">
-            <div id="manual-header" class="mb-12 text-center"></div>
-            <div id="manual-sections-container"></div>
+        <div id="desk-view" class="desk-view">
+            <div class="w-full max-w-4xl flex justify-between items-center mb-6 px-4">
+                <button onclick="window.closeBook()" class="arch-btn arch-btn-secondary !text-[10px]"><i class="fa-solid fa-arrow-left mr-2"></i> Return to Stacks</button>
+                <div class="text-[10px] font-heading font-bold text-[var(--parchment)]/50 uppercase tracking-widest">Reading Area</div>
+            </div>
 
-            <!-- DM CATEGORIZED CREATION TOOLBAR -->
-            <div id="dm-global-controls" class="hidden">
-                <div class="text-[10px] font-black uppercase text-center text-gold mb-2 tracking-widest border-b border-gold/30 pb-2 font-heading w-full">Archival Insertion Tools</div>
-                <div id="toolbar-main" class="flex flex-wrap justify-center gap-3 w-full">
-                    <button class="arch-btn" onclick="window.switchToolbar('book')"><i class="fa-solid fa-book mr-2"></i> Tome</button>
-                    <button class="arch-btn" onclick="window.switchToolbar('journal')"><i class="fa-solid fa-book-journal-whills mr-2"></i> Journal</button>
-                    <button class="arch-btn" onclick="window.switchToolbar('textbook')"><i class="fa-solid fa-book-open mr-2"></i> Text Book</button>
-                    <button class="arch-btn" onclick="window.switchToolbar('newspaper')"><i class="fa-solid fa-newspaper mr-2"></i> Chronicle</button>
-                    <button class="arch-btn" onclick="window.switchToolbar('manuscript')"><i class="fa-solid fa-scroll mr-2"></i> Manuscript</button>
-                    <button class="arch-btn" onclick="window.switchToolbar('parchment')"><i class="fa-solid fa-file-lines mr-2"></i> Parchment</button>
-                    <button class="arch-btn" onclick="window.switchToolbar('song')"><i class="fa-solid fa-music mr-2"></i> Songs & Poems</button>
-                </div>
-                <div id="toolbar-sub" class="hidden flex flex-wrap justify-center gap-3 items-center w-full">
-                    <button class="arch-btn arch-btn-secondary" onclick="window.resetToolbar()"><i class="fa-solid fa-arrow-left mr-2"></i> Return</button>
-                    <div class="h-8 w-[2px] bg-gold mx-2"></div>
-                    <div id="sub-tool-buttons" class="flex flex-wrap gap-2">
-                        <!-- Populated dynamically -->
+            <div class="book-cover-wrap">
+                <div class="book-spine-fold"></div>
+                <div class="desk-pages">
+                    <div class="desk-header group">
+                        <div id="desk-book-title-container" class="relative inline-block w-full">
+                            <!-- Title & Edit Button Injected Here -->
+                        </div>
+                        <div id="desk-book-meta" class="desk-meta">Type • Access Level</div>
+                    </div>
+                    
+                    <div id="desk-content-container">
+                        <!-- Pages/Blocks dynamically generated here -->
+                    </div>
+
+                    <div class="mt-32 text-center select-none pointer-events-none">
+                        <div class="w-12 h-12 mx-auto bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI0Q0QUYzNyIgb3BhY2l0eT0iMC41Ij48cGF0aCBkPSJNMjEgMTFIMS41djclMjBIMjF2LTJ6TTE1LjUgN0wxMiAzLjUgOC41IDcgOS45IDguNCAxMiA2LjMgMTQuMSA4LjQgMTUuNSA3em0wIDEwTDEyIDIwLjUgOC41IDE3bDEuNCAxLjQgMi4xIDIuMSAyLjEtMi4xIDEuNC0xLjR6Ii8+PC9zdmc+')] bg-no-repeat bg-center opacity-40"></div>
+                        <p class="uppercase tracking-widest text-[10px] font-black font-heading text-[var(--ink)]/40 mt-4">End of Volume</p>
                     </div>
                 </div>
             </div>
+        </div>
+    </main>
 
-            <div class="mt-32 opacity-40 text-center uppercase tracking-widest text-[10px] font-black border-t border-black/20 pt-8 font-heading text-ink">End of Archival Record</div>
+    <div id="dm-global-controls" class="hidden">
+        <div class="text-[10px] font-black uppercase text-center text-[var(--gold)] mb-2 tracking-widest border-b border-[var(--gold)]/30 pb-2 font-heading w-full" id="dm-toolbar-title">Archival Insertion Tools</div>
+        
+        <!-- Library View Tools (Add Books) -->
+        <div id="toolbar-library" class="flex flex-wrap justify-center gap-3 w-full">
+            <button class="arch-btn" onclick="window.addVolume('book')"><i class="fa-solid fa-book mr-2"></i> Tome</button>
+            <button class="arch-btn" onclick="window.addVolume('journal')"><i class="fa-solid fa-book-journal-whills mr-2"></i> Journal</button>
+            <button class="arch-btn" onclick="window.addVolume('textbook')"><i class="fa-solid fa-book-open mr-2"></i> Text Book</button>
+            <button class="arch-btn" onclick="window.addVolume('newspaper')"><i class="fa-solid fa-newspaper mr-2"></i> Chronicle</button>
+            <button class="arch-btn" onclick="window.addVolume('manuscript')"><i class="fa-solid fa-scroll mr-2"></i> Manuscript</button>
+            <button class="arch-btn" onclick="window.addVolume('parchment')"><i class="fa-solid fa-file-lines mr-2"></i> Parchment</button>
+            <button class="arch-btn" onclick="window.addVolume('song')"><i class="fa-solid fa-music mr-2"></i> Song</button>
+        </div>
+
+        <!-- Desk View Tools (Add Content to Book) -->
+        <div id="toolbar-desk" class="hidden flex flex-wrap justify-center gap-3 w-full">
+            <button class="arch-btn" onclick="window.addBlock('inner-subheading')"><i class="fa-solid fa-heading mr-2"></i> Chapter Title</button>
+            <button class="arch-btn" onclick="window.addBlock('text')"><i class="fa-solid fa-paragraph mr-2"></i> Text Block</button>
+            <button class="arch-btn" onclick="window.addBlock('textbook')"><i class="fa-solid fa-book-open mr-2"></i> Scholar Note</button>
+            <button class="arch-btn" onclick="window.addBlock('note')"><i class="fa-solid fa-scroll mr-2"></i> Marginalia</button>
+            <button class="arch-btn" onclick="window.addBlock('divider')"><i class="fa-solid fa-minus mr-2"></i> Divider</button>
         </div>
     </div>
 
-    <!-- MODALS -->
     <!-- DOSSIER / BIND USER MODAL -->
     <div id="uid-link-modal" class="modal-overlay hidden">
         <div class="modal-container !p-0 overflow-hidden">
-            <div class="bg-[#1a110b] text-[#f1e5c5] p-5 flex justify-between items-center border-b-2 border-[#c5a059]">
-                <span class="font-heading uppercase text-sm font-black tracking-wider">Bind Citizen Record</span>
-                <button onclick="window.closeModal('uid-link-modal')" class="text-gold hover:text-white text-lg leading-none">&times;</button>
+            <div class="bg-[var(--leather)] text-[var(--gold)] p-5 flex justify-between items-center border-b-2 border-[var(--gold)]">
+                <span class="font-heading uppercase text-sm font-black tracking-wider">Checkout / Bind Record</span>
+                <button onclick="window.closeModal('uid-link-modal')" class="text-[var(--gold)] hover:text-white text-lg leading-none">&times;</button>
             </div>
-            <div class="p-6 text-left">
-                <input type="text" id="user-search" class="w-full bg-white/50 border border-gold p-3 mb-4 rounded font-serif text-sm focus:outline-none focus:border-blood shadow-inner text-ink" placeholder="Search character name..." oninput="window.filterDMUsers(this.value)">
+            <div class="p-6 text-left bg-[#111]">
+                <input type="text" id="user-search" class="w-full bg-black/50 border border-[var(--gold)] p-3 mb-4 rounded font-serif text-sm focus:outline-none focus:border-[var(--blood-ink)] shadow-inner text-[var(--parchment)] placeholder-[var(--parchment)]/40" placeholder="Search character name..." oninput="window.filterDMUsers(this.value)">
                 
-                <div id="user-results" class="max-h-60 overflow-y-auto border border-black/10 rounded bg-white mb-2 shadow-inner">
+                <div id="user-results" class="max-h-60 overflow-y-auto border border-black/50 rounded bg-[#1A1A1A] mb-2 shadow-inner">
                     <!-- Populated dynamically -->
                 </div>
             </div>
@@ -259,17 +422,46 @@
 
     <!-- DELETE CONFIRMATION MODAL -->
     <div id="del-modal" class="modal-overlay hidden">
-        <div class="modal-container border-2 !border-blood !shadow-[0_0_60px_rgba(127,29,29,0.3)]">
-            <h3 class="text-2xl font-heading font-black text-[#7a1b1b] uppercase mb-2">Purge Record</h3>
-            <p id="del-modal-text" class="text-sm text-ink mb-8 italic font-serif leading-relaxed">This entry will be permanently expunged from the archives.</p>
+        <div class="modal-container border-2 !border-[var(--blood-ink)] !shadow-[0_0_60px_rgba(155,17,30,0.4)]">
+            <h3 class="text-2xl font-heading font-black text-[var(--blood-ink)] uppercase mb-2">Purge Record</h3>
+            <p id="del-modal-text" class="text-sm text-[var(--parchment)] mb-8 italic font-serif leading-relaxed">This entry will be permanently expunged from the archives.</p>
             <div class="flex flex-col gap-3 font-heading">
-                <button id="confirm-del-btn" class="w-full bg-blood text-parchment py-3 rounded border border-gold font-bold uppercase text-xs shadow transition-colors hover:bg-red-800">Confirm Purge</button>
-                <button onclick="window.closeModal('del-modal')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
+                <button id="confirm-del-btn" class="w-full bg-[var(--blood-ink)] text-[var(--parchment)] py-3 rounded border border-[var(--gold)] font-bold uppercase text-xs shadow transition-colors hover:bg-red-800">Confirm Purge</button>
+                <button onclick="window.closeModal('del-modal')" class="w-full bg-transparent text-[var(--parchment)] border border-[var(--parchment)] py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-[var(--parchment)] hover:text-black">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE & LOGIC -->
+    <!-- REQUEST LORE MODAL -->
+    <div id="request-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="bg-[var(--leather)] text-[var(--gold)] p-5 flex justify-between items-center border-b-2 border-[var(--gold)] absolute top-0 left-0 right-0 rounded-t-lg">
+                <span class="font-heading uppercase text-sm font-black tracking-wider"><i class="fa-solid fa-scroll mr-2"></i> Request Lore</span>
+                <button onclick="window.closeModal('request-modal')" class="text-[var(--gold)] hover:text-white text-lg leading-none">&times;</button>
+            </div>
+            <div class="mt-12 text-left">
+                <p class="text-xs text-[var(--parchment)]/80 mb-4 font-serif italic">Beseech the Custodian for specific texts, lost journals, or hidden knowledge your character seeks.</p>
+                <textarea id="request-text" class="w-full h-32 bg-black/50 border border-[var(--gold)] p-3 rounded font-serif text-sm focus:outline-none focus:border-[var(--blood-ink)] shadow-inner text-[var(--parchment)] resize-none" placeholder="e.g. Do you have any records regarding the fall of the Silver Citadel?"></textarea>
+                <button onclick="window.submitRequest()" class="arch-btn w-full mt-4 !py-3 shadow-lg">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW REQUESTS MODAL (DM ONLY) -->
+    <div id="view-requests-modal" class="modal-overlay hidden">
+        <div class="modal-container !max-w-2xl">
+            <div class="bg-[var(--leather)] text-[var(--gold)] p-5 flex justify-between items-center border-b-2 border-[var(--gold)] absolute top-0 left-0 right-0 rounded-t-lg">
+                <span class="font-heading uppercase text-sm font-black tracking-wider"><i class="fa-solid fa-inbox mr-2"></i> Pending Lore Requests</span>
+                <button onclick="window.closeModal('view-requests-modal')" class="text-[var(--gold)] hover:text-white text-lg leading-none">&times;</button>
+            </div>
+            <div class="mt-12 text-left">
+                <div id="requests-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -313,6 +505,42 @@
             document.getElementById('del-modal')?.classList.remove('hidden');
         };
 
+        // --- DOOR ANIMATION LOGIC ---
+        window.playDoorAnimation = () => {
+            const consoleEl = document.getElementById('door-center-console');
+            const emblemEl = document.getElementById('door-emblem');
+            const doorLeft = document.getElementById('door-left');
+            const doorRight = document.getElementById('door-right');
+            const glow = document.getElementById('intro-glow');
+            const introWrapper = document.getElementById('intro-animation');
+
+            // 1. "Unlock" rotation & fade out center console
+            emblemEl.style.transform = 'scale(1.2) rotate(180deg)';
+            emblemEl.style.transition = 'transform 0.8s ease-in-out, opacity 0.5s ease-in-out 0.3s';
+            emblemEl.style.opacity = '0';
+            consoleEl.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                consoleEl.style.opacity = '0';
+                consoleEl.style.transition = 'opacity 0.5s';
+            }, 400);
+
+            // 2. Swing doors open and trigger blinding light
+            setTimeout(() => {
+                doorLeft.classList.add('door-open-left');
+                doorRight.classList.add('door-open-right');
+                glow.classList.add('glow-active');
+                
+                // 3. The light consumes the screen, then the entire overlay fades out to reveal the library
+                setTimeout(() => {
+                    introWrapper.style.opacity = '0';
+                    setTimeout(() => {
+                        introWrapper.classList.add('hidden');
+                    }, 1500); // Wait for CSS opacity transition to finish
+                }, 1200); // Start fadeout while the glow is massive and doors are almost open
+            }, 1000); 
+        };
+
         // --- FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
@@ -339,42 +567,56 @@
 
         const DB_COLLECTION = `custodiansAthenaeum_${appId}`;
 
-        // State variables
-        let manualSections = [];
-        let allUsers = []; // Stores characters (PCs)
+        let rawSections = [];
+        let structuredLibrary = []; 
+        let allUsers = []; 
         let seenDocs = [];
-        let manualHeader = { title: "Custodian's Athenaeum", subtitle: "Restricted Historical Records" };
         let campaignSettings = { terms: {} };
         
-        let currentUser = null; // Represents the logged in Player/DM account
+        let currentUser = null; 
         let activeRole = 'player'; 
-        let activeAnchorUID = null; // Represents the specific character signed in
+        let activeAnchorUID = null; 
         
-        let activeEditId = null;
+        let currentView = 'library'; 
+        let activeBookId = null;
+
+        let activeEditBlockId = null; 
+        let activeEditField = null;   
+
         let deleteCallback = null;
         let targetSectionForUID = null;
-        let saveTimers = {};
+        let activeEditId = null; 
+        
+        let loreRequests = []; 
 
-        let draggedId = null;
-        let dropSide = null;
+        // --- DATA PROCESSING LOGIC ---
+        const processDataToLibrary = () => {
+            structuredLibrary = [];
+            let currentBook = null;
 
-        const standardTools = [
-            { label: 'Main Heading', type: 'subheading', icon: 'fa-heading' },
-            { label: 'Sub-Heading', type: 'inner-subheading', icon: 'fa-list' },
-            { label: 'Text Block', type: 'text', icon: 'fa-paragraph' },
-            { label: 'Scholar Note', type: 'textbook', icon: 'fa-book-open' },
-            { label: 'Personal Note', type: 'note', icon: 'fa-scroll' },
-            { label: 'Divider', type: 'divider', icon: 'fa-minus' }
-        ];
-
-        const categoryTools = {
-            'book': standardTools,
-            'journal': standardTools,
-            'textbook': standardTools,
-            'newspaper': standardTools,
-            'manuscript': standardTools,
-            'parchment': standardTools,
-            'song': standardTools
+            rawSections.forEach(sec => {
+                if (sec.type === 'subheading') {
+                    currentBook = { ...sec, blocks: [] };
+                    structuredLibrary.push(currentBook);
+                } else {
+                    if (currentBook) {
+                        currentBook.blocks.push(sec);
+                    } else {
+                        currentBook = {
+                            id: 'orphan-tome',
+                            title: 'Unbound Pages',
+                            type: 'subheading',
+                            docType: 'parchment',
+                            visibility: 'public',
+                            sharedWith: [],
+                            order: -1,
+                            blocks: [sec],
+                            isOrphan: true
+                        };
+                        structuredLibrary.push(currentBook);
+                    }
+                }
+            });
         };
 
         // --- GUESTBOOK LOGIC ---
@@ -382,19 +624,16 @@
             const selectEl = document.getElementById('guestbook-char-select');
             if (!selectEl) return;
             
-            // Show PCs owned by the current user, or all PCs if DM
             let displayUsers = allUsers;
             if (activeRole !== 'dm' && currentUser) {
                 displayUsers = allUsers.filter(u => u.owner === currentUser.username);
             }
             
             selectEl.innerHTML = '<option value="">-- Choose Character --</option>';
-            
             if (displayUsers.length === 0) {
                 selectEl.innerHTML += '<option value="" disabled>No characters found in this realm.</option>';
                 return;
             }
-
             displayUsers.forEach(u => {
                 const opt = document.createElement('option');
                 opt.value = u.uid;
@@ -406,11 +645,8 @@
         window.onGuestbookCharSelect = (uid) => {
             const sigInput = document.getElementById('guestbook-signature');
             if(sigInput) {
-                if(uid) {
-                    sigInput.focus();
-                } else {
-                    sigInput.value = '';
-                }
+                if(uid) sigInput.focus();
+                else sigInput.value = '';
             }
         };
 
@@ -418,15 +654,8 @@
             const uid = document.getElementById('guestbook-char-select').value;
             const sig = document.getElementById('guestbook-signature').value.trim();
 
-            if (!uid) {
-                window.showToast("Select a character first.");
-                return;
-            }
-            if (!sig) {
-                window.showToast("You must sign the ledger.");
-                return;
-            }
-            
+            if (!uid) { window.showToast("Select a character first."); return; }
+            if (!sig) { window.showToast("You must sign the ledger."); return; }
             window.anchorIdentity(uid);
         };
 
@@ -448,12 +677,12 @@
             }
             
             window.fetchSeenDocuments(uid);
-            window.renderManual();
+            window.renderUI();
         };
 
         window.bypassTerminal = () => {
             activeAnchorUID = null;
-            sessionStorage.setItem('chronicles_lib_anchored', 'true'); // mark as interacted
+            sessionStorage.setItem('chronicles_lib_anchored', 'true'); 
             document.getElementById('access-terminal')?.classList.add('unlocked');
             window.showToast("Entering as Guest");
             
@@ -462,17 +691,13 @@
             if (identText) identText.innerText = currentUser ? currentUser.username : 'Guest';
             if (subText) subText.classList.add('hidden');
             
-            window.renderManual();
+            window.renderUI();
         };
 
         window.fetchSeenDocuments = (uid) => {
             if (!uid || !currentUser) return;
-            onSnapshot(
-                collection(db, 'artifacts', appId, 'users', uid, 'seenLibDocs'),
-                (snap) => {
-                    seenDocs = snap.docs.map(d => d.id);
-                    window.renderManual();
-                },
+            onSnapshot(collection(db, 'artifacts', appId, 'users', uid, 'seenLibDocs'),
+                (snap) => { seenDocs = snap.docs.map(d => d.id); window.renderUI(); },
                 (error) => console.error("Seen docs error:", error)
             );
         };
@@ -480,17 +705,12 @@
         window.markAsSeen = async (id) => {
             if (!seenDocs.includes(id)) {
                 seenDocs.push(id);
-                window.renderManual(); // Optimistic update
+                window.renderUI();
             }
-            
-            if (activeAnchorUID && currentUser) {
+            if (activeAnchorUID && currentUser && id !== 'orphan-tome') {
                 try {
-                    await setDoc(doc(db, 'artifacts', appId, 'users', activeAnchorUID, 'seenLibDocs', id), {
-                        seenAt: Date.now()
-                    });
-                } catch(err) {
-                    console.error("Error saving seen state:", err);
-                }
+                    await setDoc(doc(db, 'artifacts', appId, 'users', activeAnchorUID, 'seenLibDocs', id), { seenAt: Date.now() });
+                } catch(err) { console.error("Error saving seen state:", err); }
             }
         };
 
@@ -498,36 +718,19 @@
         const setupListeners = () => {
             if (!currentUser) return;
 
-            // Header Config
-            onSnapshot(
-                doc(db, 'artifacts', appId, 'public', 'data', 'loreConfig', 'libraryHeader'), 
-                (docSnap) => {
-                    if (docSnap.exists()) {
-                        manualHeader = docSnap.data();
-                        window.renderManual();
-                    }
-                },
-                (error) => console.error("Header listener error:", error)
-            );
-
-            // Library Sections
-            onSnapshot(
-                collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION),
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION),
                 (snap) => {
-                    manualSections = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    manualSections.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-                    window.renderManual();
+                    rawSections = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    rawSections.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+                    processDataToLibrary();
+                    window.renderUI();
                 },
                 (error) => console.error("Sections listener error:", error)
             );
 
-            // Users (For Binding/Linking and Visibility Checking)
-            onSnapshot(
-                collection(db, 'artifacts', appId, 'public', 'data', 'characters'),
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'),
                 (snap) => {
                     allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).filter(c => c.type === 'PC' && !c.isDeleted);
-                    
-                    // Once characters are loaded, check terminal status
                     const isAnchored = sessionStorage.getItem('chronicles_lib_anchored') === 'true';
                     const savedUID = localStorage.getItem('chronicles_lib_uid');
                     
@@ -550,52 +753,138 @@
                         document.getElementById('access-terminal')?.classList.remove('hidden');
                         window.populateTerminal();
                     }
-
-                    window.renderManual();
+                    window.renderUI();
                 }
             );
 
-            // Sync Terminology
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => {
                 if (docSnap.exists()) {
                     campaignSettings = docSnap.data();
                     const custName = campaignSettings.terms?.lore_custodians || "Custodian's Athenaeum";
-                    
                     const subEl = document.getElementById('sidebar-subtitle');
                     if (subEl) subEl.innerText = custName;
-                    
-                    if (manualHeader.title === "Custodian's Athenaeum" && custName !== "Custodian's Athenaeum") {
-                        manualHeader.title = custName;
-                        window.renderManual();
-                    }
                 }
             });
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'loreRequests'),
+                (snap) => {
+                    loreRequests = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.createdAt - a.createdAt);
+                    window.renderUI();
+                }
+            );
         };
 
-        // --- UI UTILITIES ---
-
+        // --- DM EDITING & DATA MUTATIONS ---
         window.updateRoleUI = () => {
             const isDM = activeRole === 'dm';
             document.getElementById('dm-global-controls')?.classList.toggle('hidden', !isDM);
-            document.body.classList.toggle('dm-active-edit', isDM);
-            window.renderManual();
+            window.renderUI();
         };
 
-        window.switchToolbar = (category) => {
-            document.getElementById('toolbar-main')?.classList.add('hidden');
-            document.getElementById('toolbar-sub')?.classList.remove('hidden');
+        window.startEditBlock = (id, field) => { 
+            activeEditBlockId = id; 
+            activeEditField = field;
+            window.renderUI(); 
+        };
+        
+        window.cancelEditBlock = () => { 
+            activeEditBlockId = null; 
+            activeEditField = null;
+            window.renderUI(); 
+        };
+
+        window.saveBlock = async (id, field) => {
+            const inputEl = document.getElementById('edit-input-' + id);
+            if (!inputEl) return;
             
-            const container = document.getElementById('sub-tool-buttons');
-            if (container && categoryTools[category]) {
-                container.innerHTML = categoryTools[category].map(tool => `
-                    <button class="arch-btn" onclick="window.addManualSection('${tool.type}', '${category}')"><i class="fa-solid ${tool.icon} mr-1"></i> ${tool.label}</button>
-                `).join('');
+            const newValue = inputEl.value;
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, id), {
+                    [field]: newValue
+                });
+                window.cancelEditBlock();
+                window.showToast("Ink Sealed");
+            } catch (err) {
+                console.error("Save error:", err);
+                window.showToast("Failed to seal ink");
             }
         };
 
-        window.resetToolbar = () => {
-            document.getElementById('toolbar-main')?.classList.remove('hidden');
-            document.getElementById('toolbar-sub')?.classList.add('hidden');
+        window.dbUpdateSection = async (id, field, value) => {
+            if (activeRole !== 'dm') return;
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, id), { [field]: value });
+            } catch (error) {
+                console.error("Update error:", error);
+            }
+        };
+
+        window.addVolume = async (docType) => {
+            if (activeRole !== 'dm') return;
+            const newOrder = rawSections.length ? Math.max(...rawSections.map(s => s.order || 0)) + 10 : 0;
+            
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
+                    title: "New Volume",
+                    content: "",
+                    type: "subheading",
+                    docType: docType,
+                    order: newOrder,
+                    createdAt: Date.now(),
+                    visibility: 'public',
+                    sharedWith: []
+                });
+                window.showToast("New Volume Placed on Shelf");
+            } catch(e) { console.error(e); }
+        };
+
+        window.addBlock = async (type) => {
+            if (activeRole !== 'dm' || !activeBookId) return;
+            const book = structuredLibrary.find(b => b.id === activeBookId);
+            if (!book) return;
+
+            let baseOrder = book.order;
+            if (book.blocks && book.blocks.length > 0) {
+                baseOrder = Math.max(...book.blocks.map(b => b.order));
+            }
+            const newOrder = baseOrder + 0.001;
+
+            let defaultTitle = type === 'inner-subheading' ? "Chapter Title" : "";
+            let defaultContent = type === 'divider' ? "" : "Inscribe text here...";
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), {
+                    title: defaultTitle,
+                    content: defaultContent,
+                    type: type,
+                    order: newOrder,
+                    createdAt: Date.now()
+                });
+                window.showToast("Block Added to Volume");
+            } catch(e) { console.error(e); }
+        };
+
+        window.triggerDelete = (id, isBook) => {
+            const text = isBook ? "Burn this volume? All pages within will be lost." : "Remove this block from the volume?";
+            window.openDelModal(text, async () => {
+                try {
+                    const batch = writeBatch(db);
+                    batch.delete(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, id));
+                    
+                    if (isBook) {
+                        const book = structuredLibrary.find(b => b.id === id);
+                        if(book && book.blocks) {
+                            book.blocks.forEach(block => {
+                                batch.delete(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, block.id));
+                            });
+                        }
+                    }
+                    
+                    await batch.commit();
+                    window.showToast(isBook ? "Volume Burned" : "Block Removed");
+                    if (isBook && activeBookId === id) window.closeBook();
+                } catch(err) { console.error("Delete error:", err); }
+            });
         };
 
         window.forceSync = () => {
@@ -610,196 +899,23 @@
                     icon.style.transition = 'all 0.5s ease-in-out';
                 }, 500);
             }
-            
             if (activeEditId) {
-                const el = document.querySelector(`[data-id="${activeEditId}"]`);
+                const el = document.getElementById(activeEditId);
                 if (el) {
-                    if (activeEditId === 'manual-main-title' || activeEditId === 'manual-main-subtitle') {
-                        window.dbUpdateHeader(activeEditId === 'manual-main-title' ? 'title' : 'subtitle', el.innerText);
-                    } else {
-                        const section = manualSections.find(x => x.id === activeEditId);
-                        if (section) window.dbUpdateSection(activeEditId, section.type === 'subheading' || section.type === 'inner-subheading' ? 'title' : 'content', section.type === 'subheading' || section.type === 'inner-subheading' ? el.innerText : el.innerHTML);
-                    }
+                    const idPart = activeEditId.split('-').pop();
+                    const isTitle = activeEditId.startsWith('head-') || activeEditId.startsWith('desk-book-title');
+                    const realId = activeEditId.startsWith('desk-book-title') ? activeBookId : idPart;
+                    if(realId) window.dbUpdateSection(realId, isTitle ? 'title' : 'content', isTitle ? el.innerText : el.innerHTML);
                 }
                 activeEditId = null;
             }
-            
             window.showToast("Archive Synchronized");
-            window.renderManual();
+            window.renderUI();
         };
 
-        window.addManualSection = async (type, docType) => {
-            if (!currentUser || activeRole !== 'dm') return;
-            
-            let defaultTitle = "NEW SECTION";
-            if (type === 'subheading') defaultTitle = "NEW ENTRY TITLE";
-            if (type === 'inner-subheading') defaultTitle = "NEW SUB-HEADING";
-            if (type === 'divider') defaultTitle = "";
-
-            const primaryRef = doc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION));
-            const textRef = doc(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION));
-            
-            const batch = writeBatch(db);
-            const baseOrder = manualSections.length ? Math.max(...manualSections.map(s => s.order || 0)) + 1 : 0;
-
-            batch.set(primaryRef, {
-                title: defaultTitle,
-                content: type === 'divider' ? "" : "Inscribe text here...",
-                type: type,
-                docType: docType,
-                order: baseOrder,
-                createdAt: Date.now(),
-                width: 100,
-                visibility: 'public',
-                sharedWith: []
-            });
-
-            // Automatically generate a text block below any new heading so the DM can write in it immediately
-            if (type === 'subheading' || type === 'inner-subheading') {
-                batch.set(textRef, {
-                    title: "TEXT",
-                    content: "Inscribe text here...",
-                    type: 'text',
-                    docType: docType,
-                    order: baseOrder + 1,
-                    createdAt: Date.now() + 1,
-                    width: 100,
-                    visibility: 'public',
-                    sharedWith: []
-                });
-            }
-
-            try {
-                await batch.commit();
-                window.showToast("Archival Entry Added");
-            } catch (err) {
-                console.error("Add section error:", err);
-                window.showToast("Failed to add entry");
-            }
-        };
-
-        window.triggerDelete = (id) => {
-            window.openDelModal("Expunge record completely?", async () => {
-                try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, id));
-                    window.showToast("Section Deleted");
-                } catch(err) {
-                    console.error("Delete error:", err);
-                }
-            });
-        };
-
-        window.setEditing = (id) => { activeEditId = id; };
-        window.clearEditing = () => { activeEditId = null; };
-
-        window.dbUpdateSection = (id, field, value) => {
-            if (activeRole !== 'dm') return;
-            const timerKey = `${id}-${field}`;
-            if (saveTimers[timerKey]) clearTimeout(saveTimers[timerKey]);
-            
-            saveTimers[timerKey] = setTimeout(async () => {
-                try {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, id), {
-                        [field]: value
-                    });
-                } catch (error) {
-                    console.error("Update error:", error);
-                    window.showToast("Sync Error");
-                }
-            }, 800);
-        };
-
-        window.dbUpdateHeader = (field, value) => {
-            if (activeRole !== 'dm') return;
-            if (saveTimers['header']) clearTimeout(saveTimers['header']);
-            saveTimers['header'] = setTimeout(async () => {
-                try {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'loreConfig', 'libraryHeader'), {
-                        [field]: value
-                    }, { merge: true });
-                } catch (error) {
-                    console.error("Header update error:", error);
-                }
-            }, 800);
-        };
-
-        window.handleDragStart = (e, id) => {
-            if (activeRole !== 'dm') return;
-            draggedId = id;
-            e.currentTarget.classList.add('section-dragging');
-        };
-
-        window.handleDragOver = (e) => {
-            if (!draggedId || activeRole !== 'dm') return;
-            e.preventDefault();
-            
-            const rect = e.currentTarget.getBoundingClientRect();
-            const relY = e.clientY - rect.top;
-            const relX = e.clientX - rect.left;
-            
-            e.currentTarget.classList.remove('section-drag-over-top', 'section-drag-over-bottom', 'section-drag-over-left', 'section-drag-over-right');
-            
-            if (relY < rect.height * 0.25) {
-                dropSide = 'top'; e.currentTarget.classList.add('section-drag-over-top');
-            } else if (relY > rect.height * 0.75) {
-                dropSide = 'bottom'; e.currentTarget.classList.add('section-drag-over-bottom');
-            } else if (relX < rect.width * 0.5) {
-                dropSide = 'left'; e.currentTarget.classList.add('section-drag-over-left');
-            } else {
-                dropSide = 'right'; e.currentTarget.classList.add('section-drag-over-right');
-            }
-        };
-
-        window.handleDragLeave = (e) => {
-            e.currentTarget.classList.remove('section-drag-over-top', 'section-drag-over-bottom', 'section-drag-over-left', 'section-drag-over-right');
-        };
-
-        window.handleDrop = async (e, targetId) => {
-            e.preventDefault();
-            e.currentTarget.classList.remove('section-drag-over-top', 'section-drag-over-bottom', 'section-drag-over-left', 'section-drag-over-right', 'section-dragging');
-            
-            if (!draggedId || draggedId === targetId || activeRole !== 'dm') return;
-
-            const sourceIdx = manualSections.findIndex(s => s.id === draggedId);
-            const targetBlock = manualSections.find(s => s.id === targetId);
-            if (sourceIdx === -1 || !targetBlock) return;
-
-            const newSections = [...manualSections];
-            const [moved] = newSections.splice(sourceIdx, 1);
-            
-            let insertIdx = newSections.findIndex(s => s.id === targetId);
-            const batch = writeBatch(db);
-
-            if (dropSide === 'left' || dropSide === 'right') {
-                batch.update(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, moved.id), { width: 48 });
-                batch.update(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, targetBlock.id), { width: 48 });
-                if (dropSide === 'right') insertIdx += 1;
-            } else if (dropSide === 'bottom') {
-                insertIdx += 1;
-            }
-
-            newSections.splice(insertIdx, 0, moved);
-
-            newSections.forEach((sec, i) => {
-                batch.update(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, sec.id), { order: i });
-            });
-
-            try {
-                await batch.commit();
-                window.showToast("Sections Reordered");
-            } catch (err) {
-                console.error("Reorder error:", err);
-            }
-            draggedId = null;
-        };
-
-        window.handleDragEnd = (e) => {
-            e.currentTarget.classList.remove('section-dragging');
-            draggedId = null;
-        };
-
-        window.openUserModal = (sectionId) => {
-            targetSectionForUID = sectionId;
+        // --- DM BINDING LOGIC ---
+        window.openUserModal = (bookId) => {
+            targetSectionForUID = bookId;
             document.getElementById('uid-link-modal')?.classList.remove('hidden');
             const searchInput = document.getElementById('user-search');
             if (searchInput) searchInput.value = '';
@@ -809,22 +925,21 @@
         window.filterDMUsers = (val) => {
             const container = document.getElementById('user-results');
             if (!container) return;
-            
             const search = (val || '').toLowerCase();
             const filtered = allUsers.filter(u => (u.name || '').toLowerCase().includes(search));
             
             container.innerHTML = filtered.map(u => `
-                <div class="flex justify-between items-center p-3 hover:bg-black/5 border-b border-black/5 transition-colors cursor-pointer" onclick="window.assignUIDToSection('${u.uid}')">
+                <div class="flex justify-between items-center p-3 hover:bg-black/20 border-b border-black/50 transition-colors cursor-pointer" onclick="window.assignUIDToBook('${u.uid}')">
                     <div>
-                        <div class="font-bold text-sm text-ink font-heading uppercase">${u.name || 'Unidentified'}</div>
-                        <div class="font-serif text-[10px] text-ink/60 mt-0.5">Player: ${u.owner || 'Unknown'}</div>
+                        <div class="font-bold text-sm text-[var(--gold)] font-heading uppercase">${u.name || 'Unidentified'}</div>
+                        <div class="font-serif text-[10px] text-[var(--parchment)]/60 mt-0.5">Player: ${u.owner || 'Unknown'}</div>
                     </div>
-                    <button class="bg-blood text-white rounded px-3 py-1 text-[9px] font-black uppercase font-heading">Bind</button>
+                    <button class="bg-[var(--blood-ink)] text-[var(--parchment)] border border-[var(--gold)] rounded px-3 py-1 text-[9px] font-black uppercase font-heading">Checkout</button>
                 </div>
-            `).join('') || '<div class="p-6 text-center text-ink/40 text-xs italic font-serif">No matching party members found.</div>';
+            `).join('') || '<div class="p-6 text-center text-[var(--parchment)]/40 text-xs italic font-serif">No matching party members found.</div>';
         };
 
-        window.assignUIDToSection = async (uid) => {
+        window.assignUIDToBook = async (uid) => {
             if (!targetSectionForUID) return;
             try {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, targetSectionForUID), {
@@ -832,198 +947,280 @@
                     visibility: 'personal'
                 });
                 window.closeModal('uid-link-modal');
-                window.showToast("Personal Link Established");
-            } catch (err) {
-                console.error("Bind error:", err);
-            }
+                window.showToast("Volume Checked Out to Character");
+            } catch (err) { console.error("Bind error:", err); }
         };
 
-        window.unbindUIDFromSection = async (sectionId) => {
+        window.unbindUIDFromBook = async (bookId) => {
             try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, sectionId), {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION, bookId), {
                     sharedWith: [],
                     visibility: 'secret' 
                 });
-                window.showToast("Link Broken - Record Secret");
-            } catch (err) {
-                console.error("Unbind error:", err);
-            }
+                window.showToast("Volume Returned - Now Secret");
+            } catch (err) { console.error("Unbind error:", err); }
         };
 
-        window.renderManual = () => {
-            const isDM = activeRole === 'dm';
+        // --- REQUESTS SYSTEM ---
+        window.openRequestModal = () => {
+            document.getElementById('request-modal')?.classList.remove('hidden');
+            document.getElementById('request-text').value = '';
+        };
+
+        window.submitRequest = async () => {
+            const text = document.getElementById('request-text').value.trim();
+            if(!text) { window.showToast("Please write your request."); return; }
             
-            const navList = document.getElementById('nav-list');
-            const container = document.getElementById('manual-sections-container');
-            if (!container || !navList) return;
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'loreRequests'), {
+                    content: text,
+                    requestedByUID: activeAnchorUID || 'Guest',
+                    requestedByName: document.getElementById('user-identity').innerText,
+                    createdAt: Date.now(),
+                    status: 'pending'
+                });
+                window.closeModal('request-modal');
+                window.showToast("The Custodian has received your request.");
+            } catch (err) { console.error("Request error:", err); }
+        };
 
-            let currentHeadingVisibility = 'public';
-            let currentHeadingSharedWith = [];
-            let currentHeadingDocType = 'book';
+        window.viewRequests = () => {
+            document.getElementById('view-requests-modal')?.classList.remove('hidden');
+            const container = document.getElementById('requests-list');
+            
+            if (loreRequests.length === 0) {
+                container.innerHTML = `<div class="text-center italic text-[var(--parchment)]/60 p-6">No pending requests from the party.</div>`;
+                return;
+            }
+            
+            container.innerHTML = loreRequests.map(req => `
+                <div class="bg-[#111] border border-[var(--gold)] p-4 rounded shadow-inner relative">
+                    <div class="flex justify-between items-start mb-2 border-b border-[var(--gold)]/30 pb-2">
+                        <div>
+                            <div class="text-xs font-black uppercase text-[var(--blood-ink)] font-heading tracking-widest">${req.requestedByName}</div>
+                            <div class="text-[10px] text-[var(--parchment)]/60 font-serif">${new Date(req.createdAt).toLocaleString()}</div>
+                        </div>
+                        <button onclick="window.deleteRequest('${req.id}')" class="text-[var(--gold)] hover:bg-[var(--gold)] hover:text-black transition-colors p-1.5 rounded text-[10px]" title="Dismiss Request"><i class="fa-solid fa-check"></i> Dismiss</button>
+                    </div>
+                    <div class="text-sm text-[var(--parchment)] font-serif whitespace-pre-wrap">${req.content}</div>
+                </div>
+            `).join('');
+        };
 
-            const processedSections = manualSections.map(s => {
-                if (s.type === 'subheading') {
-                    currentHeadingVisibility = s.visibility || 'public';
-                    currentHeadingSharedWith = s.sharedWith || [];
-                    currentHeadingDocType = s.docType || 'book';
-                    return { 
-                        ...s, 
-                        effectiveVisibility: s.visibility, 
-                        effectiveSharedWith: s.sharedWith, 
-                        effectiveDocType: s.docType 
-                    };
-                }
-                return { 
-                    ...s, 
-                    effectiveVisibility: currentHeadingVisibility, 
-                    effectiveSharedWith: currentHeadingSharedWith, 
-                    effectiveDocType: currentHeadingDocType 
-                };
-            });
+        window.deleteRequest = async (id) => {
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'loreRequests', id));
+                window.viewRequests(); 
+            } catch(e) { console.error(e); }
+        };
 
-            // Filter sections based on visibility and active Anchor
-            const visibleSections = processedSections.filter(s => {
+        // --- VIEW SWITCHING & RENDERING ---
+        window.openBook = (id) => {
+            activeBookId = id;
+            currentView = 'desk';
+            window.markAsSeen(id);
+            window.renderUI();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+
+        window.closeBook = () => {
+            activeBookId = null;
+            currentView = 'library';
+            window.renderUI();
+        };
+
+        window.renderUI = () => {
+            const isDM = activeRole === 'dm';
+
+            const visibleBooks = structuredLibrary.filter(book => {
                 if (isDM) return true;
-                if (s.effectiveVisibility === 'public') return true;
-                if (s.effectiveVisibility === 'personal') {
-                    if (activeAnchorUID && s.effectiveSharedWith?.includes(activeAnchorUID)) return true;
-                }
+                if (book.visibility === 'public') return true;
+                if (book.visibility === 'personal' && activeAnchorUID && book.sharedWith?.includes(activeAnchorUID)) return true;
                 return false;
             });
 
-            const headerEl = document.getElementById('manual-header');
-            if (headerEl) {
-                headerEl.innerHTML = `
-                    <h1 id="manual-main-title" class="manual-h1 text-5xl font-heading font-black uppercase text-[#7a1b1b] dm-editable outline-none" 
-                        contenteditable="${isDM}" 
-                        onfocus="window.setEditing('manual-main-title')" 
-                        onblur="window.clearEditing(); window.renderManual()" 
-                        oninput="window.dbUpdateHeader('title', this.innerText)">
-                        ${activeEditId === 'manual-main-title' ? manualHeader.title : manualHeader.title}
-                    </h1>
-                    <p id="manual-main-subtitle" class="font-heading font-bold text-sm text-ink/60 mt-4 dm-editable outline-none uppercase tracking-[0.3em]" 
-                        contenteditable="${isDM}" 
-                        onfocus="window.setEditing('manual-main-subtitle')" 
-                        onblur="window.clearEditing(); window.renderManual()" 
-                        oninput="window.dbUpdateHeader('subtitle', this.innerText)">
-                        ${activeEditId === 'manual-main-subtitle' ? manualHeader.subtitle : manualHeader.subtitle}
-                    </p>
-                `;
+            const libView = document.getElementById('library-view');
+            const deskView = document.getElementById('desk-view');
+            
+            if (isDM) {
+                document.getElementById('toolbar-library').classList.toggle('hidden', currentView !== 'library');
+                document.getElementById('toolbar-desk').classList.toggle('hidden', currentView !== 'desk');
+                document.getElementById('dm-toolbar-title').innerText = currentView === 'library' ? "Archival Shelf Tools" : "Inscribe Content Tools";
             }
 
-            navList.innerHTML = visibleSections
-                .filter(s => s.type === 'subheading')
-                .map(s => {
-                    const isNew = (Date.now() - (s.createdAt || 0)) < 86400000; // 24 hours
-                    const hasNotSeen = !seenDocs.includes(s.id);
-                    const showBadge = isNew && hasNotSeen;
-                    const docTypeLabel = (s.effectiveDocType || 'Item').toUpperCase();
+            const actionsContainer = document.getElementById('library-actions-container');
+            if (actionsContainer) {
+                if (!isDM) {
+                    actionsContainer.innerHTML = `<button onclick="window.openRequestModal()" class="arch-btn arch-btn-secondary !text-[10px] !py-2"><i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Lore</button>`;
+                } else {
+                    const pendingCount = loreRequests.length;
+                    actionsContainer.innerHTML = `
+                        <button onclick="window.viewRequests()" class="arch-btn arch-btn-secondary relative !text-[10px] !py-2">
+                            <i class="fa-solid fa-inbox mr-2"></i> Player Requests
+                            ${pendingCount > 0 ? `<span class="absolute -top-2 -right-2 bg-[var(--blood-ink)] text-white text-[9px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-lg animate-pulse">${pendingCount}</span>` : ''}
+                        </button>
+                    `;
+                }
+            }
+
+            if (currentView === 'library') {
+                libView.classList.remove('hidden');
+                deskView.classList.remove('active');
+                
+                document.getElementById('book-count').innerText = visibleBooks.length;
+                
+                const container = document.getElementById('library-shelves-container');
+                container.innerHTML = '';
+                
+                let currentShelfHTML = '<div class="library-shelf">';
+                
+                if (visibleBooks.length === 0) {
+                    currentShelfHTML += `<div class="col-span-full text-center py-10 opacity-40 font-serif italic text-[var(--parchment)] text-sm">The shelves lie bare to your eyes.</div>`;
+                }
+
+                visibleBooks.forEach(book => {
+                    const isNew = (Date.now() - (book.createdAt || 0)) < 86400000;
+                    const hasNotSeen = !seenDocs.includes(book.id);
+                    const showNewBadge = isNew && hasNotSeen;
+                    const isPersonal = book.visibility === 'personal';
+                    const docTypeClass = `type-${book.docType || 'book'}`;
+                    const sharedCharacter = isPersonal ? allUsers.find(u => u.uid === book.sharedWith?.[0]) : null;
+
+                    let dmControls = '';
+                    if (isDM) {
+                        dmControls = `
+                            <div class="book-dm-controls" onclick="event.stopPropagation()">
+                                <select class="text-[9px] bg-[#111] border border-[var(--gold)] rounded text-[var(--gold)] outline-none" onchange="window.dbUpdateSection('${book.id}', 'visibility', this.value)">
+                                    <option value="public" ${book.visibility==='public'?'selected':''}>Public</option>
+                                    <option value="secret" ${book.visibility==='secret'?'selected':''}>Secret</option>
+                                    <option value="personal" ${book.visibility==='personal'?'selected':''}>Bound</option>
+                                </select>
+                                <button onclick="window.openUserModal('${book.id}')" class="text-[9px] bg-blue-900 border border-blue-500 text-white px-1 rounded hover:bg-blue-700" title="Checkout Book"><i class="fa-solid fa-link"></i></button>
+                                <button onclick="window.triggerDelete('${book.id}', true)" class="text-[9px] bg-[var(--blood-ink)] border border-red-500 text-white px-1 rounded hover:bg-red-700" title="Burn Volume"><i class="fa-solid fa-fire"></i></button>
+                            </div>
+                        `;
+                    }
+
+                    let personalBadge = isPersonal ? `<div class="badge-personal">Checked Out</div>` : '';
+                    if(isDM && isPersonal && sharedCharacter) {
+                        personalBadge = `<div class="badge-personal">Bound to ${sharedCharacter.name}</div>`;
+                    }
+
+                    currentShelfHTML += `
+                        <div class="book-item ${docTypeClass} ${isPersonal ? 'is-personal' : ''}" onclick="window.openBook('${book.id}')">
+                            ${showNewBadge ? '<div class="badge-new">NEW</div>' : ''}
+                            ${personalBadge}
+                            <div class="book-cover">
+                                <div class="book-decoration"></div>
+                                <div class="book-title">${book.title}</div>
+                                <div class="book-author">${book.docType || 'Volume'}</div>
+                            </div>
+                            ${dmControls}
+                        </div>
+                    `;
+                });
+                
+                currentShelfHTML += '</div>';
+                container.innerHTML = currentShelfHTML;
+
+            } else if (currentView === 'desk') {
+                libView.classList.add('hidden');
+                deskView.classList.add('active');
+
+                const book = structuredLibrary.find(b => b.id === activeBookId);
+                if (!book) { window.closeBook(); return; }
+
+                const titleContainer = document.getElementById('desk-book-title-container');
+                const isEditingTitle = activeEditBlockId === book.id && activeEditField === 'title';
+                
+                if (isEditingTitle) {
+                    titleContainer.innerHTML = `
+                        <div class="bg-[var(--parchment)] p-4 border-2 border-[var(--gold)] rounded shadow-xl relative z-20 max-w-lg mx-auto mb-4">
+                            <div class="text-[10px] font-bold text-[var(--blood-ink)] uppercase mb-2 font-heading tracking-widest text-left">Editing Volume Title</div>
+                            <input id="edit-input-${book.id}" class="w-full bg-transparent border-b-2 border-[var(--blood-ink)]/50 p-2 text-2xl text-center font-heading text-[var(--ink)] focus:outline-none focus:border-[var(--blood-ink)]" value="${book.title.replace(/"/g, '&quot;')}">
+                            <div class="flex justify-end gap-2 mt-4">
+                                <button onclick="window.cancelEditBlock()" class="px-3 py-1 rounded border border-[var(--ink)] text-[var(--ink)] text-xs font-bold uppercase hover:bg-[var(--ink)] hover:text-[var(--parchment)] transition-colors">Cancel</button>
+                                <button onclick="window.saveBlock('${book.id}', 'title')" class="px-3 py-1 rounded bg-[var(--blood-ink)] text-[var(--parchment)] border border-[var(--gold)] text-xs font-bold uppercase hover:bg-red-800 transition-colors shadow">Save</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    titleContainer.innerHTML = `
+                        <h1 class="desk-title">${book.title}</h1>
+                        ${isDM ? `
+                            <button onclick="window.startEditBlock('${book.id}', 'title')" class="absolute top-1/2 -translate-y-1/2 -right-8 opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--gold)] text-[var(--ink)] p-2 rounded-full hover:bg-yellow-400 shadow-md border border-[var(--ink)]" title="Edit Title">
+                                <i class="fa-solid fa-pencil text-[12px]"></i>
+                            </button>
+                        ` : ''}
+                    `;
+                }
+
+                const metaEl = document.getElementById('desk-book-meta');
+                metaEl.innerText = `${(book.docType || 'Volume').toUpperCase()} • ${book.visibility.toUpperCase()}`;
+                
+                const contentContainer = document.getElementById('desk-content-container');
+                contentContainer.innerHTML = book.blocks.map(b => {
+                    const isEditing = activeEditBlockId === b.id;
+                    let dmBlockControls = '';
                     
+                    if (isDM && !isEditing) {
+                        dmBlockControls = `
+                            <div class="absolute top-0 -right-[45px] flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-all z-10">
+                                <button onclick="window.startEditBlock('${b.id}', '${b.type === 'inner-subheading' ? 'title' : 'content'}')" class="bg-[var(--gold)] text-[var(--ink)] p-2 rounded hover:bg-yellow-400 shadow-md border border-yellow-700" title="Edit Content"><i class="fa-solid fa-pencil text-[10px]"></i></button>
+                                <button onclick="window.triggerDelete('${b.id}', false)" class="bg-[var(--blood-ink)] text-[var(--parchment)] p-2 rounded hover:bg-red-700 shadow-md border border-red-900" title="Delete Block"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+                            </div>
+                        `;
+                    }
+
+                    if (isEditing) {
+                        const fieldToEdit = b.type === 'inner-subheading' ? 'title' : 'content';
+                        const val = fieldToEdit === 'title' ? b.title : b.content;
+                        
+                        return `
+                            <div class="content-block my-6">
+                                <div class="bg-[var(--parchment)] p-5 border-2 border-[var(--gold)] rounded shadow-2xl relative z-20">
+                                    <div class="text-[10px] font-bold text-[var(--blood-ink)] uppercase mb-3 font-heading tracking-widest flex items-center gap-2"><i class="fa-solid fa-pen-nib"></i> Editing Archival Block</div>
+                                    ${fieldToEdit === 'title' 
+                                        ? `<input id="edit-input-${b.id}" class="w-full bg-transparent border-b-2 border-[var(--blood-ink)]/50 p-2 text-xl font-heading text-[var(--ink)] focus:outline-none focus:border-[var(--blood-ink)]" value="${val.replace(/"/g, '&quot;')}">`
+                                        : `<textarea id="edit-input-${b.id}" class="w-full h-48 bg-[var(--parchment-dark)]/30 border-2 border-[var(--blood-ink)]/20 p-4 text-[var(--ink)] font-serif text-lg focus:outline-none focus:border-[var(--blood-ink)] focus:bg-[var(--parchment)] rounded resize-y shadow-inner">${val}</textarea>`
+                                    }
+                                    <div class="flex justify-end gap-3 mt-4">
+                                        <button onclick="window.cancelEditBlock()" class="px-5 py-2 rounded border border-[var(--ink)] text-[var(--ink)] text-xs font-bold uppercase hover:bg-[var(--ink)] hover:text-[var(--parchment)] transition-colors">Cancel</button>
+                                        <button onclick="window.saveBlock('${b.id}', '${fieldToEdit}')" class="px-5 py-2 rounded bg-[var(--blood-ink)] text-[var(--parchment)] border border-[var(--gold)] text-xs font-bold uppercase hover:bg-red-800 transition-colors shadow-md">Seal Ink</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    let innerHTML = '';
+                    if (b.type === 'inner-subheading') {
+                        innerHTML = `<h3 class="manual-h3">${b.title}</h3>`;
+                    } else if (b.type === 'divider') {
+                        innerHTML = `<div class="manual-divider"></div>`;
+                    } else if (b.type === 'text') {
+                        innerHTML = `<div class="manual-p">${b.content}</div>`;
+                    } else if (b.type === 'textbook') {
+                        innerHTML = `
+                            <div class="bg-[rgba(255,255,255,0.6)] border-t-4 border-[var(--leather)] p-6 rounded shadow-inner my-6 relative">
+                                <div class="absolute -top-[14px] left-4 bg-[var(--leather)] text-[var(--gold)] px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded shadow font-heading border border-[var(--gold)]">Scholar's Note</div>
+                                <div class="manual-p text-[var(--ink)] font-serif !mb-0">${b.content}</div>
+                            </div>`;
+                    } else if (b.type === 'note') {
+                        innerHTML = `
+                            <div class="bg-[rgba(155,17,30,0.08)] border-l-4 border-[var(--blood-ink)] p-5 rounded shadow-sm my-6 italic">
+                                <div class="manual-p !mb-0 text-[#3e2723]">${b.content}</div>
+                            </div>`;
+                    }
+
                     return `
-                        <div class="shelf-item ${s.effectiveDocType || 'book'}" onclick="window.markAsSeen('${s.id}'); const el=document.getElementById('section-${s.id}'); if(el) el.scrollIntoView({behavior:'smooth'}); document.querySelector('.manual-nav').classList.remove('nav-open');">
-                            ${showBadge ? '<span class="new-badge">NEW</span>' : ''}
-                            ${s.effectiveVisibility === 'personal' ? '<span class="personal-badge">Personal</span>' : ''}
-                            <span class="opacity-60 pr-2">${docTypeLabel}:</span> ${s.title}
+                        <div class="content-block group">
+                            ${dmBlockControls}
+                            ${innerHTML}
                         </div>
                     `;
                 }).join('');
-
-            container.innerHTML = visibleSections.map(s => {
-                const hId = `head-${s.id}`;
-                const cId = `content-${s.id}`;
-                const isHeading = s.type === 'subheading';
-                const sharedCharacter = allUsers.find(u => u.uid === s.effectiveSharedWith?.[0]);
-                
-                const customStyle = `width: calc(${s.width ?? 100}% - 16px); margin: 8px; flex-shrink: 0;`;
-
-                let dmControlsHTML = '';
-                if (isDM) {
-                    dmControlsHTML = `
-                        <div class="bg-[rgba(255,255,255,0.6)] border border-gold p-2 rounded flex flex-wrap items-center gap-4 mb-2 shadow-inner">
-                            <div class="drag-handle cursor-grab text-gold hover:text-blood px-2" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></div>
-                            
-                            <div class="flex flex-col gap-1">
-                                <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Width</span>
-                                <input type="range" class="w-24 accent-blood" min="20" max="100" step="5" value="${s.width ?? 100}" 
-                                    oninput="window.dbUpdateSection('${s.id}', 'width', parseInt(this.value))">
-                            </div>
-                            
-                            ${isHeading ? `
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Access Level</span>
-                                    <select class="text-[10px] font-bold bg-white/50 border border-gold rounded p-1 outline-none font-serif text-ink" 
-                                        onchange="window.dbUpdateSection('${s.id}', 'visibility', this.value)">
-                                        <option value="public" ${s.visibility==='public'?'selected':''}>Public (All)</option>
-                                        <option value="secret" ${s.visibility==='secret'?'selected':''}>Secret (Hidden)</option>
-                                        <option value="personal" ${s.visibility==='personal'?'selected':''}>Personal (Bound)</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="flex flex-col gap-1">
-                                    <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Bind Character</span>
-                                    <div class="flex items-center gap-1">
-                                        <button class="bg-black/80 hover:bg-black text-gold border border-gold px-2 py-1 rounded text-[9px] font-bold transition-colors font-heading uppercase" onclick="window.openUserModal('${s.id}')">
-                                            ${sharedCharacter ? sharedCharacter.name : 'Select'}
-                                        </button>
-                                        ${sharedCharacter ? `<button onclick="window.unbindUIDFromSection('${s.id}')" class="text-blood hover:text-red-900 text-lg leading-none ml-1" title="Unbind">&times;</button>` : ''}
-                                    </div>
-                                </div>
-                            ` : `
-                                <div class="flex flex-col gap-1 opacity-50">
-                                    <span class="text-[8px] font-black uppercase text-blood font-heading tracking-widest">Inherited</span>
-                                    <div class="text-[10px] font-bold uppercase font-serif text-ink">${s.effectiveVisibility}</div>
-                                </div>
-                            `}
-                            
-                            <button onclick="window.triggerDelete('${s.id}')" class="ml-auto text-blood hover:bg-blood hover:text-parchment w-6 h-6 rounded flex items-center justify-center transition-colors border border-transparent hover:border-blood" title="Delete Block">
-                                <i class="fa-solid fa-trash-can text-[10px]"></i>
-                            </button>
-                        </div>
-                    `;
-                }
-
-                let contentHTML = '';
-                
-                if (s.type === 'subheading') {
-                    contentHTML += `<h2 id="${hId}" class="manual-h2 dm-editable outline-none mt-8" contenteditable="${isDM}" onfocus="window.setEditing('${hId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'title', this.innerText)">${activeEditId === hId ? s.title : s.title}</h2>`;
-                } else if (s.type === 'inner-subheading') {
-                    contentHTML += `<h3 id="${hId}" class="manual-h3 dm-editable outline-none mt-4" contenteditable="${isDM}" onfocus="window.setEditing('${hId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'title', this.innerText)">${activeEditId === hId ? s.title : s.title}</h3>`;
-                } else if (s.type === 'divider') {
-                    contentHTML += `<div class="manual-divider"></div>`;
-                }
-
-                if (s.type === 'text') {
-                    contentHTML += `<div id="${cId}" class="manual-p dm-editable outline-none" contenteditable="${isDM}" onfocus="window.setEditing('${cId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>`;
-                } else if (s.type === 'textbook') {
-                    contentHTML += `
-                        <div class="bg-[rgba(255,255,255,0.6)] border-t-4 border-[#1a110b] p-6 rounded shadow-inner my-4 relative">
-                            <div class="absolute -top-[14px] left-4 bg-[#1a110b] text-gold px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded shadow font-heading border border-gold">Scholar's Note</div>
-                            <div id="${cId}" class="manual-p dm-editable outline-none text-ink font-serif" contenteditable="${isDM}" onfocus="window.setEditing('${cId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>
-                        </div>`;
-                } else if (s.type === 'note') {
-                    contentHTML += `
-                        <div class="bg-[rgba(122,27,27,0.05)] border-l-4 border-blood p-5 rounded shadow-sm my-4 italic">
-                            <div id="${cId}" class="manual-p dm-editable outline-none !mb-0 text-[#3e2723]" contenteditable="${isDM}" onfocus="window.setEditing('${cId}')" onblur="window.clearEditing(); window.renderManual()" oninput="window.dbUpdateSection('${s.id}', 'content', this.innerHTML)">${activeEditId === cId ? s.content : s.content}</div>
-                        </div>`;
-                }
-
-                return `
-                    <section id="section-${s.id}" 
-                        class="relative transition-all rounded ${isDM ? 'hover:bg-white/30 p-2' : ''}" 
-                        draggable="${isDM}" 
-                        ondragstart="window.handleDragStart(event, '${s.id}')" 
-                        ondragover="window.handleDragOver(event)" 
-                        ondragleave="window.handleDragLeave(event)" 
-                        ondrop="window.handleDrop(event, '${s.id}')" 
-                        ondragend="window.handleDragEnd(event)"
-                        style="${customStyle}">
-                        
-                        ${dmControlsHTML}
-                        ${contentHTML}
-                        
-                    </section>
-                `;
-            }).join('');
+            }
         };
 
         const confirmBtn = document.getElementById('confirm-del-btn');
@@ -1037,22 +1234,11 @@
         // --- AUTH & INIT ---
         onAuthStateChanged(auth, async (u) => {
             if (!u) {
-                try {
-                    const initAuth = async () => {
-                        try {
-                            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                                await signInWithCustomToken(auth, __initial_auth_token);
-                            } else {
-                                await signInAnonymously(auth);
-                            }
-                        } catch (e) {
-                            await signInAnonymously(auth);
-                        }
-                    };
-                    await initAuth();
-                } catch(e) {
-                    const initialLoading = document.getElementById('initial-loading');
-                    if(initialLoading) initialLoading.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-6xl text-blood mb-6"></i><h2 class="font-heading text-2xl text-blood">Authentication Required</h2>`;
+                try { window.location.href = "index.html"; } catch(e) {
+                    const consoleEl = document.getElementById('door-center-console');
+                    if (consoleEl) {
+                        consoleEl.innerHTML = `<div class="flex flex-col items-center bg-black/80 p-8 rounded border-2 border-[var(--blood-ink)]"><i class="fa-solid fa-triangle-exclamation text-6xl text-[var(--blood-ink)] mb-6"></i><h2 class="font-heading text-2xl text-[var(--blood-ink)] mb-4">Authentication Required</h2><button onclick="window.location.href='index.html'" class="arch-btn px-6 py-2 rounded text-xs shadow-lg mt-2">Return to Login</button></div>`;
+                    }
                 }
                 return;
             }
@@ -1064,6 +1250,9 @@
                     const userDoc = await getDoc(doc(db, 'users', u.uid));
                     if (userDoc.exists()) {
                         currentUser = { uid: u.uid, ...userDoc.data() };
+                        if (!currentUser.username) {
+                            currentUser.username = u.displayName || 'Traveler';
+                        }
                     } else {
                         currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
                     }
@@ -1072,30 +1261,37 @@
                 activeRole = currentUser.role || 'player';
 
                 if (appId !== "demo_campaign") {
-                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                    if (campDoc.exists() && campDoc.data().name) {
-                        const titleEls = [document.getElementById('main-campaign-title'), document.getElementById('mobile-campaign-title'), document.getElementById('sidebar-campaign-title')];
-                        titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
-                        document.title = `${campDoc.data().name} - Custodian's Athenaeum`;
+                    try {
+                        const campDoc = await getDoc(doc(db, 'campaigns', appId));
+                        if (campDoc.exists() && campDoc.data().name) {
+                            const titleEls = [document.getElementById('main-campaign-title')];
+                            titleEls.forEach(el => { if(el) el.innerText = campDoc.data().name; });
+                            document.title = `${campDoc.data().name} - Custodian's Athenaeum`;
+                        }
+                    } catch (err) {
+                        console.warn("Could not read campaign info:", err);
                     }
                 }
 
                 document.getElementById('user-identity').innerText = currentUser.username;
                 window.updateRoleUI();
 
-                const loadingEl = document.getElementById('initial-loading');
-                if (loadingEl) loadingEl.classList.add('hidden');
-                
-                const contentPane = document.getElementById('content-pane');
-                if(contentPane) contentPane.classList.remove('hidden-view');
+                // Trigger door readiness
+                const authText = document.getElementById('auth-loading-text');
+                const openBtn = document.getElementById('open-doors-btn');
+                if (authText && openBtn) {
+                    authText.classList.add('hidden');
+                    openBtn.classList.remove('hidden');
+                }
 
                 setupListeners();
 
             } catch (error) {
                 console.error(error);
-                const loadingEl = document.getElementById('initial-loading');
-                if (loadingEl) {
-                    loadingEl.innerHTML = `<h2 class="font-heading text-2xl text-[#7a1b1b]">Database Access Denied</h2>`;
+                const loadingText = document.getElementById('auth-loading-text');
+                if (loadingText) {
+                    loadingText.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-[var(--blood-ink)] text-2xl mr-2"></i> Database Access Denied`;
+                    loadingText.classList.remove('animate-pulse');
                 }
             }
         });
