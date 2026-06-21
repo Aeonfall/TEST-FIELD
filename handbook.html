@@ -31,7 +31,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -140,6 +140,7 @@
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
                             <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
+                            <i id="settings-gear" class="fa-solid fa-gear text-gray-500 hover:text-gold cursor-pointer hidden ml-1" onclick="document.getElementById('terminology-modal').classList.remove('hidden')" title="Campaign Terminology"></i>
                         </div>
                     </div>
                 </div>
@@ -150,12 +151,12 @@
                     </div>
 
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
-                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
-                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
-                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
-                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
-                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link active">Handbook</a>
-                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
+                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link" id="nav-party">Party</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link" id="nav-npcs">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link" id="nav-beasts">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link" id="nav-backpack">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link active" id="nav-handbook">Handbook</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link" id="nav-graveyard">Graveyard</a>
                     </nav>
                 </div>
             </header>
@@ -194,6 +195,26 @@
                         <button onmousedown="event.preventDefault(); window.forceSync()" class="fantasy-btn px-4 py-1.5 rounded text-[9px] font-bold">SYNC</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TERMINOLOGY MODAL -->
+    <div id="terminology-modal" class="modal-overlay hidden">
+        <div class="parchment-paper p-8 max-w-md w-full border-2 border-gold shadow-2xl">
+            <h3 class="font-heading font-black text-2xl text-ink uppercase tracking-widest mb-4 border-b border-gold pb-2">Campaign Terminology</h3>
+            <p class="font-serif italic text-ink mb-6 text-sm">Rename the core pillars of your world. (Leave blank for default)</p>
+            <div class="flex flex-col gap-4 font-heading text-xs">
+                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Party:</label><input id="term-input-party" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Party"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">NPCs:</label><input id="term-input-npcs" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="NPCs"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Bestiary:</label><input id="term-input-beasts" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Bestiary"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Backpack:</label><input id="term-input-backpack" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Backpack"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Handbook:</label><input id="term-input-handbook" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Handbook"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Graveyard:</label><input id="term-input-graveyard" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Graveyard"></div>
+            </div>
+            <div class="flex flex-col gap-3 font-heading mt-8">
+                <button onclick="window.saveTerminology()" class="w-full bg-ink text-parchment py-3 rounded border border-gold font-bold uppercase text-xs shadow transition-colors hover:bg-black">Save Changes</button>
+                <button onclick="document.getElementById('terminology-modal').classList.add('hidden')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
             </div>
         </div>
     </div>
@@ -263,15 +284,10 @@
             else { try { window.location.href = "campaigns.html"; } catch(e) {} }
         }
 
-        // Determine which specific handbook page we are on based on the filename!
-        // E.g., "howtoplay.html" becomes "howtoplay"
         let pageId = window.location.pathname.split('/').pop().replace('.html', '');
         if (!pageId || pageId === "" || pageId === "index") pageId = "handbook";
-        
-        // This is the specific database folder for this exact HTML file
         const DB_COLLECTION = `manualSections_${pageId}`;
 
-        // The list of all library pages to build the sidebar navigation
         const libraryPages = [
             { id: 'handbook', title: 'Main Index' },
             { id: 'howtoplay', title: 'How to Play' },
@@ -285,7 +301,6 @@
             { id: 'sessionlogs', title: 'Session Logs' }
         ];
 
-        // Setup the Sidebar
         function renderSidebar() {
             const nav = document.getElementById('library-nav');
             const currentPageTitle = libraryPages.find(p => p.id === pageId)?.title || "Handbook";
@@ -293,7 +308,6 @@
 
             nav.innerHTML = libraryPages.map(page => {
                 const isActive = page.id === pageId;
-                // If it's the main handbook, point to handbook.html, otherwise point to their specific names
                 const targetUrl = `${page.id}.html?id=${appId}`;
                 return `<a href="${targetUrl}" class="sidebar-link ${isActive ? 'active-page' : ''}">${page.title}</a>`;
             }).join('');
@@ -304,15 +318,8 @@
         let activeRole = 'player';
         
         window.aeonState = {
-            sections: [],
-            activeEditId: null,
-            lastActiveId: null,
-            lockedSelection: null,
-            saveTimer: null,
-            draggedId: null,
-            dropSide: null,
-            isInteracting: false,
-            activeSlides: {}
+            sections: [], activeEditId: null, lastActiveId: null, lockedSelection: null,
+            saveTimer: null, draggedId: null, dropSide: null, isInteracting: false, activeSlides: {}
         };
 
         window.updateRoleUI = () => {
@@ -320,7 +327,52 @@
             document.body.classList.toggle('dm-mode-active', isDM);
             const controls = document.getElementById('dm-global-controls');
             if (controls) controls.classList.toggle('dm-active', isDM);
+            const gear = document.getElementById('settings-gear');
+            if (gear) {
+                if (isDM) gear.classList.remove('hidden');
+                else gear.classList.add('hidden');
+            }
             window.renderManual();
+        };
+
+        // --- TERMINOLOGY METHODS ---
+        window.saveTerminology = async () => {
+            if (activeRole !== 'dm') return;
+            const terms = {
+                party: document.getElementById('term-input-party').value.trim() || 'Party',
+                npcs: document.getElementById('term-input-npcs').value.trim() || 'NPCs',
+                beasts: document.getElementById('term-input-beasts').value.trim() || 'Bestiary',
+                backpack: document.getElementById('term-input-backpack').value.trim() || 'Backpack',
+                handbook: document.getElementById('term-input-handbook').value.trim() || 'Handbook',
+                graveyard: document.getElementById('term-input-graveyard').value.trim() || 'Graveyard'
+            };
+            try {
+                await updateDoc(doc(db, 'campaigns', appId), { terminology: terms });
+                window.showToast("Terminology Synced");
+                document.getElementById('terminology-modal').classList.add('hidden');
+            } catch(e) {
+                console.error(e);
+                window.showToast("Sync Failed");
+            }
+        };
+
+        window.applyTerminology = (terms) => {
+            if(!terms) return;
+            if(terms.party) { const el = document.getElementById('nav-party'); if(el) el.innerText = terms.party; }
+            if(terms.npcs) { const el = document.getElementById('nav-npcs'); if(el) el.innerText = terms.npcs; }
+            if(terms.beasts) { const el = document.getElementById('nav-beasts'); if(el) el.innerText = terms.beasts; }
+            if(terms.backpack) { const el = document.getElementById('nav-backpack'); if(el) el.innerText = terms.backpack; }
+            if(terms.handbook) { const el = document.getElementById('nav-handbook'); if(el) el.innerText = terms.handbook; }
+            if(terms.graveyard) { const el = document.getElementById('nav-graveyard'); if(el) el.innerText = terms.graveyard; }
+            
+            if(document.getElementById('term-input-party')) {
+                document.getElementById('term-input-party').value = terms.party !== 'Party' ? terms.party : '';
+                document.getElementById('term-input-npcs').value = terms.npcs !== 'NPCs' ? terms.npcs : '';
+                document.getElementById('term-input-beasts').value = terms.beasts !== 'Bestiary' ? terms.beasts : '';
+                document.getElementById('term-input-backpack').value = terms.backpack !== 'Backpack' ? terms.backpack : '';
+                document.getElementById('term-input-handbook').value = terms.handbook !== 'Handbook' ? terms.handbook : '';
+                document.getElementById('term-input-graveyard').value = terms.graveyard !== 'Graveyard' ? terms.graveyard : '';
+            }
         };
 
         window.handlePaste = (e) => {
@@ -622,27 +674,27 @@
 
                 activeRole = currentUser.role || 'player';
 
-                // Fetch campaign name
+                // Fetch campaign name & terminology using live listener
                 if (appId !== "demo_campaign") {
-                    const campDoc = await getDoc(doc(db, 'campaigns', appId));
-                    if (campDoc.exists()) {
-                        document.getElementById('main-campaign-title').innerText = campDoc.data().name;
-                        document.title = `${campDoc.data().name} - Handbook`;
-                    }
+                    onSnapshot(doc(db, 'campaigns', appId), (campDoc) => {
+                        if (campDoc.exists()) {
+                            const data = campDoc.data();
+                            document.getElementById('main-campaign-title').innerText = data.name || "Chronicles";
+                            document.title = `${data.name || "Chronicles"} - Handbook`;
+                            if(data.terminology) window.applyTerminology(data.terminology);
+                        }
+                    }, err => console.error("Campaign Sync Error:", err));
                 }
 
                 document.getElementById('user-display-name').innerText = currentUser.username;
                 
-                // Toggle DM Features & UI
                 window.updateRoleUI();
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
                 
-                // Render the sidebar based on filename
                 renderSidebar();
 
-                // Listen for manual sections for THIS specific page
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', DB_COLLECTION), snap => {
                     window.aeonState.sections = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (a.order||0) - (b.order||0));
                     if (!window.aeonState.activeEditId && !window.aeonState.isInteracting) {
