@@ -121,6 +121,8 @@
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
+                            <!-- GEAR ICON FOR DM TERMINOLOGY -->
+                            <button id="btn-campaign-settings" onclick="window.openCampaignSettings()" class="hidden ml-2 text-gray-400 hover:text-gold transition-colors" title="Campaign Terminology"><i class="fa-solid fa-gear"></i></button>
                         </div>
                     </div>
                 </div>
@@ -169,6 +171,49 @@
             <!-- SCRIPTS GRID -->
             <div id="scripts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Cards populate here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CAMPAIGN TERMINOLOGY MODAL (DM ONLY) -->
+    <div id="campaign-settings-modal" class="modal-overlay hidden z-[970]">
+        <div class="modal-container max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide">
+            <h2 class="font-heading text-2xl font-black text-blood uppercase tracking-widest mb-2 border-b-2 border-gold pb-2 text-center">Campaign Terminology</h2>
+            <p class="text-xs font-serif text-ink italic mb-6 text-center">Rename the core pillars of your world. These names will update across all ledgers and navigation links.</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-heading text-sm font-bold text-ink uppercase mb-3 border-b border-gray-300 pb-1">Navigation Links</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div><label class="tiny-label">Party</label><input type="text" id="term-nav-party" class="form-input" placeholder="Party"></div>
+                        <div><label class="tiny-label">NPCs</label><input type="text" id="term-nav-npcs" class="form-input" placeholder="NPCs"></div>
+                        <div><label class="tiny-label">Bestiary</label><input type="text" id="term-nav-beasts" class="form-input" placeholder="Bestiary"></div>
+                        <div><label class="tiny-label">Backpack</label><input type="text" id="term-nav-backpack" class="form-input" placeholder="Backpack"></div>
+                        <div><label class="tiny-label">Handbook</label><input type="text" id="term-nav-handbook" class="form-input" placeholder="Handbook"></div>
+                        <div><label class="tiny-label">Graveyard</label><input type="text" id="term-nav-graveyard" class="form-input" placeholder="Graveyard"></div>
+                        <div><label class="tiny-label">Script Codex</label><input type="text" id="term-book-scriptcodex" class="form-input" placeholder="Script Codex"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-heading text-sm font-bold text-ink uppercase mb-3 border-b border-gray-300 pb-1">Vocations (Classes)</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div><label class="tiny-label">Heartbound</label><input type="text" id="term-class-heartbound" class="form-input" placeholder="Heartbound"></div>
+                        <div><label class="tiny-label">Nomad</label><input type="text" id="term-class-nomad" class="form-input" placeholder="Nomad"></div>
+                        <div><label class="tiny-label">Warden</label><input type="text" id="term-class-warden" class="form-input" placeholder="Wilderness Warden"></div>
+                        <div><label class="tiny-label">Chronicler</label><input type="text" id="term-class-chronicler" class="form-input" placeholder="Chronicler"></div>
+                        <div><label class="tiny-label">Orator</label><input type="text" id="term-class-orator" class="form-input" placeholder="Orator"></div>
+                        <div><label class="tiny-label">Scriptweaver</label><input type="text" id="term-class-scriptweaver" class="form-input" placeholder="Scriptweaver"></div>
+                        <div><label class="tiny-label">War-Touched</label><input type="text" id="term-class-wartouched" class="form-input" placeholder="War-Touched"></div>
+                        <div><label class="tiny-label">Archivist</label><input type="text" id="term-class-archivist" class="form-input" placeholder="Archivist"></div>
+                        <div><label class="tiny-label">Fabricator</label><input type="text" id="term-class-fabricator" class="form-input" placeholder="Fabricator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 font-heading mt-8 pt-4 border-t border-gold">
+                <button onclick="window.closeCampaignSettings()" class="text-xs font-bold text-gray-600 uppercase tracking-widest hover:text-ink px-4">Cancel</button>
+                <button onclick="window.saveCampaignSettings()" class="fantasy-btn px-6 py-2 rounded text-xs shadow-lg">Save Terminology</button>
             </div>
         </div>
     </div>
@@ -651,6 +696,77 @@ Every Script belongs to a **Tier** from 0 to 9. A Script's Tier represents the c
             }
         };
 
+        // --- STREAMING_CHUNK:Campaign Terminology (DM Only)... ---
+        window.openCampaignSettings = () => {
+            if (activeRole !== 'dm') return;
+            const terms = campaignSettings?.terms || {};
+            const safeSetVal = (id, val, defaultVal) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val || defaultVal || '';
+            };
+            
+            safeSetVal('term-nav-party', terms.nav_party, 'Party');
+            safeSetVal('term-nav-npcs', terms.nav_npcs, 'NPCs');
+            safeSetVal('term-nav-beasts', terms.nav_beasts, 'Bestiary');
+            safeSetVal('term-nav-backpack', terms.nav_backpack, 'Backpack');
+            safeSetVal('term-nav-handbook', terms.nav_handbook, 'Handbook');
+            safeSetVal('term-nav-graveyard', terms.nav_graveyard, 'Graveyard');
+            safeSetVal('term-book-scriptcodex', terms.book_scriptcodex, 'Script Codex');
+            
+            safeSetVal('term-class-heartbound', terms.class_heartbound, 'Heartbound');
+            safeSetVal('term-class-nomad', terms.class_nomad, 'Nomad');
+            safeSetVal('term-class-warden', terms.class_warden, 'Wilderness Warden');
+            safeSetVal('term-class-chronicler', terms.class_chronicler, 'Chronicler');
+            safeSetVal('term-class-orator', terms.class_orator, 'Orator');
+            safeSetVal('term-class-scriptweaver', terms.class_scriptweaver, 'Scriptweaver');
+            safeSetVal('term-class-wartouched', terms.class_wartouched, 'War-Touched');
+            safeSetVal('term-class-archivist', terms.class_archivist, 'Archivist');
+            safeSetVal('term-class-fabricator', terms.class_fabricator, 'Fabricator');
+
+            document.getElementById('campaign-settings-modal').classList.remove('hidden');
+        };
+
+        window.closeCampaignSettings = () => {
+            document.getElementById('campaign-settings-modal').classList.add('hidden');
+        };
+
+        window.saveCampaignSettings = async () => {
+            if (activeRole !== 'dm') return;
+            const getVal = (id) => document.getElementById(id).value.trim();
+            
+            const newTerms = {
+                nav_party: getVal('term-nav-party') || 'Party',
+                nav_npcs: getVal('term-nav-npcs') || 'NPCs',
+                nav_beasts: getVal('term-nav-beasts') || 'Bestiary',
+                nav_backpack: getVal('term-nav-backpack') || 'Backpack',
+                nav_handbook: getVal('term-nav-handbook') || 'Handbook',
+                nav_graveyard: getVal('term-nav-graveyard') || 'Graveyard',
+                book_scriptcodex: getVal('term-book-scriptcodex') || 'Script Codex',
+                
+                class_heartbound: getVal('term-class-heartbound') || 'Heartbound',
+                class_nomad: getVal('term-class-nomad') || 'Nomad',
+                class_warden: getVal('term-class-warden') || 'Wilderness Warden',
+                class_chronicler: getVal('term-class-chronicler') || 'Chronicler',
+                class_orator: getVal('term-class-orator') || 'Orator',
+                class_scriptweaver: getVal('term-class-scriptweaver') || 'Scriptweaver',
+                class_wartouched: getVal('term-class-wartouched') || 'War-Touched',
+                class_archivist: getVal('term-class-archivist') || 'Archivist',
+                class_fabricator: getVal('term-class-fabricator') || 'Fabricator'
+            };
+
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), {
+                    terms: newTerms,
+                    updatedAt: Date.now()
+                }, { merge: true });
+                window.showToast("Campaign terminology updated.");
+                window.closeCampaignSettings();
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving terminology.");
+            }
+        };
+
         window.renderScripts = () => {
             const isDM = activeRole === 'dm';
             const grid = document.getElementById('scripts-grid');
@@ -996,6 +1112,7 @@ Every Script belongs to a **Tier** from 0 to 9. A Script's Tier represents the c
                 const isDM = activeRole === 'dm';
                 document.getElementById('btn-create-script')?.classList.toggle('hidden', !isDM);
                 document.getElementById('btn-edit-definitions')?.classList.toggle('hidden', !isDM);
+                document.getElementById('btn-campaign-settings')?.classList.toggle('hidden', !isDM);
 
                 document.getElementById('initial-loading').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
