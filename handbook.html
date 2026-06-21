@@ -31,7 +31,7 @@
 
     <style>
         body { font-family: 'Lora', serif; background-color: #1a110b; color: #2c1e16; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%232c1e16' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         
         .dashboard-bg { background-color: transparent; }
@@ -114,6 +114,11 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .hidden-view { display: none !important; }
+        
+        /* Custom scrollbar for modal */
+        .modal-scroll::-webkit-scrollbar { width: 6px; }
+        .modal-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .modal-scroll::-webkit-scrollbar-thumb { background: #c5a059; border-radius: 4px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -140,7 +145,7 @@
                         <div class="bg-black bg-opacity-60 border border-gray-700 px-3 py-1 rounded flex items-center gap-2 shadow-inner">
                             <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
                             <span id="user-display-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest font-heading">Guest</span>
-                            <i id="settings-gear" class="fa-solid fa-gear text-gray-500 hover:text-gold cursor-pointer hidden ml-1" onclick="document.getElementById('terminology-modal').classList.remove('hidden')" title="Campaign Terminology"></i>
+                            <i id="settings-gear" class="fa-solid fa-gear text-gray-500 hover:text-gold cursor-pointer hidden ml-1" onclick="document.getElementById('terminology-modal').classList.remove('hidden')" title="Archive Terminology"></i>
                         </div>
                     </div>
                 </div>
@@ -151,12 +156,12 @@
                     </div>
 
                     <nav id="main-nav" class="flex gap-4 md:gap-6 items-center w-full overflow-x-auto scrollbar-hide pb-2 px-2 md:px-0 md:pb-0 justify-start md:justify-end mt-2">
-                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link" id="nav-party">Party</a>
-                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link" id="nav-npcs">NPCs</a>
-                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link" id="nav-beasts">Bestiary</a>
-                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link" id="nav-backpack">Backpack</a>
-                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link active" id="nav-handbook">Handbook</a>
-                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link" id="nav-graveyard">Graveyard</a>
+                        <a href="#" onclick="window.routeTo('characters.html'); return false;" class="nav-link">Party</a>
+                        <a href="#" onclick="window.routeTo('npcs.html'); return false;" class="nav-link">NPCs</a>
+                        <a href="#" onclick="window.routeTo('beasts.html'); return false;" class="nav-link">Bestiary</a>
+                        <a href="#" onclick="window.routeTo('backpack.html'); return false;" class="nav-link">Backpack</a>
+                        <a href="#" onclick="window.routeTo('handbook.html'); return false;" class="nav-link active">Handbook</a>
+                        <a href="#" onclick="window.routeTo('graveyard.html'); return false;" class="nav-link">Graveyard</a>
                     </nav>
                 </div>
             </header>
@@ -202,17 +207,23 @@
     <!-- TERMINOLOGY MODAL -->
     <div id="terminology-modal" class="modal-overlay hidden">
         <div class="parchment-paper p-8 max-w-md w-full border-2 border-gold shadow-2xl">
-            <h3 class="font-heading font-black text-2xl text-ink uppercase tracking-widest mb-4 border-b border-gold pb-2">Campaign Terminology</h3>
-            <p class="font-serif italic text-ink mb-6 text-sm">Rename the core pillars of your world. (Leave blank for default)</p>
-            <div class="flex flex-col gap-4 font-heading text-xs">
-                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Party:</label><input id="term-input-party" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Party"></div>
-                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">NPCs:</label><input id="term-input-npcs" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="NPCs"></div>
-                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Bestiary:</label><input id="term-input-beasts" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Bestiary"></div>
-                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Backpack:</label><input id="term-input-backpack" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Backpack"></div>
-                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Handbook:</label><input id="term-input-handbook" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Handbook"></div>
-                <div class="flex justify-between items-center"><label class="font-bold w-1/3 text-ink">Graveyard:</label><input id="term-input-graveyard" class="w-2/3 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Graveyard"></div>
+            <h3 class="font-heading font-black text-2xl text-ink uppercase tracking-widest mb-4 border-b border-gold pb-2">Archive Terminology</h3>
+            <p class="font-serif italic text-ink mb-6 text-sm">Rename the chapters of your Archives. (Leave blank for default)</p>
+            
+            <div class="flex flex-col gap-4 font-heading text-xs max-h-[50vh] overflow-y-auto pr-2 modal-scroll">
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Main Index:</label><input id="term-input-handbook" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Main Index"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">How to Play:</label><input id="term-input-howtoplay" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="How to Play"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Lineages:</label><input id="term-input-lineages" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Lineages"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Backgrounds:</label><input id="term-input-backgrounds" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Backgrounds"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Vocations:</label><input id="term-input-vocations" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Vocations"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Landmarks:</label><input id="term-input-landmarks" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Landmarks"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Script Codex:</label><input id="term-input-script_codex" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Script Codex"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Gear & Artifacts:</label><input id="term-input-gear_artifacts" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Gear & Artifacts"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">World Lore:</label><input id="term-input-worldlore" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="World Lore"></div>
+                <div class="flex justify-between items-center"><label class="font-bold w-2/5 text-ink">Session Logs:</label><input id="term-input-sessionlogs" class="w-3/5 bg-transparent border-b border-gray-400 outline-none p-1 text-ink placeholder-gray-500" placeholder="Session Logs"></div>
             </div>
-            <div class="flex flex-col gap-3 font-heading mt-8">
+
+            <div class="flex flex-col gap-3 font-heading mt-6 pt-4 border-t border-gold">
                 <button onclick="window.saveTerminology()" class="w-full bg-ink text-parchment py-3 rounded border border-gold font-bold uppercase text-xs shadow transition-colors hover:bg-black">Save Changes</button>
                 <button onclick="document.getElementById('terminology-modal').classList.add('hidden')" class="w-full bg-transparent text-ink border border-ink py-3 rounded font-bold uppercase text-xs transition-colors hover:bg-ink hover:text-parchment">Cancel</button>
             </div>
@@ -288,18 +299,20 @@
         if (!pageId || pageId === "" || pageId === "index") pageId = "handbook";
         const DB_COLLECTION = `manualSections_${pageId}`;
 
-        const libraryPages = [
-            { id: 'handbook', title: 'Main Index' },
-            { id: 'howtoplay', title: 'How to Play' },
-            { id: 'lineages', title: 'Lineages' },
-            { id: 'backgrounds', title: 'Backgrounds' },
-            { id: 'vocations', title: 'Vocations' },
-            { id: 'landmarks', title: 'Landmarks' },
-            { id: 'script_codex', title: 'Script Codex' },
-            { id: 'gear_artifacts', title: 'Gear & Artifacts' },
-            { id: 'worldlore', title: 'World Lore' },
-            { id: 'sessionlogs', title: 'Session Logs' }
+        const defaultLibraryPages = [
+            { id: 'handbook', defaultTitle: 'Main Index' },
+            { id: 'howtoplay', defaultTitle: 'How to Play' },
+            { id: 'lineages', defaultTitle: 'Lineages' },
+            { id: 'backgrounds', defaultTitle: 'Backgrounds' },
+            { id: 'vocations', defaultTitle: 'Vocations' },
+            { id: 'landmarks', defaultTitle: 'Landmarks' },
+            { id: 'script_codex', defaultTitle: 'Script Codex' },
+            { id: 'gear_artifacts', defaultTitle: 'Gear & Artifacts' },
+            { id: 'worldlore', defaultTitle: 'World Lore' },
+            { id: 'sessionlogs', defaultTitle: 'Session Logs' }
         ];
+
+        let libraryPages = defaultLibraryPages.map(p => ({ id: p.id, title: p.defaultTitle }));
 
         function renderSidebar() {
             const nav = document.getElementById('library-nav');
@@ -338,14 +351,12 @@
         // --- TERMINOLOGY METHODS ---
         window.saveTerminology = async () => {
             if (activeRole !== 'dm') return;
-            const terms = {
-                party: document.getElementById('term-input-party').value.trim() || 'Party',
-                npcs: document.getElementById('term-input-npcs').value.trim() || 'NPCs',
-                beasts: document.getElementById('term-input-beasts').value.trim() || 'Bestiary',
-                backpack: document.getElementById('term-input-backpack').value.trim() || 'Backpack',
-                handbook: document.getElementById('term-input-handbook').value.trim() || 'Handbook',
-                graveyard: document.getElementById('term-input-graveyard').value.trim() || 'Graveyard'
-            };
+            const terms = {};
+            defaultLibraryPages.forEach(page => {
+                const inputVal = document.getElementById(`term-input-${page.id}`).value.trim();
+                terms[page.id] = inputVal || page.defaultTitle;
+            });
+
             try {
                 await updateDoc(doc(db, 'campaigns', appId), { terminology: terms });
                 window.showToast("Terminology Synced");
@@ -358,21 +369,23 @@
 
         window.applyTerminology = (terms) => {
             if(!terms) return;
-            if(terms.party) { const el = document.getElementById('nav-party'); if(el) el.innerText = terms.party; }
-            if(terms.npcs) { const el = document.getElementById('nav-npcs'); if(el) el.innerText = terms.npcs; }
-            if(terms.beasts) { const el = document.getElementById('nav-beasts'); if(el) el.innerText = terms.beasts; }
-            if(terms.backpack) { const el = document.getElementById('nav-backpack'); if(el) el.innerText = terms.backpack; }
-            if(terms.handbook) { const el = document.getElementById('nav-handbook'); if(el) el.innerText = terms.handbook; }
-            if(terms.graveyard) { const el = document.getElementById('nav-graveyard'); if(el) el.innerText = terms.graveyard; }
             
-            if(document.getElementById('term-input-party')) {
-                document.getElementById('term-input-party').value = terms.party !== 'Party' ? terms.party : '';
-                document.getElementById('term-input-npcs').value = terms.npcs !== 'NPCs' ? terms.npcs : '';
-                document.getElementById('term-input-beasts').value = terms.beasts !== 'Bestiary' ? terms.beasts : '';
-                document.getElementById('term-input-backpack').value = terms.backpack !== 'Backpack' ? terms.backpack : '';
-                document.getElementById('term-input-handbook').value = terms.handbook !== 'Handbook' ? terms.handbook : '';
-                document.getElementById('term-input-graveyard').value = terms.graveyard !== 'Graveyard' ? terms.graveyard : '';
-            }
+            libraryPages.forEach(page => {
+                if(terms[page.id]) {
+                    page.title = terms[page.id];
+                } else {
+                    const def = defaultLibraryPages.find(p => p.id === page.id);
+                    page.title = def ? def.defaultTitle : page.id;
+                }
+                
+                const inputEl = document.getElementById(`term-input-${page.id}`);
+                if (inputEl) {
+                    const defTitle = defaultLibraryPages.find(p => p.id === page.id).defaultTitle;
+                    inputEl.value = terms[page.id] !== defTitle ? terms[page.id] : '';
+                }
+            });
+
+            renderSidebar();
         };
 
         window.handlePaste = (e) => {
