@@ -1462,33 +1462,46 @@ window.grantLevelUp = async () => {
 };
 
 window.openLevelUpModal = () => {
-    const char = characters.find(c => c.id === activeCharId);
-    if (!char) return;
-    
-    document.getElementById('level-up-modal-title').textContent = "Ascension";
-    document.getElementById('lu-step-1').classList.remove('hidden');
-    document.getElementById('lu-step-2').classList.add('hidden');
-    document.getElementById('lu-new-class-name').value = '';
-    
-    let classes = char.classes || [];
-    if (classes.length === 0 && char.class) {
-        classes = [{name: char.class.replace(/\s+\d+$/, '').trim() || 'Unknown', level: parseInt(char.level) || 1}];
-    } else if (classes.length === 0) {
-        classes = [{name: 'Adventurer', level: parseInt(char.level) || 1}];
+    try {
+        const char = characters.find(c => c.id === activeCharId);
+        if (!char) {
+            window.showToast("Error: Could not find active character.");
+            return;
+        }
+        
+        document.getElementById('level-up-modal-title').textContent = "Ascension";
+        document.getElementById('lu-step-1').classList.remove('hidden');
+        document.getElementById('lu-step-2').classList.add('hidden');
+        
+        const newClassInput = document.getElementById('lu-new-class-name');
+        if (newClassInput) newClassInput.value = '';
+        
+        let classes = char.classes || [];
+        // Safety check for characters missing class data
+        if (classes.length === 0 && char.class) {
+            const safeClassName = typeof char.class === 'string' ? char.class.replace(/\s+\d+$/, '').trim() : 'Unknown';
+            classes = [{name: safeClassName || 'Unknown', level: parseInt(char.level) || 1}];
+        } else if (classes.length === 0) {
+            classes = [{name: 'Adventurer', level: parseInt(char.level) || 1}];
+        }
+        
+        const choicesContainer = document.getElementById('lu-class-choices');
+        choicesContainer.innerHTML = '';
+        
+        classes.forEach(cls => {
+            const safeName = (cls.name || 'Unknown').replace(/'/g, "\\'"); // Prevent JS quote breaking
+            choicesContainer.innerHTML += `
+                <button onclick="window.previewLevelUp('${safeName}', false, ${cls.level})" class="fantasy-btn w-full py-4 rounded shadow text-xs tracking-widest flex justify-between items-center px-6">
+                    <span>Continue ${cls.name || 'Unknown'}</span>
+                    <span class="text-[10px] text-gold font-bold bg-black/40 px-2 py-1 rounded">➔ Level ${(cls.level || 1) + 1}</span>
+                </button>`;
+        });
+        
+        document.getElementById('level-up-modal').classList.remove('hidden');
+    } catch (err) {
+        console.error("Modal Error:", err);
+        window.showToast("Error launching UI. Check console.");
     }
-    
-    const choicesContainer = document.getElementById('lu-class-choices');
-    choicesContainer.innerHTML = '';
-    
-    classes.forEach(cls => {
-        choicesContainer.innerHTML += `
-            <button onclick="window.previewLevelUp('${cls.name}', false, ${cls.level})" class="fantasy-btn w-full py-4 rounded shadow text-xs tracking-widest flex justify-between items-center px-6">
-                <span>Continue ${cls.name}</span>
-                <span class="text-[10px] text-gold font-bold bg-black/40 px-2 py-1 rounded">➔ Level ${cls.level + 1}</span>
-            </button>`;
-    });
-    
-    document.getElementById('level-up-modal').classList.remove('hidden');
 };
 
 window.previewLevelUp = (className, isNew, currentClassLevel) => {
@@ -1497,12 +1510,11 @@ window.previewLevelUp = (className, isNew, currentClassLevel) => {
     
     const currentTotalLvl = parseInt(char.level) || 1;
     const newTotalLvl = currentTotalLvl + 1;
-    const newClassLvl = currentClassLevel + 1;
+    const newClassLvl = parseInt(currentClassLevel) + 1;
     
     // Store data globally for apply function
     window.pendingLevelUpData = { name: className.trim(), isNew, newClassLvl, newTotalLvl };
     
-    // In 5e, ASI is bound to Class Level. Proficiency is bound to Total Level.
     const isASI = [4, 8, 12, 16, 19].includes(newClassLvl); 
     const isProfBoost = [5, 9, 13, 17].includes(newTotalLvl);
     const newProfBonus = newTotalLvl >= 17 ? 6 : newTotalLvl >= 13 ? 5 : newTotalLvl >= 9 ? 4 : newTotalLvl >= 5 ? 3 : 2;
@@ -1555,7 +1567,8 @@ window.applyLevelUp = async () => {
     
     let classes = char.classes || [];
     if (classes.length === 0 && char.class) {
-        classes = [{name: char.class.replace(/\s+\d+$/, '').trim() || 'Adventurer', level: parseInt(char.level) || 1}];
+        const safeClassName = typeof char.class === 'string' ? char.class.replace(/\s+\d+$/, '').trim() : 'Adventurer';
+        classes = [{name: safeClassName || 'Adventurer', level: parseInt(char.level) || 1}];
     }
     
     if (pData.isNew) {
@@ -1565,7 +1578,6 @@ window.applyLevelUp = async () => {
         if (idx !== -1) {
             classes[idx].level = pData.newClassLvl;
         } else {
-            // Fallback in case of weird data
             classes.push({name: pData.name, level: pData.newClassLvl}); 
         }
     }
@@ -1580,7 +1592,6 @@ window.applyLevelUp = async () => {
         pendingLevelUp: false
     };
     
-    // Optimistically update local state
     char.level = updates.level;
     char.class = updates.class;
     char.classes = updates.classes;
@@ -1590,10 +1601,10 @@ window.applyLevelUp = async () => {
     const isAutoHp = document.getElementById('lu-auto-hp').checked;
     
     if (isAutoHp) {
-        window.autoCalcHP(true); // Auto calc looks at total array now
+        window.autoCalcHP(true);
     } else {
         const conMod = Math.floor(((parseInt(char.con) || 10) - 10) / 2);
-        const hdSize = window.getHitDie(pData.name); // Get HD specific to chosen class
+        const hdSize = window.getHitDie(pData.name);
         const roll = getRoll(hdSize);
         const hpGain = Math.max(1, roll + conMod);
         
@@ -1614,7 +1625,6 @@ window.applyLevelUp = async () => {
     
     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
     
-    // Update inputs on sheet
     const setVal = (key, val) => { const el = document.querySelector(`[data-key="${key}"]`); if(el && val) el.value = val; };
     setVal('level', pData.newTotalLvl);
     setVal('class', newClassString);
@@ -1632,29 +1642,26 @@ window.applyLevelUp = async () => {
         window.triggerLevelUpCelebration();
     }
 };
-    
     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
     
-    const lvlIn = document.querySelector('[data-key="level"]');
-    if(lvlIn) lvlIn.value = nextLevel;
-    const profIn = document.querySelector('[data-key="profBonus"]');
-    if(profIn) profIn.value = b;
-    const maxHpIn = document.querySelector('[data-key="hpMax"]');
-    if(maxHpIn && updates.hpMax) maxHpIn.value = updates.hpMax;
-    const curHpIn = document.querySelector('[data-key="hpCurrent"]');
-    if(curHpIn && updates.hpCurrent) curHpIn.value = updates.hpCurrent;
-    const hdCurIn = document.querySelector('[data-key="hdCurrent"]');
-    if(hdCurIn && updates.hdCurrent) hdCurIn.value = updates.hdCurrent;
+    // Update inputs on sheet
+    const setVal = (key, val) => { const el = document.querySelector(`[data-key="${key}"]`); if(el && val) el.value = val; };
+    setVal('level', pData.newTotalLvl);
+    setVal('class', newClassString);
+    setVal('profBonus', b);
+    setVal('hpMax', updates.hpMax);
+    setVal('hpCurrent', updates.hpCurrent);
+    setVal('hdCurrent', updates.hdCurrent);
     
     window.calcMods();
+    window.updateClassSpecifics();
     document.getElementById('level-up-modal').classList.add('hidden');
-    window.showToast(`Welcome to Level ${nextLevel}!`);
+    window.showToast(`Ascension Complete: Level ${pData.newTotalLvl}!`);
     
     if (isAutoHp) {
         window.triggerLevelUpCelebration();
     }
-};
-
+};  
 const setupListeners = () => {
     if (!currentUser) return;
     onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { characters = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); if (activeCharId) syncSheetData(); });
