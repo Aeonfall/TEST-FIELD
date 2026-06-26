@@ -1462,6 +1462,8 @@ window.grantLevelUp = async () => {
 };
 
 window.openLevelUpModal = () => {
+    console.log("Level Up button was clicked!"); // Debug check
+
     try {
         const char = characters.find(c => c.id === activeCharId);
         if (!char) {
@@ -1499,8 +1501,8 @@ window.openLevelUpModal = () => {
         
         document.getElementById('level-up-modal').classList.remove('hidden');
     } catch (err) {
-        console.error("Modal Error:", err);
-        window.showToast("Error launching UI. Check console.");
+        console.error("Level Up Modal Error:", err);
+        window.showToast("Error launching UI. Check the developer console.");
     }
 };
 
