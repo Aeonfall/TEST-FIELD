@@ -664,19 +664,19 @@
                         </div>
                     </div>
 
-                    <div class="mt-8">
+                    <div class="mt-8 space-y-6">
                         <div class="sheet-card">
-                            <div class="flex justify-between items-center border-b border-[rgba(139,90,43,0.3)] pb-2 mb-6">
-                                <h2 class="font-heading font-bold text-lg uppercase tracking-wider text-blood">Abilities & Scripts</h2>
-                                <div class="flex items-center gap-2">
-                                    <label class="text-[10px] font-bold uppercase text-555 font-heading">Viewing:</label>
-                                    <select id="moves-selector" onchange="window.renderMovesGrid()" class="text-[10px] font-bold uppercase border rounded px-2 py-1 bg-transparent border-gold text-ink cursor-pointer font-heading">
-                                        <option value="features">Features</option>
-                            <div class="flex items-center gap-2 mt-1">
-                                <input type="checkbox" id="dm-unlock-sheet" class="w-3 h-3 accent-[#f59e0b] cursor-pointer" onchange="window.toggleSheetUnlock(this.checked)">
-                                <label for="dm-unlock-sheet" class="text-[9px] font-black uppercase text-[#f59e0b] tracking-wider font-heading cursor-pointer">Unlock Class/Stats for Player</label>
+                            <div class="border-b border-[rgba(139,90,43,0.3)] pb-2 mb-6">
+                                <h2 class="font-heading font-bold text-lg uppercase tracking-wider text-blood">Features & Traits</h2>
                             </div>
-                            <button onclick="window.grantLevelUp()" class="bg-[#f59e0b] hover:bg-[#d97706] text-[#1c1c1c] px-4 py-1.5 rounded text-[9px] font-black uppercase tracking-widest shadow transition-colors mt-2 w-full font-heading">Grant Level Up</button>
+                            <div id="features-lvl-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                        </div>
+                        
+                        <div class="sheet-card">
+                            <div class="border-b border-[rgba(139,90,43,0.3)] pb-2 mb-6">
+                                <h2 id="scripts-section-title" class="font-heading font-bold text-lg uppercase tracking-wider text-blood">Scriptcasting</h2>
+                            </div>
+                            <div id="scripts-lvl-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                         </div>
                     </div>
                 </div>
@@ -866,6 +866,7 @@
     <!-- MOVE MODAL -->
     <div id="move-modal" class="modal-overlay hidden">
         <div class="modal-container max-w-2xl max-h-[90vh] overflow-y-auto">
+            <input type="hidden" id="move-type-hidden" value="features">
             <div class="flex justify-between items-center border-b-2 border-gold mb-6 pb-2">
                 <h2 id="move-modal-title" class="text-xl font-heading font-bold uppercase tracking-wider text-blood">Edit Move</h2>
                 <button id="move-import-btn" onclick="window.toggleImportView()" class="bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment px-3 py-1 rounded text-[10px] font-bold uppercase transition-colors font-heading">Import</button>
@@ -907,8 +908,8 @@
             </div>
             <div class="modal-footer font-heading">
                 <button id="move-delete-btn" onclick="window.deleteMove()" class="hidden mr-auto text-blood font-black uppercase text-[10px] underline border-r border-blood pr-4">Delete</button>
-                <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="px-4 py-2 text-555 font-bold uppercase text-xs underline">Cancel</button>
-                <button onclick="window.saveMove()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs shadow-lg">Save</button>
+                <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="px-4 py-2 text-555 font-bold uppercase text-xs underline">Close</button>
+                <button id="move-save-btn" onclick="window.saveMove()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs shadow-lg">Save</button>
             </div>
         </div>
     </div>
@@ -2037,77 +2038,99 @@
         window.setRollMode = (m) => { rollMode = m; document.querySelectorAll('.roll-mode').forEach(b => b.classList.remove('active-norm', 'active-adv', 'active-dis')); if (m === 'normal') document.getElementById('mode-norm').classList.add('active-norm'); else if (m === 'adv') document.getElementById('mode-adv').classList.add('active-adv'); else if (m === 'dis') document.getElementById('mode-dis').classList.add('active-dis'); };
 
         window.renderMovesGrid = () => { 
-            const s = document.getElementById('moves-selector'); if (!s) return; 
-            const t = s.value, g = document.getElementById('features-lvl-grid'); if (!g) return; 
-            g.innerHTML = '';
+            const fg = document.getElementById('features-lvl-grid'); 
+            const sg = document.getElementById('scripts-lvl-grid'); 
+            if (!fg || !sg) return; 
+            fg.innerHTML = '';
+            sg.innerHTML = '';
             
             const char = characters.find(c => c.id === activeCharId); 
             const moves = char?.moves || []; 
-            let levels = [];
+            let featureLevels = Array.from({length: 20}, (_, i) => `Level ${i + 1}`);
             
-            if (t === 'features') {
-                levels = Array.from({length: 20}, (_, i) => `Level ${i + 1}`);
-            } else {
-                let classes = char?.classes || [];
-                if (classes.length === 0 && char?.class) {
-                    classes = [{name: char.class}];
+            let classes = char?.classes || [];
+            if (classes.length === 0 && char?.class) {
+                classes = [{name: char.class}];
+            }
+            
+            let maxScriptLevel = -1; 
+            let hasTrickCaster = false;
+            const aliases = window.getVocationAliases();
+
+            classes.forEach(clsObj => {
+                const cName = (clsObj.name || '').toLowerCase();
+                if (['warden', 'chronicler', 'orator', 'scriptweaver', 'wartouched', 'archivist'].some(vc => cName.includes(aliases[vc]))) {
+                    maxScriptLevel = Math.max(maxScriptLevel, 9);
+                    hasTrickCaster = true;
+                } else if (cName.includes(aliases['fabricator'])) {
+                    maxScriptLevel = Math.max(maxScriptLevel, 5);
+                    hasTrickCaster = true;
+                } else if (['heartbound', 'nomad'].some(vc => cName.includes(aliases[vc]))) {
+                    maxScriptLevel = Math.max(maxScriptLevel, 5);
                 }
-                
-                let maxScriptLevel = -1; 
-                let hasTrickCaster = false;
-                const aliases = window.getVocationAliases();
+            });
 
-                classes.forEach(clsObj => {
-                    const cName = (clsObj.name || '').toLowerCase();
-                    if (['warden', 'chronicler', 'orator', 'scriptweaver', 'wartouched', 'archivist'].some(vc => cName.includes(aliases[vc]))) {
-                        maxScriptLevel = Math.max(maxScriptLevel, 9);
-                        hasTrickCaster = true;
-                    } else if (cName.includes(aliases['fabricator'])) {
-                        maxScriptLevel = Math.max(maxScriptLevel, 5);
-                        hasTrickCaster = true;
-                    } else if (['heartbound', 'nomad'].some(vc => cName.includes(aliases[vc]))) {
-                        maxScriptLevel = Math.max(maxScriptLevel, 5);
-                    }
-                });
-
-                if (maxScriptLevel === -1) {
-                    g.innerHTML = '<div class="col-span-full text-center py-8 text-555 font-heading text-xs uppercase tracking-widest border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)]">This vocation does not utilize scripts.</div>';
-                    return;
-                } else {
-                    if (hasTrickCaster) levels.push('Tricks (0)');
-                    for(let i = 1; i <= maxScriptLevel; i++) {
-                        levels.push(`Level ${i}`);
-                    }
+            let scriptLevels = [];
+            if (maxScriptLevel === -1) {
+                sg.innerHTML = '<div class="col-span-full text-center py-8 text-555 font-heading text-xs uppercase tracking-widest border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)]">This vocation does not utilize scripts.</div>';
+            } else {
+                if (hasTrickCaster) scriptLevels.push('Tricks (0)');
+                for(let i = 1; i <= maxScriptLevel; i++) {
+                    scriptLevels.push(`Level ${i}`);
                 }
             }
 
-            const canEdit = (currentUser && char?.owner === currentUser?.username) || char?.owner === 'DM' || activeRole === 'dm';
-            levels.forEach(lvl => { 
-                const card = document.createElement('div'); card.className = "lvl-card"; const filtered = moves.filter(m => m.lvl === lvl && m.type === t); let html = `<div class="lvl-header">${lvl.toUpperCase()}</div><div class="flex-grow space-y-1">`;
-                filtered.forEach(m => { const mIdx = moves.indexOf(m); html += `<div class="move-pill" ${canEdit ? `onclick="window.openMoveModal('${lvl}', ${mIdx})"` : ''}><span class="move-name">${m.name}</span><span class="move-roll">${m.roll || ''}</span></div>`; });
-                if (canEdit) html += `</div><button onclick="window.openMoveModal('${lvl}')" class="text-[9px] font-bold uppercase text-blood hover:text-ink text-center mt-2 font-heading transition-colors">+ ADD</button>`; else html += `</div>`;
-                card.innerHTML = html; g.appendChild(card);
-            }); 
+            const canEdit = activeRole === 'dm';
+
+            const renderCards = (levels, type, container) => {
+                levels.forEach(lvl => { 
+                    const card = document.createElement('div'); card.className = "lvl-card"; 
+                    const filtered = moves.filter(m => m.lvl === lvl && m.type === type); 
+                    let html = `<div class="lvl-header">${lvl.toUpperCase()}</div><div class="flex-grow space-y-1">`;
+                    filtered.forEach(m => { 
+                        const mIdx = moves.indexOf(m); 
+                        html += `<div class="move-pill" onclick="window.openMoveModal('${lvl}', ${mIdx}, '${type}')"><span class="move-name">${m.name}</span><span class="move-roll">${m.roll || ''}</span></div>`; 
+                    });
+                    if (canEdit) html += `</div><button onclick="window.openMoveModal('${lvl}', null, '${type}')" class="text-[9px] font-bold uppercase text-blood hover:text-ink text-center mt-2 font-heading transition-colors">+ ADD</button>`; 
+                    else html += `</div>`;
+                    card.innerHTML = html; 
+                    container.appendChild(card);
+                }); 
+            };
+
+            renderCards(featureLevels, 'features', fg);
+            if (maxScriptLevel !== -1) {
+                renderCards(scriptLevels, 'scriptcasting', sg);
+            }
         };
 
-        window.openMoveModal = (lvl, idx = null) => { 
-            activeMoveLvl = lvl; editingMoveIndex = idx; const char = characters.find(c => c.id === activeCharId); const moves = char?.moves || [];
-            const moveType = document.getElementById('moves-selector').value;
+        window.openMoveModal = (lvl, idx = null, forceType = 'features') => { 
+            activeMoveLvl = lvl; 
+            editingMoveIndex = idx; 
+            const char = characters.find(c => c.id === activeCharId); 
+            const moves = char?.moves || [];
+            
+            const m = idx !== null ? moves[idx] : null;
+            const moveType = m ? m.type : forceType;
             const isScript = moveType === 'scriptcasting';
-            document.getElementById('move-import-btn').classList.remove('hidden');
+            const canEdit = activeRole === 'dm';
+
+            document.getElementById('move-import-btn').classList.toggle('hidden', !canEdit);
             document.getElementById('script-extra-fields').classList.toggle('hidden', !isScript);
             document.getElementById('script-scaling-field').classList.toggle('hidden', !isScript);
             document.getElementById('move-desc-label').textContent = isScript ? "Effect" : "Description";
             document.getElementById('import-view').classList.add('hidden');
             document.getElementById('modal-standard-view').classList.remove('hidden');
+            
             const hint = isScript ? "Paste Script Data (NAME, SCHOOL, EFFECT, etc):" : "Paste Move/Feature Data (NAME, DESCRIPTION):";
             document.getElementById('import-hint-text').textContent = hint;
+            document.getElementById('move-type-hidden').value = moveType;
+
             if (idx !== null) { 
-                const m = moves[idx]; 
                 document.getElementById('move-name-in').value = m.name || ''; 
                 document.getElementById('move-roll-in').value = m.roll || ''; 
                 document.getElementById('move-desc-in').value = m.desc || ''; 
-                document.getElementById('script-lvl-in').value = lvl;
+                document.getElementById('script-lvl-in').value = m.lvl || lvl;
                 document.getElementById('script-school-in').value = m.school || '';
                 document.getElementById('script-type-in').value = m.sType || '';
                 document.getElementById('script-activation-in').value = m.activation || '';
@@ -2115,8 +2138,8 @@
                 document.getElementById('script-comp-in').value = m.comp || '';
                 document.getElementById('script-duration-in').value = m.duration || '';
                 document.getElementById('script-scaling-in').value = m.scaling || '';
-                document.getElementById('move-modal-title').textContent = "Edit " + (isScript ? "Script" : "Move"); 
-                document.getElementById('move-delete-btn').classList.remove('hidden'); 
+                document.getElementById('move-modal-title').textContent = (canEdit ? "Edit " : "View ") + (isScript ? "Script" : "Move"); 
+                document.getElementById('move-delete-btn').classList.toggle('hidden', !canEdit); 
             } else { 
                 document.getElementById('move-name-in').value = ''; 
                 document.getElementById('move-roll-in').value = ''; 
@@ -2132,6 +2155,15 @@
                 document.getElementById('move-modal-title').textContent = "Add " + (isScript ? "Script" : "Move") + " - " + lvl; 
                 document.getElementById('move-delete-btn').classList.add('hidden'); 
             }
+
+            const fields = document.querySelectorAll('#modal-standard-view input:not(#script-lvl-in), #modal-standard-view textarea');
+            fields.forEach(f => {
+                f.readOnly = !canEdit;
+                if (!canEdit) f.classList.add('opacity-80', 'cursor-default', 'pointer-events-none');
+                else f.classList.remove('opacity-80', 'cursor-default', 'pointer-events-none');
+            });
+            document.getElementById('move-save-btn').classList.toggle('hidden', !canEdit);
+
             document.getElementById('move-modal').classList.remove('hidden'); 
         };
 
@@ -2150,7 +2182,7 @@
         window.executeMoveImport = () => {
             const rawText = document.getElementById('import-paste-area').value;
             if (!rawText.trim()) return;
-            const moveType = document.getElementById('moves-selector').value;
+            const moveType = document.getElementById('move-type-hidden').value;
             const isScript = moveType === 'scriptcasting';
             const extract = (regex) => {
                 const match = rawText.match(regex);
@@ -2199,6 +2231,7 @@
         };
 
         window.saveMove = async () => { 
+            if (activeRole !== 'dm') return;
             const char = characters.find(c => c.id === activeCharId); 
             const moves = char.moves || []; 
             const newMove = { 
@@ -2206,7 +2239,7 @@
                 roll: document.getElementById('move-roll-in').value, 
                 desc: document.getElementById('move-desc-in').value, 
                 lvl: activeMoveLvl, 
-                type: document.getElementById('moves-selector').value,
+                type: document.getElementById('move-type-hidden').value,
                 school: document.getElementById('script-school-in').value,
                 sType: document.getElementById('script-type-in').value,
                 activation: document.getElementById('script-activation-in').value,
