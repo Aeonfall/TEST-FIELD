@@ -1464,62 +1464,136 @@ window.grantLevelUp = async () => {
 window.openLevelUpModal = () => {
     const char = characters.find(c => c.id === activeCharId);
     if (!char) return;
-    const currentLevel = parseInt(char.level) || 3;
-    const nextLevel = currentLevel + 1;
-    document.getElementById('level-up-modal-title').textContent = `Ascension: Level ${currentLevel} ➔ ${nextLevel}`;
     
-    const isASI = [4, 8, 12, 16, 19].includes(nextLevel);
-    const isProfBoost = [5, 9, 13, 17].includes(nextLevel);
+    document.getElementById('level-up-modal-title').textContent = "Ascension";
+    document.getElementById('lu-step-1').classList.remove('hidden');
+    document.getElementById('lu-step-2').classList.add('hidden');
+    document.getElementById('lu-new-class-name').value = '';
     
-    document.getElementById('lu-asi-badge').classList.toggle('hidden', !isASI);
-    document.getElementById('lu-prof-badge').classList.toggle('hidden', !isProfBoost);
+    let classes = char.classes || [];
+    if (classes.length === 0 && char.class) {
+        classes = [{name: char.class.replace(/\s+\d+$/, '').trim() || 'Unknown', level: parseInt(char.level) || 1}];
+    } else if (classes.length === 0) {
+        classes = [{name: 'Adventurer', level: parseInt(char.level) || 1}];
+    }
+    
+    const choicesContainer = document.getElementById('lu-class-choices');
+    choicesContainer.innerHTML = '';
+    
+    classes.forEach(cls => {
+        choicesContainer.innerHTML += `
+            <button onclick="window.previewLevelUp('${cls.name}', false, ${cls.level})" class="fantasy-btn w-full py-4 rounded shadow text-xs tracking-widest flex justify-between items-center px-6">
+                <span>Continue ${cls.name}</span>
+                <span class="text-[10px] text-gold font-bold bg-black/40 px-2 py-1 rounded">➔ Level ${cls.level + 1}</span>
+            </button>`;
+    });
     
     document.getElementById('level-up-modal').classList.remove('hidden');
 };
 
-window.applyLevelUp = async () => {
+window.previewLevelUp = (className, isNew, currentClassLevel) => {
+    if (!className || className.trim() === '') return window.showToast('Please enter a vocation name');
     const char = characters.find(c => c.id === activeCharId);
-    if (!char) return;
-    const currentLevel = parseInt(char.level) || 3;
-    const nextLevel = currentLevel + 1;
     
-    const b = nextLevel >= 17 ? 6 : nextLevel >= 13 ? 5 : nextLevel >= 9 ? 4 : nextLevel >= 5 ? 3 : 2; 
+    const currentTotalLvl = parseInt(char.level) || 1;
+    const newTotalLvl = currentTotalLvl + 1;
+    const newClassLvl = currentClassLevel + 1;
     
-    let updates = {
-        level: nextLevel,
-        pendingLevelUp: false,
-        profBonus: b
-    };
+    // Store data globally for apply function
+    window.pendingLevelUpData = { name: className.trim(), isNew, newClassLvl, newTotalLvl };
     
-    let classes = char.classes || [];
-    if (classes.length <= 1) {
-        if (classes.length === 1) {
-            let cleanName = classes[0].name.replace(/\s+\d+$/, '').trim();
-            updates.classes = [{name: cleanName, level: nextLevel}];
-            updates.class = cleanName;
-        } else if (char.class && char.class.trim() !== '') {
-            let cleanName = char.class.replace(/\s+\d+$/, '').trim();
-            updates.classes = [{name: cleanName, level: nextLevel}];
-            updates.class = cleanName;
-        }
-    } else {
-        window.showToast("Multiclass detected: Don't forget to update your Vocation levels manually!");
+    // In 5e, ASI is bound to Class Level. Proficiency is bound to Total Level.
+    const isASI = [4, 8, 12, 16, 19].includes(newClassLvl); 
+    const isProfBoost = [5, 9, 13, 17].includes(newTotalLvl);
+    const newProfBonus = newTotalLvl >= 17 ? 6 : newTotalLvl >= 13 ? 5 : newTotalLvl >= 9 ? 4 : newTotalLvl >= 5 ? 3 : 2;
+    const hdSize = window.getHitDie(className);
+    
+    let gainsHtml = `
+        <div class="lu-gain-item lu-delay-1 flex gap-4 items-center bg-white/40 p-3 rounded border border-white/50">
+            <span class="text-3xl drop-shadow">❤️</span>
+            <div><strong class="font-heading uppercase text-blood text-xs block tracking-widest mb-0.5">Maximum Hit Points</strong> You gain 1d${hdSize} Hit Die. Your maximum health increases.</div>
+        </div>`;
+    
+    gainsHtml += `
+        <div class="lu-gain-item lu-delay-2 flex gap-4 items-center bg-white/40 p-3 rounded border border-white/50">
+            <span class="text-3xl drop-shadow">⚔️</span>
+            <div><strong class="font-heading uppercase text-blood text-xs block tracking-widest mb-0.5">${className} Features</strong> You unlock new abilities for reaching Level ${newClassLvl} in this vocation.</div>
+        </div>`;
+
+    if (isASI) {
+        gainsHtml += `
+            <div class="lu-gain-item lu-delay-3 flex gap-4 items-center bg-white/40 p-3 rounded border border-white/50 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gold/10 animate-pulse"></div>
+                <span class="text-3xl drop-shadow relative z-10">⭐</span>
+                <div class="relative z-10"><strong class="font-heading uppercase text-blood text-xs block tracking-widest mb-0.5">Ability Score Improvement</strong> You can increase one ability score by 2, two scores by 1, or select a powerful Feat.</div>
+            </div>`;
     }
     
-    char.level = nextLevel;
-    if(updates.class) char.class = updates.class;
-    if(updates.classes) char.classes = updates.classes;
-    char.profBonus = b;
+    if (isProfBoost) {
+        gainsHtml += `
+            <div class="lu-gain-item lu-delay-4 flex gap-4 items-center bg-white/40 p-3 rounded border border-white/50 relative overflow-hidden">
+                <div class="absolute inset-0 bg-blood/10 animate-pulse"></div>
+                <span class="text-3xl drop-shadow relative z-10">🎯</span>
+                <div class="relative z-10"><strong class="font-heading uppercase text-blood text-xs block tracking-widest mb-0.5">Proficiency Upgrade</strong> Your global proficiency bonus permanently increases to +${newProfBonus}.</div>
+            </div>`;
+    }
+    
+    document.getElementById('lu-gains-list').innerHTML = gainsHtml;
+    document.getElementById('lu-chosen-class-title').innerText = `${className} Level ${newClassLvl}`;
+    document.getElementById('level-up-modal-title').textContent = `Total Level ${newTotalLvl}`;
+    
+    document.getElementById('lu-step-1').classList.add('hidden');
+    document.getElementById('lu-step-2').classList.remove('hidden');
+};
+
+window.applyLevelUp = async () => {
+    const char = characters.find(c => c.id === activeCharId);
+    if (!char || !window.pendingLevelUpData) return;
+    
+    const pData = window.pendingLevelUpData;
+    const b = pData.newTotalLvl >= 17 ? 6 : pData.newTotalLvl >= 13 ? 5 : pData.newTotalLvl >= 9 ? 4 : pData.newTotalLvl >= 5 ? 3 : 2;
+    
+    let classes = char.classes || [];
+    if (classes.length === 0 && char.class) {
+        classes = [{name: char.class.replace(/\s+\d+$/, '').trim() || 'Adventurer', level: parseInt(char.level) || 1}];
+    }
+    
+    if (pData.isNew) {
+        classes.push({name: pData.name, level: 1});
+    } else {
+        const idx = classes.findIndex(c => c.name.toLowerCase() === pData.name.toLowerCase());
+        if (idx !== -1) {
+            classes[idx].level = pData.newClassLvl;
+        } else {
+            // Fallback in case of weird data
+            classes.push({name: pData.name, level: pData.newClassLvl}); 
+        }
+    }
+    
+    const newClassString = classes.map(c => c.name).join(' / ');
+    
+    let updates = {
+        level: pData.newTotalLvl,
+        classes: classes,
+        class: newClassString,
+        profBonus: b,
+        pendingLevelUp: false
+    };
+    
+    // Optimistically update local state
+    char.level = updates.level;
+    char.class = updates.class;
+    char.classes = updates.classes;
+    char.profBonus = updates.profBonus;
     char.pendingLevelUp = false;
     
     const isAutoHp = document.getElementById('lu-auto-hp').checked;
     
     if (isAutoHp) {
-        window.autoCalcHP(true);
+        window.autoCalcHP(true); // Auto calc looks at total array now
     } else {
         const conMod = Math.floor(((parseInt(char.con) || 10) - 10) / 2);
-        let primaryClass = (char.classes && char.classes.length > 0) ? char.classes[0].name : (char.class || '');
-        const hdSize = window.getHitDie(primaryClass);
+        const hdSize = window.getHitDie(pData.name); // Get HD specific to chosen class
         const roll = getRoll(hdSize);
         const hpGain = Math.max(1, roll + conMod);
         
@@ -1537,6 +1611,27 @@ window.applyLevelUp = async () => {
         document.getElementById('roll-breakdown').textContent = `d${hdSize} Roll: (${roll}) + ${conMod} CON`; 
         document.getElementById('dice-result-overlay').classList.remove('hidden'); 
     }
+    
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
+    
+    // Update inputs on sheet
+    const setVal = (key, val) => { const el = document.querySelector(`[data-key="${key}"]`); if(el && val) el.value = val; };
+    setVal('level', pData.newTotalLvl);
+    setVal('class', newClassString);
+    setVal('profBonus', b);
+    setVal('hpMax', updates.hpMax);
+    setVal('hpCurrent', updates.hpCurrent);
+    setVal('hdCurrent', updates.hdCurrent);
+    
+    window.calcMods();
+    window.updateClassSpecifics();
+    document.getElementById('level-up-modal').classList.add('hidden');
+    window.showToast(`Ascension Complete: Level ${pData.newTotalLvl}!`);
+    
+    if (isAutoHp) {
+        window.triggerLevelUpCelebration();
+    }
+};
     
     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
     
