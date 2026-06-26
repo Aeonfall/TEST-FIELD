@@ -187,7 +187,7 @@
         .cond-row { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; color: #555; text-transform: uppercase; font-family: 'Cinzel', serif;}
         .cond-row input[type="checkbox"] { width: 12px; height: 12px; accent-color: #7a1b1b; }
 
-        #critical-fail-overlay, #critical-success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #critical-fail-overlay, #critical-success-overlay, #level-up-celebration-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         #fireworks-canvas { position: fixed; inset: 0; z-index: 9998; pointer-events: none; }
         
         .ornamental-hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(139, 90, 43, 0), rgba(139, 90, 43, 0.5), rgba(139, 90, 43, 0)); margin: 15px 0; }
@@ -210,6 +210,12 @@
         <div class="font-serif">
             <div class="text-[12rem] leading-none mb-4 text-gold font-black drop-shadow-[0_0_50px_rgba(197,160,89,0.6)] animate-bounce">20</div>
             <div class="text-4xl tracking-[0.2em] font-black uppercase text-parchment font-heading drop-shadow-lg">Critical Success</div>
+        </div>
+    </div>
+    <div id="level-up-celebration-overlay">
+        <div class="font-serif">
+            <div class="text-[8rem] md:text-[12rem] leading-none mb-4 text-gold font-black drop-shadow-[0_0_50px_rgba(197,160,89,0.6)] animate-bounce"><i class="fa-solid fa-angles-up"></i></div>
+            <div class="text-3xl md:text-4xl tracking-[0.2em] font-black uppercase text-parchment font-heading drop-shadow-lg">Level Up!</div>
         </div>
     </div>
     <canvas id="fireworks-canvas"></canvas>
@@ -1446,6 +1452,21 @@
 
         const getRoll = (sides) => Math.floor(Math.random() * sides) + 1;
 
+        window.triggerCriticalFailure = () => {
+            const el = document.getElementById('critical-fail-overlay');
+            if (el) { el.style.opacity = 1; setTimeout(() => el.style.opacity = 0, 3000); }
+        };
+
+        window.triggerCriticalSuccess = () => {
+            const el = document.getElementById('critical-success-overlay');
+            if (el) { el.style.opacity = 1; setTimeout(() => el.style.opacity = 0, 3000); }
+        };
+
+        window.triggerLevelUpCelebration = () => {
+            const el = document.getElementById('level-up-celebration-overlay');
+            if (el) { el.style.opacity = 1; setTimeout(() => el.style.opacity = 0, 3000); }
+        };
+
         window.switchSheetTab = (tabId) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
@@ -2032,8 +2053,8 @@
             const r1 = getRoll(20), r2 = getRoll(20); 
             let final, btxt; if (rollMode === 'adv') { final = Math.max(r1, r2); btxt = `Adv: High(${r1}, ${r2})`; } else if (rollMode === 'dis') { final = Math.min(r1, r2); btxt = `Dis: Low(${r1}, ${r2})`; } else { final = r1; btxt = `(${r1})`; } 
             
-            if (final === 1) triggerCriticalFailure(); 
-            if (final === 20) triggerCriticalSuccess();
+            if (final === 1) window.triggerCriticalFailure(); 
+            if (final === 20) window.triggerCriticalSuccess();
             
             const total = final + bonus; const displayTotal = (total >= 0 ? '+' : '') + total;
             document.getElementById('roll-label').textContent = label; document.getElementById('roll-total').textContent = displayTotal; 
@@ -2050,11 +2071,11 @@
             const count = parseInt(document.getElementById('roll-count').value) || 1; let label, total, breakdown; 
             if (count === 1 && rollMode !== 'normal') { 
                 const r1 = getRoll(s), r2 = getRoll(s); let final = rollMode === 'adv' ? Math.max(r1, r2) : Math.min(r1, r2);
-                if (s === 20) { if (final === 1) triggerCriticalFailure(); if (final === 20) triggerCriticalSuccess(); }
+                if (s === 20) { if (final === 1) window.triggerCriticalFailure(); if (final === 20) window.triggerCriticalSuccess(); }
                 total = final; label = `d${s} Roll`; breakdown = `${rollMode.toUpperCase()}: (${r1}, ${r2})`;
             } else { 
                 const rolls = Array.from({length: count}, () => getRoll(s)); 
-                if (count === 1 && s === 20) { if (rolls[0] === 1) triggerCriticalFailure(); if (rolls[0] === 20) triggerCriticalSuccess(); }
+                if (count === 1 && s === 20) { if (rolls[0] === 1) window.triggerCriticalFailure(); if (rolls[0] === 20) window.triggerCriticalSuccess(); }
                 total = rolls.reduce((a, b) => a + b, 0); label = `${count}d${s} Roll`; breakdown = count > 1 ? `${rolls.join(' + ')} = ${total}` : `(${rolls[0]})`; 
             } 
             document.getElementById('roll-label').textContent = label; document.getElementById('roll-total').textContent = total; document.getElementById('roll-breakdown').textContent = breakdown; document.getElementById('dice-result-overlay').classList.remove('hidden'); addRollToHistory(label, total); 
@@ -2601,31 +2622,57 @@
                 window.showToast("Multiclass detected: Don't forget to update your Vocation levels manually!");
             }
             
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
-            
-            const lvlIn = document.querySelector('[data-key="level"]');
-            if(lvlIn) lvlIn.value = nextLevel;
-            const profIn = document.querySelector('[data-key="profBonus"]');
-            if(profIn) profIn.value = b;
-            
             char.level = nextLevel;
             if(updates.class) char.class = updates.class;
             if(updates.classes) char.classes = updates.classes;
             char.profBonus = b;
             char.pendingLevelUp = false;
             
-            if (document.getElementById('lu-auto-hp').checked) {
+            const isAutoHp = document.getElementById('lu-auto-hp').checked;
+            
+            if (isAutoHp) {
                 window.autoCalcHP(true);
+            } else {
+                const conMod = Math.floor(((parseInt(char.con) || 10) - 10) / 2);
+                let primaryClass = (char.classes && char.classes.length > 0) ? char.classes[0].name : (char.class || '');
+                const hdSize = window.getHitDie(primaryClass);
+                const roll = getRoll(hdSize);
+                const hpGain = Math.max(1, roll + conMod);
+                
+                const newMax = (parseInt(char.hpMax) || 0) + hpGain;
+                updates.hpMax = newMax;
+                updates.hpCurrent = (parseInt(char.hpCurrent) || 0) + hpGain;
+                updates.hdCurrent = (parseInt(char.hdCurrent) || 0) + 1;
+                
+                char.hpMax = newMax;
+                char.hpCurrent = updates.hpCurrent;
+                char.hdCurrent = updates.hdCurrent;
+                
+                document.getElementById('roll-label').textContent = "HP Gain (Level Up)"; 
+                document.getElementById('roll-total').textContent = `+${hpGain}`; 
+                document.getElementById('roll-breakdown').textContent = `d${hdSize} Roll: (${roll}) + ${conMod} CON`; 
+                document.getElementById('dice-result-overlay').classList.remove('hidden'); 
             }
+            
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
+            
+            const lvlIn = document.querySelector('[data-key="level"]');
+            if(lvlIn) lvlIn.value = nextLevel;
+            const profIn = document.querySelector('[data-key="profBonus"]');
+            if(profIn) profIn.value = b;
+            const maxHpIn = document.querySelector('[data-key="hpMax"]');
+            if(maxHpIn && updates.hpMax) maxHpIn.value = updates.hpMax;
+            const curHpIn = document.querySelector('[data-key="hpCurrent"]');
+            if(curHpIn && updates.hpCurrent) curHpIn.value = updates.hpCurrent;
+            const hdCurIn = document.querySelector('[data-key="hdCurrent"]');
+            if(hdCurIn && updates.hdCurrent) hdCurIn.value = updates.hdCurrent;
             
             window.calcMods();
             document.getElementById('level-up-modal').classList.add('hidden');
             window.showToast(`Welcome to Level ${nextLevel}!`);
             
-            const overlay = document.getElementById('critical-success-overlay');
-            if (overlay) {
-                overlay.style.opacity = 1;
-                setTimeout(() => overlay.style.opacity = 0, 3000);
+            if (isAutoHp) {
+                window.triggerLevelUpCelebration();
             }
         };
 
