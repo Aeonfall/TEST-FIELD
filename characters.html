@@ -87,9 +87,14 @@
         .vital-label { font-size: 10px; font-weight: 900; text-transform: uppercase; position: absolute; top: -16px; left: 0; right: 0; text-align: center; color: #555; pointer-events: none; font-family: 'Cinzel', serif;}
         .vital-input { width: 90%; text-align: center; font-size: 20px; font-weight: 900; background: transparent; border: none !important; color: #1a1a1a; z-index: 5; margin: 0 !important; padding: 0 !important; }
 
-        .floating-roller { position: fixed; bottom: 24px; right: 24px; z-index: 100; background: #f1e5c5; border-radius: 8px; border: 2px solid #c5a059; padding: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.8); width: 280px; }
-        .dice-grid-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 2px solid #8b5a2b; border-radius: 6px; font-weight: 900; font-size: 12px; transition: all 0.1s; background-color: rgba(255,255,255,0.5); color: #2c1e16; font-family: 'Cinzel', serif;}
-        .dice-grid-btn:hover { background-color: rgba(197, 160, 89, 0.3); border-color: #7a1b1b; color: #7a1b1b; }
+        .roller-wrapper { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; pointer-events: none; }
+        .roller-wrapper > * { pointer-events: auto; }
+        .roller-panel { background: #f1e5c5; border-radius: 8px; border: 2px solid #c5a059; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); width: 300px; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s; transform-origin: bottom right; }
+        .roller-panel.minimized { transform: scale(0.5) translate(20px, 20px); opacity: 0; pointer-events: none; position: absolute; bottom: 0; right: 0; }
+        .roller-toggle { width: 54px; height: 54px; border-radius: 50%; background: #2c1e16; border: 2px solid #c5a059; display: flex; align-items: center; justify-content: center; color: #f1e5c5; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.6); transition: all 0.2s; z-index: 101; position: relative;}
+        .roller-toggle:hover { border-color: #f1e5c5; transform: scale(1.05) rotate(15deg); }
+        .dice-grid-btn { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border: 2px solid #8b5a2b; border-radius: 6px; font-weight: 900; font-size: 16px; transition: all 0.1s; background-color: rgba(255,255,255,0.7); color: #1a1a1a; font-family: 'Cinzel', serif; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-transform: uppercase; }
+        .dice-grid-btn:hover { background-color: rgba(197, 160, 89, 0.3); border-color: #7a1b1b; color: #7a1b1b; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
         .ds-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #8b5a2b; cursor: pointer; transition: background 0.2s; display: inline-block; background-color: rgba(255,255,255,0.5);}
         .ds-dot.checked-succ { background: #556b2f !important; border-color: #2e3b19 !important; }
@@ -146,7 +151,7 @@
         .tiny-label { font-size: 9px; text-transform: uppercase; color: #555; font-weight: 900; display: block; margin-top: 2px; font-family: 'Cinzel', serif;}
         .hidden-view { display: none !important; }
 
-        .sheet-tabs-container { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(139, 90, 43, 0.3); border-radius: 4px; min-height: 600px; display: flex; flex-direction: column; }
+        .sheet-tabs-container { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(139, 90, 43, 0.3); border-radius: 4px; min-height: 400px; display: flex; flex-direction: column; }
         .tab-header-row { display: flex; border-bottom: 2px solid rgba(139, 90, 43, 0.3); overflow-x: auto; scrollbar-width: none; }
         .tab-btn { flex-shrink: 0; padding: 12px 16px; font-size: 11px; font-weight: 900; text-transform: uppercase; color: #555; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; font-family: 'Cinzel', serif; margin-bottom: -2px;}
         .tab-btn.active { color: #7a1b1b; border-bottom-color: #7a1b1b; background: rgba(255,255,255,0.4); }
@@ -298,9 +303,12 @@
                                 <button onclick="window.updateCharStatus('coma')" class="bg-[#92400e] hover:bg-[#b45309] text-white px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow transition-colors">Coma</button>
                                 <button onclick="window.updateCharStatus('dead')" class="bg-[#475569] hover:bg-[#64748b] text-white px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow transition-colors">Death</button>
                             </div>
-                            <div class="flex items-center gap-2 mt-1">
-                                <input type="checkbox" id="dm-unlock-sheet" class="w-3 h-3 accent-[#f59e0b] cursor-pointer" onchange="window.toggleSheetUnlock(this.checked)">
-                                <label for="dm-unlock-sheet" class="text-[9px] font-black uppercase text-[#f59e0b] tracking-wider font-heading cursor-pointer">Unlock Class/Stats for Player</label>
+                            <div class="flex items-center gap-4 mt-1 w-full justify-end">
+                                <button onclick="window.grantLevelUp()" class="bg-[#f59e0b] hover:bg-[#d97706] text-[#1c1c1c] px-3 py-1.5 rounded text-[9px] font-black uppercase tracking-widest shadow transition-colors font-heading">Grant Level Up</button>
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="dm-unlock-sheet" class="w-3 h-3 accent-[#f59e0b] cursor-pointer" onchange="window.toggleSheetUnlock(this.checked)">
+                                    <label for="dm-unlock-sheet" class="text-[9px] font-black uppercase text-[#f59e0b] tracking-wider font-heading cursor-pointer">Unlock Class/Stats for Player</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -338,176 +346,209 @@
                     </header>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        <div class="lg:col-span-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-6">
-                                <div class="sheet-card">
-                                    <h3 class="flex justify-between items-center"><span id="label-term-abilities">Abilities</span> <button id="main-gen-btn" onclick="window.openScoreGenModal()" class="bg-transparent border border-blood text-blood px-2 py-0.5 rounded text-[8px] font-bold hover:bg-blood hover:text-parchment transition-colors font-heading">Roll</button></h3>
-                                    <div class="grid grid-cols-2 gap-4 mb-4">
-                                        <div class="text-center"><input type="number" data-key="profBonus" class="text-xl font-black text-center text-blood font-heading" value="2" onchange="window.calcMods()"><label id="label-term-prof" class="tiny-label">Proficiency</label></div>
-                                        <div class="text-center"><input type="number" data-key="passivePerception" class="text-xl font-black text-center text-ink font-heading" value="10" readonly><label class="tiny-label">Pass. Perception</label></div>
-                                    </div>
-                                    <hr class="ornamental-hr">
-                                    <div id="stats-container" class="space-y-3"></div>
+                        <!-- Column 1: Stats -->
+                        <div class="lg:col-span-4 space-y-6">
+                            <div class="sheet-card">
+                                <h3 class="flex justify-between items-center"><span id="label-term-abilities">Abilities</span> <button id="main-gen-btn" onclick="window.openScoreGenModal()" class="bg-transparent border border-blood text-blood px-2 py-0.5 rounded text-[8px] font-bold hover:bg-blood hover:text-parchment transition-colors font-heading">Roll</button></h3>
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div class="text-center"><input type="number" data-key="profBonus" class="text-xl font-black text-center text-blood font-heading" value="2" onchange="window.calcMods()"><label id="label-term-prof" class="tiny-label">Proficiency</label></div>
+                                    <div class="text-center"><input type="number" data-key="passivePerception" class="text-xl font-black text-center text-ink font-heading" value="10" readonly><label class="tiny-label">Pass. Perception</label></div>
                                 </div>
-                                <div class="sheet-card">
-                                    <h3 id="label-term-saves">Saves</h3>
-                                    <div class="row-header">
-                                        <div class="w-4 header-item">Prof</div>
-                                        <div class="w-8 header-item ml-2">Mod</div>
-                                        <div class="flex-grow header-item">Stat</div>
-                                        <div class="w-10 header-item text-right pr-2">Bonus</div>
-                                    </div>
-                                    <div id="saves-container" class="space-y-0.5"></div>
+                                <hr class="ornamental-hr">
+                                <div id="stats-container" class="space-y-3"></div>
+                            </div>
+                            <div class="sheet-card">
+                                <h3 id="label-term-saves">Saves</h3>
+                                <div class="row-header">
+                                    <div class="w-4 header-item">Prof</div>
+                                    <div class="w-8 header-item ml-2">Mod</div>
+                                    <div class="flex-grow header-item">Stat</div>
+                                    <div class="w-10 header-item text-right pr-2">Bonus</div>
                                 </div>
-                                <div class="sheet-card">
-                                    <h3 id="label-term-skills">Skills</h3>
-                                    <div class="row-header">
-                                        <div class="w-4 header-item">Prof</div>
-                                        <div class="w-8 header-item ml-2">Mod</div>
-                                        <div class="flex-grow header-item">Skill</div>
-                                        <div class="w-10 header-item text-right pr-2">Bonus</div>
-                                    </div>
-                                    <div id="skills-container" class="space-y-0.5 max-h-[600px] overflow-y-auto pr-1 scrollbar-hide"></div>
+                                <div id="saves-container" class="space-y-0.5"></div>
+                            </div>
+                            <div class="sheet-card">
+                                <h3 id="label-term-skills">Skills</h3>
+                                <div class="row-header">
+                                    <div class="w-4 header-item">Prof</div>
+                                    <div class="w-8 header-item ml-2">Mod</div>
+                                    <div class="flex-grow header-item">Skill</div>
+                                    <div class="w-10 header-item text-right pr-2">Bonus</div>
+                                </div>
+                                <div id="skills-container" class="space-y-0.5 max-h-[600px] overflow-y-auto pr-1 scrollbar-hide"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Column 2: Vitals & Trackers -->
+                        <div class="lg:col-span-4 space-y-6">
+                            <div class="grid grid-cols-4 gap-2">
+                                <div class="vital-container vital-inspiration-frame">
+                                    <div id="label-term-insp" class="vital-label">Insp</div>
+                                    <input type="text" data-key="heroicInspiration" class="vital-input" placeholder="0">
+                                </div>
+                                <div class="vital-container vital-shield">
+                                    <div id="label-term-ac" class="vital-label">AC</div>
+                                    <input type="text" class="vital-input" data-key="ac" placeholder="10">
+                                </div>
+                                <div class="vital-container vital-square-init">
+                                    <div id="label-term-init" class="vital-label">INIT</div>
+                                    <button onclick="window.rollIndividualInitiative()" class="absolute top-1 right-1 text-[8px] bg-parchment hover:bg-gold text-ink p-0.5 rounded border border-gold transition-colors z-20 read-only-hide">🎲</button>
+                                    <input type="text" class="vital-input" data-key="init" placeholder="0" onchange="window.saveCurrentCharacter()">
+                                </div>
+                                <div class="vital-container vital-square-speed">
+                                    <div id="label-term-speed" class="vital-label">Speed</div>
+                                    <input type="text" class="vital-input" data-key="speed" placeholder="30">
                                 </div>
                             </div>
                             
-                            <div class="space-y-6">
-                                <div class="grid grid-cols-4 gap-2">
-                                    <div class="vital-container vital-inspiration-frame">
-                                        <div id="label-term-insp" class="vital-label">Insp</div>
-                                        <input type="text" data-key="heroicInspiration" class="vital-input" placeholder="0">
-                                    </div>
-                                    <div class="vital-container vital-shield">
-                                        <div id="label-term-ac" class="vital-label">AC</div>
-                                        <input type="text" class="vital-input" data-key="ac" placeholder="10">
-                                    </div>
-                                    <div class="vital-container vital-square-init">
-                                        <div id="label-term-init" class="vital-label">INIT</div>
-                                        <button onclick="window.rollIndividualInitiative()" class="absolute top-1 right-1 text-[8px] bg-parchment hover:bg-gold text-ink p-0.5 rounded border border-gold transition-colors z-20 read-only-hide">🎲</button>
-                                        <input type="text" class="vital-input" data-key="init" placeholder="0" onchange="window.saveCurrentCharacter()">
-                                    </div>
-                                    <div class="vital-container vital-square-speed">
-                                        <div id="label-term-speed" class="vital-label">Speed</div>
-                                        <input type="text" class="vital-input" data-key="speed" placeholder="30">
-                                    </div>
+                            <div class="sheet-card text-center py-8 relative shadow-inner">
+                                <button onclick="window.openHpAdjustmentModal()" class="absolute top-2 left-2 text-xs bg-transparent hover:bg-blood text-blood hover:text-parchment border border-blood p-1.5 rounded transition-colors" title="Apply Damage/Healing">⚔️</button>
+                                
+                                <div class="flex justify-between px-2 mb-2 text-[10px] font-bold uppercase text-ink font-heading items-center">
+                                    <span class="flex items-center gap-1">MAX HP: 
+                                        <input type="number" class="w-10 text-blood bg-transparent border-b border-dashed border-gray-400 text-center" data-key="hpMax">
+                                        <button onclick="window.autoCalcHP(true)" class="text-[10px] bg-[rgba(255,255,255,0.5)] border border-[rgba(139,90,43,0.4)] text-ink hover:bg-[rgba(197,160,89,0.2)] hover:border-blood px-1.5 rounded transition-all read-only-hide" title="Auto-Calculate HP (Average + CON)">⟳</button>
+                                    </span>
+                                    <span class="flex items-center gap-1"><span id="label-term-hd-inline">HD:</span> 
+                                        <input type="number" class="w-8 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hdCurrent"> / 
+                                        <input type="text" class="w-16 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hd" placeholder="1d10">
+                                    </span>
                                 </div>
                                 
-                                <div class="sheet-card text-center py-8 relative shadow-inner">
-                                    <button onclick="window.openHpAdjustmentModal()" class="absolute top-2 left-2 text-xs bg-transparent hover:bg-blood text-blood hover:text-parchment border border-blood p-1.5 rounded transition-colors" title="Apply Damage/Healing">⚔️</button>
-                                    
-                                    <div class="flex justify-between px-2 mb-2 text-[10px] font-bold uppercase text-ink font-heading items-center">
-                                        <span class="flex items-center gap-1">MAX HP: 
-                                            <input type="number" class="w-10 text-blood bg-transparent border-b border-dashed border-gray-400 text-center" data-key="hpMax">
-                                            <button onclick="window.autoCalcHP(true)" class="text-[10px] bg-[rgba(255,255,255,0.5)] border border-[rgba(139,90,43,0.4)] text-ink hover:bg-[rgba(197,160,89,0.2)] hover:border-blood px-1.5 rounded transition-all read-only-hide" title="Auto-Calculate HP (Average + CON)">⟳</button>
-                                        </span>
-                                        <span class="flex items-center gap-1"><span id="label-term-hd-inline">HD:</span> 
-                                            <input type="number" class="w-8 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hdCurrent"> / 
-                                            <input type="text" class="w-16 text-center bg-transparent border-b border-dashed border-gray-400" data-key="hd" placeholder="1d10">
-                                        </span>
-                                    </div>
-                                    
-                                    <input type="number" class="text-7xl font-black text-center w-full mb-1 text-blood font-heading drop-shadow-sm bg-transparent border-none mt-4" data-key="hpCurrent" placeholder="10">
-                                    <div id="label-term-hp" class="text-[10px] font-bold uppercase mt-2 font-heading text-555 border-b border-dashed border-gray-400 pb-2 mx-8">Health Points</div>
-                                    
-                                    <input type="number" class="text-xl font-bold text-center w-full mt-6 text-ink bg-transparent border-none" data-key="tempHp" placeholder="Temp HP">
-                                    <div id="label-term-temphp" class="text-[10px] font-bold uppercase mt-1 text-555 font-heading">Temporary Hit Points</div>
-                                    
-                                    <div class="flex gap-2 justify-center mt-6 font-heading">
-                                        <button onclick="window.rest('short')" class="bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">Short Rest</button>
-                                        <button onclick="window.rest('long')" class="fantasy-btn px-6 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">Long Rest</button>
-                                    </div>
-                                </div>
+                                <input type="number" class="text-7xl font-black text-center w-full mb-1 text-blood font-heading drop-shadow-sm bg-transparent border-none mt-4" data-key="hpCurrent" placeholder="10">
+                                <div id="label-term-hp" class="text-[10px] font-bold uppercase mt-2 font-heading text-555 border-b border-dashed border-gray-400 pb-2 mx-8">Health Points</div>
                                 
-                                <div class="sheet-card">
-                                    <h3 id="death-coma-header">Death & Coma</h3>
-                                    <div class="text-center space-y-4">
-                                        <button id="death-save-roll-btn" onclick="window.rollDeathSave()" class="w-full bg-blood hover:bg-red-800 text-parchment py-2 rounded font-bold uppercase text-[10px] mb-2 shadow read-only-hide transition-all border border-gold font-heading">Roll Death Save</button>
-                                        
-                                        <div id="save-type-label" class="uppercase text-[10px] font-bold text-555 tracking-widest font-heading">Death Saves</div>
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div class="text-green-900 text-[10px] font-bold uppercase font-heading">Success</div>
-                                            <div class="flex gap-2">
-                                                <div onclick="window.toggleDS('succ', 1)" id="ds-succ-1" class="ds-dot"></div>
-                                                <div onclick="window.toggleDS('succ', 2)" id="ds-succ-2" class="ds-dot"></div>
-                                                <div onclick="window.toggleDS('succ', 3)" id="ds-succ-3" class="ds-dot"></div>
-                                            </div>
-                                            <div class="text-blood text-[10px] font-bold uppercase mt-2 font-heading">Failure</div>
-                                            <div class="flex gap-2">
-                                                <div onclick="window.toggleDS('fail', 1)" id="ds-fail-1" class="ds-dot"></div>
-                                                <div onclick="window.toggleDS('fail', 2)" id="ds-fail-2" class="ds-dot"></div>
-                                                <div onclick="window.toggleDS('fail', 3)" id="ds-fail-3" class="ds-dot"></div>
-                                            </div>
+                                <input type="number" class="text-xl font-bold text-center w-full mt-6 text-ink bg-transparent border-none" data-key="tempHp" placeholder="Temp HP">
+                                <div id="label-term-temphp" class="text-[10px] font-bold uppercase mt-1 text-555 font-heading">Temporary Hit Points</div>
+                                
+                                <div class="flex gap-2 justify-center mt-6 font-heading">
+                                    <button onclick="window.rest('short')" class="bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment px-4 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">Short Rest</button>
+                                    <button onclick="window.rest('long')" class="fantasy-btn px-6 py-1.5 rounded text-[10px] font-bold uppercase transition-colors">Long Rest</button>
+                                </div>
+                            </div>
+                            
+                            <div class="sheet-card">
+                                <h3 id="death-coma-header">Death & Coma</h3>
+                                <div class="text-center space-y-4">
+                                    <button id="death-save-roll-btn" onclick="window.rollDeathSave()" class="w-full bg-blood hover:bg-red-800 text-parchment py-2 rounded font-bold uppercase text-[10px] mb-2 shadow read-only-hide transition-all border border-gold font-heading">Roll Death Save</button>
+                                    
+                                    <div id="save-type-label" class="uppercase text-[10px] font-bold text-555 tracking-widest font-heading">Death Saves</div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="text-green-900 text-[10px] font-bold uppercase font-heading">Success</div>
+                                        <div class="flex gap-2">
+                                            <div onclick="window.toggleDS('succ', 1)" id="ds-succ-1" class="ds-dot"></div>
+                                            <div onclick="window.toggleDS('succ', 2)" id="ds-succ-2" class="ds-dot"></div>
+                                            <div onclick="window.toggleDS('succ', 3)" id="ds-succ-3" class="ds-dot"></div>
                                         </div>
-                                        <div class="pt-4 border-t border-dashed border-gray-400 flex items-center justify-center gap-2">
-                                            <input type="checkbox" data-key="comaActive" id="coma-active-check" class="w-4 h-4" onchange="window.handleComaToggle(this.checked)">
-                                            <span class="text-[10px] font-bold uppercase text-blood font-heading">Active Coma</span>
+                                        <div class="text-blood text-[10px] font-bold uppercase mt-2 font-heading">Failure</div>
+                                        <div class="flex gap-2">
+                                            <div onclick="window.toggleDS('fail', 1)" id="ds-fail-1" class="ds-dot"></div>
+                                            <div onclick="window.toggleDS('fail', 2)" id="ds-fail-2" class="ds-dot"></div>
+                                            <div onclick="window.toggleDS('fail', 3)" id="ds-fail-3" class="ds-dot"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="sheet-card">
-                                    <h3 id="label-term-stress-header">Stress & Trauma</h3>
-                                    <div class="flex justify-around items-center mb-4 mt-2">
-                                        <div class="text-center"><input type="number" data-key="currentStress" class="text-3xl font-bold text-center w-20 text-blood font-heading border-b border-dashed border-gray-400" value="0"><label class="tiny-label mt-1">Current</label></div>
-                                        <div class="text-3xl text-gray-400 font-light">/</div>
-                                        <div class="text-center"><input type="number" data-key="stressThreshold" class="text-3xl font-bold text-center w-20 text-ink font-heading border-b border-dashed border-gray-400" value="10"><label class="tiny-label mt-1">Threshold</label></div>
+                                    <div class="pt-4 border-t border-dashed border-gray-400 flex items-center justify-center gap-2">
+                                        <input type="checkbox" data-key="comaActive" id="coma-active-check" class="w-4 h-4" onchange="window.handleComaToggle(this.checked)">
+                                        <span class="text-[10px] font-bold uppercase text-blood font-heading">Active Coma</span>
                                     </div>
-                                    <textarea data-key="trauma" class="text-xs italic font-serif h-12 w-full bg-transparent border-t border-dashed border-gray-400 pt-3" placeholder="Scars and traumas..."></textarea>
                                 </div>
+                            </div>
+                            <div class="sheet-card">
+                                <h3 id="label-term-stress-header">Stress & Trauma</h3>
+                                <div class="flex justify-around items-center mb-4 mt-2">
+                                    <div class="text-center"><input type="number" data-key="currentStress" class="text-3xl font-bold text-center w-20 text-blood font-heading border-b border-dashed border-gray-400" value="0"><label class="tiny-label mt-1">Current</label></div>
+                                    <div class="text-3xl text-gray-400 font-light">/</div>
+                                    <div class="text-center"><input type="number" data-key="stressThreshold" class="text-3xl font-bold text-center w-20 text-ink font-heading border-b border-dashed border-gray-400" value="10"><label class="tiny-label mt-1">Threshold</label></div>
+                                </div>
+                                <textarea data-key="trauma" class="text-xs italic font-serif h-12 w-full bg-transparent border-t border-dashed border-gray-400 pt-3" placeholder="Scars and traumas..."></textarea>
+                            </div>
 
-                                <div id="dynamic-class-trackers-card" class="sheet-card hidden">
-                                    <h3 id="dynamic-class-title">Vocation Trackers</h3>
-                                    <div id="dynamic-class-trackers-content" class="mt-4"></div>
-                                </div>
+                            <div id="dynamic-class-trackers-card" class="sheet-card hidden">
+                                <h3 id="dynamic-class-title">Vocation Trackers</h3>
+                                <div id="dynamic-class-trackers-content" class="mt-4"></div>
                             </div>
                         </div>
 
-                        <div class="lg:col-span-6 space-y-6">
-                            <div id="whisper-display-box" class="hidden-view">
-                                <div class="sheet-card !bg-[rgba(124,58,237,0.1)] !border-[#7c3aed]">
+                        <!-- Column 3: Identity & Logs -->
+                        <div class="lg:col-span-4 flex flex-col gap-6">
+                            <div id="whisper-display-box" class="hidden-view shrink-0">
+                                <div class="sheet-card !bg-[rgba(124,58,237,0.1)] !border-[#7c3aed] !mb-0">
                                     <h3 class="!text-[#7c3aed] !border-[#7c3aed]">DM Whispers</h3>
                                     <div id="whispers-list" class="space-y-3 max-h-[200px] overflow-y-auto pr-2 text-sm italic scrollbar-hide text-ink"></div>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="flex flex-col gap-2">
-                                    <div class="sheet-card h-48 flex flex-col items-center justify-center border-2 border-dashed border-gold bg-transparent group relative overflow-hidden p-1">
-                                        <div id="portrait-media-display" class="absolute inset-0 w-full h-full p-1"></div>
-                                        <div id="portrait-placeholder" class="text-center opacity-40 transition-opacity z-10">
-                                            <span class="text-4xl text-ink">👤</span><br>
-                                            <span class="text-[10px] font-bold uppercase text-ink font-heading">Portrait Media</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="tiny-label">Media URL (Img/Gif/Mp4)</label>
-                                        <input type="text" id="portrait-url-input" data-key="imageSrc" class="text-[10px] w-full" placeholder="Paste URL here..." onchange="window.saveCurrentCharacter()">
+                            <div class="flex flex-col gap-2 shrink-0">
+                                <div class="sheet-card h-56 flex flex-col items-center justify-center border-2 border-dashed border-gold bg-transparent group relative overflow-hidden p-1 !mb-0">
+                                    <div id="portrait-media-display" class="absolute inset-0 w-full h-full p-1"></div>
+                                    <div id="portrait-placeholder" class="text-center opacity-40 transition-opacity z-10">
+                                        <span class="text-4xl text-ink">👤</span><br>
+                                        <span class="text-[10px] font-bold uppercase text-ink font-heading">Portrait Media</span>
                                     </div>
                                 </div>
-                                <div class="sheet-card h-48 flex flex-col">
-                                    <h3>Roll History</h3>
-                                    <div id="dice-log" class="flex-grow overflow-y-auto text-[10px] font-mono p-2 space-y-1 bg-[rgba(255,255,255,0.4)] rounded border border-[rgba(139,90,43,0.3)] scrollbar-hide"></div>
+                                <div>
+                                    <label class="tiny-label">Media URL (Img/Gif/Mp4)</label>
+                                    <input type="text" id="portrait-url-input" data-key="imageSrc" class="text-[10px] w-full" placeholder="Paste URL here..." onchange="window.saveCurrentCharacter()">
                                 </div>
                             </div>
 
-                            <div class="sheet-tabs-container">
-                                <div class="tab-header-row">
-                                    <button onclick="window.switchSheetTab('actions')" class="tab-btn active" id="tab-btn-actions">Actions</button>
-                                    <button onclick="window.switchSheetTab('inventory')" class="tab-btn" id="tab-btn-inventory">Inventory</button>
-                                    <button onclick="window.switchSheetTab('features')" class="tab-btn" id="tab-btn-features">Traits</button>
-                                    <button onclick="window.switchSheetTab('background')" class="tab-btn" id="tab-btn-background">Background</button>
-                                    <button onclick="window.switchSheetTab('companion')" class="tab-btn" id="tab-btn-companion">Companion</button>
-                                    <button onclick="window.switchSheetTab('notes')" class="tab-btn" id="tab-btn-notes">Notes</button>
-                                </div>
-                                
-                                <div class="tab-content-area">
-                                    <div id="tab-content-actions" class="tab-pane">
-                                        <div id="label-term-attacks" class="beyond-header">Attacks & Scriptcasting</div>
+                            <div class="sheet-card flex-grow min-h-[200px] flex flex-col !mb-0">
+                                <h3>Roll History</h3>
+                                <div id="dice-log" class="flex-grow overflow-y-auto text-[10px] font-mono p-2 space-y-1 bg-[rgba(255,255,255,0.4)] rounded border border-[rgba(139,90,43,0.3)] scrollbar-hide"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABS AREA (FULL WIDTH) -->
+                    <div class="sheet-tabs-container mt-8">
+                        <div class="tab-header-row">
+                            <button onclick="window.switchSheetTab('actions')" class="tab-btn active" id="tab-btn-actions">Actions</button>
+                            <button onclick="window.switchSheetTab('inventory')" class="tab-btn" id="tab-btn-inventory">Inventory</button>
+                            <button onclick="window.switchSheetTab('features')" class="tab-btn" id="tab-btn-features">Traits</button>
+                            <button onclick="window.switchSheetTab('background')" class="tab-btn" id="tab-btn-background">Background</button>
+                            <button onclick="window.switchSheetTab('companion')" class="tab-btn" id="tab-btn-companion">Companion</button>
+                            <button onclick="window.switchSheetTab('notes')" class="tab-btn" id="tab-btn-notes">Notes</button>
+                        </div>
+                        
+                        <div class="tab-content-area">
+                            <div id="tab-content-actions" class="tab-pane">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                                    <!-- Left Column -->
+                                    <div>
+                                        <div id="label-term-attacks" class="beyond-header mt-0">Attacks & Scriptcasting</div>
                                         <div class="equip-header"><span>Name</span><span>Atk</span><span>Dmg</span><span></span></div>
                                         <div id="attacks-list" class="space-y-1 mb-4"></div>
-                                        <button id="add-attack-btn" onclick="window.addAttackItem()" class="w-full py-2 border-2 border-dashed border-[rgba(139,90,43,0.4)] text-[10px] font-bold text-ink uppercase rounded hover:border-blood transition-colors font-heading">+ Add Weapon</button>
+                                        <button id="add-attack-btn" onclick="window.addAttackItem()" class="w-full py-2 border-2 border-dashed border-[rgba(139,90,43,0.4)] text-[10px] font-bold text-ink uppercase rounded hover:border-blood transition-colors font-heading mb-8">+ Add Weapon</button>
                                         
-                                        <div id="label-term-defenses" class="beyond-header">Defenses</div>
-                                        <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner space-y-3 mb-4">
+                                        <div id="label-term-proficiencies" class="beyond-header">Proficiencies & Training</div>
+                                        <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner">
+                                            <div class="prof-group">
+                                                <label class="prof-label">Armor</label>
+                                                <input type="text" data-key="profArmor" class="prof-list-text w-full italic" placeholder="Shield, Light Armor: Leather..." oninput="window.calcMods()">
+                                            </div>
+                                            <div class="prof-group">
+                                                <label class="prof-label">Weapons</label>
+                                                <input type="text" data-key="profWeapons" class="prof-list-text w-full italic" placeholder="Simple Weapons, Martial Weapons...">
+                                            </div>
+                                            <div class="prof-group">
+                                                <label class="prof-label">Tools</label>
+                                                <input type="text" data-key="profTools" class="prof-list-text w-full italic" placeholder="Tinker's Tools, Thieves' Tools...">
+                                            </div>
+                                            <div class="prof-group">
+                                                <label class="prof-label">Languages</label>
+                                                <div id="languages-list" class="flex flex-wrap gap-x-2 gap-y-1 mb-2 text-xs font-bold text-ink"></div>
+                                                <div class="flex gap-2 read-only-hide mt-2">
+                                                    <input type="text" id="lang-input" class="text-xs border-b border-gold px-2 h-7 flex-grow" placeholder="Add Language...">
+                                                    <button onclick="window.addLanguageItem()" class="bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment px-3 rounded text-[9px] font-bold h-7 transition-colors font-heading uppercase">Add</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Column -->
+                                    <div>
+                                        <div id="label-term-defenses" class="beyond-header mt-0">Defenses</div>
+                                        <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner space-y-3 mb-8">
                                             <div>
                                                 <label class="prof-label">Damage Resistances</label>
                                                 <input type="text" data-key="defResistances" class="prof-list-text w-full italic" placeholder="Fire, Poison...">
@@ -535,7 +576,7 @@
                                                 </div>
                                             </div>
                                             <div class="prof-label mb-2 border-t border-dashed border-[rgba(139,90,43,0.3)] pt-2">Active Conditions</div>
-                                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-2">
+                                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-y-2 gap-x-2">
                                                 <label class="cond-row"><input type="checkbox" data-key="cond_blinded"> Blinded</label>
                                                 <label class="cond-row"><input type="checkbox" data-key="cond_charmed"> Charmed</label>
                                                 <label class="cond-row"><input type="checkbox" data-key="cond_deafened"> Deafened</label>
@@ -552,114 +593,92 @@
                                                 <label class="cond-row"><input type="checkbox" data-key="cond_unconscious"> Unconscious</label>
                                             </div>
                                         </div>
-
-                                        <div id="label-term-proficiencies" class="beyond-header">Proficiencies & Training</div>
-                                        <div class="bg-[rgba(255,255,255,0.3)] border border-[rgba(139,90,43,0.3)] rounded p-4 shadow-inner">
-                                            <div class="prof-group">
-                                                <label class="prof-label">Armor</label>
-                                                <input type="text" data-key="profArmor" class="prof-list-text w-full italic" placeholder="Shield, Light Armor: Leather..." oninput="window.calcMods()">
-                                            </div>
-                                            <div class="prof-group">
-                                                <label class="prof-label">Weapons</label>
-                                                <input type="text" data-key="profWeapons" class="prof-list-text w-full italic" placeholder="Simple Weapons, Martial Weapons...">
-                                            </div>
-                                            <div class="prof-group">
-                                                <label class="prof-label">Tools</label>
-                                                <input type="text" data-key="profTools" class="prof-list-text w-full italic" placeholder="Tinker's Tools, Thieves' Tools...">
-                                            </div>
-                                            <div class="prof-group">
-                                                <label class="prof-label">Languages</label>
-                                                <div id="languages-list" class="flex flex-wrap gap-x-2 gap-y-1 mb-2 text-xs font-bold text-ink"></div>
-                                                <div class="flex gap-2 read-only-hide mt-2">
-                                                    <input type="text" id="lang-input" class="text-xs border-b border-gold px-2 h-7 flex-grow" placeholder="Add Language...">
-                                                    <button onclick="window.addLanguageItem()" class="bg-transparent border border-ink text-ink hover:bg-ink hover:text-parchment px-3 rounded text-[9px] font-bold h-7 transition-colors font-heading uppercase">Add</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div id="tab-content-inventory" class="tab-pane hidden">
-                                        <div id="label-term-currency" class="beyond-header">Currency</div>
-                                        <div class="grid grid-cols-4 gap-4 mb-8">
-                                            <div class="char-box text-center"><label class="char-label">CP</label><input type="text" data-key="currencyCP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
-                                            <div class="char-box text-center"><label class="char-label">SP</label><input type="text" data-key="currencySP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
-                                            <div class="char-box text-center"><label class="char-label">GP</label><input type="text" data-key="currencyGP" class="char-val text-center text-lg font-heading font-bold text-gold" placeholder="0"></div>
-                                            <div class="char-box text-center"><label class="char-label">PP</label><input type="text" data-key="currencyPP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
-                                        </div>
-                                        
-                                        <div id="dynamic-class-equip-section" class="hidden mb-6 mt-6">
-                                            <div class="beyond-header">Vocation Loadout</div>
-                                            <div id="dynamic-class-equip-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                                        </div>
-
-                                        <div id="label-term-equipment" class="beyond-header">Equipment</div>
-                                        <textarea data-key="inventory" class="text-[12px] h-64 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded w-full font-serif" placeholder="Detailed Inventory list..."></textarea>
-                                    </div>
-
-                                    <div id="tab-content-features" class="tab-pane hidden">
-                                        <div id="label-term-traits" class="beyond-header">Personality & Traits</div>
-                                        <div class="trait-section">
-                                            <label id="label-term-personality" class="trait-title">Personality Traits</label>
-                                            <textarea data-key="traits" class="trait-input-area font-serif" placeholder="+ Add Personality Traits"></textarea>
-                                        </div>
-                                        <div class="trait-section">
-                                            <label id="label-term-ideals" class="trait-title">Ideals</label>
-                                            <textarea data-key="ideals" class="trait-input-area font-serif" placeholder="+ Add Ideals"></textarea>
-                                        </div>
-                                        <div class="trait-section">
-                                            <label id="label-term-bonds" class="trait-title">Bonds</label>
-                                            <textarea data-key="bonds" class="trait-input-area font-serif" placeholder="+ Add Bonds"></textarea>
-                                        </div>
-                                        <div class="trait-section">
-                                            <label id="label-term-flaws" class="trait-title">Flaws</label>
-                                            <textarea data-key="flaws" class="trait-input-area font-serif" placeholder="+ Add Flaws"></textarea>
-                                        </div>
-                                        
-                                        <div id="dynamic-class-features-section" class="hidden mt-6">
-                                            <div class="beyond-header">Vocation Features</div>
-                                            <div id="dynamic-class-features-content" class="space-y-4"></div>
-                                        </div>
-                                    </div>
-
-                                    <div id="tab-content-background" class="tab-pane hidden">
-                                        <div class="sub-filter-row">
-                                            <button onclick="window.switchSubFilter('all')" class="sub-btn active" id="sub-btn-all">All</button>
-                                            <button onclick="window.switchSubFilter('background')" class="sub-btn" id="sub-btn-background">Background</button>
-                                            <button onclick="window.switchSubFilter('characteristics')" class="sub-btn" id="sub-btn-characteristics">Appearance</button>
-                                        </div>
-                                        <div id="sub-content-background" class="sub-pane">
-                                            <div id="label-term-background" class="beyond-header">Background</div>
-                                            <div class="mb-6">
-                                                <input type="text" data-key="backgroundTitle" class="text-lg font-bold w-full mb-1 font-heading text-blood" placeholder="Background Title">
-                                                <textarea data-key="backgroundDesc" class="text-sm text-ink w-full h-24 bg-transparent border-t border-[rgba(139,90,43,0.2)] pt-2" placeholder="Feature Description..."></textarea>
-                                            </div>
-                                        </div>
-                                        <div id="sub-content-characteristics" class="sub-pane">
-                                            <div id="label-term-characteristics" class="beyond-header">Characteristics & Appearance</div>
-                                            <div class="char-grid">
-                                                <div class="char-box"><label class="char-label">Gender</label><input type="text" data-key="gender" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Eyes</label><input type="text" data-key="eyes" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Size</label><input type="text" data-key="size" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Height</label><input type="text" data-key="height" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Hair</label><input type="text" data-key="hair" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Skin</label><input type="text" data-key="skin" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Age</label><input type="text" data-key="age" class="char-val" placeholder="--"></div>
-                                                <div class="char-box"><label class="char-label">Weight</label><input type="text" data-key="weight" class="char-val" placeholder="--"></div>
-                                            </div>
-                                            <textarea data-key="appearance" class="text-sm text-ink w-full h-32 bg-transparent border-t border-[rgba(139,90,43,0.2)] pt-2 mt-4" placeholder="+ Add Appearance information"></textarea>
-                                        </div>
-                                    </div>
-                                    
-                                    <div id="tab-content-companion" class="tab-pane hidden">
-                                        <div id="label-term-companion" class="beyond-header">Personal Companion</div>
-                                        <div id="companion-view-area"></div>
-                                    </div>
-
-                                    <div id="tab-content-notes" class="tab-pane hidden">
-                                        <div id="label-term-notes" class="beyond-header">Character Notes</div>
-                                        <textarea data-key="notes" class="text-[12px] h-96 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded font-serif w-full" placeholder="Character history, secret notes..."></textarea>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div id="tab-content-inventory" class="tab-pane hidden">
+                                <div id="label-term-currency" class="beyond-header mt-0">Currency</div>
+                                <div class="grid grid-cols-4 gap-4 mb-8">
+                                    <div class="char-box text-center"><label class="char-label">CP</label><input type="text" data-key="currencyCP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
+                                    <div class="char-box text-center"><label class="char-label">SP</label><input type="text" data-key="currencySP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
+                                    <div class="char-box text-center"><label class="char-label">GP</label><input type="text" data-key="currencyGP" class="char-val text-center text-lg font-heading font-bold text-gold" placeholder="0"></div>
+                                    <div class="char-box text-center"><label class="char-label">PP</label><input type="text" data-key="currencyPP" class="char-val text-center text-lg font-heading font-bold" placeholder="0"></div>
+                                </div>
+                                
+                                <div id="dynamic-class-equip-section" class="hidden mb-6 mt-6">
+                                    <div class="beyond-header">Vocation Loadout</div>
+                                    <div id="dynamic-class-equip-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                                </div>
+
+                                <div id="label-term-equipment" class="beyond-header">Equipment</div>
+                                <textarea data-key="inventory" class="text-[12px] h-64 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded w-full font-serif" placeholder="Detailed Inventory list..."></textarea>
+                            </div>
+
+                            <div id="tab-content-features" class="tab-pane hidden">
+                                <div id="label-term-traits" class="beyond-header mt-0">Personality & Traits</div>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="trait-section mb-0">
+                                        <label id="label-term-personality" class="trait-title">Personality Traits</label>
+                                        <textarea data-key="traits" class="trait-input-area font-serif h-full min-h-[80px]" placeholder="+ Add Personality Traits"></textarea>
+                                    </div>
+                                    <div class="trait-section mb-0">
+                                        <label id="label-term-ideals" class="trait-title">Ideals</label>
+                                        <textarea data-key="ideals" class="trait-input-area font-serif h-full min-h-[80px]" placeholder="+ Add Ideals"></textarea>
+                                    </div>
+                                    <div class="trait-section mb-0">
+                                        <label id="label-term-bonds" class="trait-title">Bonds</label>
+                                        <textarea data-key="bonds" class="trait-input-area font-serif h-full min-h-[80px]" placeholder="+ Add Bonds"></textarea>
+                                    </div>
+                                    <div class="trait-section mb-0">
+                                        <label id="label-term-flaws" class="trait-title">Flaws</label>
+                                        <textarea data-key="flaws" class="trait-input-area font-serif h-full min-h-[80px]" placeholder="+ Add Flaws"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div id="dynamic-class-features-section" class="hidden mt-8">
+                                    <div class="beyond-header">Vocation Features</div>
+                                    <div id="dynamic-class-features-content" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                                </div>
+                            </div>
+
+                            <div id="tab-content-background" class="tab-pane hidden">
+                                <div class="sub-filter-row">
+                                    <button onclick="window.switchSubFilter('all')" class="sub-btn active" id="sub-btn-all">All</button>
+                                    <button onclick="window.switchSubFilter('background')" class="sub-btn" id="sub-btn-background">Background</button>
+                                    <button onclick="window.switchSubFilter('characteristics')" class="sub-btn" id="sub-btn-characteristics">Appearance</button>
+                                </div>
+                                <div id="sub-content-background" class="sub-pane">
+                                    <div id="label-term-background" class="beyond-header">Background</div>
+                                    <div class="mb-6">
+                                        <input type="text" data-key="backgroundTitle" class="text-lg font-bold w-full mb-1 font-heading text-blood" placeholder="Background Title">
+                                        <textarea data-key="backgroundDesc" class="text-sm text-ink w-full h-24 bg-transparent border-t border-[rgba(139,90,43,0.2)] pt-2" placeholder="Feature Description..."></textarea>
+                                    </div>
+                                </div>
+                                <div id="sub-content-characteristics" class="sub-pane">
+                                    <div id="label-term-characteristics" class="beyond-header">Characteristics & Appearance</div>
+                                    <div class="char-grid">
+                                        <div class="char-box"><label class="char-label">Gender</label><input type="text" data-key="gender" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Eyes</label><input type="text" data-key="eyes" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Size</label><input type="text" data-key="size" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Height</label><input type="text" data-key="height" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Hair</label><input type="text" data-key="hair" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Skin</label><input type="text" data-key="skin" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Age</label><input type="text" data-key="age" class="char-val" placeholder="--"></div>
+                                        <div class="char-box"><label class="char-label">Weight</label><input type="text" data-key="weight" class="char-val" placeholder="--"></div>
+                                    </div>
+                                    <textarea data-key="appearance" class="text-sm text-ink w-full h-32 bg-transparent border-t border-[rgba(139,90,43,0.2)] pt-2 mt-4" placeholder="+ Add Appearance information"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div id="tab-content-companion" class="tab-pane hidden">
+                                <div id="label-term-companion" class="beyond-header mt-0">Personal Companion</div>
+                                <div id="companion-view-area"></div>
+                            </div>
+
+                            <div id="tab-content-notes" class="tab-pane hidden">
+                                <div id="label-term-notes" class="beyond-header mt-0">Character Notes</div>
+                                <textarea data-key="notes" class="text-[12px] h-96 p-3 bg-[rgba(255,255,255,0.4)] border border-[rgba(139,90,43,0.3)] rounded font-serif w-full" placeholder="Character history, secret notes..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -1063,24 +1082,30 @@
     </div>
 
     <!-- ROLLER BAR -->
-    <div id="quick-roll-bar" class="hidden-view floating-roller font-heading">
-        <div class="flex items-center justify-between mb-4 border-b border-[rgba(139,90,43,0.3)] pb-2 text-ink">
-            <div class="flex items-center gap-2">
-                <input type="number" id="roll-count" value="1" min="1" class="w-8 text-center font-black bg-[rgba(255,255,255,0.5)] rounded border border-gold font-serif">
-                <div class="h-4 w-px bg-gold mx-1"></div>
-                <button onclick="window.setRollMode('normal')" class="mode-btn roll-mode active-norm" id="mode-norm">Nrm</button>
-                <button onclick="window.setRollMode('adv')" class="mode-btn roll-mode" id="mode-adv">Adv</button>
-                <button onclick="window.setRollMode('dis')" class="mode-btn roll-mode" id="mode-dis">Dis</button>
+    <div id="quick-roll-bar-wrapper" class="hidden-view roller-wrapper font-heading">
+        <button onclick="window.toggleRoller()" id="roller-toggle-btn" class="roller-toggle" title="Toggle Dice Roller">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div id="quick-roll-bar" class="roller-panel">
+            <div class="flex items-center justify-between mb-3 gap-3">
+                <input type="number" id="roll-count" value="1" min="1" class="w-12 h-9 pb-0.5 text-center font-black bg-[rgba(255,255,255,0.7)] rounded border border-dashed border-[#8b5a2b] font-serif text-lg focus:ring-0 text-ink">
+                <div class="h-6 w-px bg-[rgba(139,90,43,0.4)]"></div>
+                <div class="flex gap-1 flex-grow">
+                    <button onclick="window.setRollMode('normal')" class="flex-1 mode-btn roll-mode active-norm py-1.5" id="mode-norm">Nrm</button>
+                    <button onclick="window.setRollMode('adv')" class="flex-1 mode-btn roll-mode py-1.5" id="mode-adv">Adv</button>
+                    <button onclick="window.setRollMode('dis')" class="flex-1 mode-btn roll-mode py-1.5" id="mode-dis">Dis</button>
+                </div>
             </div>
-        </div>
-        <div class="grid grid-cols-4 gap-2">
-            <button onclick="window.rollDice(4)" class="dice-grid-btn">d4</button>
-            <button onclick="window.rollDice(6)" class="dice-grid-btn">d6</button>
-            <button onclick="window.rollDice(8)" class="dice-grid-btn">d8</button>
-            <button onclick="window.rollDice(10)" class="dice-grid-btn">d10</button>
-            <button onclick="window.rollDice(12)" class="dice-grid-btn">d12</button>
-            <button onclick="window.rollDice(20)" class="dice-grid-btn !border-blood !text-blood hover:!bg-blood hover:!text-parchment">d20</button>
-            <button onclick="window.rollDice(100)" class="dice-grid-btn">d%</button>
+            <hr class="border-[rgba(139,90,43,0.4)] mb-4">
+            <div class="grid grid-cols-4 gap-3">
+                <button onclick="window.rollDice(4)" class="dice-grid-btn">D4</button>
+                <button onclick="window.rollDice(6)" class="dice-grid-btn">D6</button>
+                <button onclick="window.rollDice(8)" class="dice-grid-btn">D8</button>
+                <button onclick="window.rollDice(10)" class="dice-grid-btn">D10</button>
+                <button onclick="window.rollDice(12)" class="dice-grid-btn">D12</button>
+                <button onclick="window.rollDice(20)" class="dice-grid-btn !border-blood !text-blood hover:!bg-blood hover:!text-parchment">D20</button>
+                <button onclick="window.rollDice(100)" class="dice-grid-btn">D%</button>
+            </div>
         </div>
     </div>
 
@@ -1648,8 +1673,8 @@
             return d;
         }
 
-        window.openSheet = (id) => { activeCharId = id; document.getElementById('dashboard-screen')?.classList.add('hidden-view'); document.getElementById('sheet-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar')?.classList.remove('hidden-view'); initSheetUI(); syncSheetData(); window.switchSheetTab('actions'); window.switchSubFilter('all'); window.scrollTo(0,0); };
-        window.closeSheet = () => { activeCharId = null; document.getElementById('sheet-screen')?.classList.add('hidden-view'); document.getElementById('dashboard-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar')?.classList.add('hidden-view'); window.scrollTo(0,0);};
+        window.openSheet = (id) => { activeCharId = id; document.getElementById('dashboard-screen')?.classList.add('hidden-view'); document.getElementById('sheet-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar-wrapper')?.classList.remove('hidden-view'); initSheetUI(); syncSheetData(); window.switchSheetTab('actions'); window.switchSubFilter('all'); window.scrollTo(0,0); };
+        window.closeSheet = () => { activeCharId = null; document.getElementById('sheet-screen')?.classList.add('hidden-view'); document.getElementById('dashboard-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar-wrapper')?.classList.add('hidden-view'); window.scrollTo(0,0);};
         
         window.createChar = async (type) => { 
             if (!currentUser) return; 
@@ -2036,6 +2061,17 @@
         };
 
         window.setRollMode = (m) => { rollMode = m; document.querySelectorAll('.roll-mode').forEach(b => b.classList.remove('active-norm', 'active-adv', 'active-dis')); if (m === 'normal') document.getElementById('mode-norm').classList.add('active-norm'); else if (m === 'adv') document.getElementById('mode-adv').classList.add('active-adv'); else if (m === 'dis') document.getElementById('mode-dis').classList.add('active-dis'); };
+
+        window.toggleRoller = () => {
+            const panel = document.getElementById('quick-roll-bar');
+            panel.classList.toggle('minimized');
+            const icon = document.querySelector('#roller-toggle-btn i');
+            if (panel.classList.contains('minimized')) {
+                icon.className = 'fa-solid fa-dice-d20';
+            } else {
+                icon.className = 'fa-solid fa-times';
+            }
+        };
 
         window.renderMovesGrid = () => { 
             const fg = document.getElementById('features-lvl-grid'); 
