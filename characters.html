@@ -2361,7 +2361,7 @@
                 if (name) {
                     classes.push({name, level});
                     totalLevel += level;
-                    classStringParts.push(`${name} ${level}`);
+                    classStringParts.push(name);
                 }
             });
             
@@ -2612,11 +2612,13 @@
             let classes = char.classes || [];
             if (classes.length <= 1) {
                 if (classes.length === 1) {
-                    updates.classes = [{name: classes[0].name, level: nextLevel}];
-                    updates.class = `${classes[0].name} ${nextLevel}`;
+                    let cleanName = classes[0].name.replace(/\s+\d+$/, '').trim();
+                    updates.classes = [{name: cleanName, level: nextLevel}];
+                    updates.class = cleanName;
                 } else if (char.class && char.class.trim() !== '') {
-                    updates.classes = [{name: char.class, level: nextLevel}];
-                    updates.class = `${char.class} ${nextLevel}`;
+                    let cleanName = char.class.replace(/\s+\d+$/, '').trim();
+                    updates.classes = [{name: cleanName, level: nextLevel}];
+                    updates.class = cleanName;
                 }
             } else {
                 window.showToast("Multiclass detected: Don't forget to update your Vocation levels manually!");
