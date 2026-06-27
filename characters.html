@@ -310,15 +310,7 @@
                     <header class="sheet-card mb-8">
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             <div class="lg:col-span-4 flex flex-col gap-4">
-                                <div>
-                                    <div class="flex items-center gap-4 w-full mb-1">
-                                        <input type="text" id="pc-name-field" class="text-4xl font-bold font-heading w-full text-blood drop-shadow-sm !border-b-2 !border-gold flex-grow" placeholder="Character Name" data-key="name">
-                                        <button id="level-up-alert-btn" onclick="window.openLevelUpModal()" class="hidden shrink-0 bg-gold hover:bg-yellow-400 text-ink font-black uppercase text-xs px-4 py-2 rounded shadow-[0_0_15px_rgba(197,160,89,0.8)] animate-pulse border-2 border-ink font-heading tracking-widest">
-                                            Level Up!
-                                        </button>
-                                    </div>
-                                    <label class="tiny-label">Character Name</label>
-                                </div>
+                                <div><input type="text" id="pc-name-field" class="text-4xl font-bold font-heading w-full mb-1 text-blood drop-shadow-sm !border-b-2 !border-gold" placeholder="Character Name" data-key="name"><label class="tiny-label">Character Name</label></div>
                             </div>
                             <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4">
                                 <div>
@@ -672,11 +664,11 @@
                                     <label class="text-[10px] font-bold uppercase text-555 font-heading">Viewing:</label>
                                     <select id="moves-selector" onchange="window.renderMovesGrid()" class="text-[10px] font-bold uppercase border rounded px-2 py-1 bg-transparent border-gold text-ink cursor-pointer font-heading">
                                         <option value="features">Features</option>
-                            <div class="flex items-center gap-2 mt-1">
-                                <input type="checkbox" id="dm-unlock-sheet" class="w-3 h-3 accent-[#f59e0b] cursor-pointer" onchange="window.toggleSheetUnlock(this.checked)">
-                                <label for="dm-unlock-sheet" class="text-[9px] font-black uppercase text-[#f59e0b] tracking-wider font-heading cursor-pointer">Unlock Class/Stats for Player</label>
+                                        <option value="scriptcasting">Scripts</option>
+                                    </select>
+                                </div>
                             </div>
-                            <button onclick="window.grantLevelUp()" class="bg-[#f59e0b] hover:bg-[#d97706] text-[#1c1c1c] px-4 py-1.5 rounded text-[9px] font-black uppercase tracking-widest shadow transition-colors mt-2 w-full font-heading">Grant Level Up</button>
+                            <div id="features-lvl-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                         </div>
                     </div>
                 </div>
@@ -685,49 +677,6 @@
     </div>
 
     <!-- MODALS -->
-    <div id="level-up-modal" class="modal-overlay hidden">
-        <div class="modal-container !max-w-2xl">
-            <h2 class="modal-header" id="level-up-modal-title">Level Up</h2>
-            <div class="space-y-4 font-serif text-sm text-ink mb-6">
-                <p class="italic text-center mb-4">Your character gains new heroic capabilities.</p>
-                
-                <div class="bg-[rgba(255,255,255,0.5)] border border-gold p-4 rounded shadow-inner space-y-3">
-                    <div class="flex gap-3">
-                        <span class="text-xl">❤️</span>
-                        <div><strong class="font-heading uppercase text-blood text-xs">Increase Maximum Hit Points:</strong> You get one new Hit Die. You can either roll it and add your Constitution modifier, or take the fixed average (the number in parentheses in your class description) plus your Constitution modifier. This total is permanently added to your hit point maximum.</div>
-                    </div>
-                    <div class="flex gap-3">
-                        <span class="text-xl">⚔️</span>
-                        <div><strong class="font-heading uppercase text-blood text-xs">Unlock Class Features:</strong> Look at your character's specific class table. You gain any new features, sub-class options, or extra attacks listed for your new level.</div>
-                    </div>
-                    <div class="flex gap-3">
-                        <span class="text-xl">📜</span>
-                        <div><strong class="font-heading uppercase text-blood text-xs">Update Script Slots &amp; <span id="lu-term-scriptcodex">Spells</span> (For Scriptcasters):</strong> If you play a scriptcaster, you will gain access to more script slots and often get to learn or prepare new spells.</div>
-                    </div>
-                    <div class="flex gap-3 relative">
-                        <span class="text-xl">⭐</span>
-                        <div><strong class="font-heading uppercase text-blood text-xs">Boost Ability Scores or Feats:</strong> At certain levels (usually levels 4, 8, 12, 16, and 19), you get an Ability Score Improvement (ASI). You can add +2 to one ability score, +1 to two different ability scores, or choose a powerful Feat instead.</div>
-                        <span id="lu-asi-badge" class="absolute -right-2 top-0 bg-gold text-ink text-[9px] font-black px-2 py-0.5 rounded uppercase hidden animate-pulse shadow-md">Available Now!</span>
-                    </div>
-                    <div class="flex gap-3 relative">
-                        <span class="text-xl">🎯</span>
-                        <div><strong class="font-heading uppercase text-blood text-xs">Adjust Proficiency Bonus:</strong> This bonus scales at levels 5, 9, 13, and 17. It affects how well you perform skills you are trained in, your weapon attack rolls, and your scriptcasting DCs.</div>
-                        <span id="lu-prof-badge" class="absolute -right-2 top-0 bg-blood text-parchment text-[9px] font-black px-2 py-0.5 rounded uppercase hidden animate-pulse shadow-md">Increases Now!</span>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-2 mt-4 p-2 bg-[rgba(139,90,43,0.1)] rounded border border-[rgba(139,90,43,0.3)]">
-                    <input type="checkbox" id="lu-auto-hp" class="w-4 h-4 accent-blood" checked>
-                    <label for="lu-auto-hp" class="text-xs font-bold text-ink uppercase font-heading mt-0.5">Automatically apply Average HP + CON for new level</label>
-                </div>
-            </div>
-            <div class="modal-footer font-heading">
-                <button onclick="document.getElementById('level-up-modal').classList.add('hidden')" class="px-6 py-2 text-555 font-bold uppercase text-xs underline hover:text-ink transition-colors">Delay</button>
-                <button onclick="window.applyLevelUp()" class="fantasy-btn px-8 py-2 rounded font-bold uppercase text-xs shadow-lg">Ascend!</button>
-            </div>
-        </div>
-    </div>
-
     <div id="hp-adjustment-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <h2 class="modal-header">Adjust Health</h2>
@@ -1540,7 +1489,6 @@
             safeSet('tab-btn-background', terms.sheet_background || SHEET_LABELS.background);
             safeSet('tab-btn-companion', terms.sheet_companion || SHEET_LABELS.companion);
             safeSet('tab-btn-notes', terms.sheet_notes || SHEET_LABELS.notes);
-            safeSet('lu-term-scriptcodex', terms.book_scriptcodex || 'Spells');
 
             const vt = document.getElementById('view-title');
             if (vt) {
@@ -1662,10 +1610,10 @@
                     owner: initialOwner, 
                     isDeleted: false, 
                     status: 'alive', 
-                    hpMax: 24, 
-                    hpCurrent: 24, 
+                    hpMax: 10, 
+                    hpCurrent: 10, 
                     tempHp: 0,
-                    level: 3, 
+                    level: 1, 
                     str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, 
                     profBonus: 2, 
                     scoresGenerated: false, 
@@ -1674,8 +1622,7 @@
                     moves: [], 
                     dmWhispers: [], 
                     dsSucc: 0, dsFail: 0, 
-                    hdCurrent: 3, hd: "3d8", 
-                    pendingLevelUp: false,
+                    hdCurrent: 1, hd: "1d8", 
                     age: "", gender: "", alignment: "Neutral", faith: "", hair: "", skin: "", size: "Medium", height: "", weight: "", appearance: "", 
                     backgroundTitle: "New Background", backgroundDesc: "", 
                     profArmor: "", profWeapons: "", profTools: "", 
@@ -1770,16 +1717,6 @@
             
             const dmPanel = document.getElementById('dm-oversight-panel');
             if (dmPanel) dmPanel.classList.toggle('hidden-view', !isDM);
-
-            const pendingLevelUp = !!char.pendingLevelUp;
-            const lvlUpBtn = document.getElementById('level-up-alert-btn');
-            if (lvlUpBtn) {
-                if (pendingLevelUp && canEdit) {
-                    lvlUpBtn.classList.remove('hidden');
-                } else {
-                    lvlUpBtn.classList.add('hidden');
-                }
-            }
 
             const claimBtn = document.getElementById('claim-char-btn'); 
             if (claimBtn) { if (!char.owner && currentUser && char.type !== 'NPC') claimBtn.classList.remove('hidden'); else claimBtn.classList.add('hidden'); }
@@ -2482,83 +2419,6 @@
         window.confirmDeletePartyState = () => { document.getElementById('party-manage-main').classList.add('hidden'); document.getElementById('party-manage-delete').classList.remove('hidden'); };
         window.savePartyRename = async () => { if (!activeManagePartyId) return; const n = document.getElementById('manage-party-name').value; if (!n) return window.showToast("Name required"); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'parties', activeManagePartyId), { name: n }); document.getElementById('manage-party-modal').classList.add('hidden'); window.showToast("Party Renamed"); };
         window.executeDeleteParty = async () => { if (!activeManagePartyId) return; const af = characters.filter(c => c.partyId === activeManagePartyId); for (const char of af) { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', char.id), { partyId: "" }); } await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'parties', activeManagePartyId)); document.getElementById('manage-party-modal').classList.add('hidden'); window.showToast("Party Disbanded"); };
-
-        window.grantLevelUp = async () => {
-            if (!activeCharId || activeRole !== 'dm') return;
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { pendingLevelUp: true });
-            window.showToast("Level Up Granted to Player!");
-        };
-
-        window.openLevelUpModal = () => {
-            const char = characters.find(c => c.id === activeCharId);
-            if (!char) return;
-            const currentLevel = parseInt(char.level) || 3;
-            const nextLevel = currentLevel + 1;
-            document.getElementById('level-up-modal-title').textContent = `Ascension: Level ${currentLevel} ➔ ${nextLevel}`;
-            
-            const isASI = [4, 8, 12, 16, 19].includes(nextLevel);
-            const isProfBoost = [5, 9, 13, 17].includes(nextLevel);
-            
-            document.getElementById('lu-asi-badge').classList.toggle('hidden', !isASI);
-            document.getElementById('lu-prof-badge').classList.toggle('hidden', !isProfBoost);
-            
-            document.getElementById('level-up-modal').classList.remove('hidden');
-        };
-
-        window.applyLevelUp = async () => {
-            const char = characters.find(c => c.id === activeCharId);
-            if (!char) return;
-            const currentLevel = parseInt(char.level) || 3;
-            const nextLevel = currentLevel + 1;
-            
-            const b = nextLevel >= 17 ? 6 : nextLevel >= 13 ? 5 : nextLevel >= 9 ? 4 : nextLevel >= 5 ? 3 : 2; 
-            
-            let updates = {
-                level: nextLevel,
-                pendingLevelUp: false,
-                profBonus: b
-            };
-            
-            let classes = char.classes || [];
-            if (classes.length <= 1) {
-                if (classes.length === 1) {
-                    updates.classes = [{name: classes[0].name, level: nextLevel}];
-                    updates.class = `${classes[0].name} ${nextLevel}`;
-                } else if (char.class && char.class.trim() !== '') {
-                    updates.classes = [{name: char.class, level: nextLevel}];
-                    updates.class = `${char.class} ${nextLevel}`;
-                }
-            } else {
-                window.showToast("Multiclass detected: Don't forget to update your Vocation levels manually!");
-            }
-            
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
-            
-            const lvlIn = document.querySelector('[data-key="level"]');
-            if(lvlIn) lvlIn.value = nextLevel;
-            const profIn = document.querySelector('[data-key="profBonus"]');
-            if(profIn) profIn.value = b;
-            
-            char.level = nextLevel;
-            if(updates.class) char.class = updates.class;
-            if(updates.classes) char.classes = updates.classes;
-            char.profBonus = b;
-            char.pendingLevelUp = false;
-            
-            if (document.getElementById('lu-auto-hp').checked) {
-                window.autoCalcHP(true);
-            }
-            
-            window.calcMods();
-            document.getElementById('level-up-modal').classList.add('hidden');
-            window.showToast(`Welcome to Level ${nextLevel}!`);
-            
-            const overlay = document.getElementById('critical-success-overlay');
-            if (overlay) {
-                overlay.style.opacity = 1;
-                setTimeout(() => overlay.style.opacity = 0, 3000);
-            }
-        };
 
         const setupListeners = () => {
             if (!currentUser) return;
