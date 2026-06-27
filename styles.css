@@ -161,6 +161,7 @@ input[type=number] { -moz-appearance: textfield; }
 .ornamental-hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(139, 90, 43, 0), rgba(139, 90, 43, 0.5), rgba(139, 90, 43, 0)); margin: 15px 0; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Level Up Video Game Animations */
 @keyframes slideUpFade {
     0% { opacity: 0; transform: translateY(20px); }
