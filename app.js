@@ -72,6 +72,7 @@ const VOCATION_DATA = {
 };
 
 window.currentRenderedClass = null;
+window.pendingLevelUpData = null;
 
 window.getVocationAliases = () => {
     const t = campaignSettings?.terms || {};
@@ -93,13 +94,13 @@ window.getVocationAliases = () => {
 };
 
 window.getHitDie = (className) => {
-    if (!className) return 8; // Default
+    if (!className) return 8;
     const c = className.toLowerCase();
     const aliases = window.getVocationAliases();
     if (c.includes(aliases['vanguard'])) return 12;
     if (c.includes(aliases['warrior']) || c.includes(aliases['heartbound']) || c.includes(aliases['nomad'])) return 10;
     if (c.includes(aliases['scriptweaver']) || c.includes(aliases['archivist'])) return 6;
-    return 8; // Default for Orator, Chronicler, Warden, Peacekeeper, Scavenger, War-Touched, Fabricator
+    return 8;
 };
 
 window.autoCalcHP = (force = false) => {
@@ -122,9 +123,9 @@ window.autoCalcHP = (force = false) => {
         
         for (let i = 0; i < lvl; i++) {
             if (idx === 0 && i === 0) {
-                totalHp += (hd + conMod); // Level 1 Max HP rule
+                totalHp += (hd + conMod);
             } else {
-                totalHp += (Math.floor(hd / 2) + 1 + conMod); // Standard Average HP level up rule
+                totalHp += (Math.floor(hd / 2) + 1 + conMod);
             }
         }
     });
@@ -300,7 +301,6 @@ window.routeTo = (page) => {
 let characters = [], parties = [], currentUser = null, activeCharId = null, activeRole = 'player', rollMode = 'normal';
 let autoSaveTimer = null, lastGeneratedScores = [], sessionRerollUsed = false;
 let activeManagePartyId = null, activeMoveLvl = null, editingMoveIndex = null;
-let currentRound = 1, activeTurnId = null, pendingHoldId = null;
 let campaignSettings = { terms: {} };
 
 const SHEET_LABELS = {
@@ -497,7 +497,7 @@ window.openPartyModal = () => { document.getElementById('party-modal')?.classLis
 window.createParty = async () => { const n = document.getElementById('party-name-input'); if (!n || !n.value) return; await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), {name: n.value, createdAt: Date.now()}); document.getElementById('party-modal').classList.add('hidden'); n.value = ''; window.showToast("Party Formed"); };
 
 window.openCompanionSheet = (e, petId) => {
-    e.stopPropagation(); // Stops the click from opening the PC sheet
+    e.stopPropagation();
     try {
         let targetUrl = `companions.html?openSheet=${petId}`;
         if (appId && appId !== "demo_campaign") {
@@ -652,7 +652,6 @@ function syncSheetData() {
     document.querySelectorAll('.read-only-hide').forEach(el => el.classList.toggle('hidden', !canEdit));
     document.getElementById('sheet-readonly-badge').classList.toggle('hidden', canEdit);
     
-    /* PROGRESSION LOCKS */
     const dmUnlockCheck = document.getElementById('dm-unlock-sheet');
     if (dmUnlockCheck) dmUnlockCheck.checked = !!char.unlockedByDM;
 
@@ -1462,12 +1461,11 @@ window.grantLevelUp = async () => {
 };
 
 window.openLevelUpModal = () => {
-    console.log("Level Up button was clicked!"); // Debug check
-
+    console.log("Level Up activated.");
     try {
         const char = characters.find(c => c.id === activeCharId);
         if (!char) {
-            window.showToast("Error: Could not find active character.");
+            window.showToast("Error: Could not locate active profile.");
             return;
         }
         
@@ -1479,7 +1477,6 @@ window.openLevelUpModal = () => {
         if (newClassInput) newClassInput.value = '';
         
         let classes = char.classes || [];
-        // Safety check for characters missing class data
         if (classes.length === 0 && char.class) {
             const safeClassName = typeof char.class === 'string' ? char.class.replace(/\s+\d+$/, '').trim() : 'Unknown';
             classes = [{name: safeClassName || 'Unknown', level: parseInt(char.level) || 1}];
@@ -1488,33 +1485,34 @@ window.openLevelUpModal = () => {
         }
         
         const choicesContainer = document.getElementById('lu-class-choices');
-        choicesContainer.innerHTML = '';
-        
-        classes.forEach(cls => {
-            const safeName = (cls.name || 'Unknown').replace(/'/g, "\\'"); // Prevent JS quote breaking
-            choicesContainer.innerHTML += `
-                <button onclick="window.previewLevelUp('${safeName}', false, ${cls.level})" class="fantasy-btn w-full py-4 rounded shadow text-xs tracking-widest flex justify-between items-center px-6">
-                    <span>Continue ${cls.name || 'Unknown'}</span>
-                    <span class="text-[10px] text-gold font-bold bg-black/40 px-2 py-1 rounded">➔ Level ${(cls.level || 1) + 1}</span>
-                </button>`;
-        });
+        if (choicesContainer) {
+            choicesContainer.innerHTML = '';
+            classes.forEach(cls => {
+                const safeName = (cls.name || 'Unknown').replace(/'/g, "\\'");
+                choicesContainer.innerHTML += `
+                    <button onclick="window.previewLevelUp('${safeName}', false, ${cls.level || 1})" class="fantasy-btn w-full py-4 rounded shadow text-xs tracking-widest flex justify-between items-center px-6">
+                        <span>Continue ${cls.name || 'Unknown'}</span>
+                        <span class="text-[10px] text-gold font-bold bg-black/40 px-2 py-1 rounded">➔ Level ${(cls.level || 1) + 1}</span>
+                    </button>`;
+            });
+        }
         
         document.getElementById('level-up-modal').classList.remove('hidden');
     } catch (err) {
-        console.error("Level Up Modal Error:", err);
-        window.showToast("Error launching UI. Check the developer console.");
+        console.error("UI Framework Error:", err);
+        window.showToast("Error processing sequence window.");
     }
 };
 
 window.previewLevelUp = (className, isNew, currentClassLevel) => {
-    if (!className || className.trim() === '') return window.showToast('Please enter a vocation name');
+    if (!className || className.trim() === '') return window.showToast('Vocation label required');
     const char = characters.find(c => c.id === activeCharId);
+    if (!char) return;
     
     const currentTotalLvl = parseInt(char.level) || 1;
     const newTotalLvl = currentTotalLvl + 1;
     const newClassLvl = parseInt(currentClassLevel) + 1;
     
-    // Store data globally for apply function
     window.pendingLevelUpData = { name: className.trim(), isNew, newClassLvl, newTotalLvl };
     
     const isASI = [4, 8, 12, 16, 19].includes(newClassLvl); 
@@ -1552,9 +1550,14 @@ window.previewLevelUp = (className, isNew, currentClassLevel) => {
             </div>`;
     }
     
-    document.getElementById('lu-gains-list').innerHTML = gainsHtml;
-    document.getElementById('lu-chosen-class-title').innerText = `${className} Level ${newClassLvl}`;
-    document.getElementById('level-up-modal-title').textContent = `Total Level ${newTotalLvl}`;
+    const gl = document.getElementById('lu-gains-list');
+    if (gl) gl.innerHTML = gainsHtml;
+    
+    const cc = document.getElementById('lu-chosen-class-title');
+    if (cc) cc.innerText = `${className} Level ${newClassLvl}`;
+    
+    const mt = document.getElementById('level-up-modal-title');
+    if (mt) mt.textContent = `Total Level ${newTotalLvl}`;
     
     document.getElementById('lu-step-1').classList.add('hidden');
     document.getElementById('lu-step-2').classList.remove('hidden');
@@ -1644,26 +1647,7 @@ window.applyLevelUp = async () => {
         window.triggerLevelUpCelebration();
     }
 };
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
-    
-    // Update inputs on sheet
-    const setVal = (key, val) => { const el = document.querySelector(`[data-key="${key}"]`); if(el && val) el.value = val; };
-    setVal('level', pData.newTotalLvl);
-    setVal('class', newClassString);
-    setVal('profBonus', b);
-    setVal('hpMax', updates.hpMax);
-    setVal('hpCurrent', updates.hpCurrent);
-    setVal('hdCurrent', updates.hdCurrent);
-    
-    window.calcMods();
-    window.updateClassSpecifics();
-    document.getElementById('level-up-modal').classList.add('hidden');
-    window.showToast(`Ascension Complete: Level ${pData.newTotalLvl}!`);
-    
-    if (isAutoHp) {
-        window.triggerLevelUpCelebration();
-    }
-};  
+
 const setupListeners = () => {
     if (!currentUser) return;
     onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { characters = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); if (activeCharId) syncSheetData(); });
@@ -1709,8 +1693,12 @@ onAuthStateChanged(auth, async (u) => {
         document.getElementById('create-actions')?.classList.remove('hidden');
         document.getElementById('btn-campaign-settings')?.classList.toggle('hidden', !isDM);
 
-        document.getElementById('initial-loading').classList.add('hidden');
-        document.getElementById('dashboard-screen').classList.remove('hidden');
+        // Fortified structural removal of entry cover layer
+        const loader = document.getElementById('initial-loading');
+        if (loader) loader.classList.add('hidden');
+        
+        const dashboard = document.getElementById('dashboard-screen');
+        if (dashboard) dashboard.classList.remove('hidden');
         
         setupListeners();
 
