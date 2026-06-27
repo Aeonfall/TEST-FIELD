@@ -71,11 +71,57 @@ const VOCATION_DATA = {
     }
 };
 
+// Global App State Scope Variables
+window.characters = [];
+window.parties = [];
+window.currentUser = null;
+window.activeCharId = null;
+window.activeRole = 'player';
+window.rollMode = 'normal';
 window.currentRenderedClass = null;
 window.pendingLevelUpData = null;
+window.campaignSettings = { terms: {} };
+
+let autoSaveTimer = null;
+let lastGeneratedScores = [];
+let sessionRerollUsed = false;
+let activeManagePartyId = null;
+let activeMoveLvl = null;
+let editingMoveIndex = null;
+
+const SHEET_LABELS = {
+    class: 'Class', level: 'Level', party: 'Party', race: 'Race', archetype: 'Archetype', belief: 'Belief',
+    insp: 'Insp', abilities: 'Abilities', prof: 'Proficiency', saves: 'Saves', skills: 'Skills', ac: 'AC', init: 'INIT', speed: 'Speed',
+    hp: 'Health Points', hd: 'HD', temphp: 'Temporary Hit Points', death: 'Death & Coma', stress: 'Stress', trauma: 'Trauma',
+    actions: 'Actions', attacks: 'Attacks & Scriptcasting', defenses: 'Defenses', conditions: 'Conditions & Exhaustion', proficiencies: 'Proficiencies & Training',
+    inventory: 'Inventory', currency: 'Currency', equipment: 'Equipment', traits: 'Traits', personality: 'Personality Traits', ideals: 'Ideals', bonds: 'Bonds', flaws: 'Flaws',
+    background: 'Background', characteristics: 'Characteristics & Appearance', companion: 'Companion', notes: 'Notes'
+};
+
+const STATS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+const SKILLS = [
+    {n:'Acrobatics', s:'dex'},{n:'Animal Handling', s:'wis'},{n:'Arcana', s:'int'},
+    {n:'Athletics', s:'str'},{n:'Deception', s:'cha'},{n:'History', s:'int'},
+    {n:'Insight', s:'wis'},{n:'Intimidation', s:'cha'},{n:'Investigation', s:'int'},
+    {n:'Medicine', s:'wis'},{n:'Nature', s:'int'},{n:'Perception', s:'wis'},
+    {n:'Performance', s:'cha'},{n:'Persuasion', s:'cha'},{n:'Belief', s:'int'},
+    {n:'Sleight of Hand', s:'dex'},{n:'Stealth', s:'dex'},{n:'Survival', s:'wis'}
+];
+
+const COMA_COMPLICATIONS = [
+    "Memory loss (temporary or permanent)",
+    "Mutation / Core scarring",
+    "Reduced max HP until treated",
+    "Visions of the Eternal Heart",
+    "Faction interest or unwanted attention",
+    "Changed personality trait or belief",
+    "Assisted Recovery"
+];
+
+const getRoll = (sides) => Math.floor(Math.random() * sides) + 1;
 
 window.getVocationAliases = () => {
-    const t = campaignSettings?.terms || {};
+    const t = window.campaignSettings?.terms || {};
     return {
         'vanguard': (t.class_vanguard || 'vanguard').toLowerCase(),
         'warrior': (t.class_warrior || 'warrior').toLowerCase(),
@@ -104,7 +150,7 @@ window.getHitDie = (className) => {
 };
 
 window.autoCalcHP = (force = false) => {
-    const char = characters.find(c => c.id === activeCharId);
+    const char = window.characters.find(c => c.id === window.activeCharId);
     if (!char) return;
     
     const conMod = Math.floor(((parseInt(document.querySelector('[data-key="con"]')?.value) || 10) - 10) / 2);
@@ -155,7 +201,8 @@ window.autoCalcHP = (force = false) => {
 };
 
 window.updateClassSpecifics = () => {
-    const inputVal = (document.getElementById('class-input')?.value || '').toLowerCase();
+    const classInput = document.getElementById('class-input');
+    const inputVal = (classInput?.value || '').toLowerCase();
     let matchedClasses = [];
     const aliases = window.getVocationAliases();
     for (const k in VOCATION_DATA) {
@@ -236,11 +283,11 @@ window.updateClassSpecifics = () => {
         }
     }
 
-    if (activeCharId && characters) {
-        const char = characters.find(c => c.id === activeCharId);
+    if (window.activeCharId && window.characters.length > 0) {
+        const char = window.characters.find(c => c.id === window.activeCharId);
         if (char) {
-            const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM';
-            const isDM = activeRole === 'dm';
+            const isOwner = (window.currentUser && char.owner === window.currentUser.username) || char.owner === 'DM';
+            const isDM = window.activeRole === 'dm';
             const canEdit = isOwner || isDM;
 
             document.querySelectorAll('#dynamic-class-trackers-card [data-key], #dynamic-class-features-section [data-key], #dynamic-class-equip-section [data-key]').forEach(el => {
@@ -252,87 +299,6 @@ window.updateClassSpecifics = () => {
         }
     }
 };
-
-window.showToast = (m) => { 
-    const t = document.getElementById('toast'); 
-    if(t){ t.textContent=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 4000); } 
-};
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCKRN5dfi4og69_D8ZAvV1BQfwCK_f2uis",
-    authDomain: "dndcampaigns-f3d48.firebaseapp.com",
-    projectId: "dndcampaigns-f3d48",
-    storageBucket: "dndcampaigns-f3d48.firebasestorage.app",
-    messagingSenderId: "1074491536795",
-    appId: "1:1074491536795:web:56211729489be776d79d3e"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const urlParams = new URLSearchParams(window.location.search);
-let appId = urlParams.get('id') || urlParams.get('campaignId');
-
-const isPreviewEnv = window.location.href.startsWith('blob:') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-if (!appId) {
-    if (isPreviewEnv) {
-        appId = "demo_campaign";
-    } else {
-        try {
-            window.location.href = "campaigns.html";
-        } catch(e) {}
-    }
-}
-
-window.routeTo = (page) => {
-    try {
-        let targetUrl = page;
-        if (appId && appId !== "demo_campaign") {
-            targetUrl += `?id=${appId}`;
-        }
-        window.location.href = targetUrl;
-    } catch (e) {
-        window.showToast("Navigation blocked in preview.");
-    }
-};
-
-let characters = [], parties = [], currentUser = null, activeCharId = null, activeRole = 'player', rollMode = 'normal';
-let autoSaveTimer = null, lastGeneratedScores = [], sessionRerollUsed = false;
-let activeManagePartyId = null, activeMoveLvl = null, editingMoveIndex = null;
-let campaignSettings = { terms: {} };
-
-const SHEET_LABELS = {
-    class: 'Class', level: 'Level', party: 'Party', race: 'Race', archetype: 'Archetype', belief: 'Belief',
-    insp: 'Insp', abilities: 'Abilities', prof: 'Proficiency', saves: 'Saves', skills: 'Skills', ac: 'AC', init: 'INIT', speed: 'Speed',
-    hp: 'Health Points', hd: 'HD', temphp: 'Temporary Hit Points', death: 'Death & Coma', stress: 'Stress', trauma: 'Trauma',
-    actions: 'Actions', attacks: 'Attacks & Scriptcasting', defenses: 'Defenses', conditions: 'Conditions & Exhaustion', proficiencies: 'Proficiencies & Training',
-    inventory: 'Inventory', currency: 'Currency', equipment: 'Equipment', traits: 'Traits', personality: 'Personality Traits', ideals: 'Ideals', bonds: 'Bonds', flaws: 'Flaws',
-    background: 'Background', characteristics: 'Characteristics & Appearance', companion: 'Companion', notes: 'Notes'
-};
-
-const STATS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-const SKILLS = [
-    {n:'Acrobatics', s:'dex'},{n:'Animal Handling', s:'wis'},{n:'Arcana', s:'int'},
-    {n:'Athletics', s:'str'},{n:'Deception', s:'cha'},{n:'History', s:'int'},
-    {n:'Insight', s:'wis'},{n:'Intimidation', s:'cha'},{n:'Investigation', s:'int'},
-    {n:'Medicine', s:'wis'},{n:'Nature', s:'int'},{n:'Perception', s:'wis'},
-    {n:'Performance', s:'cha'},{n:'Persuasion', s:'cha'},{n:'Belief', s:'int'},
-    {n:'Sleight of Hand', s:'dex'},{n:'Stealth', s:'dex'},{n:'Survival', s:'wis'}
-];
-
-const COMA_COMPLICATIONS = [
-    "Memory loss (temporary or permanent)",
-    "Mutation / Core scarring",
-    "Reduced max HP until treated",
-    "Visions of the Eternal Heart",
-    "Faction interest or unwanted attention",
-    "Changed personality trait or belief",
-    "Assisted Recovery"
-];
-
-const getRoll = (sides) => Math.floor(Math.random() * sides) + 1;
 
 window.triggerCriticalFailure = () => {
     const el = document.getElementById('critical-fail-overlay');
@@ -357,7 +323,7 @@ window.switchSheetTab = (tabId) => {
 };
 
 window.openSettingsModal = () => {
-    const t = campaignSettings.terms || {};
+    const t = window.campaignSettings.terms || {};
     document.getElementById('term-nav_party').value = t.nav_party || 'Party';
     document.getElementById('term-nav_npcs').value = t.nav_npcs || 'NPCs';
     document.getElementById('term-nav_beasts').value = t.nav_beasts || 'Bestiary';
@@ -473,7 +439,7 @@ const applyTerminology = (terms) => {
 
     const vt = document.getElementById('view-title');
     if (vt) {
-        if (vt.innerText === 'The Party' || vt.innerText === (campaignSettings?.terms?.nav_party || 'Party')) {
+        if (vt.innerText === 'The Party' || vt.innerText === (window.campaignSettings?.terms?.nav_party || 'Party')) {
             vt.innerText = terms.nav_party || 'The Party';
         }
     }
@@ -513,9 +479,9 @@ window.renderDashboard = () => {
     if (!pcC) return; 
     pcC.innerHTML = ''; 
     
-    const activePCs = characters.filter(c => c.type === 'PC' && !c.isDeleted);
+    const activePCs = window.characters.filter(c => c.type === 'PC' && !c.isDeleted);
     
-    parties.forEach(p => {
+    window.parties.forEach(p => {
         const s = document.createElement('div'); s.className = "bg-black/60 p-6 rounded border border-gray-700 shadow-xl mb-8";
         s.innerHTML = `<div class="flex justify-between items-center mb-4"><h3 class="text-gold font-heading font-bold uppercase text-sm">${p.name}</h3><button onclick="window.openManageParty('${p.id}')" class="text-[9px] font-black uppercase text-gray-500 hover:text-gold bg-black/40 border border-gray-700 px-2 py-1 rounded font-heading">Manage</button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="party-grid-${p.id}"></div>`;
         pcC.appendChild(s); const g = s.querySelector(`#party-grid-${p.id}`); activePCs.filter(c => c.partyId === p.id).forEach(c => g.appendChild(createCard(c)));
@@ -533,7 +499,7 @@ function createCard(c) {
     if (c.status === 'coma') { statusClass = "border-[#f59e0b] shadow-[0_0_15px_rgba(245,158,11,0.2)]"; badgeHtml += `<span class="status-badge badge-coma" style="right: 8px">Coma</span>`; }
     else if (c.status === 'dead') { statusClass = "border-[#1a1a1a] opacity-70 grayscale"; badgeHtml += `<span class="status-badge badge-dead" style="right: 8px">Dead</span>`; imgStyle = "filter: grayscale(1)"; }
     
-    if (currentUser && c.owner === currentUser.username) badgeHtml += `<span class="status-badge bg-green-900 border border-green-700 text-parchment" style="left: 8px; right: auto;">YOURS</span>`;
+    if (window.currentUser && c.owner === window.currentUser.username) badgeHtml += `<span class="status-badge bg-green-900 border border-green-700 text-parchment" style="left: 8px; right: auto;">YOURS</span>`;
     else if (!c.owner && c.type !== 'NPC' && c.type !== 'BEAST') badgeHtml += `<span class="status-badge bg-gray-700 border border-gray-500 text-parchment" style="left: 8px; right: auto;">UNCLAIMED</span>`;
     
     const mediaSrc = c.imageSrc ? renderMedia(c.imageSrc, "w-full h-full object-cover", imgStyle) : `<div class="w-full h-full flex items-center justify-center text-xl" style="${imgStyle}">👤</div>`;
@@ -554,7 +520,7 @@ function createCard(c) {
     `;
     
     if (c.companionId) {
-        const pet = characters.find(p => p.id === c.companionId && !p.isDeleted);
+        const pet = window.characters.find(p => p.id === c.companionId && !p.isDeleted);
         if (pet) {
             const petMedia = pet.imageSrc ? `<img src="${pet.imageSrc}" class="w-8 h-8 rounded-full object-cover border border-gold">` : `<div class="w-8 h-8 rounded-full bg-gray-900 border border-gold flex items-center justify-center text-[10px]">🐾</div>`;
             innerHtml += `
@@ -576,18 +542,18 @@ function createCard(c) {
     return d;
 }
 
-window.openSheet = (id) => { activeCharId = id; document.getElementById('dashboard-screen')?.classList.add('hidden-view'); document.getElementById('sheet-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar-wrapper')?.classList.remove('hidden-view'); initSheetUI(); syncSheetData(); window.switchSheetTab('actions'); window.switchSubFilter('all'); window.scrollTo(0,0); };
-window.closeSheet = () => { activeCharId = null; document.getElementById('sheet-screen')?.classList.add('hidden-view'); document.getElementById('dashboard-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar-wrapper')?.classList.add('hidden-view'); window.scrollTo(0,0);};
+window.openSheet = (id) => { window.activeCharId = id; document.getElementById('dashboard-screen')?.classList.add('hidden-view'); document.getElementById('sheet-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar-wrapper')?.classList.remove('hidden-view'); initSheetUI(); syncSheetData(); window.switchSheetTab('actions'); window.switchSubFilter('all'); window.scrollTo(0,0); };
+window.closeSheet = () => { window.activeCharId = null; document.getElementById('sheet-screen')?.classList.add('hidden-view'); document.getElementById('dashboard-screen')?.classList.remove('hidden-view'); document.getElementById('quick-roll-bar-wrapper')?.classList.add('hidden-view'); window.scrollTo(0,0);};
 
 window.createChar = async (type) => { 
-    if (!currentUser) return; 
+    if (!window.currentUser) return; 
     try { 
-        const initialOwner = (activeRole === 'dm' ? null : currentUser.username);
+        const initialOwner = (window.activeRole === 'dm' ? null : window.currentUser.username);
         const ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), { 
             type, 
             name: `New Adventurer`, 
             class: "",
-            ownerId: currentUser.uid, 
+            ownerId: window.currentUser.uid, 
             owner: initialOwner, 
             isDeleted: false, 
             status: 'alive', 
@@ -618,33 +584,20 @@ window.createChar = async (type) => {
     } catch (e) { window.showToast("Create Failed"); } 
 };
 
-function initSheetUI() {
-    const sC = document.getElementById('stats-container'), svC = document.getElementById('saves-container'), skC = document.getElementById('skills-container');
-    if (!sC) return; sC.innerHTML = ''; svC.innerHTML = ''; skC.innerHTML = '';
-    STATS.forEach(s => { 
-        sC.innerHTML += `<div class="flex items-center gap-3"><div class="w-12 h-12 bg-[rgba(255,255,255,0.5)] rounded flex flex-col items-center justify-center border border-[rgba(139,90,43,0.4)] font-black rollable cursor-pointer hover:border-blood hover:bg-[rgba(197,160,89,0.2)] transition-colors" onclick="window.rollStat('${s}')"><span class="text-[8px] uppercase text-555 font-heading">${s}</span><span id="mod-${s}" class="text-ink">+0</span></div><input type="number" data-key="${s}" class="w-10 text-center font-bold text-ink" value="10" onchange="window.calcMods()"></div>`; 
-        svC.innerHTML += `<div class="stat-row"><input type="checkbox" data-key="save_prof_${s}" class="prof-checkbox" onchange="window.calcMods()"><span class="stat-attr-tag">${s}</span><span class="stat-label-text">Save</span><span class="stat-mod-box" id="save-mod-${s}" onclick="window.rollSave('${s}')">+0</span></div>`;
-    });
-    SKILLS.forEach(sk => { 
-        const safe = sk.n.toLowerCase().replace(/ /g,'_').replace(/[()]/g,''); 
-        skC.innerHTML += `<div class="stat-row"><input type="checkbox" data-key="prof_${safe}" class="prof-checkbox" onchange="window.calcMods()"><span class="stat-attr-tag">${sk.s}</span><span class="stat-label-text">${sk.n}</span><span class="stat-mod-box" id="skill-mod-${safe}" onclick="window.rollSkill('${sk.n}')">+0</span></div>`; 
-    });
-}
-
 window.handleComaToggle = async (val) => {
-    const char = characters.find(c => c.id === activeCharId);
+    const char = window.characters.find(c => c.id === window.activeCharId);
     if (!char) return;
-    const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM';
-    const isDM = activeRole === 'dm';
+    const isOwner = (window.currentUser && char.owner === window.currentUser.username) || char.owner === 'DM';
+    const isDM = window.activeRole === 'dm';
     if (!isOwner && !isDM) return;
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { comaActive: val, dsSucc: 0, dsFail: 0 });
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { comaActive: val, dsSucc: 0, dsFail: 0 });
 };
 
 function syncSheetData() {
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
-    const ps = document.getElementById('party-select'); if (ps) { ps.innerHTML = '<option value="">Unassigned</option>'; parties.forEach(p => ps.innerHTML += `<option value="${p.id}">${p.name}</option>`); }
-    const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM'; 
-    const isDM = activeRole === 'dm'; 
+    const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
+    const ps = document.getElementById('party-select'); if (ps) { ps.innerHTML = '<option value="">Unassigned</option>'; window.parties.forEach(p => ps.innerHTML += `<option value="${p.id}">${p.name}</option>`); }
+    const isOwner = (window.currentUser && char.owner === window.currentUser.username) || char.owner === 'DM'; 
+    const isDM = window.activeRole === 'dm'; 
     const canEdit = isOwner || isDM; 
 
     document.querySelectorAll('#sheet-container input, #sheet-container textarea, #sheet-container select').forEach(el => { if (el.tagName === 'SELECT' || el.type === 'checkbox') el.disabled = !canEdit; else el.readOnly = !canEdit; });
@@ -710,7 +663,7 @@ function syncSheetData() {
     }
 
     const claimBtn = document.getElementById('claim-char-btn'); 
-    if (claimBtn) { if (!char.owner && currentUser && char.type !== 'NPC') claimBtn.classList.remove('hidden'); else claimBtn.classList.add('hidden'); }
+    if (claimBtn) { if (!char.owner && window.currentUser && char.type !== 'NPC') claimBtn.classList.remove('hidden'); else claimBtn.classList.add('hidden'); }
 
     const typeBadge = document.getElementById('sheet-type-badge');
     if (typeBadge) {
@@ -731,7 +684,7 @@ function syncSheetData() {
             cl.textContent = 'Companion Type';
             nts.classList.add('hidden');
         } else {
-            cl.textContent = campaignSettings?.terms?.sheet_class || 'Class';
+            cl.textContent = window.campaignSettings?.terms?.sheet_class || 'Class';
             nts.classList.add('hidden');
         }
     }
@@ -843,18 +796,18 @@ function syncSheetData() {
 
 window.sendDmWhisper = async () => {
     const input = document.getElementById('dm-whisper-input');
-    if (!input || !input.value.trim() || !activeCharId || activeRole !== 'dm') return;
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
+    if (!input || !input.value.trim() || !window.activeCharId || window.activeRole !== 'dm') return;
+    const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
     const whispers = [...(char.dmWhispers || [])]; whispers.push({ text: input.value.trim(), timestamp: Date.now() });
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { dmWhispers: whispers });
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { dmWhispers: whispers });
     input.value = ''; window.showToast("Whisper Sent");
 };
 
 window.deleteWhisper = async (idx) => {
-    if (!activeCharId || activeRole !== 'dm') return;
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
+    if (!window.activeCharId || window.activeRole !== 'dm') return;
+    const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
     const whispers = [...(char.dmWhispers || [])]; whispers.splice(idx, 1);
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { dmWhispers: whispers });
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { dmWhispers: whispers });
     window.showToast("Whisper Removed");
 };
 
@@ -862,7 +815,7 @@ window.openHpAdjustmentModal = () => { document.getElementById('hp-adjust-amount
 
 window.applyHpAdjustment = async (type) => {
     const amtIn = document.getElementById('hp-adjust-amount'); const amount = parseInt(amtIn.value); if (isNaN(amount) || amount <= 0) { amtIn.focus(); return; }
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
+    const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
     let curHp = parseInt(char.hpCurrent) || 0, maxHp = parseInt(char.hpMax) || 1, tempHp = parseInt(char.tempHp) || 0, updates = {};
     
     if (type === 'dmg') { 
@@ -898,11 +851,11 @@ window.applyHpAdjustment = async (type) => {
         }
     }
     
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates); 
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), updates); 
     document.getElementById('hp-adjustment-modal').classList.add('hidden');
 };
 
-window.openScoreGenModal = () => { sessionRerollUsed = false; document.getElementById('score-gen-modal')?.classList.remove('hidden'); document.getElementById('gen-results-area')?.classList.add('hidden'); document.getElementById('gen-apply-area')?.classList.add('hidden'); document.getElementById('gen-controls')?.classList.remove('hidden'); };
+window.openScoreGenModal = () => { sessionRerollUsed = false; document.getElementById('score-gen-modal')?.classList.remove('hidden'); document.getElementById('gen-results-area')?.classList.remove('hidden'); document.getElementById('gen-apply-area')?.classList.add('hidden'); document.getElementById('gen-controls')?.classList.remove('hidden'); };
 window.generateScores = (method, isReroll = false) => { 
     if (method === 'standard') lastGeneratedScores = [15, 14, 13, 12, 10, 8]; 
     else { if (isReroll) sessionRerollUsed = true; lastGeneratedScores = Array.from({length: 6}, () => { const r = [getRoll(6), getRoll(6), getRoll(6), getRoll(6)]; r.sort((a,b)=>b-a); return r[0]+r[1]+r[2]; }).sort((a,b)=>b-a); } 
@@ -915,33 +868,27 @@ window.randomizeAssignment = () => { const p = [0,1,2,3,4,5].sort(()=>Math.rando
 window.applyScores = async () => { 
     const selects = Array.from(document.querySelectorAll('[data-assign-stat]')); const chosen = selects.map(s => s.value).filter(v => v !== ""); if (chosen.length < 6 || new Set(chosen).size < 6) return window.showToast("Assign unique values to all stats"); 
     const updates = { scoresGenerated: true }; selects.forEach(s => updates[s.dataset.assignStat] = lastGeneratedScores[parseInt(s.value)]); 
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates); document.getElementById('score-gen-modal')?.classList.add('hidden'); window.calcMods(); 
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), updates); document.getElementById('score-gen-modal').classList.add('hidden'); window.calcMods(); 
 };
 
 const addRollToHistory = async (label, total) => {
-    if (!activeCharId) return; 
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
+    if (!window.activeCharId) return; 
+    const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
     const log = document.getElementById('dice-log'); if (log) { 
-        const d = document.createElement('div'); d.className = "flex justify-between border-b border-dashed border-[rgba(139,90,43,0.3)] py-1.5 font-serif"; 
-        d.innerHTML = `<span class="text-555 font-bold italic">${label}</span><b class="text-blood">${total}</b>`; 
-        log.prepend(d); if (log.children.length > 20) log.lastElementChild.remove(); 
+        const d = document.createElement('div'); d.className = "flex justify-between border-b border-dashed border-[rgba(139,90,43,0.3)] py-1.5 font-serif"; d.innerHTML = `<span class="text-555 font-bold italic">${label}</span><b class="text-blood">${total}</b>`; log.prepend(d); if (log.children.length > 20) log.lastElementChild.remove(); 
     }
     const history = [{ label, total, timestamp: Date.now() }, ...(char.rollHistory || [])].slice(0, 20); 
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { rollHistory: history });
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { rollHistory: history });
 };
 
 function execRoll(label, bonus) { 
     const r1 = getRoll(20), r2 = getRoll(20); 
     let final, btxt; if (rollMode === 'adv') { final = Math.max(r1, r2); btxt = `Adv: High(${r1}, ${r2})`; } else if (rollMode === 'dis') { final = Math.min(r1, r2); btxt = `Dis: Low(${r1}, ${r2})`; } else { final = r1; btxt = `(${r1})`; } 
-    
     if (final === 1) window.triggerCriticalFailure(); 
     if (final === 20) window.triggerCriticalSuccess();
-    
     const total = final + bonus; const displayTotal = (total >= 0 ? '+' : '') + total;
     document.getElementById('roll-label').textContent = label; document.getElementById('roll-total').textContent = displayTotal; 
-    document.getElementById('roll-breakdown').textContent = `${btxt} + ${bonus}`; 
-    document.getElementById('dice-result-overlay').classList.remove('hidden'); 
-    addRollToHistory(label, displayTotal + ` (Natural ${final})`); 
+    document.getElementById('roll-breakdown').textContent = `${btxt} + ${bonus}`; document.getElementById('dice-result-overlay').classList.remove('hidden'); addRollToHistory(label, displayTotal + ` (Natural ${final})`); 
 }
 
 window.rollStat = (s) => execRoll(`${s.toUpperCase()} Check`, parseInt(document.getElementById(`mod-${s}`)?.textContent) || 0);
@@ -963,511 +910,61 @@ window.rollDice = (s) => {
 };
 
 window.setRollMode = (m) => { rollMode = m; document.querySelectorAll('.roll-mode').forEach(b => b.classList.remove('active-norm', 'active-adv', 'active-dis')); if (m === 'normal') document.getElementById('mode-norm').classList.add('active-norm'); else if (m === 'adv') document.getElementById('mode-adv').classList.add('active-adv'); else if (m === 'dis') document.getElementById('mode-dis').classList.add('active-dis'); };
-
-window.toggleRoller = () => {
-    const panel = document.getElementById('quick-roll-bar');
-    panel.classList.toggle('minimized');
-    const icon = document.querySelector('#roller-toggle-btn i');
-    if (panel.classList.contains('minimized')) {
-        icon.className = 'fa-solid fa-dice-d20';
-    } else {
-        icon.className = 'fa-solid fa-times';
-    }
-};
+window.toggleRoller = () => { const panel = document.getElementById('quick-roll-bar'); panel.classList.toggle('minimized'); const icon = document.querySelector('#roller-toggle-btn i'); icon.className = panel.classList.contains('minimized') ? 'fa-solid fa-dice-d20' : 'fa-solid fa-times'; };
 
 window.renderMovesGrid = () => { 
-    const fg = document.getElementById('features-lvl-grid'); 
-    const sg = document.getElementById('scripts-lvl-grid'); 
-    if (!fg || !sg) return; 
-    fg.innerHTML = '';
-    sg.innerHTML = '';
-    
-    const char = characters.find(c => c.id === activeCharId); 
-    const moves = char?.moves || []; 
-    let featureLevels = Array.from({length: 20}, (_, i) => `Level ${i + 1}`);
-    
-    let classes = char?.classes || [];
-    if (classes.length === 0 && char?.class) {
-        classes = [{name: char.class}];
-    }
-    
-    let maxScriptLevel = -1; 
-    let hasTrickCaster = false;
-    const aliases = window.getVocationAliases();
+    const fg = document.getElementById('features-lvl-grid'); const sg = document.getElementById('scripts-lvl-grid'); if (!fg || !sg) return; fg.innerHTML = ''; sg.innerHTML = '';
+    const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
+    const moves = char.moves || []; let featureLevels = Array.from({length: 20}, (_, i) => `Level ${i + 1}`);
+    let classes = char.classes || []; if (classes.length === 0 && char.class) classes = [{name: char.class}];
+    let maxScriptLevel = -1; let hasTrickCaster = false; const aliases = window.getVocationAliases();
 
     classes.forEach(clsObj => {
         const cName = (clsObj.name || '').toLowerCase();
-        if (['warden', 'chronicler', 'orator', 'scriptweaver', 'wartouched', 'archivist'].some(vc => cName.includes(aliases[vc]))) {
-            maxScriptLevel = Math.max(maxScriptLevel, 9);
-            hasTrickCaster = true;
-        } else if (cName.includes(aliases['fabricator'])) {
-            maxScriptLevel = Math.max(maxScriptLevel, 5);
-            hasTrickCaster = true;
-        } else if (['heartbound', 'nomad'].some(vc => cName.includes(aliases[vc]))) {
-            maxScriptLevel = Math.max(maxScriptLevel, 5);
-        }
+        if (['warden', 'chronicler', 'orator', 'scriptweaver', 'wartouched', 'archivist'].some(vc => cName.includes(aliases[vc]))) { maxScriptLevel = 9; hasTrickCaster = true; } 
+        else if (cName.includes(aliases['fabricator'])) { maxScriptLevel = 5; hasTrickCaster = true; } 
+        else if (['heartbound', 'nomad'].some(vc => cName.includes(aliases[vc]))) { maxScriptLevel = 5; }
     });
 
     let scriptLevels = [];
-    if (maxScriptLevel === -1) {
-        sg.innerHTML = '<div class="col-span-full text-center py-8 text-555 font-heading text-xs uppercase tracking-widest border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)]">This vocation does not utilize scripts.</div>';
-    } else {
+    if (maxScriptLevel !== -1) {
         if (hasTrickCaster) scriptLevels.push('Tricks (0)');
-        for(let i = 1; i <= maxScriptLevel; i++) {
-            scriptLevels.push(`Level ${i}`);
-        }
+        for(let i = 1; i <= maxScriptLevel; i++) scriptLevels.push(`Level ${i}`);
+    } else {
+        sg.innerHTML = '<div class="col-span-full text-center py-8 text-555 font-heading text-xs uppercase tracking-widest border border-dashed border-gold rounded bg-[rgba(255,255,255,0.2)]">This vocation does not utilize scripts.</div>';
     }
 
-    const canEdit = activeRole === 'dm';
-
+    const canEdit = window.activeRole === 'dm';
     const renderCards = (levels, type, container) => {
         levels.forEach(lvl => { 
-            const card = document.createElement('div'); card.className = "lvl-card"; 
-            const filtered = moves.filter(m => m.lvl === lvl && m.type === type); 
-            let html = `<div class="lvl-header">${lvl.toUpperCase()}</div><div class="flex-grow space-y-1">`;
-            filtered.forEach(m => { 
-                const mIdx = moves.indexOf(m); 
-                html += `<div class="move-pill" onclick="window.openMoveModal('${lvl}', ${mIdx}, '${type}')"><span class="move-name">${m.name}</span><span class="move-roll">${m.roll || ''}</span></div>`; 
-            });
-            if (canEdit) html += `</div><button onclick="window.openMoveModal('${lvl}', null, '${type}')" class="text-[9px] font-bold uppercase text-blood hover:text-ink text-center mt-2 font-heading transition-colors">+ ADD</button>`; 
-            else html += `</div>`;
-            card.innerHTML = html; 
-            container.appendChild(card);
+            const card = document.createElement('div'); card.className = "lvl-card"; const filtered = moves.filter(m => m.lvl === lvl && m.type === type); let html = `<div class="lvl-header">${lvl.toUpperCase()}</div><div class="flex-grow space-y-1">`;
+            filtered.forEach(m => { const mIdx = moves.indexOf(m); html += `<div class="move-pill" onclick="window.openMoveModal('${lvl}', ${mIdx}, '${type}')"><span class="move-name">${m.name}</span><span class="move-roll">${m.roll || ''}</span></div>`; });
+            if (canEdit) html += `</div><button onclick="window.openMoveModal('${lvl}', null, '${type}')" class="text-[9px] font-bold uppercase text-blood hover:text-ink text-center mt-2 font-heading transition-colors">+ ADD</button>`; else html += `</div>`;
+            card.innerHTML = html; container.appendChild(card);
         }); 
     };
-
-    renderCards(featureLevels, 'features', fg);
-    if (maxScriptLevel !== -1) {
-        renderCards(scriptLevels, 'scriptcasting', sg);
-    }
+    renderCards(featureLevels, 'features', fg); if (maxScriptLevel !== -1) renderCards(scriptLevels, 'scriptcasting', sg);
 };
 
 window.openMoveModal = (lvl, idx = null, forceType = 'features') => { 
-    activeMoveLvl = lvl; 
-    editingMoveIndex = idx; 
-    const char = characters.find(c => c.id === activeCharId); 
-    const moves = char?.moves || [];
-    
-    const m = idx !== null ? moves[idx] : null;
-    const moveType = m ? m.type : forceType;
-    const isScript = moveType === 'scriptcasting';
-    const canEdit = activeRole === 'dm';
-
-    document.getElementById('move-import-btn').classList.toggle('hidden', !canEdit);
-    document.getElementById('script-extra-fields').classList.toggle('hidden', !isScript);
-    document.getElementById('script-scaling-field').classList.toggle('hidden', !isScript);
-    document.getElementById('move-desc-label').textContent = isScript ? "Effect" : "Description";
-    document.getElementById('import-view').classList.add('hidden');
-    document.getElementById('modal-standard-view').classList.remove('hidden');
-    
-    const hint = isScript ? "Paste Script Data (NAME, SCHOOL, EFFECT, etc):" : "Paste Move/Feature Data (NAME, DESCRIPTION):";
-    document.getElementById('import-hint-text').textContent = hint;
-    document.getElementById('move-type-hidden').value = moveType;
+    activeMoveLvl = lvl; editingMoveIndex = idx; const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return;
+    const moves = char.moves || []; const m = idx !== null ? moves[idx] : null; const moveType = m ? m.type : forceType; const isScript = moveType === 'scriptcasting'; const canEdit = window.activeRole === 'dm';
+    document.getElementById('move-import-btn').classList.toggle('hidden', !canEdit); document.getElementById('script-extra-fields').classList.toggle('hidden', !isScript); document.getElementById('script-scaling-field').classList.toggle('hidden', !isScript);
+    document.getElementById('move-desc-label').textContent = isScript ? "Effect" : "Description"; document.getElementById('import-view').classList.add('hidden'); document.getElementById('modal-standard-view').classList.remove('hidden');
 
     if (idx !== null) { 
-        document.getElementById('move-name-in').value = m.name || ''; 
-        document.getElementById('move-roll-in').value = m.roll || ''; 
-        document.getElementById('move-desc-in').value = m.desc || ''; 
-        document.getElementById('script-lvl-in').value = m.lvl || lvl;
-        document.getElementById('script-school-in').value = m.school || '';
-        document.getElementById('script-type-in').value = m.sType || '';
-        document.getElementById('script-activation-in').value = m.activation || '';
-        document.getElementById('script-range-in').value = m.range || '';
-        document.getElementById('script-comp-in').value = m.comp || '';
-        document.getElementById('script-duration-in').value = m.duration || '';
-        document.getElementById('script-scaling-in').value = m.scaling || '';
-        document.getElementById('move-modal-title').textContent = (canEdit ? "Edit " : "View ") + (isScript ? "Script" : "Move"); 
-        document.getElementById('move-delete-btn').classList.toggle('hidden', !canEdit); 
+        document.getElementById('move-name-in').value = m.name || ''; document.getElementById('move-roll-in').value = m.roll || ''; document.getElementById('move-desc-in').value = m.desc || ''; document.getElementById('script-lvl-in').value = m.lvl || lvl;
+        document.getElementById('script-school-in').value = m.school || ''; document.getElementById('script-type-in').value = m.sType || ''; document.getElementById('script-activation-in').value = m.activation || ''; document.getElementById('script-range-in').value = m.range || ''; document.getElementById('script-comp-in').value = m.comp || ''; document.getElementById('script-duration-in').value = m.duration || ''; document.getElementById('modal-standard-view').classList.remove('hidden'); document.getElementById('move-delete-btn').classList.toggle('hidden', !canEdit);
     } else { 
-        document.getElementById('move-name-in').value = ''; 
-        document.getElementById('move-roll-in').value = ''; 
-        document.getElementById('move-desc-in').value = ''; 
-        document.getElementById('script-lvl-in').value = lvl;
-        document.getElementById('script-school-in').value = '';
-        document.getElementById('script-type-in').value = '';
-        document.getElementById('script-activation-in').value = '';
-        document.getElementById('script-range-in').value = '';
-        document.getElementById('script-comp-in').value = '';
-        document.getElementById('script-duration-in').value = '';
-        document.getElementById('script-scaling-in').value = '';
-        document.getElementById('move-modal-title').textContent = "Add " + (isScript ? "Script" : "Move") + " - " + lvl; 
-        document.getElementById('move-delete-btn').classList.add('hidden'); 
+        document.getElementById('move-name-in').value = ''; document.getElementById('move-roll-in').value = ''; document.getElementById('move-desc-in').value = ''; document.getElementById('script-lvl-in').value = lvl; document.getElementById('script-school-in').value = ''; document.getElementById('script-type-in').value = ''; document.getElementById('script-activation-in').value = ''; document.getElementById('script-range-in').value = ''; document.getElementById('script-comp-in').value = ''; document.getElementById('script-duration-in').value = ''; document.getElementById('move-delete-btn').classList.add('hidden'); 
     }
-
-    const fields = document.querySelectorAll('#modal-standard-view input:not(#script-lvl-in), #modal-standard-view textarea');
-    fields.forEach(f => {
-        f.readOnly = !canEdit;
-        if (!canEdit) f.classList.add('opacity-80', 'cursor-default', 'pointer-events-none');
-        else f.classList.remove('opacity-80', 'cursor-default', 'pointer-events-none');
-    });
-    document.getElementById('move-save-btn').classList.toggle('hidden', !canEdit);
-
     document.getElementById('move-modal').classList.remove('hidden'); 
 };
 
-window.toggleImportView = () => {
-    const importView = document.getElementById('import-view');
-    const standardView = document.getElementById('modal-standard-view');
-    const isImportHidden = importView.classList.contains('hidden');
-    importView.classList.toggle('hidden', !isImportHidden);
-    standardView.classList.toggle('hidden', isImportHidden);
-    if (isImportHidden) {
-        document.getElementById('import-paste-area').value = '';
-        document.getElementById('import-paste-area').focus();
-    }
-};
-
-window.executeMoveImport = () => {
-    const rawText = document.getElementById('import-paste-area').value;
-    if (!rawText.trim()) return;
-    const moveType = document.getElementById('move-type-hidden').value;
-    const isScript = moveType === 'scriptcasting';
-    const extract = (regex) => {
-        const match = rawText.match(regex);
-        return match ? match[1].trim() : "";
-    };
-    const extractBlock = (startKey, endKeys) => {
-        const startIdx = rawText.indexOf(startKey);
-        if (startIdx === -1) return "";
-        const afterStart = rawText.substring(startIdx + startKey.length);
-        let firstEndIdx = afterStart.length;
-        endKeys.forEach(ek => {
-            const idx = afterStart.indexOf(ek);
-            if (idx !== -1 && idx < firstEndIdx) firstEndIdx = idx;
-        });
-        return afterStart.substring(0, firstEndIdx).trim();
-    };
-    const name = extract(/NAME:\s*(.*)/i) || extract(/\(The Name\)\s*(.*)/i);
-    const roll = extract(/DICE\/EFFECT ROLL:\s*(.*)/i) || extract(/ROLL:\s*(.*)/i);
-    if (isScript) {
-        const school = extract(/SCHOOL:\s*(.*)/i);
-        const type = extract(/TYPE:\s*(.*)/i);
-        const activation = extract(/ACTIVATION:\s*(.*)/i);
-        const range = extract(/RANGE:\s*(.*)/i);
-        const comp = extract(/COMPONENTS:\s*(.*)/i);
-        const duration = extract(/DURATION:\s*(.*)/i);
-        const effect = extractBlock("EFFECT:", ["SCALING:", "AUTHORIZED USERS:"]);
-        const scaling = extractBlock("SCALING:", ["AUTHORIZED USERS:"]);
-        if (name) document.getElementById('move-name-in').value = name;
-        if (roll) document.getElementById('move-roll-in').value = roll;
-        if (school) document.getElementById('script-school-in').value = school;
-        if (type) document.getElementById('script-type-in').value = type;
-        if (activation) document.getElementById('script-activation-in').value = activation;
-        if (range) document.getElementById('script-range-in').value = range;
-        if (comp) document.getElementById('script-comp-in').value = comp;
-        if (duration) document.getElementById('script-duration-in').value = duration;
-        if (effect) document.getElementById('move-desc-in').value = effect;
-        if (scaling) document.getElementById('script-scaling-in').value = scaling;
-    } else {
-        const desc = extractBlock("DESCRIPTION:", []) || extractBlock("(The Description)", []);
-        if (name) document.getElementById('move-name-in').value = name;
-        if (roll) document.getElementById('move-roll-in').value = roll;
-        if (desc) document.getElementById('move-desc-in').value = desc;
-    }
-    window.toggleImportView();
-    window.showToast("Move Parsed Successfully");
-};
-
-window.saveMove = async () => { 
-    if (activeRole !== 'dm') return;
-    const char = characters.find(c => c.id === activeCharId); 
-    const moves = char.moves || []; 
-    const newMove = { 
-        name: document.getElementById('move-name-in').value, 
-        roll: document.getElementById('move-roll-in').value, 
-        desc: document.getElementById('move-desc-in').value, 
-        lvl: activeMoveLvl, 
-        type: document.getElementById('move-type-hidden').value,
-        school: document.getElementById('script-school-in').value,
-        sType: document.getElementById('script-type-in').value,
-        activation: document.getElementById('script-activation-in').value,
-        range: document.getElementById('script-range-in').value,
-        comp: document.getElementById('script-comp-in').value,
-        duration: document.getElementById('script-duration-in').value,
-        scaling: document.getElementById('script-scaling-in').value
-    }; 
-    if (editingMoveIndex !== null) moves[editingMoveIndex] = newMove; 
-    else moves.push(newMove); 
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { moves }); 
-    document.getElementById('move-modal').classList.add('hidden'); 
-};
-window.deleteMove = async () => { const char = characters.find(c => c.id === activeCharId); const moves = char.moves || []; moves.splice(editingMoveIndex, 1); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { moves }); document.getElementById('move-modal').classList.add('hidden'); };
-
-window.openMulticlassModal = () => {
-    const char = characters.find(c => c.id === activeCharId);
-    if (!char) return;
-    
-    let classes = char.classes || [];
-    if (classes.length === 0) {
-        classes = [{name: char.class || '', level: parseInt(char.level) || 1}];
-    }
-    
-    const list = document.getElementById('multiclass-list');
-    list.innerHTML = '';
-    classes.forEach(c => {
-        window.appendMulticlassRow(c.name, c.level);
-    });
-    
-    document.getElementById('multiclass-modal').classList.remove('hidden');
-};
-
-window.appendMulticlassRow = (name = '', level = 1) => {
-    const list = document.getElementById('multiclass-list');
-    const div = document.createElement('div');
-    div.className = "flex gap-2 items-center mc-row";
-    div.innerHTML = `
-        <input type="text" class="mc-name flex-grow bg-[rgba(255,255,255,0.5)] border border-gold p-2 rounded font-bold font-serif text-ink" placeholder="Vocation Name" value="${name}">
-        <input type="number" class="mc-level w-20 bg-[rgba(255,255,255,0.5)] border border-gold p-2 rounded font-bold text-center text-ink" placeholder="Lvl" value="${level}" min="1">
-        <button onclick="this.parentElement.remove()" class="text-blood hover:text-red-800 font-black px-2 transition-colors">✕</button>
-    `;
-    list.appendChild(div);
-};
-
-window.addMulticlassRow = () => {
-    window.appendMulticlassRow('', 1);
-};
-
-window.saveMulticlass = async () => {
-    const char = characters.find(c => c.id === activeCharId);
-    if (!char) return;
-    
-    const rows = document.querySelectorAll('.mc-row');
-    let classes = [];
-    let totalLevel = 0;
-    let classStringParts = [];
-    
-    rows.forEach(r => {
-        const name = r.querySelector('.mc-name').value.trim();
-        const level = parseInt(r.querySelector('.mc-level').value) || 1;
-        if (name) {
-            classes.push({name, level});
-            totalLevel += level;
-            classStringParts.push(name);
-        }
-    });
-    
-    if (classes.length === 0) {
-        window.showToast("Must have at least one vocation.");
-        return;
-    }
-    
-    const newClassString = classStringParts.join(' / ');
-    
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { 
-        classes: classes,
-        class: newClassString,
-        level: totalLevel
-    });
-    
-    document.getElementById('multiclass-modal').classList.add('hidden');
-    window.updateLevelDependencies(totalLevel);
-    window.showToast("Vocations Updated");
-};
-
-window.saveCurrentCharacter = (m) => { 
-    if (!activeCharId || !currentUser) return; 
-    const char = characters.find(c => c.id === activeCharId); 
-    if (!((currentUser && char.owner === currentUser.username) || char.owner === 'DM' || activeRole === 'dm')) return; 
-    
-    const data = {}; 
-    document.querySelectorAll('[data-key]').forEach(el => data[el.dataset.key] = el.type === 'checkbox' ? el.checked : el.value); 
-    
-    const newHp = parseInt(data.hpCurrent) || 0;
-    const oldHp = parseInt(char.hpCurrent) || 0;
-    
-    if (newHp <= 0 && oldHp > 0) {
-        data.hpCurrent = 0; 
-        data.status = 'coma';
-        data.comaActive = true;
-        window.showToast("Health depleted. Coma saves initiated.");
-    } else if (newHp > 0 && (oldHp <= 0 || char.status === 'coma')) {
-        data.status = 'alive';
-        data.comaActive = false;
-        window.showToast("Vitality restored. Awakened from coma.");
-    }
-
-    data.languages = char.languages || []; 
-    data.attacks = Array.from(document.querySelectorAll('#attacks-list > div')).map(r => ({ name: r.querySelector('.atk-name')?.value || "", bonus: r.querySelector('.atk-bonus')?.value || "", dmg: r.querySelector('.atk-dmg')?.value || "" })); 
-    data.moves = char.moves || []; 
-    
-    updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), data); 
-    
-    if (m) window.showToast("Synced"); 
-    const si = document.getElementById('sync-indicator'); 
-    if (si) { si.style.opacity = 1; setTimeout(()=>si.style.opacity = 0, 1000); } 
-};
-
-window.claimCharacter = async () => { const char = characters.find(c => c.id === activeCharId); if (char.owner) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { owner: currentUser.username }); window.showToast("Character Claimed"); };
-
-window.calcMods = () => { 
-    const p = parseInt(document.querySelector('[data-key="profBonus"]')?.value) || 2; 
-    let stats = {};
-    STATS.forEach(s => { 
-        const v = parseInt(document.querySelector(`[data-key="${s}"]`)?.value) || 10; const m = Math.floor((v - 10) / 2); 
-        stats[s] = {val: v, mod: m};
-        const el = document.getElementById(`mod-${s}`); if(el) el.textContent = (m >= 0 ? '+' : '') + m; 
-        const sp = document.querySelector(`[data-key="save_prof_${s}"]`)?.checked; const sel = document.getElementById(`save-mod-${s}`); if(sel) sel.textContent = (m + (sp ? p : 0) >= 0 ? '+' : '') + (m + (sp ? p : 0)); 
-    }); 
-    const ppInput = document.querySelector('[data-key="passivePerception"]'); if (ppInput) ppInput.value = 10 + stats.wis.mod + p;
-    SKILLS.forEach(sk => { 
-        const v = parseInt(document.querySelector(`[data-key="${sk.s}"]`)?.value) || 10; const m = Math.floor((v - 10) / 2); 
-        const safe = sk.n.toLowerCase().replace(/ /g,'_').replace(/[()]/g,''); const sp = document.querySelector(`[data-key="prof_${safe}"]`)?.checked; 
-        const sel = document.getElementById(`skill-mod-${safe}`); if(sel) sel.textContent = (m + (sp ? p : 0) >= 0 ? '+' : '') + (m + (sp ? p : 0)); 
-    });
-    const armorText = (document.querySelector('[data-key="profArmor"]')?.value || "").toLowerCase();
-    const classText = (document.querySelector('[data-key="class"]')?.value || "").toLowerCase();
-    const aliases = window.getVocationAliases();
-    const acInput = document.querySelector('[data-key="ac"]');
-    if (acInput) {
-        let baseAC = 10;
-        let dexBonus = stats.dex.mod;
-        let shieldBonus = armorText.includes('shield') ? 2 : 0;
-        let wearingArmor = false;
-        if (armorText.includes('light armor')) { baseAC = 11; dexBonus = stats.dex.mod; wearingArmor = true; }
-        else if (armorText.includes('medium armor')) { baseAC = 14; dexBonus = Math.min(stats.dex.mod, 2); wearingArmor = true; }
-        else if (armorText.includes('heavy armor')) { baseAC = 16; dexBonus = 0; wearingArmor = true; }
-        if (!wearingArmor) {
-            if (classText.includes(aliases['vanguard'])) { baseAC = 10 + stats.con.mod; dexBonus = stats.dex.mod; }
-            else if (classText.includes(aliases['peacekeeper'])) { baseAC = 10 + stats.wis.mod; dexBonus = stats.dex.mod; }
-            else { baseAC = 10; dexBonus = stats.dex.mod; }
-        }
-        acInput.value = baseAC + dexBonus + shieldBonus;
-    }
-
-    if (activeCharId) {
-        window.autoCalcHP(false); 
-    }
-};
-
-window.updateCharStatus = async (s) => { if (!activeCharId) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { status: s }); };
-window.toggleSheetUnlock = async (val) => { if (!activeCharId || activeRole !== 'dm') return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { unlockedByDM: val }); window.showToast(val ? "Progression Unlocked for Player" : "Progression Locked"); };
-window.addAttackItem = () => { const c = document.getElementById('attacks-list'); const d = document.createElement('div'); d.className = "equip-row"; d.innerHTML = `<input type="text" class="atk-name font-bold bg-transparent" placeholder="Weapon"><input type="text" class="atk-bonus text-center bg-transparent" placeholder="+0"><input type="text" class="atk-dmg text-center bg-transparent" placeholder="1d8"><button onclick="this.parentElement.remove(); window.saveCurrentCharacter();" class="text-blood hover:text-red-800 font-black">✕</button>`; c.appendChild(d); };
-window.addLanguageItem = async () => { const i = document.getElementById('lang-input'); if (!i.value) return; const char = characters.find(c => c.id === activeCharId); const langs = [...(char.languages || []), i.value]; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { languages: langs }); i.value = ''; };
-window.removeLanguageItem = async (idx) => { const char = characters.find(c => c.id === activeCharId); const langs = [...(char.languages || [])]; langs.splice(idx, 1); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { languages: langs }); };
-window.updateLevelDependencies = (v) => { 
-    const l = parseInt(v) || 1; 
-    const b = l >= 17 ? 6 : l >= 13 ? 5 : l >= 9 ? 4 : l >= 5 ? 3 : 2; 
-    const pi = document.querySelector('[data-key="profBonus"]'); 
-    if (pi) pi.value = b; 
-    window.calcMods(); 
-    window.saveCurrentCharacter(); 
-};
-
-window.rest = async (t) => { 
-    const char = characters.find(x => x.id === activeCharId); 
-    if (t === 'long') { 
-        const maxHd = parseInt(char.level) || 1;
-        const currentHd = parseInt(char.hdCurrent) || 0;
-        const regain = Math.max(1, Math.floor(maxHd / 2));
-        const newHd = Math.min(maxHd, currentHd + regain);
-        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { hpCurrent: char.hpMax, tempHp: 0, dsSucc: 0, dsFail: 0, hdCurrent: newHd }); 
-        window.showToast("Long Rest: Recovered HP & " + regain + " HD"); 
-    } 
-    else { 
-        const conMod = Math.floor(((char.con || 10) - 10) / 2); 
-        const hdText = char.hd || "1d8";
-        const dieMatch = hdText.match(/d(\d+)/);
-        const dieType = dieMatch ? dieMatch[1] : "8";
-        document.getElementById('sr-con-mod-display').textContent = (conMod >= 0 ? '+' : '') + conMod; 
-        document.getElementById('sr-con-mod-display').dataset.mod = conMod; 
-        document.getElementById('sr-hd-available').textContent = (char.hdCurrent || 0) + " / " + (char.level || 1);
-        document.getElementById('sr-die-type-label').textContent = "d" + dieType;
-        document.getElementById('sr-roll-result-area').classList.add('hidden');
-        const spendBtn = document.getElementById('sr-spend-btn');
-        if ((char.hdCurrent || 0) <= 0) { spendBtn.disabled = true; spendBtn.classList.add('opacity-50', 'cursor-not-allowed'); spendBtn.textContent = "No Hit Dice Left"; } 
-        else { spendBtn.disabled = false; spendBtn.classList.remove('opacity-50', 'cursor-not-allowed'); spendBtn.textContent = "Roll 1 Hit Die (d" + dieType + ")"; }
-        document.getElementById('short-rest-modal').classList.remove('hidden'); 
-    }
-};
-
-window.confirmShortRest = async () => { 
-    const char = characters.find(x => x.id === activeCharId);
-    if (!char || (char.hdCurrent || 0) <= 0) return;
-    const hdText = char.hd || "1d8";
-    const dieMatch = hdText.match(/d(\d+)/);
-    const dieSize = dieMatch ? parseInt(dieMatch[1]) : 8;
-    const conMod = parseInt(document.getElementById('sr-con-mod-display').dataset.mod) || 0; 
-    const roll = getRoll(dieSize);
-    const gain = Math.max(0, roll + conMod);
-    const newHp = Math.min(parseInt(char.hpMax) || gain, (parseInt(char.hpCurrent) || 0) + gain);
-    const newHdCount = (char.hdCurrent || 0) - 1;
-    document.getElementById('sr-roll-result-area').classList.remove('hidden');
-    document.getElementById('sr-last-roll-total').textContent = "+" + gain + " HP";
-    document.getElementById('sr-last-roll-breakdown').textContent = "(" + roll + " + " + conMod + ")";
-    document.getElementById('sr-hd-available').textContent = newHdCount + " / " + (char.level || 1);
-    const spendBtn = document.getElementById('sr-spend-btn');
-    if (newHdCount <= 0) { spendBtn.disabled = true; spendBtn.classList.add('opacity-50', 'cursor-not-allowed'); spendBtn.textContent = "No Hit Dice Left"; }
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { hpCurrent: newHp, hdCurrent: newHdCount });
-    addRollToHistory(`Spent Hit Die (d${dieSize})`, `+${gain} HP`);
-};
-
-window.toggleDS = async (type, num) => {
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
-    const isOwner = (currentUser && char.owner === currentUser.username) || char.owner === 'DM';
-    const isDM = activeRole === 'dm'; if (!isOwner && !isDM) return;
-    const key = type === 'succ' ? 'dsSucc' : 'dsFail';
-    const newVal = (char[key] || 0) === num ? num - 1 : num;
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { [key]: newVal });
-};
-
-window.rollDeathSave = async () => {
-    const char = characters.find(c => c.id === activeCharId); if (!char || char.status === 'dead' || (char.status === 'coma' && !char.comaActive) || char.hpCurrent > 0) return;
-    const roll = getRoll(20);
-    let s = char.dsSucc || 0, f = char.dsFail || 0, updates = {}, msg = "";
-    const isComa = !!char.comaActive;
-    if (isComa) {
-        if (roll === 20) { updates = { hpCurrent: 1, dsSucc: 0, dsFail: 0, comaActive: false, status: 'alive', exhaustion: (parseInt(char.exhaustion) || 0) + 1 }; msg = "NATURAL 20! Awakening (HP 1, Exhaustion +1)."; triggerCriticalSuccess(); } 
-        else if (roll === 1) { f += 2; updates.currentStress = (parseInt(char.currentStress) || 0) + 1; const comp = COMA_COMPLICATIONS[Math.floor(Math.random() * COMA_COMPLICATIONS.length)]; msg = "NATURAL 1! +1 Stress, 2 Failures & Complication: " + comp; triggerCriticalFailure(); } 
-        else if (roll >= 12) { s += 1; msg = "Coma Success (" + roll + ")"; } 
-        else { f += 1; msg = "Coma Failure (" + roll + ")"; }
-        if (s >= 3) { updates = { hpCurrent: 1, dsSucc: 0, dsFail: 0, comaActive: false, status: 'alive', exhaustion: (parseInt(char.exhaustion) || 0) + 1 }; msg += " — Character Awakens (Exhaustion +1, HP 1)."; } 
-        else if (f >= 3) { updates.status = 'dead'; msg += " — Body can no longer sustain life. Character is deceased."; }
-    } else {
-        if (roll === 20) { updates = { hpCurrent: 1, dsSucc: 0, dsFail: 0, status: 'alive' }; msg = "NATURAL 20! Back on your feet with 1 HP."; triggerCriticalSuccess(); } 
-        else if (roll === 1) { f += 2; updates.currentStress = (parseInt(char.currentStress) || 0) + 1; msg = "NATURAL 1! +1 Stress & 2 Failures marked."; triggerCriticalFailure(); } 
-        else if (roll >= 10) { s += 1; msg = "Success (" + roll + ")"; } 
-        else { f += 1; msg = "Failure (" + roll + ")"; }
-        if (s >= 3) { updates.status = 'alive'; updates.dsSucc = 0; updates.dsFail = 0; msg += " — Stabilized!"; } 
-        else if (f >= 3) { updates.status = 'dead'; msg += " — Death Save Failed: Character is deceased."; }
-    }
-    if (updates.status !== 'alive' && updates.status !== 'dead') { updates.dsSucc = s; updates.dsFail = f; }
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
-    addRollToHistory(isComa ? "Coma Save" : "Death Save", msg); window.showToast(msg);
-};
-
-window.triggerDeleteModal = () => {
-    const char = characters.find(c => c.id === activeCharId); if (!char) return;
-    window.resetDeleteModal(); const isA = !!char.isDeleted;
-    document.getElementById('archive-btn')?.classList.toggle('hidden', isA);
-    document.getElementById('restore-btn')?.classList.toggle('hidden', !isA);
-    document.getElementById('delete-modal')?.classList.remove('hidden');
-};
-
-window.showPermDeleteConfirm = () => { document.getElementById('delete-stage-1')?.classList.add('hidden'); document.getElementById('delete-stage-confirm')?.classList.remove('hidden'); };
-window.resetDeleteModal = () => { document.getElementById('delete-stage-1')?.classList.remove('hidden'); document.getElementById('delete-stage-confirm')?.classList.add('hidden'); };
-window.archiveCharacter = async () => { if (!activeCharId) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { isDeleted: true, status: 'dead' }); document.getElementById('delete-modal')?.classList.add('hidden'); window.closeSheet(); };
-window.restoreCharacter = async () => { if (!activeCharId) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { isDeleted: false, status: 'alive', comaActive: false }); document.getElementById('delete-modal')?.classList.add('hidden'); window.showToast("Recovered"); syncSheetData(); };
-window.executePermDelete = async () => { if (!activeCharId) return; await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId)); document.getElementById('delete-modal')?.classList.add('hidden'); window.closeSheet(); };
-window.openManageParty = (id) => { const p = parties.find(x => x.id === id); if (!p) return; activeManagePartyId = id; document.getElementById('manage-party-name').value = p.name; window.resetPartyManageState(); document.getElementById('manage-party-modal').classList.remove('hidden'); };
-window.resetPartyManageState = () => { document.getElementById('party-manage-main').classList.remove('hidden'); document.getElementById('party-manage-delete').classList.add('hidden'); };
-window.confirmDeletePartyState = () => { document.getElementById('party-manage-main').classList.add('hidden'); document.getElementById('party-manage-delete').classList.remove('hidden'); };
-window.savePartyRename = async () => { if (!activeManagePartyId) return; const n = document.getElementById('manage-party-name').value; if (!n) return window.showToast("Name required"); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'parties', activeManagePartyId), { name: n }); document.getElementById('manage-party-modal').classList.add('hidden'); window.showToast("Party Renamed"); };
-window.executeDeleteParty = async () => { if (!activeManagePartyId) return; const af = characters.filter(c => c.partyId === activeManagePartyId); for (const char of af) { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', char.id), { partyId: "" }); } await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'parties', activeManagePartyId)); document.getElementById('manage-party-modal').classList.add('hidden'); window.showToast("Party Disbanded"); };
-
-window.grantLevelUp = async () => {
-    if (!activeCharId || activeRole !== 'dm') return;
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), { pendingLevelUp: true });
-    window.showToast("Level Up Granted to Player!");
-};
-
 window.openLevelUpModal = () => {
-    console.log("Level Up activated.");
     try {
-        const char = characters.find(c => c.id === activeCharId);
-        if (!char) {
-            window.showToast("Error: Could not locate active profile.");
-            return;
-        }
+        const char = window.characters.find(c => c.id === window.activeCharId);
+        if (!char) return window.showToast("Error: Profile search frame missing active profile target context.");
         
         document.getElementById('level-up-modal-title').textContent = "Ascension";
         document.getElementById('lu-step-1').classList.remove('hidden');
@@ -1496,17 +993,15 @@ window.openLevelUpModal = () => {
                     </button>`;
             });
         }
-        
         document.getElementById('level-up-modal').classList.remove('hidden');
     } catch (err) {
-        console.error("UI Framework Error:", err);
-        window.showToast("Error processing sequence window.");
+        console.error("UI Framework Level Up Open Crash Block Caught:", err);
     }
 };
 
 window.previewLevelUp = (className, isNew, currentClassLevel) => {
     if (!className || className.trim() === '') return window.showToast('Vocation label required');
-    const char = characters.find(c => c.id === activeCharId);
+    const char = window.characters.find(c => c.id === window.activeCharId);
     if (!char) return;
     
     const currentTotalLvl = parseInt(char.level) || 1;
@@ -1550,21 +1045,16 @@ window.previewLevelUp = (className, isNew, currentClassLevel) => {
             </div>`;
     }
     
-    const gl = document.getElementById('lu-gains-list');
-    if (gl) gl.innerHTML = gainsHtml;
-    
-    const cc = document.getElementById('lu-chosen-class-title');
-    if (cc) cc.innerText = `${className} Level ${newClassLvl}`;
-    
-    const mt = document.getElementById('level-up-modal-title');
-    if (mt) mt.textContent = `Total Level ${newTotalLvl}`;
+    const gl = document.getElementById('lu-gains-list'); if (gl) gl.innerHTML = gainsHtml;
+    const cc = document.getElementById('lu-chosen-class-title'); if (cc) cc.innerText = `${className} Level ${newClassLvl}`;
+    const mt = document.getElementById('level-up-modal-title'); if (mt) mt.textContent = `Total Level ${newTotalLvl}`;
     
     document.getElementById('lu-step-1').classList.add('hidden');
     document.getElementById('lu-step-2').classList.remove('hidden');
 };
 
 window.applyLevelUp = async () => {
-    const char = characters.find(c => c.id === activeCharId);
+    const char = window.characters.find(c => c.id === window.activeCharId);
     if (!char || !window.pendingLevelUpData) return;
     
     const pData = window.pendingLevelUpData;
@@ -1588,14 +1078,7 @@ window.applyLevelUp = async () => {
     }
     
     const newClassString = classes.map(c => c.name).join(' / ');
-    
-    let updates = {
-        level: pData.newTotalLvl,
-        classes: classes,
-        class: newClassString,
-        profBonus: b,
-        pendingLevelUp: false
-    };
+    let updates = { level: pData.newTotalLvl, classes: classes, class: newClassString, profBonus: b, pendingLevelUp: false };
     
     char.level = updates.level;
     char.class = updates.class;
@@ -1604,7 +1087,6 @@ window.applyLevelUp = async () => {
     char.pendingLevelUp = false;
     
     const isAutoHp = document.getElementById('lu-auto-hp').checked;
-    
     if (isAutoHp) {
         window.autoCalcHP(true);
     } else {
@@ -1612,46 +1094,37 @@ window.applyLevelUp = async () => {
         const hdSize = window.getHitDie(pData.name);
         const roll = getRoll(hdSize);
         const hpGain = Math.max(1, roll + conMod);
-        
         const newMax = (parseInt(char.hpMax) || 0) + hpGain;
-        updates.hpMax = newMax;
-        updates.hpCurrent = (parseInt(char.hpCurrent) || 0) + hpGain;
-        updates.hdCurrent = (parseInt(char.hdCurrent) || 0) + 1;
-        
-        char.hpMax = newMax;
-        char.hpCurrent = updates.hpCurrent;
-        char.hdCurrent = updates.hdCurrent;
-        
-        document.getElementById('roll-label').textContent = "HP Gain (Level Up)"; 
-        document.getElementById('roll-total').textContent = `+${hpGain}`; 
-        document.getElementById('roll-breakdown').textContent = `d${hdSize} Roll: (${roll}) + ${conMod} CON`; 
-        document.getElementById('dice-result-overlay').classList.remove('hidden'); 
+        updates.hpMax = newMax; updates.hpCurrent = (parseInt(char.hpCurrent) || 0) + hpGain; updates.hdCurrent = (parseInt(char.hdCurrent) || 0) + 1;
+        char.hpMax = newMax; char.hpCurrent = updates.hpCurrent; char.hdCurrent = updates.hdCurrent;
+        document.getElementById('roll-label').textContent = "HP Gain (Level Up)"; document.getElementById('roll-total').textContent = `+${hpGain}`; document.getElementById('roll-breakdown').textContent = `d${hdSize} Roll: (${roll}) + ${conMod} CON`; document.getElementById('dice-result-overlay').classList.remove('hidden'); 
     }
     
-    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', activeCharId), updates);
-    
+    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), updates);
     const setVal = (key, val) => { const el = document.querySelector(`[data-key="${key}"]`); if(el && val) el.value = val; };
-    setVal('level', pData.newTotalLvl);
-    setVal('class', newClassString);
-    setVal('profBonus', b);
-    setVal('hpMax', updates.hpMax);
-    setVal('hpCurrent', updates.hpCurrent);
-    setVal('hdCurrent', updates.hdCurrent);
+    setVal('level', pData.newTotalLvl); setVal('class', newClassString); setVal('profBonus', b); if(updates.hpMax) setVal('hpMax', updates.hpMax); if(updates.hpCurrent) setVal('hpCurrent', updates.hpCurrent); if(updates.hdCurrent) setVal('hdCurrent', updates.hdCurrent);
     
-    window.calcMods();
-    window.updateClassSpecifics();
-    document.getElementById('level-up-modal').classList.add('hidden');
-    window.showToast(`Ascension Complete: Level ${pData.newTotalLvl}!`);
-    
-    if (isAutoHp) {
-        window.triggerLevelUpCelebration();
-    }
+    window.calcMods(); window.updateClassSpecifics(); document.getElementById('level-up-modal').classList.add('hidden'); window.showToast(`Ascension Complete: Level ${pData.newTotalLvl}!`);
+    if (isAutoHp) window.triggerLevelUpCelebration();
 };
 
+window.triggerDeleteModal = () => { const char = window.characters.find(c => c.id === window.activeCharId); if (!char) return; window.resetDeleteModal(); const isA = !!char.isDeleted; document.getElementById('archive-btn')?.classList.toggle('hidden', isA); document.getElementById('restore-btn')?.classList.toggle('hidden', !isA); document.getElementById('delete-modal')?.classList.remove('hidden'); };
+window.showPermDeleteConfirm = () => { document.getElementById('delete-stage-1')?.classList.add('hidden'); document.getElementById('delete-stage-confirm')?.classList.remove('hidden'); };
+window.resetDeleteModal = () => { document.getElementById('delete-stage-1')?.classList.remove('hidden'); document.getElementById('delete-stage-confirm')?.classList.add('hidden'); };
+window.archiveCharacter = async () => { if (!window.activeCharId) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { isDeleted: true, status: 'dead' }); document.getElementById('delete-modal')?.classList.add('hidden'); window.closeSheet(); };
+window.restoreCharacter = async () => { if (!window.activeCharId) return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { isDeleted: false, status: 'alive', comaActive: false }); document.getElementById('delete-modal')?.classList.add('hidden'); window.showToast("Recovered"); syncSheetData(); };
+window.executePermDelete = async () => { if (!window.activeCharId) return; await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId)); document.getElementById('delete-modal')?.classList.add('hidden'); window.closeSheet(); };
+window.openManageParty = (id) => { const p = window.parties.find(x => x.id === id); if (!p) return; activeManagePartyId = id; document.getElementById('manage-party-name').value = p.name; window.resetPartyManageState(); document.getElementById('manage-party-modal').classList.remove('hidden'); };
+window.resetPartyManageState = () => { document.getElementById('party-manage-main').classList.remove('hidden'); document.getElementById('party-manage-delete').classList.add('hidden'); };
+window.confirmDeletePartyState = () => { document.getElementById('party-manage-main').classList.add('hidden'); document.getElementById('party-manage-delete').classList.remove('hidden'); };
+window.savePartyRename = async () => { if (!activeManagePartyId) return; const n = document.getElementById('manage-party-name').value; if (!n) return window.showToast("Name required"); await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'parties', activeManagePartyId), { name: n }); document.getElementById('manage-party-modal').classList.add('hidden'); window.showToast("Party Renamed"); };
+window.executeDeleteParty = async () => { if (!activeManagePartyId) return; const af = window.characters.filter(c => c.partyId === activeManagePartyId); for (const char of af) { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', char.id), { partyId: "" }); } await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'parties', activeManagePartyId)); document.getElementById('manage-party-modal').classList.add('hidden'); window.showToast("Party Disbanded"); };
+window.grantLevelUp = async () => { if (!window.activeCharId || window.activeRole !== 'dm') return; await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'characters', window.activeCharId), { pendingLevelUp: true }); window.showToast("Level Up Granted to Player!"); };
+
 const setupListeners = () => {
-    if (!currentUser) return;
-    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { characters = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); if (activeCharId) syncSheetData(); });
-    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), (snap) => { parties = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); if (activeCharId) syncSheetData(); });
+    if (!window.currentUser) return;
+    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'characters'), (snap) => { window.characters = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); if (window.activeCharId) syncSheetData(); });
+    onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'parties'), (snap) => { window.parties = snap.docs.map(d => ({id: d.id, ...d.data()})); window.renderDashboard(); if (window.activeCharId) syncSheetData(); });
 };
 
 // --- GLOBAL AUTHENTICATION SYNC ---
@@ -1665,17 +1138,17 @@ onAuthStateChanged(auth, async (u) => {
     
     try {
         if (u.isAnonymous) {
-            currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
+            window.currentUser = { uid: u.uid, username: "Guest Traveler", role: 'player' };
         } else {
             const userDoc = await getDoc(doc(db, 'users', u.uid));
             if (userDoc.exists()) {
-                currentUser = { uid: u.uid, ...userDoc.data() };
+                window.currentUser = { uid: u.uid, ...userDoc.data() };
             } else {
-                currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
+                window.currentUser = { uid: u.uid, username: u.displayName || 'Traveler', role: 'player' };
             }
         }
 
-        activeRole = currentUser.role || 'player';
+        window.activeRole = window.currentUser.role || 'player';
 
         if (appId !== "demo_campaign") {
             const campDoc = await getDoc(doc(db, 'campaigns', appId));
@@ -1685,15 +1158,15 @@ onAuthStateChanged(auth, async (u) => {
             }
         }
 
-        document.getElementById('user-display-name').innerText = currentUser.username;
+        document.getElementById('user-display-name').innerText = window.currentUser.username;
         
-        const isDM = activeRole === 'dm';
+        const isDM = window.activeRole === 'dm';
         document.getElementById('btn-create-npc')?.classList.toggle('hidden', !isDM);
         document.getElementById('nav-encounters')?.classList.toggle('hidden', !isDM);
         document.getElementById('create-actions')?.classList.remove('hidden');
         document.getElementById('btn-campaign-settings')?.classList.toggle('hidden', !isDM);
 
-        // Fortified structural removal of entry cover layer
+        // Turn down framework loading overlays safely
         const loader = document.getElementById('initial-loading');
         if (loader) loader.classList.add('hidden');
         
@@ -1704,9 +1177,9 @@ onAuthStateChanged(auth, async (u) => {
 
         onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'campaignConfig', 'settings'), (docSnap) => {
             if (docSnap.exists()) {
-                campaignSettings = docSnap.data();
-                applyTerminology(campaignSettings.terms);
-                if (activeCharId) {
+                window.campaignSettings = docSnap.data();
+                applyTerminology(window.campaignSettings.terms);
+                if (window.activeCharId) {
                     window.calcMods();
                     window.renderMovesGrid();
                     window.updateClassSpecifics();
